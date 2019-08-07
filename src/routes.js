@@ -1,10 +1,13 @@
+import { createStackNavigator, createAppContainer } from "react-navigation";
+import index from "./views/home";
+import Contact from "./views/contacts";
+import Config from "./views/config";
 
-import { createStackNavigator , createAppContainer } from "react-navigation";
-import index from './views'
 
-const AppStackNavigator = createStackNavigator({
+export const AppStackNavigator = createStackNavigator({
   initial: index,
-})
+  contacts: Contact,
+  config: Config,
+});
 
-export default RouteContainer = createAppContainer(AppStackNavigator);
- 
+export default (RouteContainer = createAppContainer(AppStackNavigator));
