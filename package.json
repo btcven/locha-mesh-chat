@@ -12,6 +12,7 @@
     "react": "16.8.3",
     "react-native": "0.59.9",
     "react-native-gesture-handler": "^1.0.12",
+    "react-native-modal": "^11.3.1",
     "react-native-vector-icons": "^6.6.0",
     "react-navigation": "3.0.0",
     "react-navigation-redux-helpers": "^3.0.2",

@@ -16,3 +16,8 @@ export const chats = [
     date: new Date()
   }
 ];
+
+
+export const images = {
+  noPhoto: { url: require("./img/fotoperfil.jpg") }
+}

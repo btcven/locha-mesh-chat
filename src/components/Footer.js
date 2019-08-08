@@ -13,20 +13,22 @@ class FooterComponent extends Component {
     };
   }
 
-  hangleChage = tab => {
+  hangleChage = (tab, active) => {
+    this.setState({
+      active: active
+    });
     NavigationService.navigate(tab);
   };
 
   render() {
     const { active } = this.state;
-    console.log(NavigationService.navigate);
     return (
       <Footer style={styles.footerContainer}>
         <FooterTab style={styles.footerTab}>
           <Button
             vertical
             style={styles.bottonActive}
-            onPress={() => this.hangleChage("initial")}
+            onPress={() => this.hangleChage("initial", 1)}
             active={active === 1 ? true : false}
           >
             <Icon
@@ -43,7 +45,7 @@ class FooterComponent extends Component {
           <Button
             vertical
             style={styles.bottonActive}
-            onPress={() => this.hangleChage("contacts")}
+            onPress={() => this.hangleChage("contacts", 2)}
             active={active === 2 ? true : false}
           >
             <Icon
@@ -58,7 +60,7 @@ class FooterComponent extends Component {
             </Text>
           </Button>
           <Button
-            onPress={() => this.hangleChage("config")}
+            onPress={() => this.hangleChage("config", 3)}
             active={active === 3 ? true : false}
             style={styles.bottonActive}
           >
