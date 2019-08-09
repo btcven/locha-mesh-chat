@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { StyleSheet, View } from "react-native";
 import { Footer, FooterTab, Button, Text, Icon } from "native-base";
-import { NavigationActions, NavigationDispatch } from "react-navigation";
+import { changeTab } from "../store/aplication/aplicationAction";
 import { connect } from "react-redux";
 import NavigationService from "../utils/navigationService";
 
@@ -17,7 +17,7 @@ class FooterComponent extends Component {
     this.setState({
       active: active
     });
-    NavigationService.navigate(tab);
+    this.props.changeTab(active);
   };
 
   render() {
@@ -87,7 +87,7 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  null
+  { changeTab }
 )(FooterComponent);
 
 const styles = StyleSheet.create({

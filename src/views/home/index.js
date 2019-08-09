@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { chats } from "../../utils/constans";
 import {
   Container,
-  Header,
   Content,
   List,
   ListItem,
@@ -12,16 +11,16 @@ import {
   Thumbnail,
   Text
 } from "native-base";
-
+import Header from "../../components/Header";
 export default class index extends Component {
   static navigationOptions = {
     header: null
   };
 
   render() {
-    console.log("aca", this.props);
     return (
       <Container>
+        <Header />
         <Content>
           {chats.map((chat, key) => {
             return (
@@ -38,10 +37,12 @@ export default class index extends Component {
                     <Text>{chat.senderName}</Text>
                     <Text note>{chat.lastMessage}</Text>
                   </Body>
-                  <Right style={{
-                      height:'97%'
-                  }}>
-                    <Text note > 3:43 pm</Text>
+                  <Right
+                    style={{
+                      height: "97%"
+                    }}
+                  >
+                    <Text note> 3:47 pm</Text>
                   </Right>
                 </ListItem>
               </List>

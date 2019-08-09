@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import Modal from "react-native-modal";
-import { View, Text } from "react-native";
+import { images } from "../../utils/constans";
+import { View, Text, TouchableOpacity, PermissionsAndroid } from "react-native";
+import { Thumbnail } from "native-base";
 
 export default class EditName extends Component {
   constructor(props) {
@@ -8,14 +10,49 @@ export default class EditName extends Component {
     this.state = {};
   }
 
+  getPhotosFromGallery = () => {
+    this.props.getPhotosFromGallery(() => {
+      this.props.navigation.push("gallery");
+      this.props.close();
+    });
+  };
+
   render() {
+
     const { open, close } = this.props;
-    console.log(open);
     return (
       <View>
-        <Modal isVisible={open} onBackdropPress={close} >
-          <View style={{ backgroundColor: "#fff" }}>
-            <Text>I am the modal content!</Text>
+        <Modal
+          style={{
+            justifyContent: "flex-end",
+            margin: 0
+          }}
+          isVisible={open}
+          onBackdropPress={close}
+          swipeDirection={["up", "left", "right", "down"]}
+        >
+          <View
+            style={{
+              backgroundColor: "#fff",
+              width: "100%",
+              height: "25%",
+              alignItems: "center",
+              flexDirection: "row",
+              justifyContent: "space-evenly"
+            }}
+          >
+            <TouchableOpacity
+              onPress={() => {
+                this.getPhotosFromGallery();
+              }}
+            >
+              <Thumbnail source={images.file.url} />
+              <Text>Galeria</Text>
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <Thumbnail source={images.camera.url} />
+              <Text>Camara</Text>
+            </TouchableOpacity>
           </View>
         </Modal>
       </View>

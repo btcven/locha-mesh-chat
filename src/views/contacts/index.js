@@ -1,8 +1,9 @@
 import React, { Component } from "react";
-import { chats , images } from "../../utils/constans";
+import { chats, images } from "../../utils/constans";
+import Header from "../../components/Header";
+import Footer from "../../components/Footer";
 import {
   Container,
-  Header,
   Content,
   List,
   ListItem,
@@ -19,9 +20,9 @@ export default class Contacts extends Component {
   };
 
   render() {
-    console.log("aca", this.props);
     return (
       <Container>
+        <Header {...this.props} />
         <Content>
           {chats.map((chat, key) => {
             return (

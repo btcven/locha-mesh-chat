@@ -1,29 +1,41 @@
 import React, { Component } from "react";
-import RouteContainer from "./routes";
-import Header from "./components/Header";
 import Footer from "./components/Footer";
-import NavigationService from './utils/navigationService'
+import { connect } from "react-redux";
+import { route } from "./store/aplication/aplicationAction";
 import { StyleSheet, View } from "react-native";
+import Home from "./views/home";
+import Contact from "./views/contacts";
+import Config from "./views/config";
 
-export default class DualComponent extends Component {
+class DualComponent extends Component {
   constructor(props) {
     super(props);
   }
+  static navigationOptions = {
+    header: null
+  };
 
   render() {
+  
     return (
       <View style={styles.container}>
-        <Header />
-        <RouteContainer
-          ref={navigatorRef => {
-            NavigationService.setTopLevelNavigator(navigatorRef);
-          }}
-        />
+        {this.props.tabPosition === 1 && <Home {...this.props} />}
+        {this.props.tabPosition === 2 && <Contact {...this.props} />}
+        {this.props.tabPosition === 3 && <Config {...this.props} />}
         <Footer />
       </View>
     );
   }
 }
+
+const mapStateToProps = state => ({
+  tabPosition: state.aplication.tab
+});
+
+export default connect(
+  mapStateToProps,
+  { route }
+)(DualComponent);
 
 const styles = StyleSheet.create({
   container: {

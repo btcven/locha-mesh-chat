@@ -1,16 +1,19 @@
 import React, { Component } from "react";
 import { Container, Icon, Left, Right } from "native-base";
 import { images } from "../../utils/constans";
+import Header from "../../components/Header";
 import {
   Text,
   View,
   Image,
   StyleSheet,
-  TouchableHighlight,
-  TouchableOpacity
+  TouchableHighlight
 } from "react-native";
+import { getPhotosFromGallery } from "../../store/aplication/aplicationAction";
+import { connect } from "react-redux";
 import EditName from "./EditName";
-export default class index extends Component {
+
+class Config extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -29,10 +32,16 @@ export default class index extends Component {
   };
 
   render() {
+   
     return (
       <Container>
+        <Header {...this.props} />
         {this.state.openModal && (
-          <EditName open={this.state.openModal} close={this.close} />
+          <EditName
+            open={this.state.openModal}
+            {...this.props}
+            close={this.close}
+          />
         )}
         <View style={styles.sectionContainer}>
           <View style={styles.imageContainer}>
@@ -118,11 +127,16 @@ export default class index extends Component {
   }
 }
 
+export default connect(
+  null,
+  { getPhotosFromGallery }
+)(Config);
+
 const styles = StyleSheet.create({
   infoContainer: {
     display: "flex",
     flexDirection: "row",
-    marginVertical: 20,
+    marginTop: '20%',
     paddingBottom: 15,
     alignItems: "center",
     borderBottomWidth: 0.5,
