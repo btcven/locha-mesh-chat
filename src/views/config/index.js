@@ -9,7 +9,7 @@ import {
   StyleSheet,
   TouchableHighlight
 } from "react-native";
-import { getPhotosFromGallery } from "../../store/aplication/aplicationAction";
+import { getPhotosFromUser } from "../../store/configuration/congurationAction";
 import { connect } from "react-redux";
 import EditName from "./EditName";
 
@@ -32,7 +32,7 @@ class Config extends Component {
   };
 
   render() {
-   
+    console.log(this.props.config);
     return (
       <Container>
         <Header {...this.props} />
@@ -127,16 +127,20 @@ class Config extends Component {
   }
 }
 
+const mapStateToProps = state => ({
+  config: state.config
+});
+
 export default connect(
-  null,
-  { getPhotosFromGallery }
+  mapStateToProps,
+  { getPhotosFromUser }
 )(Config);
 
 const styles = StyleSheet.create({
   infoContainer: {
     display: "flex",
     flexDirection: "row",
-    marginTop: '20%',
+    marginTop: "20%",
     paddingBottom: 15,
     alignItems: "center",
     borderBottomWidth: 0.5,

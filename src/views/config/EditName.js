@@ -11,8 +11,7 @@ export default class EditName extends Component {
   }
 
   getPhotosFromGallery = () => {
-    this.props.getPhotosFromGallery(() => {
-      this.props.navigation.push("gallery");
+    this.props.getPhotosFromUser(() => {
       this.props.close();
     });
   };
