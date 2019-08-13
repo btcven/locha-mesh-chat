@@ -47,7 +47,8 @@ Or, if you prefer Android:
 ## License
 
 Copyright (c) 2019 Bitcoin Venezuela and Locha Mesh developers.
-Licensed under the Apache License, Version 2.0
+
+Licensed under the **Apache License, Version 2.0**
 
 ---
 **A text quote is shown below**
@@ -59,4 +60,4 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ___
 Read the full text:
-[LochaMesh Apache License 2.0](https://github.com/btcven/LochaMesh-Chat/blob/master/LICENSE)
+[Locha Mesh Apache License 2.0](https://github.com/btcven/LochaMesh-Chat/blob/master/LICENSE)
