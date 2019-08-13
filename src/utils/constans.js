@@ -22,3 +22,9 @@ export const images = {
   file: { url: require("./img/archivo.jpg") },
   camera: { url: require("./img/camara.jpg") }
 };
+
+export const IntialUser = {
+  id: "17W2j1vHvfBkVjJ6cmvBZ1eJJAdTAdpzK5",
+  name: null,
+  image: null
+};

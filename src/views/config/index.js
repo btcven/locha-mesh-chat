@@ -7,9 +7,13 @@ import {
   View,
   Image,
   StyleSheet,
-  TouchableHighlight
+  TouchableHighlight,
+  TouchableOpacity
 } from "react-native";
-import { getPhotosFromUser } from "../../store/configuration/congurationAction";
+import {
+  getPhotosFromUser,
+  openCamera
+} from "../../store/configuration/congurationAction";
 import { connect } from "react-redux";
 import EditName from "./EditName";
 
@@ -32,7 +36,6 @@ class Config extends Component {
   };
 
   render() {
-    console.log(this.props.config);
     return (
       <Container>
         <Header {...this.props} />
@@ -45,18 +48,34 @@ class Config extends Component {
         )}
         <View style={styles.sectionContainer}>
           <View style={styles.imageContainer}>
-            <TouchableHighlight
-              style={styles.touchable}
-              underlayColor="#eeeeee"
-              onPress={() => {
-                this.setState({ openModal: true });
-              }}
-            >
-              <Image source={images.noPhoto.url} style={styles.imageStyle} />
-            </TouchableHighlight>
-
-            <View style={styles.actionButtonContainer}>
+            {this.props.config.image && (
               <TouchableHighlight
+                style={styles.touchable}
+                underlayColor="#eeeeee"
+              >
+                <Image
+                  source={{
+                    uri: this.props.config.image + "?" + new Date().getDate(),
+                    cache: "force-cache"
+                  }}
+                  style={styles.imageStyle}
+                />
+              </TouchableHighlight>
+            )}
+
+            {!this.props.config.image && (
+              <TouchableHighlight
+                style={styles.touchable}
+                underlayColor="#eeeeee"
+                onPress={() => {
+                  this.setState({ openModal: true });
+                }}
+              >
+                <Image source={images.noPhoto.url} style={styles.imageStyle} />
+              </TouchableHighlight>
+            )}
+            <View style={styles.actionButtonContainer}>
+              <TouchableOpacity
                 style={{
                   height: "100%",
                   width: "100%",
@@ -66,7 +85,7 @@ class Config extends Component {
                 }}
                 underlayColor="#eeeeee"
                 onPress={() => {
-                  console.log("click");
+                  this.setState({ openModal: true });
                 }}
               >
                 <Icon
@@ -74,7 +93,7 @@ class Config extends Component {
                   type="MaterialIcons"
                   name="camera-alt"
                 />
-              </TouchableHighlight>
+              </TouchableOpacity>
             </View>
           </View>
         </View>
@@ -133,7 +152,7 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { getPhotosFromUser }
+  { getPhotosFromUser, openCamera }
 )(Config);
 
 const styles = StyleSheet.create({

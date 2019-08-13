@@ -1,33 +1,72 @@
-import { PermissionsAndroid } from "react-native";
 import ImagePicker from "react-native-image-crop-picker";
 import AsyncStorage from "@react-native-community/async-storage";
 import RNFS from "react-native-fs";
 import { ActionTypes } from "../constants";
+import { createFolder } from "../../utils/utils";
 
 export const getPhotosFromUser = callback => async dispatch => {
-  const directory = RNFS.ExternalStorageDirectoryPath + "/Pictures/LochaMesh";
-  RNFS.mkdir(directory.toString()).then(console.log(directory));
-  try {
-    const granted = await PermissionsAndroid.request(
-      PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE
-    );
-    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-      ImagePicker.openPicker({
-        cropping: true,
-        width: 500,
-        height: 500
-      }).then(async images => {
-        console.log(images)
-        RNFS.moveFile(images.path, 'file:///storage/emulated/0/Pictures/LochaMesh/00f15211-32e0-4c68-be51-a3d1bc031ed2.jpg');
-        // dispatch({
-        //   type: ActionTypes.GET_PHOTO_USER,
-        //   payload: images
-        // });
+  const directory = await createFolder();
+  ImagePicker.openPicker({
+    cropping: true,
+    width: 500,
+    height: 500
+  }).then(async images => {
+    const name = await getName(images);
+    const newPath = `file:///${directory}/${name}`;
+    RNFS.moveFile(images.path, newPath).then(async res => {
+      await deletePhotoFromPhone();
+      await AsyncStorage.mergeItem(
+        "user",
+        JSON.stringify({ image: newPath })
+      ).then(async res => {
+        callback();
+        dispatch({
+          type: ActionTypes.GET_PHOTO_USER,
+          payload: newPath
+        });
       });
-    } else {
-      console.log("Camera permission denied");
-    }
-  } catch (err) {
-    console.log(err);
+    });
+  });
+};
+
+const getName = data => {
+  const result = data.path.split("/");
+  return result[7];
+};
+
+const deletePhotoFromPhone = async () => {
+  const result = await AsyncStorage.getItem("user");
+  const parse = JSON.parse(result);
+  if (parse.image) {
+    await RNFS.exists(parse.image).then(async res => {
+      if (res) {
+        await RNFS.unlink(parse.image);
+      }
+    });
   }
+};
+
+export const openCamera = (callback) => async dispatch => {
+  const directory = await createFolder();
+  ImagePicker.openCamera({
+    width: 500,
+    height: 500,
+    cropping: true
+  }).then(async images => {
+    const name = await getName(images);
+    const newPath = `file:///${directory}/${name}`;
+    RNFS.moveFile(images.path, newPath).then(async () => {
+      await deletePhotoFromPhone();
+      await AsyncStorage.mergeItem(
+        "user",
+        JSON.stringify({ image: newPath })
+      ).then(async res => {
+        callback();
+        dispatch({
+          type: ActionTypes.GET_PHOTO_USER,
+          payload: newPath
+        });
+      });
+    });
+  });
 };

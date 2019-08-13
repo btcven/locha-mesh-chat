@@ -16,8 +16,13 @@ export default class EditName extends Component {
     });
   };
 
-  render() {
+  GetphotoFromCamera = () => {
+    this.props.openCamera(() => {
+      this.props.close();
+    });
+  };
 
+  render() {
     const { open, close } = this.props;
     return (
       <View>
@@ -48,7 +53,11 @@ export default class EditName extends Component {
               <Thumbnail source={images.file.url} />
               <Text>Galeria</Text>
             </TouchableOpacity>
-            <TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                this.GetphotoFromCamera();
+              }}
+            >
               <Thumbnail source={images.camera.url} />
               <Text>Camara</Text>
             </TouchableOpacity>
