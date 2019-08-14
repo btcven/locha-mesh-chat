@@ -46,7 +46,7 @@ const deletePhotoFromPhone = async () => {
   }
 };
 
-export const openCamera = (callback) => async dispatch => {
+export const openCamera = callback => async dispatch => {
   const directory = await createFolder();
   ImagePicker.openCamera({
     width: 500,
@@ -69,4 +69,17 @@ export const openCamera = (callback) => async dispatch => {
       });
     });
   });
+};
+
+export const editName = (name, callback) => async dispatch => {
+  console.log("action", name);
+  await AsyncStorage.mergeItem("user", JSON.stringify({ name: name })).then(
+    () => {
+      callback()
+      dispatch({
+        type: ActionTypes.EDIT_NAME,
+        payload: name
+      });
+    }
+  );
 };

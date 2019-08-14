@@ -4,7 +4,7 @@ import { IntialUser } from "../../utils/constans";
 import { createFolder } from "../../utils/utils";
 
 export const InitialState = () => async dispatch => {
-  await createFolder()
+  await createFolder();
   const user = await AsyncStorage.getItem("user");
   if (!user) {
     await AsyncStorage.setItem("user", JSON.stringify(IntialUser));

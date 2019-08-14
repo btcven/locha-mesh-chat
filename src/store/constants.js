@@ -6,5 +6,6 @@ export const ActionTypes = {
   CHANGE_TAB: "@@aplication/CHANGE_TAB",
 
   //CONFIGURATION
-  GET_PHOTO_USER: "@@configuration/GET_PHOTO"
+  GET_PHOTO_USER: "@@configuration/GET_PHOTO",
+  EDIT_NAME: "@@configuration/EDIT_NAME"
 };

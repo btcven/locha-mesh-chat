@@ -1,29 +1,25 @@
 import React, { Component } from "react";
 import Modal from "react-native-modal";
-import { images } from "../../utils/constans";
-import { View, Text, TouchableOpacity, PermissionsAndroid } from "react-native";
-import { Thumbnail } from "native-base";
+import { View, Text, StyleSheet } from "react-native";
+import { Item, Input, Form, Button, Right } from "native-base";
 
 export default class EditName extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      name: ""
+    };
   }
 
-  getPhotosFromGallery = () => {
-    this.props.getPhotosFromUser(() => {
-      this.props.close();
-    });
-  };
-
-  GetphotoFromCamera = () => {
-    this.props.openCamera(() => {
-      this.props.close();
+  saveName = () => {
+    this.props.editName(this.state.name, () => {
+      this.props.close("openModalName");
     });
   };
 
   render() {
     const { open, close } = this.props;
+    const disabled = this.state.name.length > 1 ? false : true;
     return (
       <View>
         <Modal
@@ -31,39 +27,66 @@ export default class EditName extends Component {
             justifyContent: "flex-end",
             margin: 0
           }}
+          avoidKeyboard={true}
           isVisible={open}
-          onBackdropPress={close}
-          swipeDirection={["up", "left", "right", "down"]}
+          onBackdropPress={() => close("openModalName")}
         >
           <View
             style={{
               backgroundColor: "#fff",
-              width: "100%",
-              height: "25%",
-              alignItems: "center",
-              flexDirection: "row",
-              justifyContent: "space-evenly"
+              width: "100%"
             }}
           >
-            <TouchableOpacity
-              onPress={() => {
-                this.getPhotosFromGallery();
+            <Text style={styles.titleModal}>Editar Nombre </Text>
+            <Form>
+              <Item stackedLabel>
+                <Input
+                  placeholder="Ingrese Nombre"
+                  value={this.state.name}
+                  onChangeText={event => this.setState({ name: event })}
+                />
+              </Item>
+            </Form>
+            <View
+              style={{
+                padding: 20,
+                flexDirection: "row",
+                justifyContent: "flex-end"
               }}
             >
-              <Thumbnail source={images.file.url} />
-              <Text>Galeria</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                this.GetphotoFromCamera();
-              }}
-            >
-              <Thumbnail source={images.camera.url} />
-              <Text>Camara</Text>
-            </TouchableOpacity>
+              <Button
+                onPress={() => close("openModalName")}
+                danger
+                style={{
+                  marginHorizontal: 10
+                }}
+              >
+                <Text style={styles.styleTextButton}>Cancelar</Text>
+              </Button>
+              <Button
+                disabled={disabled}
+                onPress={() => this.saveName()}
+                style={styles.styleTextButton}
+              >
+                <Text>Guardar</Text>
+              </Button>
+            </View>
           </View>
         </Modal>
       </View>
     );
   }
 }
+
+const styles = StyleSheet.create({
+  styleTextButton: {
+    paddingHorizontal: 10
+  },
+
+  titleModal: {
+    padding: 20,
+    paddingBottom: 10,
+    fontSize: 20,
+    fontWeight: "400"
+  }
+});

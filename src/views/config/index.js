@@ -12,22 +12,25 @@ import {
 } from "react-native";
 import {
   getPhotosFromUser,
-  openCamera
+  openCamera,
+  editName
 } from "../../store/configuration/congurationAction";
 import { connect } from "react-redux";
 import EditName from "./EditName";
+import EditPhoto from "./EditPhoto";
 
 class Config extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      openModal: false
+      openModalPhoto: false,
+      openModalName: false
     };
   }
 
-  close = () => {
+  close = name => {
     this.setState({
-      openModal: false
+      [name]: false
     });
   };
 
@@ -36,12 +39,20 @@ class Config extends Component {
   };
 
   render() {
+    console.log(this.props.config)
     return (
       <Container>
         <Header {...this.props} />
-        {this.state.openModal && (
+        {this.state.openModalPhoto && (
+          <EditPhoto
+            open={this.state.openModalPhoto}
+            {...this.props}
+            close={this.close}
+          />
+        )}
+         {this.state.openModalName && (
           <EditName
-            open={this.state.openModal}
+            open={this.state.openModalName}
             {...this.props}
             close={this.close}
           />
@@ -68,7 +79,7 @@ class Config extends Component {
                 style={styles.touchable}
                 underlayColor="#eeeeee"
                 onPress={() => {
-                  this.setState({ openModal: true });
+                  this.setState({ openModalPhoto: true });
                 }}
               >
                 <Image source={images.noPhoto.url} style={styles.imageStyle} />
@@ -85,7 +96,7 @@ class Config extends Component {
                 }}
                 underlayColor="#eeeeee"
                 onPress={() => {
-                  this.setState({ openModal: true });
+                  this.setState({ openModalPhoto: true });
                 }}
               >
                 <Icon
@@ -110,11 +121,12 @@ class Config extends Component {
             style={{
               width: "70%",
               alignContent: "flex-start",
-              paddingLeft: 10
+              paddingLeft: 10,
+              minHeight:30
             }}
           >
             <Text style={styles.textLabel}>Nombre</Text>
-            <Text style={styles.textInfo}>Kevin Velasco</Text>
+            <Text style={styles.textInfo}>{this.props.config.name}</Text>
           </View>
           <Right
             style={{
@@ -125,7 +137,7 @@ class Config extends Component {
               style={styles.touchable}
               underlayColor="#eeeeee"
               onPress={() => {
-                console.log("click");
+                this.setState({ openModalName: true });
               }}
             >
               <Icon
@@ -141,6 +153,45 @@ class Config extends Component {
             </TouchableHighlight>
           </Right>
         </View>
+        
+        <View style={styles.infoContainerAddress}>
+          <View
+            style={{
+              width: "85%",
+              justifyContent:'flex-end',
+              paddingLeft: 10,
+              minHeight:30
+            }}
+          >
+            <Text style={styles.textInfo}>{this.props.config.id}</Text>
+          </View>
+          <Right
+            style={{
+              top: 5
+            }}
+          >
+            <TouchableHighlight
+              style={styles.touchable}
+              underlayColor="#eeeeee"
+              onPress={() => {
+                 console.log("copy")
+              }}
+            >
+              <Icon
+                style={{
+                  color: "#bdbdbd",
+                  fontSize: 25,
+                  paddingVertical: 10,
+                  paddingHorizontal: 10
+                }}
+                type="FontAwesome5"
+                name="copy"
+              />
+            </TouchableHighlight>
+          </Right>
+        </View>
+
+
       </Container>
     );
   }
@@ -152,19 +203,30 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { getPhotosFromUser, openCamera }
+  { getPhotosFromUser, openCamera, editName }
 )(Config);
 
 const styles = StyleSheet.create({
   infoContainer: {
     display: "flex",
     flexDirection: "row",
-    marginTop: "20%",
-    paddingBottom: 15,
+    marginTop: "15%",
     alignItems: "center",
     borderBottomWidth: 0.5,
     borderBottomColor: "gray",
     marginLeft: 20,
+    minHeight:90,
+    marginRight: 20
+  },
+
+  infoContainerAddress:{
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    borderBottomWidth: 0.5,
+    borderBottomColor: "gray",
+    marginLeft: 20,
+    minHeight:90,
     marginRight: 20
   },
 
@@ -176,7 +238,7 @@ const styles = StyleSheet.create({
     borderRadius: 100
   },
   textInfo: {
-    fontSize: 16
+    fontSize: 16,
   },
   imageStyle: {
     height: 130,

@@ -25,6 +25,6 @@ export const images = {
 
 export const IntialUser = {
   id: "17W2j1vHvfBkVjJ6cmvBZ1eJJAdTAdpzK5",
-  name: null,
+  name: 'kevin velasco',
   image: null
 };

@@ -14,6 +14,9 @@ export const configurationReducer = (state = AplicationState, action) => {
     case ActionTypes.GET_PHOTO_USER: {
       return { ...state, image: action.payload };
     }
+    case ActionTypes.EDIT_NAME: {
+      return { ...state, name: action.payload };
+    }
     default: {
       return state;
     }
