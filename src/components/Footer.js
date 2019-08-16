@@ -39,7 +39,7 @@ class FooterComponent extends Component {
             <Text
               style={active === 1 ? styles.textTabColor2 : styles.textTabColor1}
             >
-              Apps
+              chats
             </Text>
           </Button>
           <Button
@@ -92,7 +92,7 @@ export default connect(
 
 const styles = StyleSheet.create({
   footerContainer: {
-    borderTopWidth: 1,
+   
     borderTopColor: "#bdbdbd"
   },
 
@@ -104,8 +104,8 @@ const styles = StyleSheet.create({
   bottonActive: {
     display: "flex",
     backgroundColor: "#fff",
-    borderTopWidth: 0.5,
-    borderLeftWidth: 1,
+   
+   
     borderTopColor: "#bdbdbd",
     borderLeftColor: "#bdbdbd"
   },

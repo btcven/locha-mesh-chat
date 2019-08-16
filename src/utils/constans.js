@@ -24,7 +24,7 @@ export const images = {
 };
 
 export const IntialUser = {
-  id: "17W2j1vHvfBkVjJ6cmvBZ1eJJAdTAdpzK5",
+  id: "17W2j1vHvfBkVjJ6cmvBZ1eJJAdTA",
   name: 'kevin velasco',
   image: null
 };

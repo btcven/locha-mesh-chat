@@ -23,9 +23,11 @@ class HeaderComponent extends Component {
   }
 
   render() {
-    console.log(this.props);
     return (
-      <Header style={styles.container} androidStatusBarColor="#00897b">
+      <Header
+        style={styles.container}
+        androidStatusBarColor={this.props.modal ? "white" : "#00897b"}
+      >
         {this.props.navigation &&
           this.props.navigation.state.routeName !== "initial" && (
             <Left>

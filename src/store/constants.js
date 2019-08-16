@@ -7,5 +7,9 @@ export const ActionTypes = {
 
   //CONFIGURATION
   GET_PHOTO_USER: "@@configuration/GET_PHOTO",
-  EDIT_NAME: "@@configuration/EDIT_NAME"
+  EDIT_NAME: "@@configuration/EDIT_NAME",
+
+  //CONTACTS
+
+  ADD_CONTACTS: "@@contacts/ADD_CONTACTS"
 };
