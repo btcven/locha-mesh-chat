@@ -3,6 +3,7 @@ package com.lochameshchat;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import org.reactnative.camera.RNCameraPackage;
 import com.rnfs.RNFSPackage;
 import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
 import com.reactnative.ivpusic.imagepicker.PickerPackage;
@@ -29,6 +30,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RNCameraPackage(),
             new RNFSPackage(),
             new AsyncStoragePackage(),
             new PickerPackage(),

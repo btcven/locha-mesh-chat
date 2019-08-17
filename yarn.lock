@@ -5189,6 +5189,13 @@ react-native-animatable@^1.3.1:
   dependencies:
     prop-types "^15.5.10"
 
+react-native-camera@^3.1.1:
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/react-native-camera/-/react-native-camera-3.1.1.tgz#3af3d1eeeed0a5ad2b667eb9aaf3c0058c029c38"
+  integrity sha512-Tg1ffUpKlWmafoBm5afGCPFfFKE/lKKiM+gZDlYT38H2IBwbjryWL5BEEbaVi8abZsvQkru5eZAnwUZXUd4vDw==
+  dependencies:
+    prop-types "^15.6.2"
+
 react-native-drawer@2.5.1:
   version "2.5.1"
   resolved "https://registry.yarnpkg.com/react-native-drawer/-/react-native-drawer-2.5.1.tgz#08b9314184f48c724f1b467f8859797369798654"
@@ -5246,6 +5253,19 @@ react-native-modal@^11.3.1:
   dependencies:
     prop-types "^15.6.2"
     react-native-animatable "^1.3.1"
+
+react-native-permissions@^1.1.1:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/react-native-permissions/-/react-native-permissions-1.2.0.tgz#0deb616bf1565c17c91f1cb1f953809b2892c29e"
+  integrity sha512-+KrP1JZ30RI9p30wsGlGQx22qwiClDnznSQZPpvBMkOIZQ9kXOkLAFXS+vwiHRiiRu/pBMBXYHfI7ng6t2+LbQ==
+
+react-native-qrcode-scanner@^1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/react-native-qrcode-scanner/-/react-native-qrcode-scanner-1.2.1.tgz#aa3949a77f6eee063a3ca25796a1f0ce17f9c4dd"
+  integrity sha512-JLX6iCmvUkBmbXcHHjtRS+OFr2onp9IFE9FXSPGZUuXib78afNEIg+qiWJdKfhQvtPKffRf55TH/WHxD3XDwKQ==
+  dependencies:
+    prop-types "^15.5.10"
+    react-native-permissions "^1.1.1"
 
 react-native-safe-area-view@^0.14.1:
   version "0.14.6"
