@@ -22,9 +22,9 @@ export const saveContact = data => dispatch => {
 
 export const getContacts = () => async dispatch => {
   const contacts = await AsyncStorage.getItem("contacts");
-  console.log(JSON.parse(contacts));
+  parse = JSON.parse(contacts);
   dispatch({
     type: ActionTypes.ADD_CONTACTS,
-    payload: JSON.parse(contacts)
+    payload: contacts ? Object.values(JSON.parse(contacts)) : []
   });
 };
