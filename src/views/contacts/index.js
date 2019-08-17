@@ -14,9 +14,10 @@ import {
   Thumbnail,
   Text
 } from "native-base";
-import { Image, View, StyleSheet } from "react-native";
+import { Image, View, StyleSheet, TouchableOpacity } from "react-native";
 import { saveContact, getContacts } from "../../store/contacts";
 import { connect } from "react-redux";
+import QRCodeScanner from "react-native-qrcode-scanner";
 
 class Contacts extends Component {
   constructor(props) {
@@ -41,6 +42,10 @@ class Contacts extends Component {
     this.setState({ openModal: false });
   };
 
+  onSuccess = e => {
+    console.log("aca", e);
+  };
+
   render() {
     console.log(this.props.contacts);
     return (
@@ -55,9 +60,11 @@ class Contacts extends Component {
             console.log(contact.image);
             return (
               <List key={key}>
-                <ListItem button style={{height:80}}>
+                <ListItem button style={{ height: 80 }}>
                   <Left style={styles.textContainer}>
-                    <Text style={{ width: "100%" , paddingBottom:5 }}>{contact.name}</Text>
+                    <Text style={{ width: "100%", paddingBottom: 5 }}>
+                      {contact.name}
+                    </Text>
                     <Text note>{contact.uid}</Text>
                   </Left>
                   <Right>
@@ -73,6 +80,21 @@ class Contacts extends Component {
               </List>
             );
           })}
+          <QRCodeScanner
+            onRead={this.onSuccess}
+            topContent={
+              <Text style={styles.centerText}>
+                Go to{" "}
+                <Text style={styles.textBold}>wikipedia.org/wiki/QR_code</Text>{" "}
+                on your computer and scan the QR code.
+              </Text>
+            }
+            bottomContent={
+              <TouchableOpacity style={styles.buttonTouchable}>
+                <Text style={styles.buttonText}>OK. Got it!</Text>
+              </TouchableOpacity>
+            }
+          />
         </Content>
         <FloatButton add={this.openModal} />
       </Container>
@@ -97,5 +119,22 @@ const styles = StyleSheet.create({
   },
   textContainer: {
     flexWrap: "wrap"
+  },
+  centerText: {
+    flex: 1,
+    fontSize: 18,
+    padding: 32,
+    color: "#777"
+  },
+  textBold: {
+    fontWeight: "500",
+    color: "#000"
+  },
+  buttonText: {
+    fontSize: 21,
+    color: "rgb(0,122,255)"
+  },
+  buttonTouchable: {
+    padding: 16
   }
 });
