@@ -9,9 +9,11 @@ import {
   Image
 } from "react-native";
 import { images } from "../../utils/constans";
-import { Icon, Form, Item, Input, Label } from "native-base";
+import { androidToast } from "../../utils/utils";
+import { Icon, Form, Item, Input, Label, Spinner } from "native-base";
 import EditPhoto from "../config/EditPhoto";
 import ImagePicker from "react-native-image-crop-picker";
+import QRCodeScanner from "react-native-qrcode-scanner";
 
 export default class AddContact extends Component {
   constructor(props) {
@@ -20,7 +22,9 @@ export default class AddContact extends Component {
       openModalPhoto: false,
       image: undefined,
       name: "",
-      uid: ""
+      uid: "",
+      spinner: true,
+      openQrCode: false
     };
   }
 
@@ -51,12 +55,35 @@ export default class AddContact extends Component {
   };
 
   save = () => {
-    const obj={
-      name:this.state.name,
+    const obj = {
+      name: this.state.name,
       image: this.state.image,
       uid: this.state.uid
+    };
+    this.props.saveContact(obj, this.props.contacts, () => {
+      androidToast("Contacto creado exitosamente!")
+      this.props.close();
+    });
+  };
+
+  onSuccess = event => {
+    this.setState({ spinner: false });
+    try {
+      const result = JSON.parse(event.data);
+      if (result.name && result.id) {
+        setTimeout(() => {
+          this.setState({
+            openQrCode: false,
+            uid: result.id,
+            name: result.name
+          });
+        }, 50);
+      } else {
+        androidToast("Formato Invalido");
+      }
+    } catch (err) {
+      androidToast("Formato Invalido");
     }
-    this.props.saveContact(obj)
   };
 
   render() {
@@ -79,117 +106,183 @@ export default class AddContact extends Component {
                 close={this.close}
               />
             )}
-            <TouchableOpacity onPress={this.props.close}>
-              <Icon
-                style={styles.iconStyle}
-                type="MaterialIcons"
-                name="clear"
-              />
-            </TouchableOpacity>
+            {!this.state.openQrCode && (
+              <TouchableOpacity onPress={this.props.close}>
+                <Icon
+                  style={styles.iconStyle}
+                  type="MaterialIcons"
+                  name="clear"
+                />
+              </TouchableOpacity>
+            )}
+
+            {this.state.openQrCode && (
+              <TouchableOpacity
+                onPress={() => {
+                  this.setState({ openQrCode: false });
+                }}
+              >
+                <Icon style={styles.iconStyle} name="arrow-back" />
+              </TouchableOpacity>
+            )}
             <Text style={styles.textStyle}>Agregar Contacto</Text>
-            <TouchableOpacity
-             onPress={this.save}
-            >
-              <Icon
-                style={styles.iconStyle}
-                type="MaterialIcons"
-                name="check"
-              />
-            </TouchableOpacity>
+            {
+              <TouchableOpacity
+                disabled={this.state.openQrCode}
+                onPress={this.save}
+              >
+                <Icon
+                  style={styles.iconStyle}
+                  type="MaterialIcons"
+                  name="check"
+                />
+              </TouchableOpacity>
+            }
           </View>
 
-          <View>
-            <Form
-              style={{
-                paddingHorizontal: 10,
-                height: "60%",
-                minHeight: 270,
-                justifyContent: "space-evenly"
-              }}
-            >
-              <Item stackedLabel>
-                <Label style={styles.inputStyle}>UID</Label>
-                <Input
-                  style={styles.inputStyle}
-                  value={this.state.uid}
-                  onChangeText={text => this.setState({ uid: text })}
-                />
-              </Item>
+          {!this.state.openQrCode && (
+            <View>
+              <Form
+                style={{
+                  paddingHorizontal: 10,
+                  height: "60%",
+                  minHeight: 270,
+                  justifyContent: "space-evenly"
+                }}
+              >
+                <View>
+                  <View style={styles.inputStyle}>
+                    <Text>UID</Text>
 
-              <Item stackedLabel>
-                <Label style={styles.inputStyle}>Nombre del contacto</Label>
-                <Input
-                  value={this.state.name}
-                  onChangeText={text => this.setState({ name: text })}
-                />
-              </Item>
-            </Form>
-            <View />
-
-            <View
-              style={{
-                width: "100%",
-                alignItems: "center"
-              }}
-            >
-              <View style={styles.imageContainer}>
-                {!this.state.image && (
-                  <TouchableHighlight
-                    style={styles.touchable}
-                    underlayColor="#eeeeee"
-                    onPress={() => {
-                      console.log("click");
-                    }}
-                  >
-                    <Image
-                      source={images.noPhoto.url}
-                      style={styles.imageStyle}
-                    />
-                  </TouchableHighlight>
-                )}
-
-                {this.state.image && (
-                  <TouchableHighlight
-                    style={styles.touchable}
-                    underlayColor="#eeeeee"
-                    onPress={() => {
-                      console.log("click");
-                    }}
-                  >
-                    <Image
-                      source={{
-                        uri: this.state.image + "?" + new Date().getDate(),
-                        cache: "force-cache"
+                    <TouchableOpacity
+                      style={{
+                        position: "relative"
                       }}
-                      style={styles.imageStyle}
+                      onPress={() =>
+                        this.setState({ openQrCode: true, spinner: true })
+                      }
+                    >
+                      <Icon
+                        type="FontAwesome5"
+                        style={{
+                          fontSize: 14,
+                          paddingHorizontal: 10
+                        }}
+                        name="qrcode"
+                      />
+                    </TouchableOpacity>
+                  </View>
+                  <Item style={{ height: 30 }}>
+                    <Input
+                      value={this.state.uid}
+                      style={{ fontSize: 13 }}
+                      onChangeText={text => this.setState({ uid: text })}
                     />
-                  </TouchableHighlight>
-                )}
+                  </Item>
+                </View>
 
-                <View style={styles.actionButtonContainer}>
-                  <TouchableOpacity
-                    style={{
-                      height: "100%",
-                      width: "100%",
-                      borderRadius: 100,
-                      justifyContent: "center",
-                      display: "flex"
-                    }}
-                    underlayColor="#eeeeee"
-                    onPress={() => {
-                      this.setState({ openModalPhoto: true });
-                    }}
-                  >
-                    <Icon
-                      style={styles.iconStyles}
-                      type="MaterialIcons"
-                      name="camera-alt"
+                {
+                  <Item stackedLabel>
+                    <Label>Nombre del contacto</Label>
+                    <Input
+                      value={this.state.name}
+                      onChangeText={text => this.setState({ name: text })}
                     />
-                  </TouchableOpacity>
+                  </Item>
+                }
+              </Form>
+              <View />
+
+              <View
+                style={{
+                  width: "100%",
+                  alignItems: "center"
+                }}
+              >
+                <View style={styles.imageContainer}>
+                  {!this.state.image && (
+                    <TouchableHighlight
+                      style={styles.touchable}
+                      underlayColor="#eeeeee"
+                      onPress={() => {
+                        console.log("click");
+                      }}
+                    >
+                      <Image
+                        source={images.noPhoto.url}
+                        style={styles.imageStyle}
+                      />
+                    </TouchableHighlight>
+                  )}
+
+                  {this.state.image && (
+                    <TouchableHighlight
+                      style={styles.touchable}
+                      underlayColor="#eeeeee"
+                      onPress={() => {
+                        console.log("click");
+                      }}
+                    >
+                      <Image
+                        source={{
+                          uri: this.state.image + "?" + new Date().getDate(),
+                          cache: "force-cache"
+                        }}
+                        style={styles.imageStyle}
+                      />
+                    </TouchableHighlight>
+                  )}
+
+                  <View style={styles.actionButtonContainer}>
+                    <TouchableOpacity
+                      style={{
+                        height: "100%",
+                        width: "100%",
+                        borderRadius: 100,
+                        justifyContent: "center",
+                        display: "flex"
+                      }}
+                      underlayColor="#eeeeee"
+                      onPress={() => {
+                        this.setState({ openModalPhoto: true });
+                      }}
+                    >
+                      <Icon
+                        style={styles.iconStyles}
+                        type="MaterialIcons"
+                        name="camera-alt"
+                      />
+                    </TouchableOpacity>
+                  </View>
                 </View>
               </View>
             </View>
-          </View>
+          )}
+
+          {this.state.openQrCode && (
+            <View style={{ height: "100%" }}>
+              {this.state.spinner && (
+                <View
+                  style={{
+                    width: "100%",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    height: "100%",
+                    position: "absolute"
+                  }}
+                >
+                  <Spinner />
+                  <Text>Por favor espere</Text>
+                </View>
+              )}
+              <QRCodeScanner
+                onRead={this.onSuccess}
+                reactivate={true}
+                reactivateTimeout={1000}
+                showMarker={true}
+              />
+            </View>
+          )}
         </Modal>
       </View>
     );
@@ -219,7 +312,13 @@ const styles = StyleSheet.create({
     borderRadius: 100
   },
 
-  inputStyle: {},
+  inputStyle: {
+    flexDirection: "row",
+    width: "100%",
+    alignItems: "center",
+    paddingHorizontal: 10
+  },
+
   imageStyle: {
     height: 130,
     width: 130,

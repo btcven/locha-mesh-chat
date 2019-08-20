@@ -9,15 +9,13 @@ import {
   List,
   ListItem,
   Left,
-  Body,
   Right,
-  Thumbnail,
   Text
 } from "native-base";
 import { Image, View, StyleSheet, TouchableOpacity } from "react-native";
 import { saveContact, getContacts } from "../../store/contacts";
 import { connect } from "react-redux";
-import QRCodeScanner from "react-native-qrcode-scanner";
+
 
 class Contacts extends Component {
   constructor(props) {
@@ -80,21 +78,6 @@ class Contacts extends Component {
               </List>
             );
           })}
-          <QRCodeScanner
-            onRead={this.onSuccess}
-            topContent={
-              <Text style={styles.centerText}>
-                Go to{" "}
-                <Text style={styles.textBold}>wikipedia.org/wiki/QR_code</Text>{" "}
-                on your computer and scan the QR code.
-              </Text>
-            }
-            bottomContent={
-              <TouchableOpacity style={styles.buttonTouchable}>
-                <Text style={styles.buttonText}>OK. Got it!</Text>
-              </TouchableOpacity>
-            }
-          />
         </Content>
         <FloatButton add={this.openModal} />
       </Container>
