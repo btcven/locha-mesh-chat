@@ -12,10 +12,16 @@ import {
   Right,
   Text
 } from "native-base";
-import { Image, View, StyleSheet, TouchableOpacity } from "react-native";
+import {
+  Image,
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  TouchableNativeFeedback,
+  toucha
+} from "react-native";
 import { saveContact, getContacts } from "../../store/contacts";
 import { connect } from "react-redux";
-
 
 class Contacts extends Component {
   constructor(props) {
@@ -45,7 +51,6 @@ class Contacts extends Component {
   };
 
   render() {
-    console.log(this.props.contacts);
     return (
       <Container>
         <Header {...this.props} modal={this.state.openModal} />
@@ -55,10 +60,17 @@ class Contacts extends Component {
 
         <Content>
           {this.props.contacts.map((contact, key) => {
-            console.log(contact.image);
             return (
               <List key={key}>
-                <ListItem button style={{ height: 80 }}>
+                <ListItem
+                  button
+                  style={{ height: 80 }}
+                  onPress={() =>
+                    this.props.navigation.push("chat", {
+                      ...contact
+                    })
+                  }
+                >
                   <Left style={styles.textContainer}>
                     <Text style={{ width: "100%", paddingBottom: 5 }}>
                       {contact.name}

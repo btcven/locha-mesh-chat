@@ -20,7 +20,7 @@ export default class index extends Component {
   render() {
     return (
       <Container>
-        <Header />
+        <Header {...this.props} />
         <Content>
           {chats.map((chat, key) => {
             return (

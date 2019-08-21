@@ -175,7 +175,7 @@ export default class AddContact extends Component {
                   <Item style={{ height: 30 }}>
                     <Input
                       value={this.state.uid}
-                      style={{ fontSize: 13 }}
+                      style={{ fontSize: 16 }}
                       onChangeText={text => this.setState({ uid: text })}
                     />
                   </Item>

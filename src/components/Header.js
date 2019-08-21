@@ -22,7 +22,14 @@ class HeaderComponent extends Component {
     };
   }
 
+  getNameContact = navigation => {
+    if (navigation) {
+      return navigation.state;
+    }
+  };
+
   render() {
+    const router = this.getNameContact(this.props.navigation);
     return (
       <Header
         style={styles.container}
@@ -50,7 +57,8 @@ class HeaderComponent extends Component {
             </Left>
           )}
         <Body>
-          <Title>Locha Mesh</Title>
+          {router.routeName === "initial" && <Title>Locha Mesh</Title>}
+          {router.routeName === "chat" && <Title>{router.params.name}</Title>}
         </Body>
         <Right />
       </Header>
