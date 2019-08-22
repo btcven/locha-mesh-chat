@@ -11,5 +11,10 @@ export const ActionTypes = {
 
   //CONTACTS
 
-  ADD_CONTACTS: "@@contacts/ADD_CONTACTS"
+  ADD_CONTACTS: "@@contacts/ADD_CONTACTS",
+  
+
+  //CHATS
+ 
+  NEW_MESSAGE: "@@chat/NEW_MESSAGE"
 };

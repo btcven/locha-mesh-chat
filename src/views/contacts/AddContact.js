@@ -80,7 +80,7 @@ export default class AddContact extends Component {
         }, 50);
       } else {
         androidToast("Formato Invalido");
-      }
+      }         
     } catch (err) {
       androidToast("Formato Invalido");
     }

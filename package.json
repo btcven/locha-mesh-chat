@@ -10,6 +10,7 @@
     "@react-native-community/async-storage": "^1.6.1",
     "@react-native-community/cameraroll": "^1.1.1",
     "formik": "^1.4.3",
+    "moment": "^2.24.0",
     "native-base": "^2.10.0",
     "react": "16.8.3",
     "react-native": "0.59.9",
