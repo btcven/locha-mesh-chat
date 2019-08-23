@@ -15,24 +15,48 @@ export default class ChatBody extends Component {
           inverted
           contentContainerStyle={styles.container}
           data={this.props.chats}
-          renderItem={({ item, index, separators }) => (
-            <View key={index} style={styles.senderContainer}>
-              <View style={styles.textContent}>
-                <Text style={{fontSize:15}}>{item.data.text}</Text>
-                <Text
-                  style={{
-                    paddingTop:7,
-                    paddingLeft:5,
-                    paddingBottom:6,
-                    fontSize:12,
-                    textAlign:'right'
-                  }}
-                >
-                  {Moment(item.timestamp).format("LT")}
-                </Text>
-              </View>
-            </View>
-          )}
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={({ item, index }) => {
+            if (index === 1) {
+              return (
+                <View key={index.toString()} style={styles.receiveContainer}>
+                  <View style={styles.textContent}>
+                    <Text style={{ fontSize: 15 }}>{item.data.text}</Text>
+                    <Text
+                      style={{
+                        paddingTop: 7,
+                        paddingLeft: 5,
+                        paddingBottom: 6,
+                        fontSize: 12,
+                        textAlign: "right"
+                      }}
+                    >
+                      {Moment(item.timestamp).format("LT")}
+                    </Text>
+                  </View>
+                </View>
+              );
+            } else {
+              return (
+                <View key={index.toString()} style={styles.senderContainer}>
+                  <View style={styles.textContent}>
+                    <Text style={{ fontSize: 15 }}>{item.data.text}</Text>
+                    <Text
+                      style={{
+                        paddingTop: 7,
+                        paddingLeft: 5,
+                        paddingBottom: 6,
+                        fontSize: 12,
+                        textAlign: "right"
+                      }}
+                    >
+                      {Moment(item.timestamp).format("LT")}
+                    </Text>
+                  </View>
+                </View>
+              );
+            }
+          }}
         />
       </View>
     );
@@ -52,7 +76,8 @@ const styles = StyleSheet.create({
   },
   receiveContainer: {
     width: "100%",
-    alignItems: "flex-start"
+    alignItems: "flex-start",
+    marginBottom: 10
   },
   textContent: {
     maxWidth: "82%",
@@ -60,7 +85,7 @@ const styles = StyleSheet.create({
     minHeight: 30,
     paddingTop: 5,
     paddingHorizontal: 10,
-    marginRight: 10,
+    marginHorizontal: 10,
     borderRadius: 7,
     flexDirection: "column"
   }

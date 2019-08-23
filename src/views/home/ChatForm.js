@@ -37,8 +37,13 @@ export default class ChatForm extends Component {
 
   render() {
     return (
-      <View style={{minHeight: 50 , height:this.state.height , maxHeight:120}} >
-        <ScrollView contentContainerStyle={styles.contentForm}>
+      <View
+        style={{ minHeight: 50, height: this.state.height, maxHeight: 120 }}
+      >
+        <ScrollView
+          contentContainerStyle={styles.contentForm}
+          keyboardShouldPersistTaps={"handled"}
+        >
           <TouchableOpacity>
             <Icon
               style={styles.iconChatStyle}
@@ -87,7 +92,6 @@ export default class ChatForm extends Component {
 
 const styles = StyleSheet.create({
   container: {
-
     minHeight: 50
   },
 
@@ -95,7 +99,7 @@ const styles = StyleSheet.create({
     color: "#80cbc4",
     fontSize: 32,
     paddingHorizontal: 5,
-    paddingBottom:7
+    paddingBottom: 7
   },
   contentForm: {
     flexDirection: "row",

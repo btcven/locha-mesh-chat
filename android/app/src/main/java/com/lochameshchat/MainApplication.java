@@ -3,6 +3,7 @@ package com.lochameshchat;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import io.invertase.firebase.RNFirebasePackage;
 import org.reactnative.camera.RNCameraPackage;
 import com.rnfs.RNFSPackage;
 import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
@@ -14,6 +15,7 @@ import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
+import io.invertase.firebase.database.RNFirebaseDatabasePackage;
 
 import java.util.Arrays;
 import java.util.List;
@@ -30,13 +32,15 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RNFirebasePackage(),
             new RNCameraPackage(),
             new RNFSPackage(),
             new AsyncStoragePackage(),
             new PickerPackage(),
             new CameraRollPackage(),
             new RNGestureHandlerPackage(),
-          new VectorIconsPackage()
+            new VectorIconsPackage(),
+            new RNFirebaseDatabasePackage()
       );
     }
 
