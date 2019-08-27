@@ -107,6 +107,7 @@ android {
         versionCode 1
         versionName "1.0"
         missingDimensionStrategy ('react-native-camera','general')
+        multiDexEnabled true
     }
     splits {
         abi {
@@ -138,11 +139,13 @@ android {
 }
 
 dependencies {
+    implementation project(':realm')
     implementation project(':react-native-firebase')
+    implementation 'com.android.support:multidex:1.0.3'
     implementation project(':react-native-camera')
     implementation project(':react-native-fs')
     implementation 'com.google.firebase:firebase-core:16.0.8'
-    implementation "com.google.firebase:firebase-core:16.0.9"
+    implementation'com.google.firebase:firebase-firestore:18.2.0'
     implementation project(':@react-native-community_async-storage')
     implementation project(':react-native-image-crop-picker')
     implementation project(':@react-native-community_cameraroll')

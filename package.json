@@ -25,6 +25,7 @@
     "react-navigation": "3.0.0",
     "react-navigation-redux-helpers": "^3.0.2",
     "react-redux": "^6.0.0",
+    "realm": "^2.29.2",
     "redux": "^4.0.1",
     "redux-logger": "^3.0.6",
     "redux-promise": "^0.6.0",

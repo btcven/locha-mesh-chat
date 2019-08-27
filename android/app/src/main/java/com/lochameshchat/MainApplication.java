@@ -3,6 +3,7 @@ package com.lochameshchat;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import io.realm.react.RealmReactPackage;
 import io.invertase.firebase.RNFirebasePackage;
 import org.reactnative.camera.RNCameraPackage;
 import com.rnfs.RNFSPackage;
@@ -16,6 +17,7 @@ import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
 import io.invertase.firebase.database.RNFirebaseDatabasePackage;
+import io.invertase.firebase.firestore.RNFirebaseFirestorePackage;
 
 import java.util.Arrays;
 import java.util.List;
@@ -32,6 +34,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RealmReactPackage(),
             new RNFirebasePackage(),
             new RNCameraPackage(),
             new RNFSPackage(),
@@ -40,7 +43,8 @@ public class MainApplication extends Application implements ReactApplication {
             new CameraRollPackage(),
             new RNGestureHandlerPackage(),
             new VectorIconsPackage(),
-            new RNFirebaseDatabasePackage()
+            new RNFirebaseDatabasePackage(),
+            new RNFirebaseFirestorePackage()
       );
     }
 
