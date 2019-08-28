@@ -18,6 +18,7 @@ import {
 import { connect } from "react-redux";
 import EditName from "./EditName";
 import EditPhoto from "./EditPhoto";
+import QRCode from "react-native-qrcode";
 
 class Config extends Component {
   constructor(props) {
@@ -39,7 +40,7 @@ class Config extends Component {
   };
 
   render() {
-    console.log(this.props.config)
+    console.log(this.props.config);
     return (
       <Container>
         <Header {...this.props} />
@@ -50,7 +51,7 @@ class Config extends Component {
             close={this.close}
           />
         )}
-         {this.state.openModalName && (
+        {this.state.openModalName && (
           <EditName
             open={this.state.openModalName}
             {...this.props}
@@ -122,7 +123,7 @@ class Config extends Component {
               width: "70%",
               alignContent: "flex-start",
               paddingLeft: 10,
-              minHeight:30
+              minHeight: 30
             }}
           >
             <Text style={styles.textLabel}>Nombre</Text>
@@ -153,17 +154,17 @@ class Config extends Component {
             </TouchableHighlight>
           </Right>
         </View>
-        
+
         <View style={styles.infoContainerAddress}>
           <View
             style={{
               width: "85%",
-              justifyContent:'flex-end',
+              justifyContent: "flex-end",
               paddingLeft: 10,
-              minHeight:30
+              minHeight: 30
             }}
           >
-            <Text style={styles.textInfo}>{this.props.config.id}</Text>
+            <Text style={styles.textInfo}>{this.props.config.uid}</Text>
           </View>
           <Right
             style={{
@@ -174,7 +175,7 @@ class Config extends Component {
               style={styles.touchable}
               underlayColor="#eeeeee"
               onPress={() => {
-                 console.log("copy")
+                console.log("copy");
               }}
             >
               <Icon
@@ -191,7 +192,16 @@ class Config extends Component {
           </Right>
         </View>
 
-
+        <View style={styles.qrCodeContainer}>
+          <QRCode
+            value={JSON.stringify({
+              name: this.props.config.name,
+              uid: this.props.config.uid
+            })}
+            bgColor={"gray"}
+            size={130}
+          />
+        </View>
       </Container>
     );
   }
@@ -207,26 +217,31 @@ export default connect(
 )(Config);
 
 const styles = StyleSheet.create({
+  qrCodeContainer: {
+    alignItems: "center",
+    paddingTop: "5%"
+  },
+
   infoContainer: {
     display: "flex",
     flexDirection: "row",
-    marginTop: "15%",
+
     alignItems: "center",
     borderBottomWidth: 0.5,
     borderBottomColor: "gray",
     marginLeft: 20,
-    minHeight:90,
+    minHeight: 90,
     marginRight: 20
   },
 
-  infoContainerAddress:{
+  infoContainerAddress: {
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
     borderBottomWidth: 0.5,
     borderBottomColor: "gray",
     marginLeft: 20,
-    minHeight:90,
+    minHeight: 90,
     marginRight: 20
   },
 
@@ -238,7 +253,7 @@ const styles = StyleSheet.create({
     borderRadius: 100
   },
   textInfo: {
-    fontSize: 16,
+    fontSize: 16
   },
   imageStyle: {
     height: 130,

@@ -6,6 +6,11 @@ const AplicationState = {
 
 export const contactsReducer = (state = AplicationState, action) => {
   switch (action.type) {
+    case ActionTypes.INITIAL_STATE: {
+      return {
+        contacts: action.payload.contacts
+      };
+    }
     case ActionTypes.ADD_CONTACTS: {
       return { ...state, contacts: action.payload };
     }

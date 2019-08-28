@@ -2,25 +2,32 @@ import AsyncStorage from "@react-native-community/async-storage";
 import RNFS from "react-native-fs";
 import { ActionTypes } from "../constants";
 import { createFolder, FileDirectory } from "../../utils/utils";
+import { addContacts } from "../../database/realmDatabase";
 
-export const saveContact = (data, lastContact, callback) => async dispatch => {
+export const saveContact = (
+  id,
+  data,
+  lastContact,
+  callback
+) => async dispatch => {
   const newPath = `file:///${FileDirectory}/${data.name}Photo.jpg`;
-  if (data.image) {
-    await RNFS.moveFile(data.image, newPath);
+  if (data.picture) {
+    await RNFS.moveFile(data.picture, newPath);
   }
   const obj = [
     {
       ...data,
-      image: !data.image ? null : newPath
+      picture: !data.picture ? null : newPath
     }
   ];
 
-  obj.push(...lastContact);
-  await AsyncStorage.setItem("contacts", JSON.stringify({ ...obj }));
-  callback();
-  dispatch({
-    type: ActionTypes.ADD_CONTACTS,
-    payload: obj
+  addContacts(id, obj).then(res => {
+    obj.push(...lastContact);
+    dispatch({
+      type: ActionTypes.ADD_CONTACTS,
+      payload: obj
+    });
+    callback();
   });
 };
 

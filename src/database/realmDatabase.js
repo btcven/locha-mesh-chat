@@ -38,16 +38,39 @@ export const writteUser = obj =>
     }).then(realm => {
       try {
         realm.write(() => {
-          realm.create("user", {
-            uid: obj.id,
-            name: obj.name,
-            picture: obj.image
-          });
+          realm.create(
+            "user",
+            {
+              uid: obj.id,
+              name: obj.name,
+              picture: obj.image
+            },
+            true
+          );
         });
-        resolve();
+        resolve(obj);
       } catch (e) {
         reject(e);
       }
+    });
+  });
+
+export const addContacts = (uid, obj) =>
+  new Promise(async (resolve, reject) => {
+    Realm.open({
+      schema: [userSchema, contactSchema],
+      schemaVersion: 2
+    }).then(realm => {
+      realm.write(() => {
+        console.log("en database", uid, obj);
+        let user = realm.objectForPrimaryKey("user", uid);
+        user.contacts.push({
+          uid: obj[0].uid,
+          name: obj[0].name,
+          picture: obj[0].picture
+        });
+        resolve(obj);
+      });
     });
   });
 
@@ -58,7 +81,7 @@ export const getUserData = () =>
       schemaVersion: 2
     }).then(realm => {
       const user = realm.objects("user");
-      console.log("aca", JSON.parse(JSON.stringify(user[0])));
-      resolve();
+
+      resolve(user);
     });
   });

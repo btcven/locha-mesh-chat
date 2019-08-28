@@ -1,7 +1,7 @@
 import { ActionTypes } from "../constants";
 
 const AplicationState = {
-  id: null,
+  uid: null,
   image: null,
   name: ""
 };
@@ -9,7 +9,11 @@ const AplicationState = {
 export const configurationReducer = (state = AplicationState, action) => {
   switch (action.type) {
     case ActionTypes.INITIAL_STATE: {
-      return { ...action.payload };
+      return {
+        uid: action.payload.uid,
+        name: action.payload.name,
+        image: action.payload.picture
+      };
     }
     case ActionTypes.GET_PHOTO_USER: {
       return { ...state, image: action.payload };

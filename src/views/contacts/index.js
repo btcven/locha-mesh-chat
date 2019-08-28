@@ -34,10 +34,7 @@ class Contacts extends Component {
     header: null
   };
 
-  componentWillMount = () => {
-    this.props.getContacts();
-  };
-
+  
   openModal = () => {
     this.setState({ openModal: true });
   };
@@ -51,6 +48,7 @@ class Contacts extends Component {
   };
 
   render() {
+    console.log(this.props.contacts);
     return (
       <Container>
         <Header {...this.props} modal={this.state.openModal} />
@@ -81,7 +79,7 @@ class Contacts extends Component {
                     <Image
                       style={styles.imageStyles}
                       source={{
-                        uri: contact.image,
+                        uri: contact.picture,
                         cache: "force-cache"
                       }}
                     />
@@ -98,7 +96,8 @@ class Contacts extends Component {
 }
 
 const mapStateToProps = state => ({
-  contacts: state.contacts.contacts
+  contacts: Object.values(state.contacts.contacts),
+  userData: state.config
 });
 
 export default connect(

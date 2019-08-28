@@ -12,9 +12,12 @@ export default class EditName extends Component {
   }
 
   saveName = () => {
-    this.props.editName(this.state.name, () => {
-      this.props.close("openModalName");
-    });
+    this.props.editName(
+      { name: this.state.name, uid: this.props.config.uid },
+      () => {
+        this.props.close("openModalName");
+      }
+    );
   };
 
   render() {

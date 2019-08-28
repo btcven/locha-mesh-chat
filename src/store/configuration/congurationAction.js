@@ -3,8 +3,9 @@ import AsyncStorage from "@react-native-community/async-storage";
 import RNFS from "react-native-fs";
 import { ActionTypes } from "../constants";
 import { createFolder } from "../../utils/utils";
+import { writteUser } from "../../database/realmDatabase";
 
-export const getPhotosFromUser = callback => async dispatch => {
+export const getPhotosFromUser = (id, callback) => async dispatch => {
   const directory = await createFolder();
   ImagePicker.openPicker({
     cropping: true,
@@ -15,14 +16,11 @@ export const getPhotosFromUser = callback => async dispatch => {
     const newPath = `file:///${directory}/${name}`;
     RNFS.moveFile(images.path, newPath).then(async res => {
       await deletePhotoFromPhone();
-      await AsyncStorage.mergeItem(
-        "user",
-        JSON.stringify({ image: newPath })
-      ).then(async res => {
+      writteUser({ id: id, picture: newPath }).then(async res => {
         callback();
         dispatch({
           type: ActionTypes.GET_PHOTO_USER,
-          payload: newPath
+          payload: res.picture
         });
       });
     });
@@ -46,7 +44,7 @@ const deletePhotoFromPhone = async () => {
   }
 };
 
-export const openCamera = callback => async dispatch => {
+export const openCamera = (id, callback) => async dispatch => {
   const directory = await createFolder();
   ImagePicker.openCamera({
     width: 500,
@@ -57,29 +55,32 @@ export const openCamera = callback => async dispatch => {
     const newPath = `file:///${directory}/${name}`;
     RNFS.moveFile(images.path, newPath).then(async () => {
       await deletePhotoFromPhone();
-      await AsyncStorage.mergeItem(
-        "user",
-        JSON.stringify({ image: newPath })
-      ).then(async res => {
+      writteUser({
+        id: id,
+        picture: newPath
+      }).then(async res => {
         callback();
         dispatch({
           type: ActionTypes.GET_PHOTO_USER,
-          payload: newPath
+          payload: res.picture
         });
       });
     });
   });
 };
 
-export const editName = (name, callback) => async dispatch => {
-  console.log("action", name);
-  await AsyncStorage.mergeItem("user", JSON.stringify({ name: name })).then(
-    () => {
-      callback()
-      dispatch({
-        type: ActionTypes.EDIT_NAME,
-        payload: name
-      });
-    }
-  );
+export const editName = (obj, callback) => async dispatch => {
+  console.log();
+  writteUser({ ...obj, id: obj.uid }).then(res => {
+    callback();
+    dispatch({
+      type: ActionTypes.EDIT_NAME,
+      payload: res.name
+    });
+  });
+  // console.log("action", name);
+  // await AsyncStorage.mergeItem("user", JSON.stringify({ name: name })).then(
+  //   () => {
+  //   }
+  // );
 };

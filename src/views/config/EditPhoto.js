@@ -11,13 +11,13 @@ export default class EditPhoto extends Component {
   }
 
   getPhotosFromGallery = () => {
-    this.props.getPhotosFromUser(() => {
+    this.props.getPhotosFromUser(this.props.config.uid,() => {
       this.props.close();
     });
   };
 
   GetphotoFromCamera = () => {
-    this.props.openCamera(() => {
+    this.props.openCamera(this.props.config.uid, () => {
       this.props.close("openModalPhoto");
     });
   };

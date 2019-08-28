@@ -32,24 +32,24 @@ export default class AddContact extends Component {
     this.setState({ openModalPhoto: false });
   };
 
-  getPhotosFromUser = callback => {
+  getPhotosFromUser = (id, callback) => {
     ImagePicker.openPicker({
       cropping: true,
       width: 500,
       height: 500
     }).then(async images => {
       callback();
-      console.log(images);
       this.setState({ image: images.path });
     });
   };
 
-  openCamera = callback => {
+  openCamera = (id, callback) => {
     ImagePicker.openCamera({
       width: 500,
       height: 500,
       cropping: true
     }).then(async images => {
+      callback();
       this.setState({ image: images.path });
     });
   };
@@ -57,13 +57,18 @@ export default class AddContact extends Component {
   save = () => {
     const obj = {
       name: this.state.name,
-      image: this.state.image,
+      picture: this.state.image,
       uid: this.state.uid
     };
-    this.props.saveContact(obj, this.props.contacts, () => {
-      androidToast("Contacto creado exitosamente!")
-      this.props.close();
-    });
+    this.props.saveContact(
+      this.props.userData.uid,
+      obj,
+      this.props.contacts,
+      () => {
+        androidToast("Contacto creado exitosamente!");
+        this.props.close();
+      }
+    );
   };
 
   onSuccess = event => {
@@ -80,7 +85,7 @@ export default class AddContact extends Component {
         }, 50);
       } else {
         androidToast("Formato Invalido");
-      }         
+      }
     } catch (err) {
       androidToast("Formato Invalido");
     }
@@ -104,6 +109,7 @@ export default class AddContact extends Component {
                 getPhotosFromUser={this.getPhotosFromUser}
                 openCamera={this.openCamera}
                 close={this.close}
+                config={this.props.userData}
               />
             )}
             {!this.state.openQrCode && (

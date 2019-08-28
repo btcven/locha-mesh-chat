@@ -5,19 +5,22 @@ import { createFolder } from "../../utils/utils";
 import { writteUser, getUserData } from "../../database/realmDatabase";
 
 export const InitialState = () => async dispatch => {
-  let result = await getUserData();
-  console.log("en la action", result);
-  await createFolder();
-  console.log("stryngify", JSON.stringify(IntialUser));
-  const user = await AsyncStorage.getItem("user");
-  if (!user) {
-    await AsyncStorage.setItem("user", JSON.stringify(IntialUser));
-  } else {
-    dispatch({
-      type: ActionTypes.INITIAL_STATE,
-      payload: JSON.parse(user)
-    });
-  }
+  getUserData().then(async res => {
+    if (res.length) {
+      await createFolder();
+      dispatch(writeAction(JSON.parse(JSON.stringify(res[0]))));
+    } else {
+      const result = await writteUser(IntialUser);
+      dispatch(writeAction(result));
+    }
+  });
+};
+
+const writeAction = data => {
+  return {
+    type: ActionTypes.INITIAL_STATE,
+    payload: data
+  };
 };
 
 export const changeTab = tab => {
