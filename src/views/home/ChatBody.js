@@ -66,7 +66,7 @@ export default class ChatBody extends Component {
 const styles = StyleSheet.create({
   container: {
     minHeight: "100%",
-    backgroundColor: "#e0f2f1",
+    backgroundColor: "#eeeeee",
     paddingBottom: 10
   },
   senderContainer: {

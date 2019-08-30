@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
 
   bottonActive: {
     display: "flex",
-    backgroundColor: "#fff",
+    backgroundColor: "#fafafa",
    
    
     borderTopColor: "#bdbdbd",
@@ -113,6 +113,6 @@ const styles = StyleSheet.create({
     color: "black"
   },
   textTabColor2: {
-    color: "#26a69a"
+    color: "#fbc233"
   }
 });

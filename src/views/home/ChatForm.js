@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
   },
 
   iconChatStyle: {
-    color: "#80cbc4",
+    color: "#fbc233",
     fontSize: 32,
     paddingHorizontal: 5,
     paddingBottom: 7

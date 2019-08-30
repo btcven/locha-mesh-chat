@@ -344,7 +344,7 @@ const styles = StyleSheet.create({
   },
 
   actionButtonContainer: {
-    backgroundColor: "#009688",
+    backgroundColor: "#fbc233",
     height: 45,
     width: 45,
     borderRadius: 100,

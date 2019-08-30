@@ -113,7 +113,7 @@ class Config extends Component {
         <View style={styles.infoContainer}>
           <Left>
             <Icon
-              style={{ color: "#26a69a" }}
+              style={{ color: "#fbc233" }}
               type="MaterialIcons"
               name="person"
             />
@@ -270,7 +270,7 @@ const styles = StyleSheet.create({
     paddingVertical: 20
   },
   actionButtonContainer: {
-    backgroundColor: "#009688",
+    backgroundColor: "#fbc233",
     height: 45,
     width: 45,
     borderRadius: 100,

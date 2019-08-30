@@ -33,7 +33,7 @@ class HeaderComponent extends Component {
     return (
       <Header
         style={styles.container}
-        androidStatusBarColor={this.props.modal ? "white" : "#00897b"}
+        androidStatusBarColor={this.props.modal ? "white" : "#af7d00"}
       >
         {this.props.navigation &&
           this.props.navigation.state.routeName !== "initial" && (
@@ -49,15 +49,14 @@ class HeaderComponent extends Component {
                   this.props.navigation.pop();
                 }}
               >
-                <Icon
-                  style={{ color: "white", fontSize: 24 }}
-                  name="arrow-back"
-                />
+                <Icon style={{ fontSize: 24 , color: "white"}} name="arrow-back" />
               </TouchableHighlight>
             </Left>
           )}
         <Body>
-          {router.routeName === "initial" && <Title>Locha Mesh</Title>}
+          {router.routeName === "initial" && (
+            <Title style={{ color: "#fff" }}>Locha Mesh</Title>
+          )}
           {router.routeName === "chat" && <Title>{router.params.name}</Title>}
         </Body>
         <Right />
@@ -79,6 +78,6 @@ export default connect(
 const styles = StyleSheet.create({
   container: {
     width: "100%",
-    backgroundColor: "#009688"
+    backgroundColor: "#FAB300"
   }
 });
