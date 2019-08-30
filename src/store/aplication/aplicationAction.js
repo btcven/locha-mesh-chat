@@ -3,11 +3,12 @@ import AsyncStorage from "@react-native-community/async-storage";
 import { IntialUser } from "../../utils/constans";
 import { createFolder } from "../../utils/utils";
 import { writteUser, getUserData } from "../../database/realmDatabase";
+import Bitcoin from "../../utils/Bitcoin";
 
-import crypto from "crypto";
-import Bitcoin from "bitcore-lib";
-
+const bitcoin = new Bitcoin();
 export const InitialState = () => async dispatch => {
+  const result = bitcoin.generateAddress();
+  console.log("aca", result.publicKey.toString());
   getUserData().then(async res => {
     if (res.length) {
       await createFolder();
