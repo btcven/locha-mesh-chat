@@ -12,14 +12,8 @@ import {
   Right,
   Text
 } from "native-base";
-import {
-  Image,
-  View,
-  StyleSheet,
-  TouchableOpacity,
-  TouchableNativeFeedback,
-  toucha
-} from "react-native";
+
+import { Image, StyleSheet } from "react-native";
 import { saveContact, getContacts } from "../../store/contacts";
 import { connect } from "react-redux";
 
@@ -34,7 +28,6 @@ class Contacts extends Component {
     header: null
   };
 
-  
   openModal = () => {
     this.setState({ openModal: true });
   };
@@ -76,13 +69,21 @@ class Contacts extends Component {
                     <Text note>{contact.uid}</Text>
                   </Left>
                   <Right>
-                    <Image
-                      style={styles.imageStyles}
-                      source={{
-                        uri: contact.picture,
-                        cache: "force-cache"
-                      }}
-                    />
+                    {contact.picture && (
+                      <Image
+                        style={styles.imageStyles}
+                        source={{
+                          uri: contact.picture,
+                          cache: "force-cache"
+                        }}
+                      />
+                    )}
+                    {!contact.picture && (
+                      <Image
+                        style={styles.imageStyles}
+                        source={images.noPhoto.url}
+                      />
+                    )}
                   </Right>
                 </ListItem>
               </List>

@@ -28,9 +28,7 @@ export default class index extends Component {
                 <ListItem avatar button>
                   <Left>
                     <Thumbnail
-                      source={{
-                        uri: `${chat.photo}`
-                      }}
+                      source={chat.photo}
                     />
                   </Left>
                   <Body>

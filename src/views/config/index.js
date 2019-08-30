@@ -18,7 +18,7 @@ import {
 import { connect } from "react-redux";
 import EditName from "./EditName";
 import EditPhoto from "./EditPhoto";
-import QRCode from "react-native-qrcode";
+import QRCode from 'react-native-qrcode-svg';
 
 class Config extends Component {
   constructor(props) {
@@ -198,7 +198,7 @@ class Config extends Component {
               name: this.props.config.name,
               uid: this.props.config.uid
             })}
-            bgColor={"gray"}
+            color={"gray"}
             size={130}
           />
         </View>
