@@ -4,6 +4,9 @@ import { IntialUser } from "../../utils/constans";
 import { createFolder } from "../../utils/utils";
 import { writteUser, getUserData } from "../../database/realmDatabase";
 
+import crypto from "crypto";
+import Bitcoin from "bitcore-lib";
+
 export const InitialState = () => async dispatch => {
   getUserData().then(async res => {
     if (res.length) {

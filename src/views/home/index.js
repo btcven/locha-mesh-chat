@@ -12,6 +12,7 @@ import {
   Text
 } from "native-base";
 import Header from "../../components/Header";
+//import Bitcoin from 'bitcore-lib'
 export default class index extends Component {
   static navigationOptions = {
     header: null
