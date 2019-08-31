@@ -5,7 +5,7 @@ export const chats = [
     lastMessage: "hi, how are you?",
     photo: require("./img/fotoperfil.jpg"),
     date: new Date()
-  },
+  }
 ];
 
 export const images = {
@@ -15,8 +15,8 @@ export const images = {
 };
 
 export const IntialUser = {
-  id: "17W2j1vHvfBkVjJ6cmvBZ1eJJAdTA",
-  name: "kevin velasco",
+  id: undefined,
+  name: undefined,
   image: null,
   contacts: []
 };

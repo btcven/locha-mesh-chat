@@ -6,6 +6,7 @@ import { StyleSheet, View } from "react-native";
 import Home from "./views/home";
 import Contact from "./views/contacts";
 import Config from "./views/config";
+import InitialStep from "./InitialStep";
 
 class DualComponent extends Component {
   constructor(props) {
@@ -16,20 +17,25 @@ class DualComponent extends Component {
   };
 
   render() {
-  
     return (
       <View style={styles.container}>
-        {this.props.tabPosition === 1 && <Home {...this.props} />}
-        {this.props.tabPosition === 2 && <Contact {...this.props} />}
-        {this.props.tabPosition === 3 && <Config {...this.props} />}
-        <Footer />
+        {this.props.user && (
+          <View style={styles.container}>
+            {this.props.tabPosition === 1 && <Home {...this.props} />}
+            {this.props.tabPosition === 2 && <Contact {...this.props} />}
+            {this.props.tabPosition === 3 && <Config {...this.props} />}
+            <Footer />
+          </View>
+        )}
+        <View>{!this.props.user && <InitialStep />}</View>
       </View>
     );
   }
 }
 
 const mapStateToProps = state => ({
-  tabPosition: state.aplication.tab
+  tabPosition: state.aplication.tab,
+  user: state.config.uid
 });
 
 export default connect(

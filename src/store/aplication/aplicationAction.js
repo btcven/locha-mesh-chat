@@ -6,16 +6,16 @@ import { writteUser, getUserData } from "../../database/realmDatabase";
 import Bitcoin from "../../utils/Bitcoin";
 
 const bitcoin = new Bitcoin();
+
 export const InitialState = () => async dispatch => {
   const result = bitcoin.generateAddress();
   console.log("aca", result.publicKey.toString());
   getUserData().then(async res => {
-    if (res.length) {
+    if (res.length < 1) {
       await createFolder();
       dispatch(writeAction(JSON.parse(JSON.stringify(res[0]))));
     } else {
-      const result = await writteUser(IntialUser);
-      dispatch(writeAction(result));
+      dispatch(writeAction(IntialUser));
     }
   });
 };
