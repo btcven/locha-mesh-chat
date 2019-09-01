@@ -3,7 +3,7 @@ import AsyncStorage from "@react-native-community/async-storage";
 import RNFS from "react-native-fs";
 import { ActionTypes } from "../constants";
 import { createFolder } from "../../utils/utils";
-import { writteUser } from "../../database/realmDatabase";
+import { writteUser, getUserData } from "../../database/realmDatabase";
 
 export const getPhotosFromUser = (id, callback) => async dispatch => {
   const directory = await createFolder();
@@ -16,7 +16,7 @@ export const getPhotosFromUser = (id, callback) => async dispatch => {
     const newPath = `file:///${directory}/${name}`;
     RNFS.moveFile(images.path, newPath).then(async res => {
       await deletePhotoFromPhone();
-      writteUser({ id: id, picture: newPath }).then(async res => {
+      writteUser({ uid: id, picture: newPath }).then(async res => {
         callback();
         dispatch({
           type: ActionTypes.GET_PHOTO_USER,
@@ -33,15 +33,16 @@ const getName = data => {
 };
 
 const deletePhotoFromPhone = async () => {
-  const result = await AsyncStorage.getItem("user");
-  const parse = JSON.parse(result);
-  if (parse.image) {
-    await RNFS.exists(parse.image).then(async res => {
-      if (res) {
-        await RNFS.unlink(parse.image);
-      }
-    });
-  }
+  getUserData("user").then(async res => {
+    const parse = JSON.parse(JSON.stringify(res));
+    if (parse.picture) {
+      await RNFS.exists(parse.picture).then(async res => {
+        if (res) {
+          await RNFS.unlink(parse.picture);
+        }
+      });
+    }
+  });
 };
 
 export const openCamera = (id, callback) => async dispatch => {
@@ -56,7 +57,7 @@ export const openCamera = (id, callback) => async dispatch => {
     RNFS.moveFile(images.path, newPath).then(async () => {
       await deletePhotoFromPhone();
       writteUser({
-        id: id,
+        uid: id,
         picture: newPath
       }).then(async res => {
         callback();

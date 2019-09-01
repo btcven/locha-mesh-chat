@@ -4,6 +4,8 @@ export const ActionTypes = {
   GET_PHOTO: "@@aplication/GET_PHOTO",
   ROUTE: "@@aplication/ROUTE",
   CHANGE_TAB: "@@aplication/CHANGE_TAB",
+  LOADING_ON: "@@aplication/LOADING_ON",
+  LOADING_OFF: "@@aplication/LOADING_OFF",
 
   //CONFIGURATION
   GET_PHOTO_USER: "@@configuration/GET_PHOTO",
@@ -12,9 +14,8 @@ export const ActionTypes = {
   //CONTACTS
 
   ADD_CONTACTS: "@@contacts/ADD_CONTACTS",
-  
 
   //CHATS
- 
+
   NEW_MESSAGE: "@@chat/NEW_MESSAGE"
 };

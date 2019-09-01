@@ -8,15 +8,25 @@ import Bitcoin from "../../utils/Bitcoin";
 const bitcoin = new Bitcoin();
 
 export const InitialState = () => async dispatch => {
-  const result = bitcoin.generateAddress();
-  console.log("aca", result.publicKey.toString());
   getUserData().then(async res => {
-    if (res.length < 1) {
-      await createFolder();
+    if (res.length >= 1) {
       dispatch(writeAction(JSON.parse(JSON.stringify(res[0]))));
     } else {
       dispatch(writeAction(IntialUser));
     }
+  });
+};
+
+export const setInitialUser = obj => async dispatch => {
+  await createFolder();
+  const result = bitcoin.generateAddress();
+  writteUser({
+    uid: result.publicKey.toString(),
+    name: obj.name,
+    image: null,
+    contacts: []
+  }).then(res => {
+    dispatch(writeAction(res));
   });
 };
 
@@ -31,5 +41,17 @@ export const changeTab = tab => {
   return {
     type: ActionTypes.CHANGE_TAB,
     payload: tab
+  };
+};
+
+export const loading = () => {
+  return {
+    type: ActionTypes.LOADING_ON
+  };
+};
+
+export const loaded = () => {
+  return {
+    type: ActionTypes.LOADING_OFF
   };
 };

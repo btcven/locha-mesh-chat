@@ -6,7 +6,9 @@ export const FileDirectory =
 
 export const createFolder = async () => {
   const directory = RNFS.ExternalStorageDirectoryPath + "/Pictures/LochaMesh/";
-  await RNFS.mkdir(FileDirectory.toString());
+  await RNFS.mkdir(FileDirectory.toString()).then(res =>
+    console.log("se creo el puto")
+  );
   return directory;
 };
 

@@ -41,7 +41,7 @@ export const writteUser = obj =>
           realm.create(
             "user",
             {
-              uid: obj.id,
+              uid: obj.uid,
               name: obj.name,
               picture: obj.image
             },
