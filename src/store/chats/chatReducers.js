@@ -7,7 +7,7 @@ const AplicationState = {
 export const chatReducer = (state = AplicationState, action) => {
   switch (action.type) {
     case ActionTypes.NEW_MESSAGE: {
-      return { ...state, chat: action.payload };
+      return { ...state, chat: state.chat.concat(action.payload) };
     }
     default: {
       return state;

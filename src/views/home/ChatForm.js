@@ -21,13 +21,13 @@ export default class ChatForm extends Component {
   send = () => {
     const { user, navigation, setChat, previousChat } = this.props;
     const sendObject = {
-      fromUID: user.id,
-      toUID: navigation.params.uid,
-      data: {
+      fromUID: user.uid,
+      toUID: null,
+      msg: {
         text: this.state.message
       },
       timestamp: new Date().getTime(),
-      type: "text"
+      type: "msg"
     };
     const newArray = previousChat.concat({ ...sendObject }).sort((a, b) => {
       return new Date(b.timestamp) - new Date(a.timestamp);

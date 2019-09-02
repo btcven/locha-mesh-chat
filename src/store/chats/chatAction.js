@@ -1,17 +1,15 @@
 import AsyncStorage from "@react-native-community/async-storage";
-import { socket } from "../../utils/socket";
+import { sendMenssage, onMenssage } from "../../utils/socket";
 import { ActionTypes } from "../constants";
+import { socket } from "../../../App";
 
-// export const initialChat = data => dispatch => {
-//   socket.collection("chats").add({
-//     ...data
-//   });
-// };
+export const initialChat = data => dispatch => {
+  socket.sendMenssage(JSON.stringify(data[0]));
+};
 
-
-export const initialChat = (data) => dispatch =>{
-  dispatch({
-      type: ActionTypes.NEW_MESSAGE,
-      payload: data
-  })
-}
+export const getChat = data => {
+  return {
+    type: ActionTypes.NEW_MESSAGE,
+    payload: JSON.parse(data)
+  };
+};

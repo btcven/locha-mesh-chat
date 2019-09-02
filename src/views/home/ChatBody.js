@@ -17,11 +17,12 @@ export default class ChatBody extends Component {
           data={this.props.chats}
           keyExtractor={(item, index) => index.toString()}
           renderItem={({ item, index }) => {
-            if (index === 1) {
+            console.log("aca", item.data);
+            if (this.props.user.iud === item.fromUID) {
               return (
                 <View key={index.toString()} style={styles.receiveContainer}>
                   <View style={styles.textContent}>
-                    <Text style={{ fontSize: 15 }}>{item.data.text}</Text>
+                    <Text style={{ fontSize: 15 }}>{item.msg.text}</Text>
                     <Text
                       style={{
                         paddingTop: 7,
@@ -40,7 +41,7 @@ export default class ChatBody extends Component {
               return (
                 <View key={index.toString()} style={styles.senderContainer}>
                   <View style={styles.textContent}>
-                    <Text style={{ fontSize: 15 }}>{item.data.text}</Text>
+                    <Text style={{ fontSize: 15 }}>{item.msg.text}</Text>
                     <Text
                       style={{
                         paddingTop: 7,
