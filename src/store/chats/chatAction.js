@@ -4,7 +4,7 @@ import { ActionTypes } from "../constants";
 import { socket } from "../../../App";
 
 export const initialChat = data => dispatch => {
-  socket.sendMenssage(JSON.stringify(data[0]));
+  socket.sendMenssage(JSON.stringify(data));
 };
 
 export const getChat = data => {
@@ -12,4 +12,11 @@ export const getChat = data => {
     type: ActionTypes.NEW_MESSAGE,
     payload: JSON.parse(data)
   };
+};
+
+export const selectedChat = obj => dispatch => {
+  dispatch({
+    type: ActionTypes.SELECTED_CHAT,
+    payload: obj
+  });
 };

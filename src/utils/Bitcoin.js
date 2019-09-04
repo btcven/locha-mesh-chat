@@ -1,6 +1,7 @@
 import crypto from "crypto";
 import Bitcore from "bitcore-lib";
 import Mnemonic from "bitcore-mnemonic";
+import AsyncStorage from "@react-native-community/async-storage";
 
 const networkConfiguration = {
   network_data: "testnet",
@@ -13,10 +14,21 @@ export default class Bitcoin {
     this.initialIndex = 0;
   }
 
-  generateAddress = () => {
-    const code = new Mnemonic(256);
+  generateAddress = async () => {
+    let code;
+    const result = await AsyncStorage.getItem("words");
+    console.log("result", result);
+    if (!result) {
+      console.log("paso el if");
+      code = new Mnemonic(256);
+      console.log(code.toString());
+      await AsyncStorage.setItem("words", code.toString());
+    } else {
+      console.log("no lo paso");
+      code = new Mnemonic(result);
+    }
+
     const password = "";
-    console.log(code.toString());
 
     var hdPrivateKey = code.toHDPrivateKey(
       password,

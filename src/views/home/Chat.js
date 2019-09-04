@@ -16,17 +16,24 @@ class Chat extends Component {
     header: null
   };
 
+  componentWillReceiveProp = nextProps => {
+    console.log("ejexuto");
+  };
+
   render() {
     const { navigation } = this.props;
+    const messages = this.props.chatSelected.messages.length
+      ? this.props.chatSelected.messages
+      : [];
     return (
       <Container>
-        <Header {...this.props} />
-        <ChatBody chats={this.props.chat} user={this.props.userData} />
+        {/* <Header {...this.props} /> */}
+        <ChatBody chats={messages} user={this.props.userData} />
         <ChatForm
           user={this.props.userData}
           navigation={navigation.state}
           setChat={this.props.initialChat}
-          previousChat={this.props.chat}
+          previousChat={this.props.chatSelected}
         />
       </Container>
     );
@@ -35,7 +42,8 @@ class Chat extends Component {
 
 const mapStateToProps = state => ({
   userData: state.config,
-  chat: state.chats.chat
+  chat: state.chats.chat,
+  chatSelected: state.chats.seletedChat
 });
 
 export default connect(

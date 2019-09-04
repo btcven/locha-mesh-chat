@@ -49,7 +49,10 @@ class HeaderComponent extends Component {
                   this.props.navigation.pop();
                 }}
               >
-                <Icon style={{ fontSize: 24 , color: "white"}} name="arrow-back" />
+                <Icon
+                  style={{ fontSize: 24, color: "white" }}
+                  name="arrow-back"
+                />
               </TouchableHighlight>
             </Left>
           )}
@@ -57,7 +60,11 @@ class HeaderComponent extends Component {
           {router.routeName === "initial" && (
             <Title style={{ color: "#fff" }}>Locha Mesh</Title>
           )}
-          {router.routeName === "chat" && <Title>{router.params.name}</Title>}
+          {router.routeName === "chat" && (
+            <Title>
+              {router.params.name ? router.params.name : "broadcast"}
+            </Title>
+          )}
         </Body>
         <Right />
       </Header>

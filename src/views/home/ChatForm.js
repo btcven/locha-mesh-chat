@@ -29,10 +29,8 @@ export default class ChatForm extends Component {
       timestamp: new Date().getTime(),
       type: "msg"
     };
-    const newArray = previousChat.concat({ ...sendObject }).sort((a, b) => {
-      return new Date(b.timestamp) - new Date(a.timestamp);
-    });
-    setChat(newArray);
+
+    setChat(sendObject);
   };
 
   render() {

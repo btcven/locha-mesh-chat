@@ -1,11 +1,20 @@
 import { getChat } from "../store/chats";
+import { reestarConnection } from "../store/aplication";
 
 export default class Socket {
   constructor(store) {
     this.socket = new WebSocket("wss://lochat.coinlab.info");
+    this.openSocketConnection();
     this.onMenssage();
+    this.keepAlive();
     this.store = store;
   }
+
+  keepAlive = () => {
+    setInterval(() => {
+      this.socket.send(JSON.stringify("still alive"));
+    }, 20000);
+  };
 
   getSocket = () =>
     new Promise(resolve => {
@@ -13,15 +22,17 @@ export default class Socket {
     });
 
   sendMenssage = data => {
-    console.log("data", data);
     this.socket.send(data);
   };
 
-  onMenssage = () => {
+  openSocketConnection = () => {
+    console.log("conexion");
     this.socket.onopen = () => {
       console.log("ws connected");
     };
+  };
 
+  onMenssage = () => {
     this.socket.onmessage = e => {
       // a message was received
 
@@ -34,8 +45,7 @@ export default class Socket {
     };
 
     this.socket.onclose = e => {
-      // connection closed
-      console.log("se ejecuto el closed");
+      this.store.dispatch(reestarConnection);
     };
   };
 }

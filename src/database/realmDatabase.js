@@ -9,6 +9,30 @@ const contactSchema = {
   }
 };
 
+const messageSquema = {
+  name: "Message",
+  primaryKey: "id",
+  properties: {
+    id: "string",
+    fromUID: "string",
+    toUID: "string?",
+    msg: "string",
+    timestamp: "string",
+    type: "string"
+  }
+};
+
+const chatSquema = {
+  name: "Chat",
+  primaryKey: "id",
+  properties: {
+    id: "string",
+    fromUID: "string",
+    toUID: "string?",
+    messages: { type: "list", objectType: "Message" }
+  }
+};
+
 const userSchema = {
   name: "user",
   primaryKey: "uid",
@@ -16,26 +40,24 @@ const userSchema = {
     uid: { type: "string", indexed: true },
     name: "string",
     picture: "string?",
-    contacts: { type: "list", objectType: "Contact" }
+    contacts: { type: "list", objectType: "Contact" },
+    chats: { type: "list", objectType: "Chat" }
   }
+};
+
+const databaseOptions = {
+  schema: [userSchema, contactSchema, chatSquema, messageSquema],
+  schemaVersion: 3
 };
 
 const getRealm = () =>
   new Promise(resolve => {
-    resolve(
-      Realm.open({
-        schema: [userSchema, contactSchema],
-        schemaVersion: 2
-      })
-    );
+    resolve(Realm.open(databaseOptions));
   });
 
 export const writteUser = obj =>
   new Promise(async (resolve, reject) => {
-    Realm.open({
-      schema: [userSchema, contactSchema],
-      schemaVersion: 2
-    }).then(realm => {
+    Realm.open(databaseOptions).then(realm => {
       try {
         realm.write(() => {
           realm.create(
@@ -43,7 +65,8 @@ export const writteUser = obj =>
             {
               uid: obj.uid,
               name: obj.name,
-              picture: obj.image
+              picture: obj.image,
+              chats: obj.chats
             },
             true
           );
@@ -57,12 +80,8 @@ export const writteUser = obj =>
 
 export const addContacts = (uid, obj) =>
   new Promise(async (resolve, reject) => {
-    Realm.open({
-      schema: [userSchema, contactSchema],
-      schemaVersion: 2
-    }).then(realm => {
+    Realm.open(databaseOptions).then(realm => {
       realm.write(() => {
-        console.log("en database", uid, obj);
         let user = realm.objectForPrimaryKey("user", uid);
         user.contacts.push({
           uid: obj[0].uid,
@@ -76,10 +95,7 @@ export const addContacts = (uid, obj) =>
 
 export const getUserData = () =>
   new Promise(async resolve => {
-    Realm.open({
-      schema: [userSchema, contactSchema],
-      schemaVersion: 2
-    }).then(realm => {
+    Realm.open(databaseOptions).then(realm => {
       const user = realm.objects("user");
 
       resolve(user);

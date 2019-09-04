@@ -4,8 +4,12 @@ import { IntialUser } from "../../utils/constans";
 import { createFolder } from "../../utils/utils";
 import { writteUser, getUserData } from "../../database/realmDatabase";
 import Bitcoin from "../../utils/Bitcoin";
+import Socket from "../../utils/socket";
+import store from "../../store";
 
 const bitcoin = new Bitcoin();
+
+let ws = Socket;
 
 export const InitialState = () => async dispatch => {
   getUserData().then(async res => {
@@ -19,12 +23,21 @@ export const InitialState = () => async dispatch => {
 
 export const setInitialUser = obj => async dispatch => {
   await createFolder();
-  const result = bitcoin.generateAddress();
+  const result = await bitcoin.generateAddress();
+
   writteUser({
     uid: result.publicKey.toString(),
     name: obj.name,
     image: null,
-    contacts: []
+    contacts: [],
+    chats: [
+      {
+        id: "17W2j1vHvfBkVjJ6cmvBZ1eJJAdTA",
+        fromUID: result.publicKey.toString(),
+        toUID: null,
+        messages: []
+      }
+    ]
   }).then(res => {
     dispatch(writeAction(res));
   });
@@ -54,4 +67,8 @@ export const loaded = () => {
   return {
     type: ActionTypes.LOADING_OFF
   };
+};
+
+export const reestarConnection = () => {
+  ws = new Socket(store);
 };
