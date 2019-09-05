@@ -25,17 +25,25 @@ export const chatReducer = (state = AplicationState, action) => {
     case ActionTypes.NEW_MESSAGE: {
       return {
         ...state,
-        seletedChat: {
-          ...state.seletedChat,
-          messages: state.seletedChat.messages.length
-            ? state.seletedChat.messages.concat(action.payload)
-            : [action.payload]
-        }
+        chat: [
+          {
+            ...state.chat[0],
+            messages: state.chat[0].messages.length
+              ? state.chat[0].messages.concat(action.payload)
+              : [action.payload]
+          }
+        ]
       };
     }
 
     case ActionTypes.SELECTED_CHAT: {
-      return { ...state, seletedChat: action.payload };
+      const result = Object.values(state.chat).findIndex(chat => {
+        return chat.id === "17W2j1vHvfBkVjJ6cmvBZ1eJJAdTA";
+      });
+      return {
+        ...state,
+        seletedChat: { index: result, id: state.chat[result].id  }
+      };
     }
     default: {
       return state;

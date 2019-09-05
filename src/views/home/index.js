@@ -14,6 +14,7 @@ import {
 import Header from "../../components/Header";
 import { connect } from "react-redux";
 import { selectedChat } from "../../store/chats";
+import Moment from "moment";
 //import Bitcoin from 'bitcore-lib'
 class index extends Component {
   static navigationOptions = {
@@ -31,6 +32,15 @@ class index extends Component {
         <Header {...this.props} />
         <Content>
           {Object.values(this.props.chats).map((chat, key) => {
+            const messages = Object.values(chat.messages);
+            const lastmessage = messages.length
+              ? messages[messages.length - 1].msg
+              : chats[0].lastMessage;
+
+            const lasTime = messages.length
+              ? Number(messages[messages.length - 1].timestamp)
+              : new Date();
+
             return (
               <List key={key}>
                 <ListItem
@@ -45,14 +55,14 @@ class index extends Component {
                   </Left>
                   <Body>
                     <Text>{chats[0].senderName}</Text>
-                    <Text note>{chats[0].lastMessage}</Text>
+                    <Text note>{lastmessage}</Text>
                   </Body>
                   <Right
                     style={{
                       height: "97%"
                     }}
                   >
-                    <Text note> 3:47 pm</Text>
+                    <Text note> {Moment(lasTime).format("LT")}</Text>
                   </Right>
                 </ListItem>
               </List>

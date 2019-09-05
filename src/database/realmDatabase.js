@@ -47,7 +47,7 @@ const userSchema = {
 
 const databaseOptions = {
   schema: [userSchema, contactSchema, chatSquema, messageSquema],
-  schemaVersion: 3
+  schemaVersion: 4
 };
 
 const getRealm = () =>
@@ -101,3 +101,16 @@ export const getUserData = () =>
       resolve(user);
     });
   });
+
+export const setMessage = (id, obj) => {
+  new Promise(async (resolve, reject) => {
+    Realm.open(databaseOptions).then(realm => {
+      realm.write(() => {
+        let chat = realm.objectForPrimaryKey("Chat", id);
+        console.log("in te database", obj);
+
+        chat.messages.push({ ...obj, msg: obj.msg.text });
+      });
+    });
+  });
+};

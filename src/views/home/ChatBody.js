@@ -9,6 +9,8 @@ export default class ChatBody extends Component {
   }
 
   render() {
+    console.log("aca", this.props.chats);
+    console.log(this.props.user.uid);
     return (
       <View style={{ flex: 1 }}>
         <FlatList
@@ -17,12 +19,11 @@ export default class ChatBody extends Component {
           data={this.props.chats}
           keyExtractor={(item, index) => index.toString()}
           renderItem={({ item, index }) => {
-            console.log("aca", item.data);
-            if (this.props.user.iud === item.fromUID) {
+            if (this.props.user.uid !== item.fromUID) {
               return (
                 <View key={index.toString()} style={styles.receiveContainer}>
-                  <View style={styles.textContent}>
-                    <Text style={{ fontSize: 15 }}>{item.msg.text}</Text>
+                  <View style={styles.textContent1}>
+                    <Text style={{ fontSize: 15 }}>{item.msg}</Text>
                     <Text
                       style={{
                         paddingTop: 7,
@@ -32,7 +33,7 @@ export default class ChatBody extends Component {
                         textAlign: "right"
                       }}
                     >
-                      {Moment(item.timestamp).format("LT")}
+                      {Moment(Number(item.timestamp)).format("LT")}
                     </Text>
                   </View>
                 </View>
@@ -40,8 +41,8 @@ export default class ChatBody extends Component {
             } else {
               return (
                 <View key={index.toString()} style={styles.senderContainer}>
-                  <View style={styles.textContent}>
-                    <Text style={{ fontSize: 15 }}>{item.msg.text}</Text>
+                  <View style={styles.textContent2}>
+                    <Text style={{ fontSize: 15 }}>{item.msg}</Text>
                     <Text
                       style={{
                         paddingTop: 7,
@@ -51,7 +52,7 @@ export default class ChatBody extends Component {
                         textAlign: "right"
                       }}
                     >
-                      {Moment(item.timestamp).format("LT")}
+                      {Moment(Number(item.timestamp)).format("LT")}
                     </Text>
                   </View>
                 </View>
@@ -80,7 +81,7 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     marginBottom: 10
   },
-  textContent: {
+  textContent1: {
     maxWidth: "82%",
     backgroundColor: "#fff",
     minHeight: 30,
@@ -89,5 +90,16 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     borderRadius: 7,
     flexDirection: "column"
+  },
+  textContent2: {
+    maxWidth: "82%",
+    backgroundColor: "#fff",
+    minHeight: 30,
+    paddingTop: 5,
+    paddingHorizontal: 10,
+    marginHorizontal: 10,
+    borderRadius: 7,
+    flexDirection: "column",
+    backgroundColor: "#90caf9"
   }
 });

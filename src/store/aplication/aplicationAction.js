@@ -14,6 +14,7 @@ let ws = Socket;
 export const InitialState = () => async dispatch => {
   getUserData().then(async res => {
     if (res.length >= 1) {
+      const result = JSON.parse(JSON.stringify(res[0]));
       dispatch(writeAction(JSON.parse(JSON.stringify(res[0]))));
     } else {
       dispatch(writeAction(IntialUser));
@@ -24,7 +25,7 @@ export const InitialState = () => async dispatch => {
 export const setInitialUser = obj => async dispatch => {
   await createFolder();
   const result = await bitcoin.generateAddress();
-
+  console.log(result);
   writteUser({
     uid: result.publicKey.toString(),
     name: obj.name,

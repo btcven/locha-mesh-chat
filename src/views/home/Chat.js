@@ -16,14 +16,15 @@ class Chat extends Component {
     header: null
   };
 
-  componentWillReceiveProp = nextProps => {
-    console.log("ejexuto");
-  };
-
   render() {
     const { navigation } = this.props;
-    const messages = this.props.chatSelected.messages.length
-      ? this.props.chatSelected.messages
+
+    const chatSelected = this.props.chat[this.props.chatSelected.index];
+
+    const messages = Object.values(chatSelected.messages).length
+      ? Object.values(chatSelected.messages).sort((a, b) => {
+          return new Date(b.timestamp) - new Date(a.timestamp);
+        })
       : [];
     return (
       <Container>

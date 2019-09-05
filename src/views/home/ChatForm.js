@@ -8,6 +8,7 @@ import {
   ScrollView,
   TouchableOpacity
 } from "react-native";
+import { sha256, sha224 } from "js-sha256";
 
 export default class ChatForm extends Component {
   constructor(props) {
@@ -26,11 +27,14 @@ export default class ChatForm extends Component {
       msg: {
         text: this.state.message
       },
-      timestamp: new Date().getTime(),
+      timestamp: new Date().getTime().toString(),
       type: "msg"
     };
 
-    setChat(sendObject);
+    const id = sha256(JSON.stringify(sendObject));
+
+    setChat({ ...sendObject, id: id });
+    this.setState({ message: "" });
   };
 
   render() {
