@@ -9,8 +9,6 @@ export default class ChatBody extends Component {
   }
 
   render() {
-    console.log("aca", this.props.chats);
-    console.log(this.props.user.uid);
     return (
       <View style={{ flex: 1 }}>
         <FlatList

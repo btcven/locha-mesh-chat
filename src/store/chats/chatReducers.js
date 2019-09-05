@@ -1,5 +1,5 @@
 import { ActionTypes } from "../constants";
-
+import { chats } from "../../utils/constans";
 const AplicationState = {
   chat: []
 };
@@ -28,8 +28,8 @@ export const chatReducer = (state = AplicationState, action) => {
         chat: [
           {
             ...state.chat[0],
-            messages: state.chat[0].messages.length
-              ? state.chat[0].messages.concat(action.payload)
+            messages: Object.values(state.chat[0].messages).length
+              ? Object.values(state.chat[0].messages).concat(action.payload)
               : [action.payload]
           }
         ]
@@ -38,11 +38,11 @@ export const chatReducer = (state = AplicationState, action) => {
 
     case ActionTypes.SELECTED_CHAT: {
       const result = Object.values(state.chat).findIndex(chat => {
-        return chat.id === "17W2j1vHvfBkVjJ6cmvBZ1eJJAdTA";
+        return chat.toUID === chats[0].senderName;
       });
       return {
         ...state,
-        seletedChat: { index: result, id: state.chat[result].id  }
+        seletedChat: { index: result, id: state.chat[result].id }
       };
     }
     default: {

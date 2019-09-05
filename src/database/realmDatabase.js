@@ -1,4 +1,5 @@
 import Realm from "realm";
+import isObject from "isobject";
 
 const contactSchema = {
   name: "Contact",
@@ -17,18 +18,17 @@ const messageSquema = {
     fromUID: "string",
     toUID: "string?",
     msg: "string",
-    timestamp: "string",
+    timestamp: "int",
     type: "string"
   }
 };
 
 const chatSquema = {
   name: "Chat",
-  primaryKey: "id",
+  primaryKey: "toUID",
   properties: {
-    id: "string",
     fromUID: "string",
-    toUID: "string?",
+    toUID: "string",
     messages: { type: "list", objectType: "Message" }
   }
 };
@@ -47,7 +47,7 @@ const userSchema = {
 
 const databaseOptions = {
   schema: [userSchema, contactSchema, chatSquema, messageSquema],
-  schemaVersion: 4
+  schemaVersion: 6
 };
 
 const getRealm = () =>
@@ -102,15 +102,13 @@ export const getUserData = () =>
     });
   });
 
-export const setMessage = (id, obj) => {
+export const setMessage = (id, obj) =>
   new Promise(async (resolve, reject) => {
     Realm.open(databaseOptions).then(realm => {
       realm.write(() => {
         let chat = realm.objectForPrimaryKey("Chat", id);
-        console.log("in te database", obj);
-
-        chat.messages.push({ ...obj, msg: obj.msg.text });
+        chat.messages.push({ ...obj, id: obj.msgID, msg: obj.msg.text });
+        resolve();
       });
     });
   });
-};

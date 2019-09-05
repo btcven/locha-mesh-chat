@@ -27,13 +27,13 @@ export default class ChatForm extends Component {
       msg: {
         text: this.state.message
       },
-      timestamp: new Date().getTime().toString(),
+      timestamp: new Date().getTime(),
       type: "msg"
     };
 
     const id = sha256(JSON.stringify(sendObject));
 
-    setChat({ ...sendObject, id: id });
+    setChat({ ...sendObject, msgID: id });
     this.setState({ message: "" });
   };
 

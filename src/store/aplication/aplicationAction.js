@@ -25,7 +25,6 @@ export const InitialState = () => async dispatch => {
 export const setInitialUser = obj => async dispatch => {
   await createFolder();
   const result = await bitcoin.generateAddress();
-  console.log(result);
   writteUser({
     uid: result.publicKey.toString(),
     name: obj.name,
@@ -33,9 +32,8 @@ export const setInitialUser = obj => async dispatch => {
     contacts: [],
     chats: [
       {
-        id: "17W2j1vHvfBkVjJ6cmvBZ1eJJAdTA",
         fromUID: result.publicKey.toString(),
-        toUID: null,
+        toUID: "broadcast",
         messages: []
       }
     ]
