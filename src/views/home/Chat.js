@@ -28,7 +28,7 @@ class Chat extends Component {
       : [];
     return (
       <Container>
-        {/* <Header {...this.props} /> */}
+        <Header {...this.props} />
         <ChatBody chats={messages} user={this.props.userData} />
         <ChatForm
           user={this.props.userData}

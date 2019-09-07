@@ -6,7 +6,7 @@ import com.facebook.react.ReactApplication;
 import com.bitgo.randombytes.RandomBytesPackage;
 import com.horcrux.svg.SvgPackage;
 import io.realm.react.RealmReactPackage;
-import io.invertase.firebase.RNFirebasePackage;
+
 import org.reactnative.camera.RNCameraPackage;
 import com.rnfs.RNFSPackage;
 import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
@@ -18,8 +18,6 @@ import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
-import io.invertase.firebase.database.RNFirebaseDatabasePackage;
-import io.invertase.firebase.firestore.RNFirebaseFirestorePackage;
 
 import java.util.Arrays;
 import java.util.List;
@@ -39,16 +37,13 @@ public class MainApplication extends Application implements ReactApplication {
             new RandomBytesPackage(),
             new SvgPackage(),
             new RealmReactPackage(),
-            new RNFirebasePackage(),
             new RNCameraPackage(),
             new RNFSPackage(),
             new AsyncStoragePackage(),
             new PickerPackage(),
             new CameraRollPackage(),
             new RNGestureHandlerPackage(),
-            new VectorIconsPackage(),
-            new RNFirebaseDatabasePackage(),
-            new RNFirebaseFirestorePackage()
+            new VectorIconsPackage()
       );
     }
 

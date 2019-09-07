@@ -30,6 +30,7 @@ class HeaderComponent extends Component {
 
   render() {
     const router = this.getNameContact(this.props.navigation);
+    console.log("header", router);
     return (
       <Header
         style={styles.container}
@@ -61,9 +62,7 @@ class HeaderComponent extends Component {
             <Title style={{ color: "#fff" }}>Locha Mesh</Title>
           )}
           {router.routeName === "chat" && (
-            <Title>
-              {router.params.name ? router.params.name : "broadcast"}
-            </Title>
+            <Title>{router.params ? router.params.name : "broadcast"}</Title>
           )}
         </Body>
         <Right />

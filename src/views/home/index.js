@@ -55,7 +55,11 @@ class index extends Component {
                   </Left>
                   <Body>
                     <Text>{chats[0].senderName}</Text>
-                    <Text note>{lastmessage}</Text>
+                    <Text note>
+                      {lastmessage.length > 25
+                        ? `${lastmessage}`.substr(1, 25) + `...`
+                        : lastmessage}{" "}
+                    </Text>
                   </Body>
                   <Right
                     style={{

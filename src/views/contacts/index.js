@@ -56,10 +56,11 @@ class Contacts extends Component {
                 <ListItem
                   button
                   style={{ height: 80 }}
-                  onPress={() =>
-                    this.props.navigation.push("chat", {
-                      ...contact
-                    })
+                  onPress={
+                    () => alert("Aun no disponible!")
+                    // this.props.navigation.push("chat", {
+                    //   ...contact
+                    // })
                   }
                 >
                   <Left style={styles.textContainer}>
