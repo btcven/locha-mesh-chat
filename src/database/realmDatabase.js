@@ -1,5 +1,5 @@
 import Realm from "realm";
-import isObject from "isobject";
+
 
 const contactSchema = {
   name: "Contact",
@@ -65,7 +65,7 @@ export const writteUser = obj =>
             {
               uid: obj.uid,
               name: obj.name,
-              picture: obj.image,
+              picture: obj.picture,
               chats: obj.chats
             },
             true
