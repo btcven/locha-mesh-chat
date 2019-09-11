@@ -6,9 +6,10 @@ import {
   StyleSheet,
   TextInput,
   ScrollView,
-  TouchableOpacity
+  TouchableOpacity,
+  Alert
 } from "react-native";
-import { sha256, sha224 } from "js-sha256";
+import { sha256 } from "js-sha256";
 
 export default class ChatForm extends Component {
   constructor(props) {
@@ -46,7 +47,7 @@ export default class ChatForm extends Component {
           contentContainerStyle={styles.contentForm}
           keyboardShouldPersistTaps={"handled"}
         >
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => this.notif.cancelAll()}>
             <Icon
               style={styles.iconChatStyle}
               type="MaterialIcons"
@@ -68,7 +69,7 @@ export default class ChatForm extends Component {
           />
 
           {this.state.message.length === 0 && (
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => this.notif.localNotif()}>
               <Icon
                 style={styles.iconChatStyle}
                 type="MaterialIcons"

@@ -7,15 +7,48 @@ import Home from "./views/home";
 import Contact from "./views/contacts";
 import Config from "./views/config";
 import InitialStep from "./InitialStep";
+import NotifService from "./utils/notificationService";
 
 class DualComponent extends Component {
   constructor(props) {
     super(props);
+
+    this.notif = new NotifService(
+      this.onRegister.bind(this),
+      this.onNotif.bind(this)
+    );
   }
 
   static navigationOptions = {
     header: null
   };
+
+  componentDidUpdate = prevProps => {
+    Object.values(prevProps.chat).map(prevchat => {
+      Object.values(this.props.chat).map(chat => {
+        const lastPreChat = prevchat.messages[prevchat.messages.length - 1];
+        const lastChat = chat.messages[chat.messages.length - 1];
+        if (lastChat) {
+          if (!lastPreChat || lastPreChat.msgID !== lastChat.msgID) {
+            if (this.props.user !== lastChat.fromUID) {
+              this.notif.localNotif(lastChat);
+            }
+          }
+        }
+      });
+    });
+  };
+
+  onRegister(token) {
+    Alert.alert("Registered !", JSON.stringify(token));
+    console.log(token);
+    this.setState({ registerToken: token.token, gcmRegistered: true });
+  }
+
+  onNotif(notif) {
+    console.log("on notify", notif);
+    Alert.alert(notif.title, notif.message);
+  }
 
   render() {
     return (
@@ -36,7 +69,8 @@ class DualComponent extends Component {
 
 const mapStateToProps = state => ({
   tabPosition: state.aplication.tab,
-  user: state.config.uid
+  user: state.config.uid,
+  chat: state.chats.chat
 });
 
 export default connect(
