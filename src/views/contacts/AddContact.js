@@ -14,6 +14,7 @@ import { Icon, Form, Item, Input, Label, Spinner } from "native-base";
 import EditPhoto from "../config/EditPhoto";
 import ImagePicker from "react-native-image-crop-picker";
 import QRCodeScanner from "react-native-qrcode-scanner";
+import { sha256 } from "js-sha256";
 
 export default class AddContact extends Component {
   constructor(props) {
@@ -58,7 +59,8 @@ export default class AddContact extends Component {
     const obj = {
       name: this.state.name,
       picture: this.state.image,
-      uid: this.state.uid
+      uid: this.state.uid,
+      hashUID: sha256(this.state.uid)
     };
     this.props.saveContact(
       this.props.userData.uid,

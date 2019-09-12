@@ -4,6 +4,7 @@ import Header from "../../components/Header";
 import ChatBody from "./ChatBody";
 import ChatForm from "./ChatForm";
 import { initialChat } from "../../store/chats";
+import { setView } from "../../store/aplication";
 import { connect } from "react-redux";
 
 class Chat extends Component {
@@ -12,8 +13,16 @@ class Chat extends Component {
     this.state = {};
   }
 
+  componentDidMount = () => {
+    this.props.setView("chat");
+  };
+
   static navigationOptions = {
     header: null
+  };
+
+  componentWillUnmount = () => {
+    this.props.setView(undefined);
   };
 
   render() {
@@ -49,5 +58,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { initialChat }
+  { initialChat, setView }
 )(Chat);

@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import Modal from "react-native-modal";
 import { images } from "../../utils/constans";
-import { View, Text, TouchableOpacity, PermissionsAndroid } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import { Thumbnail } from "native-base";
 
 export default class EditPhoto extends Component {

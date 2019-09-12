@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import Footer from "./components/Footer";
 import { connect } from "react-redux";
 import { route } from "./store/aplication/aplicationAction";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, Alert } from "react-native";
 import Home from "./views/home";
 import Contact from "./views/contacts";
 import Config from "./views/config";
@@ -24,19 +24,21 @@ class DualComponent extends Component {
   };
 
   componentDidUpdate = prevProps => {
-    Object.values(prevProps.chat).map(prevchat => {
-      Object.values(this.props.chat).map(chat => {
-        const lastPreChat = prevchat.messages[prevchat.messages.length - 1];
-        const lastChat = chat.messages[chat.messages.length - 1];
-        if (lastChat) {
-          if (!lastPreChat || lastPreChat.msgID !== lastChat.msgID) {
-            if (this.props.user !== lastChat.fromUID) {
-              this.notif.localNotif(lastChat);
+    if (this.props.view !== "chat") {
+      Object.values(prevProps.chat).map(prevchat => {
+        Object.values(this.props.chat).map(chat => {
+          const lastPreChat = prevchat.messages[prevchat.messages.length - 1];
+          const lastChat = chat.messages[chat.messages.length - 1];
+          if (lastChat) {
+            if (!lastPreChat || lastPreChat.msgID !== lastChat.msgID) {
+              if (this.props.user !== lastChat.fromUID) {
+                this.notif.localNotif(lastChat);
+              }
             }
           }
-        }
+        });
       });
-    });
+    }
   };
 
   onRegister(token) {
@@ -70,7 +72,8 @@ class DualComponent extends Component {
 const mapStateToProps = state => ({
   tabPosition: state.aplication.tab,
   user: state.config.uid,
-  chat: state.chats.chat
+  chat: state.chats.chat,
+  view: state.aplication.view
 });
 
 export default connect(

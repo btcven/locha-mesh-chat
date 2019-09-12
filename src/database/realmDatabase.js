@@ -1,12 +1,12 @@
 import Realm from "realm";
 
-
 const contactSchema = {
   name: "Contact",
   properties: {
     uid: "string",
     name: "string",
-    picture: "string?"
+    picture: "string?",
+    hashUID: "string"
   }
 };
 
@@ -47,7 +47,7 @@ const userSchema = {
 
 const databaseOptions = {
   schema: [userSchema, contactSchema, chatSquema, messageSquema],
-  schemaVersion: 6
+  schemaVersion: 7
 };
 
 const getRealm = () =>
@@ -86,7 +86,8 @@ export const addContacts = (uid, obj) =>
         user.contacts.push({
           uid: obj[0].uid,
           name: obj[0].name,
-          picture: obj[0].picture
+          picture: obj[0].picture,
+          hashUID: obj[0].hashUID
         });
         resolve(obj);
       });
@@ -97,7 +98,7 @@ export const getUserData = () =>
   new Promise(async resolve => {
     Realm.open(databaseOptions).then(realm => {
       const user = realm.objects("user");
-
+      
       resolve(user);
     });
   });

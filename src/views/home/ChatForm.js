@@ -2,14 +2,12 @@ import React, { Component } from "react";
 import { Icon, Button } from "native-base";
 import {
   View,
-  Text,
   StyleSheet,
   TextInput,
   ScrollView,
   TouchableOpacity,
-  Alert
 } from "react-native";
-import { sha256 } from "js-sha256";
+import { sha256  } from "js-sha256";
 
 export default class ChatForm extends Component {
   constructor(props) {

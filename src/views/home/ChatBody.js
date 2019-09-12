@@ -21,11 +21,12 @@ export default class ChatBody extends Component {
               return (
                 <View key={index.toString()} style={styles.receiveContainer}>
                   <View style={styles.textContent1}>
-                    <Text style={{ fontSize: 15 }}>{item.msg}</Text>
+                    <Text style={{ paddingBottom: 7 }}>Kevin Velasco</Text>
+                    <View style={{minWidth:110 }}><Text style={{ fontSize: 15}}>{item.msg}</Text></View>
                     <Text
                       style={{
-                        paddingTop: 7,
-                        paddingLeft: 5,
+                        paddingTop: 3,
+                        paddingLeft: 10,
                         paddingBottom: 6,
                         fontSize: 12,
                         textAlign: "right"

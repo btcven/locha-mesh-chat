@@ -16,6 +16,8 @@ export const ActionTypes = {
   ADD_CONTACTS: "@@contacts/ADD_CONTACTS",
 
   //CHATS
+
+  IN_VIEW: "@@chat/IN_VIEW",
   SELECTED_CHAT: "@@chat/SELETED_CHAT",
   NEW_MESSAGE: "@@chat/NEW_MESSAGE"
 };

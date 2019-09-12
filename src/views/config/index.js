@@ -40,7 +40,6 @@ class Config extends Component {
   };
 
   render() {
-    console.log(this.props.config);
     return (
       <Container>
         <Header {...this.props} />

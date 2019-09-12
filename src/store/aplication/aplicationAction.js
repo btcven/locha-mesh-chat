@@ -1,5 +1,4 @@
 import { ActionTypes } from "../constants";
-import AsyncStorage from "@react-native-community/async-storage";
 import { IntialUser } from "../../utils/constans";
 import { createFolder } from "../../utils/utils";
 import { writteUser, getUserData } from "../../database/realmDatabase";
@@ -46,6 +45,13 @@ const writeAction = data => {
   return {
     type: ActionTypes.INITIAL_STATE,
     payload: data
+  };
+};
+
+export const setView = view => {
+  return {
+    type: ActionTypes.IN_VIEW,
+    payload: view
   };
 };
 

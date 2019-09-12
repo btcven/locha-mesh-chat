@@ -3,13 +3,18 @@ import { ActionTypes } from "../constants";
 const AplicationState = {
   aplication: true,
   photos: [],
-  tab: 1
+  tab: 1,
+  view: undefined
 };
 
 export const AplicationReducer = (state = AplicationState, action) => {
   switch (action.type) {
     case ActionTypes.INITIAL_STATE: {
       return { ...state };
+    }
+
+    case ActionTypes.IN_VIEW: {
+      return { ...state, view: action.payload };
     }
 
     case ActionTypes.GET_PHOTO: {

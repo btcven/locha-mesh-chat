@@ -11,7 +11,6 @@ import {
   Icon
 } from "native-base";
 import { StyleSheet, TouchableHighlight } from "react-native";
-import NavigationService from "../utils/navigationService";
 import { connect } from "react-redux";
 class HeaderComponent extends Component {
   constructor(props) {
@@ -30,7 +29,6 @@ class HeaderComponent extends Component {
 
   render() {
     const router = this.getNameContact(this.props.navigation);
-    console.log("header", router);
     return (
       <Header
         style={styles.container}
