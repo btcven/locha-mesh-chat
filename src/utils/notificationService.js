@@ -23,7 +23,6 @@ export default class NotifService {
   }
 
   localNotif(data) {
-    console.log("data", data);
     this.lastId++;
     PushNotification.localNotification({
       /* Android Only Properties */

@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { View, Text, StyleSheet, TextInput, FlatList } from "react-native";
 import Moment from "moment";
+import { sha256 } from "js-sha256";
 
 export default class ChatBody extends Component {
   constructor(props) {
@@ -17,12 +18,14 @@ export default class ChatBody extends Component {
           data={this.props.chats}
           keyExtractor={(item, index) => index.toString()}
           renderItem={({ item, index }) => {
-            if (this.props.user.uid !== item.fromUID) {
+            if (sha256(this.props.user.uid) !== item.fromUID) {
               return (
                 <View key={index.toString()} style={styles.receiveContainer}>
                   <View style={styles.textContent1}>
                     <Text style={{ paddingBottom: 7 }}>Kevin Velasco</Text>
-                    <View style={{minWidth:110 }}><Text style={{ fontSize: 15}}>{item.msg}</Text></View>
+                    <View style={{ minWidth: 110 }}>
+                      <Text style={{ fontSize: 15 }}>{item.msg}</Text>
+                    </View>
                     <Text
                       style={{
                         paddingTop: 3,

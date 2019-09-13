@@ -9,6 +9,7 @@ import Config from "./views/config";
 import InitialStep from "./InitialStep";
 import NotifService from "./utils/notificationService";
 
+
 class DualComponent extends Component {
   constructor(props) {
     super(props);

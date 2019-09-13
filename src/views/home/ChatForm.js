@@ -5,9 +5,9 @@ import {
   StyleSheet,
   TextInput,
   ScrollView,
-  TouchableOpacity,
+  TouchableOpacity
 } from "react-native";
-import { sha256  } from "js-sha256";
+import { sha256 } from "js-sha256";
 
 export default class ChatForm extends Component {
   constructor(props) {
@@ -21,7 +21,7 @@ export default class ChatForm extends Component {
   send = () => {
     const { user, navigation, setChat, previousChat } = this.props;
     const sendObject = {
-      fromUID: user.uid,
+      fromUID: sha256(user.uid),
       toUID: null,
       msg: {
         text: this.state.message

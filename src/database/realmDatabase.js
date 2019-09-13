@@ -23,6 +23,17 @@ const messageSquema = {
   }
 };
 
+const BroadCasContacts = {
+  name: "temporalContacts",
+  primaryKey: "hashUID",
+  properties: {
+    hashUID: "string",
+    name: "string",
+    timestamp: "int",
+    icon: "string"
+  }
+};
+
 const chatSquema = {
   name: "Chat",
   primaryKey: "toUID",
@@ -46,8 +57,14 @@ const userSchema = {
 };
 
 const databaseOptions = {
-  schema: [userSchema, contactSchema, chatSquema, messageSquema],
-  schemaVersion: 7
+  schema: [
+    userSchema,
+    contactSchema,
+    chatSquema,
+    messageSquema,
+    BroadCasContacts
+  ],
+  schemaVersion: 10
 };
 
 const getRealm = () =>
@@ -98,7 +115,7 @@ export const getUserData = () =>
   new Promise(async resolve => {
     Realm.open(databaseOptions).then(realm => {
       const user = realm.objects("user");
-      
+
       resolve(user);
     });
   });
@@ -111,5 +128,40 @@ export const setMessage = (id, obj) =>
         chat.messages.push({ ...obj, id: obj.msgID, msg: obj.msg.text });
         resolve();
       });
+    });
+  });
+
+export const addTemporalInfo = obj =>
+  new Promise(resolve => {
+    Realm.open(databaseOptions).then(realm => {
+      realm.write(() => {
+        console.log("object", obj);
+        realm.create("temporalContacts", {
+          ...obj
+        });
+        resolve(obj);
+      });
+    });
+  });
+
+export const verifyContact = hashUID =>
+  new Promise(resolve => {
+    Realm.open(databaseOptions).then(realm => {
+      const contact = realm.objects("Contact").find(data => {
+        return data.hashUID === hashUID;
+      });
+      resolve(contact);
+    });
+  });
+
+export const getTemporalContact = id =>
+  new Promise(resolve => {
+    Realm.open(databaseOptions).then(realm => {
+      temporal = realm.objectForPrimaryKey("temporalContacts", id);
+      if (temporal) {
+        resolve(JSON.parse(JSON.stringify(temporal)));
+      } else {
+        resolve(undefined);
+      }
     });
   });
