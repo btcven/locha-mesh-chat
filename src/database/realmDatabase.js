@@ -14,6 +14,7 @@ const messageSquema = {
   name: "Message",
   primaryKey: "id",
   properties: {
+    name: "string?",
     id: "string",
     fromUID: "string",
     toUID: "string?",
@@ -30,7 +31,6 @@ const BroadCasContacts = {
     hashUID: "string",
     name: "string",
     timestamp: "int",
-    icon: "string"
   }
 };
 
@@ -64,7 +64,7 @@ const databaseOptions = {
     messageSquema,
     BroadCasContacts
   ],
-  schemaVersion: 10
+  schemaVersion: 11
 };
 
 const getRealm = () =>

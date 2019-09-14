@@ -8,7 +8,7 @@ import Contact from "./views/contacts";
 import Config from "./views/config";
 import InitialStep from "./InitialStep";
 import NotifService from "./utils/notificationService";
-
+import { selectedChat } from "./store/chats";
 
 class DualComponent extends Component {
   constructor(props) {
@@ -49,8 +49,8 @@ class DualComponent extends Component {
   }
 
   onNotif(notif) {
-    console.log("on notify", notif);
-    Alert.alert(notif.title, notif.message);
+    this.props.selectedChat();
+    this.props.navigation.push("chat");
   }
 
   render() {
@@ -79,7 +79,7 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { route }
+  { route, selectedChat }
 )(DualComponent);
 
 const styles = StyleSheet.create({

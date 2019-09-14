@@ -1,7 +1,9 @@
 import React, { Component } from "react";
 import { View, Text, StyleSheet, TextInput, FlatList } from "react-native";
 import Moment from "moment";
+import { Thumbnail } from "native-base";
 import { sha256 } from "js-sha256";
+import { getIcon, hashGenerateColort } from "../../utils/utils";
 
 export default class ChatBody extends Component {
   constructor(props) {
@@ -21,8 +23,24 @@ export default class ChatBody extends Component {
             if (sha256(this.props.user.uid) !== item.fromUID) {
               return (
                 <View key={index.toString()} style={styles.receiveContainer}>
+                  <Thumbnail
+                    style={{
+                     marginLeft:5,
+                     marginTop:5
+                    }}
+                    source={{
+                      uri: `${getIcon(item.fromUID)}`
+                    }}
+                  />
                   <View style={styles.textContent1}>
-                    <Text style={{ paddingBottom: 7 }}>Kevin Velasco</Text>
+                    <Text
+                      style={{
+                        paddingBottom: 7,
+                        color: hashGenerateColort(item.fromUID)
+                      }}
+                    >
+                      {item.name}
+                    </Text>
                     <View style={{ minWidth: 110 }}>
                       <Text style={{ fontSize: 15 }}>{item.msg}</Text>
                     </View>
@@ -81,7 +99,8 @@ const styles = StyleSheet.create({
   receiveContainer: {
     width: "100%",
     alignItems: "flex-start",
-    marginBottom: 10
+    marginBottom: 10,
+    flexDirection: "row"
   },
   textContent1: {
     maxWidth: "82%",

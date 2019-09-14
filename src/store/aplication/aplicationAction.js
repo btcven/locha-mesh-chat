@@ -5,6 +5,7 @@ import { writteUser, getUserData } from "../../database/realmDatabase";
 import Bitcoin from "../../utils/Bitcoin";
 import Socket from "../../utils/socket";
 import store from "../../store";
+import { broadcastRandomData } from "../chats";
 
 const bitcoin = new Bitcoin();
 
@@ -13,10 +14,7 @@ let ws = Socket;
 export const InitialState = () => async dispatch => {
   getUserData().then(async res => {
     if (res.length >= 1) {
-      const result = JSON.parse(JSON.stringify(res[0]));
       dispatch(writeAction(JSON.parse(JSON.stringify(res[0]))));
-    } else {
-      dispatch(writeAction(IntialUser));
     }
   });
 };

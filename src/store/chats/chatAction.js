@@ -7,47 +7,30 @@ import {
   getTemporalContact
 } from "../../database/realmDatabase";
 import { socket } from "../../../App";
-import Identicon from "identicon.js";
 import { sha256 } from "js-sha256";
-// import Store from "../../store";
-
-const getIcon = data => {
-  var icon = new Identicon(data, 420).toString();
-
-  return `data:image/png;base64,${icon}`;
-};
 
 export const initialChat = data => dispatch => {
   socket.sendMenssage(JSON.stringify(data));
 };
 
-const broadcastRandomData = async parse =>
+export const broadcastRandomData = async (parse, id) =>
   new Promise(resolve => {
-    console.log(1);
     const store = require("../../store");
-    const userData = store.default.getState().config;
-    if (sha256(userData.uid) !== parse.fromUID) {
-      console.log(2);
+    const userData = id ? id : store.default.getState().config.uid;
+    if (sha256(userData) !== parse.fromUID) {
       verifyContact(parse.fromUID).then(res => {
         if (res) {
-          console.log(3);
           resolve(res);
         } else {
-          console.log("wqe");
           getTemporalContact(parse.fromUID).then(temporal => {
-            console.log(4);
             if (temporal) {
               resolve(temporal);
             } else {
-              console.log(6);
-              console.log("entro en el else");
               const randomName = generateName();
-              const icon = getIcon(parse.fromUID);
               const obj = {
                 hashUID: parse.fromUID,
                 name: randomName,
-                timestamp: parse.timestamp,
-                icon: icon
+                timestamp: parse.timestamp
               };
               addTemporalInfo(obj).then(data => {
                 resolve(data);
@@ -56,6 +39,8 @@ const broadcastRandomData = async parse =>
           });
         }
       });
+    } else {
+      resolve({ name: undefined });
     }
   });
 
@@ -66,11 +51,11 @@ export const getChat = data => async dispatch => {
   if (!parse.toUID) {
     infoMensagge = await broadcastRandomData(parse);
   }
-  setMessage("broadcast", parse).then(() => {
+  setMessage("broadcast", { ...parse, name: infoMensagge.name }).then(() => {
     dispatch({
       type: ActionTypes.NEW_MESSAGE,
       payload: {
-        ...infoMensagge,
+        name: infoMensagge.name,
         ...parse,
         msg: parse.msg.text
       }

@@ -41,7 +41,6 @@ class Contacts extends Component {
   };
 
   render() {
-    console.log(this.props.contacts);
     return (
       <Container>
         <Header {...this.props} modal={this.state.openModal} />
