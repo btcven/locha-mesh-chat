@@ -3,6 +3,7 @@ package com.lochameshchat;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.ocetnik.timer.BackgroundTimerPackage;
 import com.dieam.reactnativepushnotification.ReactNativePushNotificationPackage;
 import com.bitgo.randombytes.RandomBytesPackage;
 import com.horcrux.svg.SvgPackage;
@@ -34,6 +35,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new BackgroundTimerPackage(),
             new ReactNativePushNotificationPackage(),
             new RandomBytesPackage(),
             new SvgPackage(),

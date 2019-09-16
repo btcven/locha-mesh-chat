@@ -1,16 +1,16 @@
 import { ActionTypes } from "../constants";
-import { createFolder } from "../../utils/utils";
+import { createFolder, backgroundTimer } from "../../utils/utils";
 import { writteUser, getUserData } from "../../database/realmDatabase";
 import Bitcoin from "../../utils/Bitcoin";
 import Socket from "../../utils/socket";
 import store from "../../store";
-import { broadcastRandomData } from "../chats";
 
 const bitcoin = new Bitcoin();
 
 let ws = Socket;
 
 export const InitialState = () => async dispatch => {
+  backgroundTimer();
   getUserData().then(async res => {
     if (res.length >= 1) {
       dispatch(writeAction(JSON.parse(JSON.stringify(res[0]))));

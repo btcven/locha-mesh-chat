@@ -2,6 +2,10 @@ import RNFS from "react-native-fs";
 import { ToastAndroid } from "react-native";
 import { PermissionsAndroid } from "react-native";
 import Identicon from "identicon.js";
+import moment from "moment";
+import { getMessageByTime } from "../database/realmDatabase";
+import BackgroundTimer from "react-native-background-timer";
+import store from "../store";
 
 async function requestStoragePermission() {
   try {
@@ -19,10 +23,14 @@ export const FileDirectory =
 export const createFolder = async () => {
   await requestStoragePermission();
   const directory = RNFS.ExternalStorageDirectoryPath + "/Pictures/LochaMesh/";
-  await RNFS.mkdir(FileDirectory.toString()).then(res =>
-    console.log("se creo")
-  );
+  await RNFS.mkdir(FileDirectory.toString());
   return directory;
+};
+
+export const backgroundTimer = () => {
+  BackgroundTimer.runBackgroundTimer(() => {
+    getMessageByTime();
+  }, 300000);
 };
 
 export const androidToast = message => {

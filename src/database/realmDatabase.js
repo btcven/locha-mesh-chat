@@ -1,60 +1,12 @@
 import Realm from "realm";
-
-const contactSchema = {
-  name: "Contact",
-  properties: {
-    uid: "string",
-    name: "string",
-    picture: "string?",
-    hashUID: "string"
-  }
-};
-
-const messageSquema = {
-  name: "Message",
-  primaryKey: "id",
-  properties: {
-    name: "string?",
-    id: "string",
-    fromUID: "string",
-    toUID: "string?",
-    msg: "string",
-    timestamp: "int",
-    type: "string"
-  }
-};
-
-const BroadCasContacts = {
-  name: "temporalContacts",
-  primaryKey: "hashUID",
-  properties: {
-    hashUID: "string",
-    name: "string",
-    timestamp: "int",
-  }
-};
-
-const chatSquema = {
-  name: "Chat",
-  primaryKey: "toUID",
-  properties: {
-    fromUID: "string",
-    toUID: "string",
-    messages: { type: "list", objectType: "Message" }
-  }
-};
-
-const userSchema = {
-  name: "user",
-  primaryKey: "uid",
-  properties: {
-    uid: { type: "string", indexed: true },
-    name: "string",
-    picture: "string?",
-    contacts: { type: "list", objectType: "Contact" },
-    chats: { type: "list", objectType: "Chat" }
-  }
-};
+import moment from "moment";
+import {
+  userSchema,
+  contactSchema,
+  chatSquema,
+  BroadCasContacts,
+  messageSquema
+} from "./schemas";
 
 const databaseOptions = {
   schema: [
@@ -163,5 +115,27 @@ export const getTemporalContact = id =>
       } else {
         resolve(undefined);
       }
+    });
+  });
+
+export const getMessageByTime = () =>
+  new Promise(resolve => {
+    const currentTime = moment();
+    Realm.open(databaseOptions).then(realm => {
+      realm.write(() => {
+        const data = realm.objects("Message").filtered("toUID == null");
+        if (data.length > 500) {
+          result = data.slice(0, 500);
+          realm.delete(result);
+        }
+
+        const result = data.filter(data => {
+          const timeCreated = moment(data.timestamp);
+          return currentTime.diff(timeCreated, "h") > 48;
+        });
+
+        realm.delete(result);
+        resolve();
+      });
     });
   });
