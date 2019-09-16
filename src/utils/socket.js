@@ -1,6 +1,8 @@
 import { getChat } from "../store/chats";
 import { reestarConnection } from "../store/aplication";
 
+export let sendSocket = undefined;
+
 export default class Socket {
   constructor(store) {
     this.socket = new WebSocket("wss://lochat.coinlab.info");
@@ -8,6 +10,7 @@ export default class Socket {
     this.onMenssage();
     this.keepAlive();
     this.store = store;
+    sendSocket = this.socket;
   }
 
   keepAlive = () => {

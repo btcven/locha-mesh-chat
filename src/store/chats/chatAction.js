@@ -6,11 +6,11 @@ import {
   verifyContact,
   getTemporalContact
 } from "../../database/realmDatabase";
-import { socket } from "../../../App";
+import { sendSocket } from "../../utils/socket";
 import { sha256 } from "js-sha256";
 
 export const initialChat = data => dispatch => {
-  socket.sendMenssage(JSON.stringify(data));
+  sendSocket.send(JSON.stringify(data));
 };
 
 export const broadcastRandomData = async (parse, id) =>
@@ -46,7 +46,6 @@ export const broadcastRandomData = async (parse, id) =>
 
 export const getChat = data => async dispatch => {
   const parse = JSON.parse(data);
-  console.log("dios mio", parse);
   let infoMensagge;
   if (!parse.toUID) {
     infoMensagge = await broadcastRandomData(parse);

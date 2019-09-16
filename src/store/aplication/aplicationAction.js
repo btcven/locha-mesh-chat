@@ -1,5 +1,4 @@
 import { ActionTypes } from "../constants";
-import { IntialUser } from "../../utils/constans";
 import { createFolder } from "../../utils/utils";
 import { writteUser, getUserData } from "../../database/realmDatabase";
 import Bitcoin from "../../utils/Bitcoin";
