@@ -8,7 +8,6 @@ import {
 } from "../../database/realmDatabase";
 import { sendSocket } from "../../utils/socket";
 import { sha256 } from "js-sha256";
-import { clean } from "react-native-image-crop-picker";
 
 export const initialChat = data => dispatch => {
   sendSocket.send(JSON.stringify(data));
@@ -68,4 +67,11 @@ export const selectedChat = obj => dispatch => {
     type: ActionTypes.SELECTED_CHAT,
     payload: obj
   });
+};
+
+export const realoadBroadcastChat = data => {
+  return {
+    type: ActionTypes.RELOAD_BROADCAST_CHAT,
+    payload: data
+  };
 };

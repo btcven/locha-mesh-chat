@@ -124,18 +124,23 @@ export const getMessageByTime = () =>
     Realm.open(databaseOptions).then(realm => {
       realm.write(() => {
         const data = realm.objects("Message").filtered("toUID == null");
+        const temporalNames = realm.objects("temporalContacts").filter(data => {
+          const timeCreated = moment(data.timestamp);
+          return currentTime.diff(timeCreated, "h") > 48;
+        });
         if (data.length > 500) {
-          result = data.slice(0, 500);
+          let result = data.slice(0, 500);
           realm.delete(result);
         }
 
-        const result = data.filter(data => {
+        let newData = data.filter(data => {
           const timeCreated = moment(data.timestamp);
           return currentTime.diff(timeCreated, "h") > 48;
         });
 
-        realm.delete(result);
-        resolve();
+        realm.delete(newData);
+        realm.delete(temporalNames);
+        resolve(JSON.parse(JSON.stringify(data)));
       });
     });
   });

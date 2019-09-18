@@ -7,8 +7,6 @@ import store from "../../store";
 
 const bitcoin = new Bitcoin();
 
-let ws = Socket;
-
 export const InitialState = () => async dispatch => {
   backgroundTimer();
   getUserData().then(async res => {
@@ -72,5 +70,5 @@ export const loaded = () => {
 };
 
 export const reestarConnection = () => {
-  ws = new Socket(store);
+  new Socket(store);
 };

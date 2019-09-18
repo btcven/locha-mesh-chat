@@ -17,6 +17,7 @@ export const ActionTypes = {
 
   //CHATS
 
+  RELOAD_BROADCAST_CHAT: "@@chat/RELOAD_BROADCAST_CHAT",
   IN_VIEW: "@@chat/IN_VIEW",
   SELECTED_CHAT: "@@chat/SELETED_CHAT",
   NEW_MESSAGE: "@@chat/NEW_MESSAGE"

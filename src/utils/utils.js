@@ -2,9 +2,9 @@ import RNFS from "react-native-fs";
 import { ToastAndroid } from "react-native";
 import { PermissionsAndroid } from "react-native";
 import Identicon from "identicon.js";
-import moment from "moment";
 import { getMessageByTime } from "../database/realmDatabase";
 import BackgroundTimer from "react-native-background-timer";
+import { realoadBroadcastChat } from "../store/chats";
 import store from "../store";
 
 async function requestStoragePermission() {
@@ -29,8 +29,24 @@ export const createFolder = async () => {
 
 export const backgroundTimer = () => {
   BackgroundTimer.runBackgroundTimer(() => {
-    getMessageByTime();
-  }, 300000);
+    const state = store.getState();
+    let broadCast = state.chats.chat[0].messages
+      ? Object.values(state.chats.chat[0].messages)
+      : [];
+    if (broadCast) {
+      getMessageByTime().then(data => {
+        const result = data ? Object.values(data) : [];
+        if (broadCast.length !== result.length) {
+          const newData = state.chats.chat[0];
+          newData.messages = result;
+          let obj = state.chats.chat.slice();
+          obj.shift();
+          obj.unshift(newData);
+          store.dispatch(realoadBroadcastChat(obj));
+        }
+      });
+    }
+  }, 60000);
 };
 
 export const androidToast = message => {
