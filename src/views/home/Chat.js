@@ -6,6 +6,7 @@ import ChatForm from "./ChatForm";
 import { initialChat } from "../../store/chats";
 import { setView } from "../../store/aplication";
 import { connect } from "react-redux";
+import { notify } from "../../index";
 
 class Chat extends Component {
   constructor(props) {
@@ -15,6 +16,7 @@ class Chat extends Component {
 
   componentDidMount = () => {
     this.props.setView("chat");
+    notify.cancelAll();
   };
 
   static navigationOptions = {

@@ -18,6 +18,8 @@ class DualComponent extends Component {
       this.onRegister.bind(this),
       this.onNotif.bind(this)
     );
+
+    notify = this.notif;
   }
 
   static navigationOptions = {
@@ -69,6 +71,8 @@ class DualComponent extends Component {
     );
   }
 }
+
+export let notify = {};
 
 const mapStateToProps = state => ({
   tabPosition: state.aplication.tab,
