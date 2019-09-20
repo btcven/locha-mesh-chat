@@ -1,5 +1,6 @@
 import { ActionTypes } from "../constants";
 import { chats } from "../../utils/constans";
+
 const AplicationState = {
   chat: []
 };
@@ -29,7 +30,7 @@ export const chatReducer = (state = AplicationState, action) => {
 
     case ActionTypes.SELECTED_CHAT: {
       const result = Object.values(state.chat).findIndex(chat => {
-        return chat.toUID === chats[0].senderName;
+        return chat.toUID === action.payload.toUID;
       });
       return {
         ...state,

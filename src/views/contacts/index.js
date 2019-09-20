@@ -12,6 +12,7 @@ import {
   Right,
   Text
 } from "native-base";
+import { selectedChat } from "../../store/chats";
 
 import { Image, StyleSheet } from "react-native";
 import { saveContact, getContacts } from "../../store/contacts";
@@ -40,6 +41,22 @@ class Contacts extends Component {
     console.log("aca", e);
   };
 
+  onSelect = (contact, chat) => {
+    console.log(chat);
+    this.props.selectedChat(chat);
+    this.props.navigation.push("chat", {
+      ...contact
+    });
+  };
+
+  getContactChat = contact => {
+    const result = Object.values(this.props.chat).find(chat => {
+      return chat.toUID === contact.uid;
+    });
+
+    return result;
+  };
+
   render() {
     return (
       <Container>
@@ -50,17 +67,13 @@ class Contacts extends Component {
 
         <Content>
           {this.props.contacts.map((contact, key) => {
+            const chatInfo = this.getContactChat(contact);
             return (
               <List key={key}>
                 <ListItem
                   button
                   style={{ height: 80 }}
-                  onPress={
-                    () => alert("Aun no disponible!")
-                    // this.props.navigation.push("chat", {
-                    //   ...contact
-                    // })
-                  }
+                  onPress={() => this.onSelect(contact, chatInfo)}
                 >
                   <Left style={styles.textContainer}>
                     <Text style={{ width: "100%", paddingBottom: 5 }}>
@@ -98,12 +111,13 @@ class Contacts extends Component {
 
 const mapStateToProps = state => ({
   contacts: Object.values(state.contacts.contacts),
+  chats: state.chats.chat,
   userData: state.config
 });
 
 export default connect(
   mapStateToProps,
-  { saveContact, getContacts }
+  { saveContact, getContacts, selectedChat }
 )(Contacts);
 
 const styles = StyleSheet.create({

@@ -26,12 +26,21 @@ class index extends Component {
     this.props.navigation.push("chat");
   };
 
+  getContactInformation = data => {
+    const result = this.props.contacts.find(contact => {
+      return data.toUID === contact.uid;
+    });
+
+    return result ? result : chats[0];
+  };
+
   render() {
     return (
       <Container>
         <Header {...this.props} />
         <Content>
           {Object.values(this.props.chats).map((chat, key) => {
+            infoData = this.getContactInformation(chat);
             const messages = Object.values(chat.messages);
             const lastmessage = messages.length
               ? messages[messages.length - 1].msg
@@ -41,36 +50,38 @@ class index extends Component {
               ? Number(messages[messages.length - 1].timestamp)
               : new Date();
 
-            return (
-              <List key={key}>
-                <ListItem
-                  avatar
-                  button
-                  onPress={() => {
-                    this.selectedChat(chat);
-                  }}
-                >
-                  <Left>
-                    <Thumbnail source={chats[0].photo} />
-                  </Left>
-                  <Body>
-                    <Text>{chats[0].senderName}</Text>
-                    <Text note>
-                      {lastmessage.length > 25
-                        ? `${lastmessage}`.substr(0, 25) + `...`
-                        : lastmessage}{" "}
-                    </Text>
-                  </Body>
-                  <Right
-                    style={{
-                      height: "97%"
+            if (messages.length !== 0) {
+              return (
+                <List key={key}>
+                  <ListItem
+                    avatar
+                    button
+                    onPress={() => {
+                      this.selectedChat(chat);
                     }}
                   >
-                    <Text note> {Moment(lasTime).format("LT")}</Text>
-                  </Right>
-                </ListItem>
-              </List>
-            );
+                    <Left>
+                      <Thumbnail source={chats[0].picture} />
+                    </Left>
+                    <Body>
+                      <Text>{infoData.name}</Text>
+                      <Text note>
+                        {lastmessage.length > 25
+                          ? `${lastmessage}`.substr(0, 25) + `...`
+                          : lastmessage}{" "}
+                      </Text>
+                    </Body>
+                    <Right
+                      style={{
+                        height: "97%"
+                      }}
+                    >
+                      <Text note> {Moment(lasTime).format("LT")}</Text>
+                    </Right>
+                  </ListItem>
+                </List>
+              );
+            }
           })}
         </Content>
       </Container>
@@ -79,7 +90,8 @@ class index extends Component {
 }
 
 const mapStateToProps = state => ({
-  chats: state.chats.chat
+  chats: state.chats.chat,
+  contacts: Object.values(state.contacts.contacts)
 });
 
 export default connect(

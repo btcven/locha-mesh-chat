@@ -1,9 +1,9 @@
 export const chats = [
   {
     idChat: "1",
-    senderName: "broadcast",
+    name: "broadcast",
     lastMessage: "hi, how are you?",
-    photo: require("./img/fotoperfil.jpg"),
+    picture: require("./img/fotoperfil.jpg"),
     date: new Date()
   }
 ];

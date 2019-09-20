@@ -58,6 +58,12 @@ export const addContacts = (uid, obj) =>
           picture: obj[0].picture,
           hashUID: obj[0].hashUID
         });
+
+        user.chats.push({
+          fromUID: uid,
+          toUID: obj[0].uid,
+          messages: []
+        });
         resolve(obj);
       });
     });
