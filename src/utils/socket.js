@@ -1,5 +1,7 @@
 import { getChat } from "../store/chats";
 import { reestarConnection } from "../store/aplication";
+import { getUserData } from "../database/realmDatabase";
+import { sha256 } from "js-sha256";
 
 export let sendSocket = undefined;
 
@@ -15,7 +17,9 @@ export default class Socket {
 
   keepAlive = () => {
     setInterval(() => {
-      this.socket.send(JSON.stringify("still alive"));
+      this.getUserObject(res => {
+        this.socket.send(JSON.stringify(res));
+      });
     }, 20000);
   };
 
@@ -28,17 +32,30 @@ export default class Socket {
     this.socket.send(data);
   };
 
-  openSocketConnection = () => {
-    console.log("conexion");
-    this.socket.onopen = () => {
-      console.log("ws connected");
-    };
+  getUserObject = callback => {
+    getUserData().then(res => {
+      const object = {
+        hashUID: sha256(res[0].uid),
+        type: "still_alive"
+      };
+      callback(object);
+    });
+  };
+
+  openSocketConnection = async () => {
+    this.getUserObject(res => {
+      res.timestamp = new Date().getTime();
+      this.socket.onopen = () => {
+        this.socket.send(JSON.stringify(res));
+      };
+    });
   };
 
   onMenssage = () => {
     this.socket.onmessage = e => {
       // a message was received
 
+      console.log("acaaa", e.data);
       this.store.dispatch(getChat(e.data));
     };
 

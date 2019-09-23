@@ -50,6 +50,7 @@ export const getChat = data => async dispatch => {
   if (!parse.toUID) {
     infoMensagge = await broadcastRandomData(parse);
   }
+
   setMessage("broadcast", { ...parse, name: infoMensagge.name }).then(() => {
     dispatch({
       type: ActionTypes.NEW_MESSAGE,

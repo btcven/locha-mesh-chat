@@ -8,7 +8,7 @@ import store from "../../store";
 const bitcoin = new Bitcoin();
 
 export const InitialState = () => async dispatch => {
-  backgroundTimer();
+  //backgroundTimer();
   getUserData().then(async res => {
     if (res.length >= 1) {
       dispatch(writeAction(JSON.parse(JSON.stringify(res[0]))));

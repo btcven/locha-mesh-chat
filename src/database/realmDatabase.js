@@ -74,7 +74,7 @@ export const getUserData = () =>
     Realm.open(databaseOptions).then(realm => {
       const user = realm.objects("user");
 
-      resolve(user);
+      resolve(user.slice(0, 1));
     });
   });
 

@@ -42,7 +42,6 @@ class Contacts extends Component {
   };
 
   onSelect = (contact, chat) => {
-    console.log(chat);
     this.props.selectedChat(chat);
     this.props.navigation.push("chat", {
       ...contact
