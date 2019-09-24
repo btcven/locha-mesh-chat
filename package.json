@@ -41,6 +41,7 @@
     "react-native-gesture-handler": "^1.0.12",
     "react-native-image-crop-picker": "^0.24.1",
     "react-native-level-fs": "^3.0.0",
+    "react-native-material-menu": "^1.0.0",
     "react-native-modal": "^11.3.1",
     "react-native-os": "^1.0.1",
     "react-native-push-notification": "3.1.3",

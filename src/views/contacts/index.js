@@ -15,14 +15,15 @@ import {
 import { selectedChat } from "../../store/chats";
 
 import { Image, StyleSheet } from "react-native";
-import { saveContact, getContacts } from "../../store/contacts";
+import { saveContact, getContacts, deleteContact } from "../../store/contacts";
 import { connect } from "react-redux";
 
 class Contacts extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      openModal: false
+      openModal: false,
+      selected: undefined
     };
   }
   static navigationOptions = {
@@ -56,10 +57,29 @@ class Contacts extends Component {
     return result;
   };
 
+  deleteContact = () => {
+    let id = this.state.selected.uid;
+    this.props.deleteContact(id);
+  };
+
+  seleted = data => {
+    this.setState({ selected: data });
+  };
+
+  closeSelected = () => {
+    this.setState({ selected: undefined });
+  };
+
   render() {
     return (
       <Container>
-        <Header {...this.props} modal={this.state.openModal} />
+        <Header
+          {...this.props}
+          back={this.closeSelected}
+          selected={this.state.selected}
+          modal={this.state.openModal}
+          delete={this.deleteContact}
+        />
         {this.state.openModal && (
           <AddContact {...this.state} {...this.props} close={this.closeModal} />
         )}
@@ -67,12 +87,17 @@ class Contacts extends Component {
         <Content>
           {this.props.contacts.map((contact, key) => {
             const chatInfo = this.getContactChat(contact);
+            const backgroundColor =
+              this.state.selected && contact.uid === this.state.selected.uid
+                ? "#f5f5f5"
+                : "#fff";
             return (
-              <List key={key}>
+              <List key={key} style={{ backgroundColor: backgroundColor }}>
                 <ListItem
                   button
                   style={{ height: 80 }}
                   onPress={() => this.onSelect(contact, chatInfo)}
+                  onLongPress={() => this.seleted(contact)}
                 >
                   <Left style={styles.textContainer}>
                     <Text style={{ width: "100%", paddingBottom: 5 }}>
@@ -116,7 +141,7 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { saveContact, getContacts, selectedChat }
+  { saveContact, getContacts, selectedChat, deleteContact }
 )(Contacts);
 
 const styles = StyleSheet.create({

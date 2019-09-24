@@ -1,5 +1,6 @@
 export const contactSchema = {
   name: "Contact",
+  primaryKey:"uid",
   properties: {
     uid: "string",
     name: "string",

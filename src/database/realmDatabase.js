@@ -16,7 +16,7 @@ const databaseOptions = {
     messageSquema,
     BroadCasContacts
   ],
-  schemaVersion: 11
+  schemaVersion: 12
 };
 
 const getRealm = () =>
@@ -147,6 +147,18 @@ export const getMessageByTime = () =>
         realm.delete(newData);
         realm.delete(temporalNames);
         resolve(JSON.parse(JSON.stringify(data)));
+      });
+    });
+  });
+
+export const deletContact = id =>
+  new Promise(resolve => {
+    Realm.open(databaseOptions).then(realm => {
+      realm.write(() => {
+        const contact = realm.objectForPrimaryKey("Contact", id);
+        realm.delete(contact);
+
+        resolve();
       });
     });
   });

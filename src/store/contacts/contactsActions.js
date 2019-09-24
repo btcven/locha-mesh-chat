@@ -2,7 +2,7 @@ import AsyncStorage from "@react-native-community/async-storage";
 import RNFS from "react-native-fs";
 import { ActionTypes } from "../constants";
 import { createFolder, FileDirectory } from "../../utils/utils";
-import { addContacts } from "../../database/realmDatabase";
+import { addContacts, deletContact } from "../../database/realmDatabase";
 
 export const saveContact = (
   id,
@@ -37,5 +37,11 @@ export const getContacts = () => async dispatch => {
   dispatch({
     type: ActionTypes.ADD_CONTACTS,
     payload: contacts ? Object.values(JSON.parse(contacts)) : []
+  });
+};
+
+export const deleteContact = id => dispatch => {
+  deletContact(id).then(() => {
+    console.log("se borro correctamente");
   });
 };
