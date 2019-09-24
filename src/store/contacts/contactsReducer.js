@@ -14,6 +14,14 @@ export const contactsReducer = (state = AplicationState, action) => {
     case ActionTypes.ADD_CONTACTS: {
       return { ...state, contacts: action.payload };
     }
+
+    case ActionTypes.DELETE_CONTACT: {
+      let result = Object.values(state.contacts).filter(
+        data => data.uid !== action.payload
+      );
+
+      return { contacts: result };
+    }
     default: {
       return state;
     }

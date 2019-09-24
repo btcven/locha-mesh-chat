@@ -18,7 +18,7 @@ import {
 import { connect } from "react-redux";
 import EditName from "./EditName";
 import EditPhoto from "./EditPhoto";
-import QRCode from 'react-native-qrcode-svg';
+import QRCode from "react-native-qrcode-svg";
 
 class Config extends Component {
   constructor(props) {
@@ -40,6 +40,7 @@ class Config extends Component {
   };
 
   render() {
+    console.log(this.props.config);
     return (
       <Container>
         <Header {...this.props} />

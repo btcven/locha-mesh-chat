@@ -15,7 +15,6 @@ class InitialStep extends Component {
   }
 
   handleSubmit = () => {
-    console.log("entro en el submit");
     const obj = {
       name: this.state.userName,
       password: this.state.password

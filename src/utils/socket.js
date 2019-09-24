@@ -10,18 +10,18 @@ export default class Socket {
     this.socket = new WebSocket("wss://lochat.coinlab.info");
     this.openSocketConnection();
     this.onMenssage();
-    this.keepAlive();
+    // this.keepAlive();
     this.store = store;
     sendSocket = this.socket;
   }
 
-  keepAlive = () => {
-    setInterval(() => {
-      this.getUserObject(res => {
-        this.socket.send(JSON.stringify(res));
-      });
-    }, 20000);
-  };
+  // keepAlive = () => {
+  //   setInterval(() => {
+  //     this.getUserObject(res => {
+  //       this.socket.send(JSON.stringify(res));
+  //     });
+  //   }, 20000);
+  // };
 
   getSocket = () =>
     new Promise(resolve => {
@@ -36,7 +36,8 @@ export default class Socket {
     getUserData().then(res => {
       const object = {
         hashUID: sha256(res[0].uid),
-        type: "still_alive"
+        timestamp: new Date().getTime(),
+        type: "handshake"
       };
       callback(object);
     });
@@ -44,8 +45,8 @@ export default class Socket {
 
   openSocketConnection = async () => {
     this.getUserObject(res => {
-      res.timestamp = new Date().getTime();
       this.socket.onopen = () => {
+        console.log("conecto");
         this.socket.send(JSON.stringify(res));
       };
     });
@@ -54,8 +55,6 @@ export default class Socket {
   onMenssage = () => {
     this.socket.onmessage = e => {
       // a message was received
-
-      console.log("acaaa", e.data);
       this.store.dispatch(getChat(e.data));
     };
 

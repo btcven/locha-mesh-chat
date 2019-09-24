@@ -61,7 +61,9 @@ class DualComponent extends Component {
         {this.props.user && (
           <View style={styles.container}>
             {this.props.tabPosition === 1 && <Home {...this.props} />}
-            {this.props.tabPosition === 2 && <Contact {...this.props} />}
+            {this.props.tabPosition === 2 && (
+              <Contact navigation={this.props.navigation} />
+            )}
             {this.props.tabPosition === 3 && <Config {...this.props} />}
             <Footer />
           </View>

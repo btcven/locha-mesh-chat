@@ -29,6 +29,17 @@ export default class AddContact extends Component {
     };
   }
 
+  componentDidMount = () => {
+    const { selected } = this.props;
+    if (selected) {
+      this.setState({
+        name: selected.name,
+        image: selected.picture,
+        uid: selected.uid
+      });
+    }
+  };
+
   close = name => {
     this.setState({ openModalPhoto: false });
   };
@@ -77,11 +88,11 @@ export default class AddContact extends Component {
     this.setState({ spinner: false });
     try {
       const result = JSON.parse(event.data);
-      if (result.name && result.id) {
+      if (result.name && result.uid) {
         setTimeout(() => {
           this.setState({
             openQrCode: false,
-            uid: result.id,
+            uid: result.uid,
             name: result.name
           });
         }, 50);
@@ -133,7 +144,12 @@ export default class AddContact extends Component {
                 <Icon style={styles.iconStyle} name="arrow-back" />
               </TouchableOpacity>
             )}
-            <Text style={styles.textStyle}>Agregar Contacto</Text>
+            {!this.props.selected && (
+              <Text style={styles.textStyle}>Agregar Contacto</Text>
+            )}
+            {this.props.selected && (
+              <Text style={styles.textStyle}>Editar Contacto</Text>
+            )}
             {
               <TouchableOpacity
                 disabled={this.state.openQrCode}

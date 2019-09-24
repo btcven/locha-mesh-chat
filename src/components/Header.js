@@ -30,7 +30,6 @@ class HeaderComponent extends Component {
 
   render() {
     const router = this.getNameContact(this.props.navigation);
-    console.log("aca", this.props.selected);
     if (!this.props.selected) {
       return (
         <Header
@@ -107,7 +106,7 @@ class HeaderComponent extends Component {
                 paddingVertical: 6,
                 borderRadius: 100
               }}
-              onPress={() => console.log("hello")}
+              onPress={ this.props.edit}
             >
               <Icon style={styles.iconStyle} name="create" />
             </TouchableHighlight>

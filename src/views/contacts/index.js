@@ -14,7 +14,7 @@ import {
 } from "native-base";
 import { selectedChat } from "../../store/chats";
 
-import { Image, StyleSheet } from "react-native";
+import { Image, StyleSheet, Alert } from "react-native";
 import { saveContact, getContacts, deleteContact } from "../../store/contacts";
 import { connect } from "react-redux";
 
@@ -43,10 +43,24 @@ class Contacts extends Component {
   };
 
   onSelect = (contact, chat) => {
-    this.props.selectedChat(chat);
-    this.props.navigation.push("chat", {
-      ...contact
-    });
+    if (!this.state.selected) {
+      this.props.selectedChat(chat);
+      this.props.navigation.push("chat", {
+        ...contact
+      });
+      return;
+    }
+
+    // ----- For later --------
+    // const result = Object.values(this.state.selected).find(selected => {
+    //   return contact.uid === selected.uid;
+    // });
+
+    if (this.state.selected.uid === contact.uid) {
+      this.setState({ selected: undefined });
+    } else {
+      this.setState({ selected: contact });
+    }
   };
 
   getContactChat = contact => {
@@ -59,7 +73,29 @@ class Contacts extends Component {
 
   deleteContact = () => {
     let id = this.state.selected.uid;
-    this.props.deleteContact(id);
+    Alert.alert(
+      "Eliminar Contactos",
+      "¿Esta seguro de eliminar este contacto?",
+      [
+        {
+          text: "Cancel",
+          onPress: () => this.setState({ selected: undefined }),
+          style: "cancel"
+        },
+        {
+          text: "OK",
+          onPress: () =>
+            this.props.deleteContact(id, () => {
+              this.setState({ selected: undefined });
+            })
+        }
+      ],
+      { cancelable: false }
+    );
+  };
+
+  editContact = () => {
+    this.openModal();
   };
 
   seleted = data => {
@@ -79,9 +115,10 @@ class Contacts extends Component {
           selected={this.state.selected}
           modal={this.state.openModal}
           delete={this.deleteContact}
+          edit={this.editContact}
         />
         {this.state.openModal && (
-          <AddContact {...this.state} {...this.props} close={this.closeModal} />
+          <AddContact {...this.props} close={this.closeModal} {...this.state} />
         )}
 
         <Content>
@@ -103,7 +140,11 @@ class Contacts extends Component {
                     <Text style={{ width: "100%", paddingBottom: 5 }}>
                       {contact.name}
                     </Text>
-                    <Text note>{contact.uid}</Text>
+                    <Text note>
+                      {`${contact.uid}`.length > 25
+                        ? `${contact.uid}`.substr(0, 25) + `...`
+                        : contact.uid}
+                    </Text>
                   </Left>
                   <Right>
                     {contact.picture && (
@@ -127,7 +168,7 @@ class Contacts extends Component {
             );
           })}
         </Content>
-        <FloatButton add={this.openModal} />
+        {!this.state.selected && <FloatButton add={this.openModal} />}
       </Container>
     );
   }
@@ -135,7 +176,7 @@ class Contacts extends Component {
 
 const mapStateToProps = state => ({
   contacts: Object.values(state.contacts.contacts),
-  chats: state.chats.chat,
+  chat: state.chats.chat,
   userData: state.config
 });
 

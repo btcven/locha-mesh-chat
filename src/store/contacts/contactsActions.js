@@ -42,6 +42,9 @@ export const getContacts = () => async dispatch => {
 
 export const deleteContact = id => dispatch => {
   deletContact(id).then(() => {
-    console.log("se borro correctamente");
+    dispatch({
+      type: ActionTypes.DELETE_CONTACT,
+      payload: id
+    });
   });
 };
