@@ -8,7 +8,8 @@ export const saveContact = (
   id,
   data,
   lastContact,
-  callback
+  callback,
+  update
 ) => async dispatch => {
   const newPath = `file:///${FileDirectory}/${data.name}Photo.jpg`;
   if (data.picture) {
@@ -21,7 +22,7 @@ export const saveContact = (
     }
   ];
 
-  addContacts(id, obj).then(res => {
+  addContacts(id, obj, update).then(res => {
     obj.push(...lastContact);
     dispatch({
       type: ActionTypes.ADD_CONTACTS,

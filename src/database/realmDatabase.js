@@ -47,23 +47,29 @@ export const writteUser = obj =>
     });
   });
 
-export const addContacts = (uid, obj) =>
+export const addContacts = (uid, obj, update) =>
   new Promise(async (resolve, reject) => {
     Realm.open(databaseOptions).then(realm => {
       realm.write(() => {
         let user = realm.objectForPrimaryKey("user", uid);
-        user.contacts.push({
-          uid: obj[0].uid,
-          name: obj[0].name,
-          picture: obj[0].picture,
-          hashUID: obj[0].hashUID
-        });
+        realm.create(
+          "Contact",
+          {
+            uid: obj[0].uid,
+            name: obj[0].name,
+            picture: obj[0].picture,
+            hashUID: obj[0].hashUID
+          },
+          true
+        );
 
-        user.chats.push({
-          fromUID: uid,
-          toUID: obj[0].uid,
-          messages: []
-        });
+        if (update) {
+          user.chats.push({
+            fromUID: uid,
+            toUID: obj[0].uid,
+            messages: []
+          });
+        }
         resolve(obj);
       });
     });

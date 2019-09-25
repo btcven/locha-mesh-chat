@@ -73,6 +73,7 @@ export default class AddContact extends Component {
       uid: this.state.uid,
       hashUID: sha256(this.state.uid)
     };
+    const update = this.props.selected ? true : false;
     this.props.saveContact(
       this.props.userData.uid,
       obj,
@@ -80,7 +81,8 @@ export default class AddContact extends Component {
       () => {
         androidToast("Contacto creado exitosamente!");
         this.props.close();
-      }
+      },
+      update
     );
   };
 

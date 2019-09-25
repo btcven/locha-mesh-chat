@@ -23,7 +23,7 @@ export default class ChatForm extends Component {
     const toUID = navigation.params ? navigation.params.uid : null;
     const sendObject = {
       fromUID: sha256(user.uid),
-      toUID: toUID,
+      toUID: sha256(toUID),
       msg: {
         text: this.state.message
       },
