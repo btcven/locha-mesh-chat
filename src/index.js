@@ -27,21 +27,21 @@ class DualComponent extends Component {
   };
 
   componentDidUpdate = prevProps => {
-    if (this.props.view !== "chat") {
-      Object.values(prevProps.chat).map(prevchat => {
-        Object.values(this.props.chat).map(chat => {
-          const lastPreChat = prevchat.messages[prevchat.messages.length - 1];
-          const lastChat = chat.messages[chat.messages.length - 1];
-          if (lastChat) {
-            if (!lastPreChat || lastPreChat.msgID !== lastChat.msgID) {
-              if (this.props.user !== lastChat.fromUID) {
-                this.notif.localNotif(lastChat);
-              }
-            }
-          }
-        });
-      });
-    }
+    // if (this.props.view !== "chat") {
+    //   Object.values(prevProps.chat).map(prevchat => {
+    //     Object.values(this.props.chat).map(chat => {
+    //       const lastPreChat = prevchat.messages[prevchat.messages.length - 1];
+    //       const lastChat = chat.messages[chat.messages.length - 1];
+    //       if (lastChat) {
+    //         if (!lastPreChat || lastPreChat.msgID !== lastChat.msgID) {
+    //           if (this.props.user !== lastChat.fromUID) {
+    //             this.notif.localNotif(lastChat);
+    //           }
+    //         }
+    //       }
+    //     });
+    //   });
+    // }
   };
 
   onRegister(token) {

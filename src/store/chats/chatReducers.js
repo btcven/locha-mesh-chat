@@ -11,17 +11,18 @@ export const chatReducer = (state = AplicationState, action) => {
       return { ...state, chat: action.payload.chats };
     }
     case ActionTypes.NEW_MESSAGE: {
-      return {
-        ...state,
-        chat: [
-          {
-            ...state.chat[0],
-            messages: Object.values(state.chat[0].messages).length
-              ? Object.values(state.chat[0].messages).concat(action.payload)
-              : [action.payload]
-          }
-        ]
-      };
+      const chat = Object.values(state.chat);
+      chatUID = action.payload.toUID ? action.payload.toUID : "broadcast";
+      const result = chat.findIndex(chat => {
+        return chat.toUID === chatUID;
+      });
+
+      const messages = Object.values(chat[result].messages);
+      chat[result].messages = messages.length
+        ? messages.concat(action.payload)
+        : [action.payload];
+
+      return { ...state, chat: chat.slice() };
     }
 
     case ActionTypes.RELOAD_BROADCAST_CHAT: {

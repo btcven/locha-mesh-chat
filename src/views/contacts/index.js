@@ -65,7 +65,7 @@ class Contacts extends Component {
 
   getContactChat = contact => {
     const result = Object.values(this.props.chat).find(chat => {
-      return chat.toUID === contact.uid;
+      return chat.toUID === contact.hashUID;
     });
 
     return result;

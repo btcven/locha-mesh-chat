@@ -21,14 +21,16 @@ class index extends Component {
     header: null
   };
 
-  selectedChat = obj => {
+  selectedChat = (info, obj) => {
+    const result = this.getContactInformation(obj);
+    const contacts = result.name === "broadcast" ? undefined : result;
     this.props.selectedChat(obj);
-    this.props.navigation.push("chat");
+    this.props.navigation.push("chat", contacts);
   };
 
   getContactInformation = data => {
     const result = this.props.contacts.find(contact => {
-      return data.toUID === contact.uid;
+      return data.toUID === contact.hashUID;
     });
 
     return result ? result : chats[0];
@@ -50,14 +52,14 @@ class index extends Component {
               ? Number(messages[messages.length - 1].timestamp)
               : new Date();
 
-            if (messages.length !== 0) {
+            if (messages.length !== 0 || chat.toUID === "broadcast") {
               return (
                 <List key={key}>
                   <ListItem
                     avatar
                     button
                     onPress={() => {
-                      this.selectedChat(chat);
+                      this.selectedChat(infoData, chat);
                     }}
                   >
                     <Left>

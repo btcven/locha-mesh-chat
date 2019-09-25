@@ -20,10 +20,10 @@ export default class ChatForm extends Component {
 
   send = () => {
     const { user, navigation, setChat, previousChat } = this.props;
-    const toUID = navigation.params ? navigation.params.uid : null;
+    const toUID = navigation.params ? navigation.params.hashUID : null;
     const sendObject = {
       fromUID: sha256(user.uid),
-      toUID: sha256(toUID),
+      toUID: toUID,
       msg: {
         text: this.state.message
       },

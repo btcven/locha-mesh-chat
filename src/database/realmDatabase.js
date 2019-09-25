@@ -49,24 +49,25 @@ export const writteUser = obj =>
 
 export const addContacts = (uid, obj, update) =>
   new Promise(async (resolve, reject) => {
+    console.log("entro aqui");
     Realm.open(databaseOptions).then(realm => {
       realm.write(() => {
         let user = realm.objectForPrimaryKey("user", uid);
-        realm.create(
-          "Contact",
-          {
-            uid: obj[0].uid,
-            name: obj[0].name,
-            picture: obj[0].picture,
-            hashUID: obj[0].hashUID
-          },
-          true
-        );
+        let contact = realm.objects("Contact").forEach(contact => {
+          console.log("data", contact);
+        });
 
-        if (update) {
+        user.contacts.push({
+          uid: obj[0].uid,
+          name: obj[0].name,
+          picture: obj[0].picture,
+          hashUID: obj[0].hashUID
+        });
+
+        if (!update) {
           user.chats.push({
             fromUID: uid,
-            toUID: obj[0].uid,
+            toUID: obj[0].hashUID,
             messages: []
           });
         }
@@ -89,6 +90,8 @@ export const setMessage = (id, obj) =>
     Realm.open(databaseOptions).then(realm => {
       realm.write(() => {
         let chat = realm.objectForPrimaryKey("Chat", id);
+
+        console.log("aca", chat);
         chat.messages.push({ ...obj, id: obj.msgID, msg: obj.msg.text });
         resolve();
       });

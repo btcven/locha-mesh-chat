@@ -10,7 +10,21 @@ import { sendSocket } from "../../utils/socket";
 import { sha256 } from "js-sha256";
 
 export const initialChat = data => dispatch => {
-  sendSocket.send(JSON.stringify(data));
+  console.log("aca", data);
+  let uidChat = data.toUID ? data.toUID : "broadcast";
+  console.log(uidChat);
+
+  setMessage(uidChat, { ...data }).then(() => {
+    sendSocket.send(JSON.stringify(data));
+    dispatch({
+      type: ActionTypes.NEW_MESSAGE,
+      payload: {
+        name: undefined,
+        ...data,
+        msg: data.msg.text
+      }
+    });
+  });
 };
 
 export const broadcastRandomData = async (parse, id) =>
@@ -46,16 +60,20 @@ export const broadcastRandomData = async (parse, id) =>
 
 export const getChat = data => async dispatch => {
   const parse = JSON.parse(data);
-  let infoMensagge;
+  let infoMensagge = undefined;
   if (!parse.toUID) {
     infoMensagge = await broadcastRandomData(parse);
   }
 
-  setMessage("broadcast", { ...parse, name: infoMensagge.name }).then(() => {
+  let uidChat = parse.toUID ? parse.toUID : "broadcast";
+
+  let name = infoMensagge ? infoMensagge.name : undefined;
+
+  setMessage(uidChat, { ...parse, name: name }).then(() => {
     dispatch({
       type: ActionTypes.NEW_MESSAGE,
       payload: {
-        name: infoMensagge.name,
+        name: name,
         ...parse,
         msg: parse.msg.text
       }
