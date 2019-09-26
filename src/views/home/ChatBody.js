@@ -23,24 +23,28 @@ export default class ChatBody extends Component {
             if (sha256(this.props.user.uid) !== item.fromUID) {
               return (
                 <View key={index.toString()} style={styles.receiveContainer}>
-                  <Thumbnail
-                    style={{
-                     marginLeft:5,
-                     marginTop:5
-                    }}
-                    source={{
-                      uri: `${getIcon(item.fromUID)}`
-                    }}
-                  />
-                  <View style={styles.textContent1}>
-                    <Text
+                  {!item.toUID && (
+                    <Thumbnail
                       style={{
-                        paddingBottom: 7,
-                        color: hashGenerateColort(item.fromUID)
+                        marginLeft: 5,
+                        marginTop: 5
                       }}
-                    >
-                      {item.name}
-                    </Text>
+                      source={{
+                        uri: `${getIcon(item.fromUID)}`
+                      }}
+                    />
+                  )}
+                  <View style={styles.textContent1}>
+                    {item.name && (
+                      <Text
+                        style={{
+                          paddingBottom: 7,
+                          color: hashGenerateColort(item.fromUID)
+                        }}
+                      >
+                        {item.name}
+                      </Text>
+                    )}
                     <View style={{ minWidth: 110 }}>
                       <Text style={{ fontSize: 15 }}>{item.msg}</Text>
                     </View>
