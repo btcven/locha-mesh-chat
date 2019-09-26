@@ -65,10 +65,9 @@ export const getChat = data => async dispatch => {
     infoMensagge = await broadcastRandomData(parse);
   }
 
-  let uidChat = parse.toUID ? parse.toUID : "broadcast";
+  let uidChat = parse.toUID ? parse.fromUID : "broadcast";
 
   let name = infoMensagge ? infoMensagge.name : undefined;
-
   setMessage(uidChat, { ...parse, name: name }).then(() => {
     dispatch({
       type: ActionTypes.NEW_MESSAGE,

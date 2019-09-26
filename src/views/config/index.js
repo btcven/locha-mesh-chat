@@ -8,7 +8,8 @@ import {
   Image,
   StyleSheet,
   TouchableHighlight,
-  TouchableOpacity
+  TouchableOpacity,
+  Clipboard
 } from "react-native";
 import {
   getPhotosFromUser,
@@ -37,6 +38,10 @@ class Config extends Component {
 
   static navigationOptions = {
     header: null
+  };
+
+  _setContent = data => {
+    Clipboard.setString(data);
   };
 
   render() {
@@ -175,7 +180,7 @@ class Config extends Component {
               style={styles.touchable}
               underlayColor="#eeeeee"
               onPress={() => {
-                console.log("copy");
+                this._setContent(this.props.config.uid);
               }}
             >
               <Icon

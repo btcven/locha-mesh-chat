@@ -13,8 +13,9 @@ export const chatReducer = (state = AplicationState, action) => {
     case ActionTypes.NEW_MESSAGE: {
       const chat = Object.values(state.chat);
       chatUID = action.payload.toUID ? action.payload.toUID : "broadcast";
+      chatFromUID = action.payload.fromUID;
       const result = chat.findIndex(chat => {
-        return chat.toUID === chatUID;
+        return chat.toUID === chatUID || chat.toUID === chatFromUID;
       });
 
       const messages = Object.values(chat[result].messages);

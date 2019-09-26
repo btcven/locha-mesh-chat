@@ -53,9 +53,6 @@ export const addContacts = (uid, obj, update) =>
     Realm.open(databaseOptions).then(realm => {
       realm.write(() => {
         let user = realm.objectForPrimaryKey("user", uid);
-        let contact = realm.objects("Contact").forEach(contact => {
-          console.log("data", contact);
-        });
 
         user.contacts.push({
           uid: obj[0].uid,
