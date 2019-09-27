@@ -1,5 +1,5 @@
 import { getChat } from "../store/chats";
-import { reestarConnection } from "../store/aplication";
+import { reestarConnection, loading, loaded } from "../store/aplication";
 import { getUserData } from "../database/realmDatabase";
 import { sha256 } from "js-sha256";
 
@@ -10,18 +10,22 @@ export default class Socket {
     this.socket = new WebSocket("wss://lochat.coinlab.info");
     this.openSocketConnection();
     this.onMenssage();
-    // this.keepAlive();
     this.store = store;
     sendSocket = this.socket;
+    this.checkingSocketStatus(store);
   }
 
-  // keepAlive = () => {
-  //   setInterval(() => {
-  //     this.getUserObject(res => {
-  //       this.socket.send(JSON.stringify(res));
-  //     });
-  //   }, 20000);
-  // };
+  checkingSocketStatus = store => {
+    setInterval(() => {
+      if (this.socket.readyState !== 1) {
+        this.store.dispatch(loading());
+      } else {
+        store.getState().aplication.loading === false
+          ? null
+          : this.store.dispatch(loaded());
+      }
+    }, 1000);
+  };
 
   getSocket = () =>
     new Promise(resolve => {
@@ -45,6 +49,7 @@ export default class Socket {
 
   openSocketConnection = async () => {
     this.getUserObject(res => {
+      this.store.dispatch(loading());
       this.socket.onopen = () => {
         console.log("conecto");
         this.socket.send(JSON.stringify(res));

@@ -77,7 +77,10 @@ class Contacts extends Component {
   };
 
   deleteContact = () => {
-    let id = this.state.selected.uid;
+    let id = {
+      uid: this.state.selected.uid,
+      hashUID: this.state.selected.hashUID
+    };
     Alert.alert(
       "Eliminar Contactos",
       "¿Esta seguro de eliminar este contacto?",

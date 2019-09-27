@@ -6,17 +6,20 @@ import Socket from "../../utils/socket";
 import store from "../../store";
 
 const bitcoin = new Bitcoin();
+export let ws = undefined;
 
 export const InitialState = () => async dispatch => {
   //backgroundTimer();
   getUserData().then(async res => {
     if (res.length >= 1) {
       dispatch(writeAction(JSON.parse(JSON.stringify(res[0]))));
+      ws = new Socket(store);
     }
   });
 };
 
 export const setInitialUser = obj => async dispatch => {
+  dispatch(loading());
   await createFolder();
   const result = await bitcoin.generateAddress();
   writteUser({
@@ -33,6 +36,7 @@ export const setInitialUser = obj => async dispatch => {
     ]
   }).then(res => {
     dispatch(writeAction(res));
+    ws = new Socket(store);
   });
 };
 
@@ -70,5 +74,5 @@ export const loaded = () => {
 };
 
 export const reestarConnection = () => {
-  new Socket(store);
+  ws = new Socket(store);
 };

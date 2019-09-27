@@ -10,7 +10,6 @@ import { sendSocket } from "../../utils/socket";
 import { sha256 } from "js-sha256";
 
 export const initialChat = data => dispatch => {
-  console.log("aca", data);
   let uidChat = data.toUID ? data.toUID : "broadcast";
   console.log(uidChat);
 

@@ -10,6 +10,20 @@ export const chatReducer = (state = AplicationState, action) => {
     case ActionTypes.INITIAL_STATE: {
       return { ...state, chat: action.payload.chats };
     }
+
+    case ActionTypes.ADD_CONTACTS: {
+      const payload = action.chat;
+      return { ...state, chat: Object.values(state.chat).concat(payload) };
+    }
+
+    case ActionTypes.DELETE_CONTACT: {
+      const result = Object.values(state.chat).filter(obj => {
+        return obj.toUID !== action.chat;
+      });
+
+      return { ...state, chat: result };
+    }
+
     case ActionTypes.NEW_MESSAGE: {
       const chat = Object.values(state.chat);
       chatUID = action.payload.toUID ? action.payload.toUID : "broadcast";

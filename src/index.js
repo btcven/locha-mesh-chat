@@ -7,6 +7,7 @@ import Home from "./views/home";
 import Contact from "./views/contacts";
 import Config from "./views/config";
 import InitialStep from "./InitialStep";
+import Spinner from "./components/Spinner";
 import NotifService from "./utils/notificationService";
 import { selectedChat } from "./store/chats";
 
@@ -58,6 +59,7 @@ class DualComponent extends Component {
   render() {
     return (
       <View style={styles.container}>
+        {this.props.loading && <Spinner />}
         {this.props.user && (
           <View style={styles.container}>
             {this.props.tabPosition === 1 && <Home {...this.props} />}
@@ -80,6 +82,7 @@ const mapStateToProps = state => ({
   tabPosition: state.aplication.tab,
   user: state.config.uid,
   chat: state.chats.chat,
+  loading: state.aplication.loading,
   view: state.aplication.view
 });
 

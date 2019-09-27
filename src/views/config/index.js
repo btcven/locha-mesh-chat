@@ -20,6 +20,7 @@ import { connect } from "react-redux";
 import EditName from "./EditName";
 import EditPhoto from "./EditPhoto";
 import QRCode from "react-native-qrcode-svg";
+import { androidToast } from "../../utils/utils";
 
 class Config extends Component {
   constructor(props) {
@@ -40,8 +41,9 @@ class Config extends Component {
     header: null
   };
 
-  _setContent = data => {
+  _setContent = async data => {
     Clipboard.setString(data);
+    androidToast("uid copiado");
   };
 
   render() {

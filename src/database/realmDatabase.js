@@ -67,7 +67,7 @@ export const addContacts = (uid, obj, update) =>
             messages: []
           });
         }
-        resolve(obj);
+        resolve({ fromUID: uid, toUID: obj[0].hashUID, messages: {} });
       });
     });
   });
@@ -161,6 +161,8 @@ export const deleteContact = id =>
     Realm.open(databaseOptions).then(realm => {
       realm.write(() => {
         const contact = realm.objectForPrimaryKey("Contact", id);
+        const chat = realm.objectForPrimaryKey("Chat", contact.hashUID);
+        realm.delete(chat);
         realm.delete(contact);
 
         resolve();

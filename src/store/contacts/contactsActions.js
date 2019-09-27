@@ -29,7 +29,8 @@ export const saveContact = (
     obj.push(...lastContact);
     dispatch({
       type: ActionTypes.ADD_CONTACTS,
-      payload: obj
+      payload: obj,
+      chat: res
     });
     callback();
   });
@@ -44,11 +45,12 @@ export const getContacts = () => async dispatch => {
   });
 };
 
-export const deleteContactAction = id => dispatch => {
-  deleteContact(id).then(() => {
+export const deleteContactAction = (data, callback) => dispatch => {
+  deleteContact(data.uid).then(res => {
     dispatch({
       type: ActionTypes.DELETE_CONTACT,
-      payload: id
+      payload: data.uid,
+      chat: data.hashUID
     });
   });
 };
