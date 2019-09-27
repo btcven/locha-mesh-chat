@@ -49,7 +49,6 @@ export const writteUser = obj =>
 
 export const addContacts = (uid, obj, update) =>
   new Promise(async (resolve, reject) => {
-    console.log("entro aqui");
     Realm.open(databaseOptions).then(realm => {
       realm.write(() => {
         let user = realm.objectForPrimaryKey("user", uid);
@@ -157,7 +156,7 @@ export const getMessageByTime = () =>
     });
   });
 
-export const deletContact = id =>
+export const deleteContact = id =>
   new Promise(resolve => {
     Realm.open(databaseOptions).then(realm => {
       realm.write(() => {
@@ -165,6 +164,22 @@ export const deletContact = id =>
         realm.delete(contact);
 
         resolve();
+      });
+    });
+  });
+
+export const editContact = object =>
+  new Promise(resolve => {
+    Realm.open(databaseOptions).then(realm => {
+      realm.write(() => {
+        realm.create(
+          "Contact",
+          {
+            ...object
+          },
+          true
+        );
+        resolve(object);
       });
     });
   });

@@ -74,16 +74,22 @@ export default class AddContact extends Component {
       hashUID: sha256(this.state.uid)
     };
     const update = this.props.selected ? true : false;
-    this.props.saveContact(
-      this.props.userData.uid,
-      obj,
-      this.props.contacts,
-      () => {
+    if (!update) {
+      this.props.saveContact(
+        this.props.userData.uid,
+        obj,
+        this.props.contacts,
+        () => {
+          androidToast("Contacto creado exitosamente!");
+          this.props.close();
+        }
+      );
+    } else {
+      this.props.editContats(obj, () => {
         androidToast("Contacto creado exitosamente!");
         this.props.close();
-      },
-      update
-    );
+      });
+    }
   };
 
   onSuccess = event => {
@@ -107,6 +113,7 @@ export default class AddContact extends Component {
   };
 
   render() {
+    disabled = this.props.selected ? true : false;
     return (
       <View>
         <Modal
@@ -200,6 +207,7 @@ export default class AddContact extends Component {
                   </View>
                   <Item style={{ height: 30 }}>
                     <Input
+                      disabled={disabled}
                       value={this.state.uid}
                       style={{ fontSize: 16 }}
                       onChangeText={text => this.setState({ uid: text })}

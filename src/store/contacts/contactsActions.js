@@ -2,14 +2,17 @@ import AsyncStorage from "@react-native-community/async-storage";
 import RNFS from "react-native-fs";
 import { ActionTypes } from "../constants";
 import { createFolder, FileDirectory } from "../../utils/utils";
-import { addContacts, deletContact } from "../../database/realmDatabase";
+import {
+  addContacts,
+  deleteContact,
+  editContact
+} from "../../database/realmDatabase";
 
 export const saveContact = (
   id,
   data,
   lastContact,
-  callback,
-  update
+  callback
 ) => async dispatch => {
   const newPath = `file:///${FileDirectory}/${data.name}Photo.jpg`;
   if (data.picture) {
@@ -22,7 +25,7 @@ export const saveContact = (
     }
   ];
 
-  addContacts(id, obj, update).then(res => {
+  addContacts(id, obj).then(res => {
     obj.push(...lastContact);
     dispatch({
       type: ActionTypes.ADD_CONTACTS,
@@ -41,11 +44,21 @@ export const getContacts = () => async dispatch => {
   });
 };
 
-export const deleteContact = id => dispatch => {
-  deletContact(id).then(() => {
+export const deleteContactAction = id => dispatch => {
+  deleteContact(id).then(() => {
     dispatch({
       type: ActionTypes.DELETE_CONTACT,
       payload: id
+    });
+  });
+};
+
+export const editContats = (obj, callback) => dispatch => {
+  editContact(obj).then(res => {
+    callback();
+    dispatch({
+      type: ActionTypes.EDIT_CONTACT,
+      payload: res
     });
   });
 };

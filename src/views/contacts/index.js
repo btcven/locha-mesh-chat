@@ -15,7 +15,12 @@ import {
 import { selectedChat } from "../../store/chats";
 
 import { Image, StyleSheet, Alert } from "react-native";
-import { saveContact, getContacts, deleteContact } from "../../store/contacts";
+import {
+  saveContact,
+  getContacts,
+  deleteContactAction,
+  editContats
+} from "../../store/contacts";
 import { connect } from "react-redux";
 
 class Contacts extends Component {
@@ -182,7 +187,13 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { saveContact, getContacts, selectedChat, deleteContact }
+  {
+    saveContact,
+    getContacts,
+    selectedChat,
+    deleteContact: deleteContactAction,
+    editContats
+  }
 )(Contacts);
 
 const styles = StyleSheet.create({

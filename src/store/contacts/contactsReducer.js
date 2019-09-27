@@ -22,6 +22,17 @@ export const contactsReducer = (state = AplicationState, action) => {
 
       return { contacts: result };
     }
+
+    case ActionTypes.EDIT_CONTACT: {
+      const contacts = Object.values(state.contacts);
+      let result = contacts.findIndex(data => {
+        return data.uid === action.payload.uid;
+      });
+
+      contacts[result] = action.payload;
+
+      return { ...state, contacts: contacts.slice() };
+    }
     default: {
       return state;
     }
