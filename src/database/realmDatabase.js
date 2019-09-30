@@ -1,5 +1,6 @@
 import Realm from "realm";
 import moment from "moment";
+import { onNotification } from "../utils/utils";
 import {
   userSchema,
   contactSchema,
@@ -76,7 +77,6 @@ export const getUserData = () =>
   new Promise(async resolve => {
     Realm.open(databaseOptions).then(realm => {
       const user = realm.objects("user");
-
       resolve(user.slice(0, 1));
     });
   });
@@ -85,11 +85,13 @@ export const setMessage = (id, obj) =>
   new Promise(async (resolve, reject) => {
     Realm.open(databaseOptions).then(realm => {
       realm.write(() => {
-        let chat = realm.objectForPrimaryKey("Chat", id);
-
-        console.log("aca", chat);
-        chat.messages.push({ ...obj, id: obj.msgID, msg: obj.msg.text });
-        resolve();
+        try {
+          let chat = realm.objectForPrimaryKey("Chat", id);
+          chat.messages.push({ ...obj, id: obj.msgID, msg: obj.msg.text });
+          resolve();
+        } catch (err) {
+          console.log(err);
+        }
       });
     });
   });
@@ -98,7 +100,6 @@ export const addTemporalInfo = obj =>
   new Promise(resolve => {
     Realm.open(databaseOptions).then(realm => {
       realm.write(() => {
-        console.log("object", obj);
         realm.create("temporalContacts", {
           ...obj
         });
@@ -185,3 +186,19 @@ export const editContact = object =>
       });
     });
   });
+
+const listener = (chats, changes) => {
+  changes.insertions.forEach(index => {
+    let changeChat = chats[index];
+
+    onNotification(JSON.parse(JSON.stringify(changeChat)));
+  });
+};
+
+export const realmObservable = () => {
+  Realm.open(databaseOptions).then(realm => {
+    let chats = realm.objects("Message");
+
+    chats.addListener(listener);
+  });
+};

@@ -4,8 +4,13 @@ import { PermissionsAndroid } from "react-native";
 import Identicon from "identicon.js";
 import { getMessageByTime } from "../database/realmDatabase";
 import BackgroundTimer from "react-native-background-timer";
-import { realoadBroadcastChat } from "../store/chats";
+import { realoadBroadcastChat, selectedChat } from "../store/chats";
+import NotifService from "./notificationService";
+import NavigationService from "./navigationService";
 import store from "../store";
+import { sha256 } from "js-sha256";
+
+export const notification = new NotifService();
 
 async function requestStoragePermission() {
   try {
@@ -25,6 +30,47 @@ export const createFolder = async () => {
   const directory = RNFS.ExternalStorageDirectoryPath + "/Pictures/LochaMesh/";
   await RNFS.mkdir(FileDirectory.toString());
   return directory;
+};
+
+export const notifyRedirect = data => {
+  const result = getInfoMessage(data.id);
+  store.dispatch(selectedChat({ toUID: result.toUID }));
+  NavigationService.navigate("chat", {
+    hashUID: result.hashUID,
+    name: result.name,
+    picture: result.picture,
+    uid: result.uid
+  });
+};
+
+export const onNotification = res => {
+  let state = store.getState();
+  if (sha256(state.config.uid) !== res.fromUID) {
+    let id = res.toUID
+      ? parseInt(sha256(res.fromUID), 16)
+      : parseInt(sha256("broadcast"), 16);
+    const result = getInfoMessage(String(id).substr(2, 10));
+    const allData =
+      result.toUID === "broadcast"
+        ? { ...res, name: result.toUID }
+        : { ...res, name: result.name };
+
+    notification.localNotif(allData, String(id).substr(2, 10));
+  }
+};
+
+getInfoMessage = id => {
+  console.log("entro aca");
+  let state = store.getState();
+  const result = state.chats.chat.find(data => {
+    const sub = String(parseInt(sha256(data.toUID), 16)).substr(2, 10);
+    return sub === id;
+  });
+  const contact = Object.values(state.contacts.contacts).find(contact => {
+    return contact.hashUID === result.toUID;
+  });
+
+  return { toUID: result.toUID, ...contact };
 };
 
 export const backgroundTimer = () => {

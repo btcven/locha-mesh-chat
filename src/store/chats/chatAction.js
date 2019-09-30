@@ -6,6 +6,7 @@ import {
   verifyContact,
   getTemporalContact
 } from "../../database/realmDatabase";
+import { notification } from "../../utils/utils";
 import { sendSocket } from "../../utils/socket";
 import { sha256 } from "js-sha256";
 
@@ -80,6 +81,8 @@ export const getChat = data => async dispatch => {
 };
 
 export const selectedChat = obj => dispatch => {
+  let id = obj.toUID ? obj.toUID : sha256("broadcast");
+  notification.cancelNotif(id);
   dispatch({
     type: ActionTypes.SELECTED_CHAT,
     payload: obj

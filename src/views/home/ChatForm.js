@@ -31,7 +31,11 @@ export default class ChatForm extends Component {
       type: "msg"
     };
 
-    const id = sha256(JSON.stringify(sendObject));
+    const id = sha256(
+      `${sha256(user.uid)} + ${toUID}  +  ${
+        sendObject.msg.text
+      }  + ${new Date().getTime()}`
+    );
 
     setChat({ ...sendObject, msgID: id });
     this.setState({ message: "" });
@@ -46,7 +50,7 @@ export default class ChatForm extends Component {
           contentContainerStyle={styles.contentForm}
           keyboardShouldPersistTaps={"handled"}
         >
-          <TouchableOpacity onPress={() => this.notif.cancelAll()}>
+          <TouchableOpacity onPress={() => console.log("click me!")}>
             <Icon
               style={styles.iconChatStyle}
               type="MaterialIcons"
@@ -68,7 +72,7 @@ export default class ChatForm extends Component {
           />
 
           {this.state.message.length === 0 && (
-            <TouchableOpacity onPress={() => this.notif.localNotif()}>
+            <TouchableOpacity onPress={() => console.log("click me!")}>
               <Icon
                 style={styles.iconChatStyle}
                 type="MaterialIcons"

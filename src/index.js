@@ -10,6 +10,7 @@ import InitialStep from "./InitialStep";
 import Spinner from "./components/Spinner";
 import NotifService from "./utils/notificationService";
 import { selectedChat } from "./store/chats";
+import { realmObservable } from "./database/realmDatabase";
 
 class DualComponent extends Component {
   constructor(props) {
@@ -27,23 +28,10 @@ class DualComponent extends Component {
     header: null
   };
 
-  componentDidUpdate = prevProps => {
-    // if (this.props.view !== "chat") {
-    //   Object.values(prevProps.chat).map(prevchat => {
-    //     Object.values(this.props.chat).map(chat => {
-    //       const lastPreChat = prevchat.messages[prevchat.messages.length - 1];
-    //       const lastChat = chat.messages[chat.messages.length - 1];
-    //       if (lastChat) {
-    //         if (!lastPreChat || lastPreChat.msgID !== lastChat.msgID) {
-    //           if (this.props.user !== lastChat.fromUID) {
-    //             this.notif.localNotif(lastChat);
-    //           }
-    //         }
-    //       }
-    //     });
-    //   });
-    // }
+  componentDidMount = () => {
+    realmObservable();
   };
+
 
   onRegister(token) {
     Alert.alert("Registered !", JSON.stringify(token));
