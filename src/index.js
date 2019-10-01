@@ -15,13 +15,6 @@ import { realmObservable } from "./database/realmDatabase";
 class DualComponent extends Component {
   constructor(props) {
     super(props);
-
-    this.notif = new NotifService(
-      this.onRegister.bind(this),
-      this.onNotif.bind(this)
-    );
-
-    notify = this.notif;
   }
 
   static navigationOptions = {
@@ -31,18 +24,6 @@ class DualComponent extends Component {
   componentDidMount = () => {
     realmObservable();
   };
-
-
-  onRegister(token) {
-    Alert.alert("Registered !", JSON.stringify(token));
-    console.log(token);
-    this.setState({ registerToken: token.token, gcmRegistered: true });
-  }
-
-  onNotif(notif) {
-    this.props.selectedChat();
-    this.props.navigation.push("chat");
-  }
 
   render() {
     return (

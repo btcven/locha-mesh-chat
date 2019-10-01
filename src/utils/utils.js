@@ -45,10 +45,11 @@ export const notifyRedirect = data => {
 
 export const onNotification = res => {
   let state = store.getState();
-  if (sha256(state.config.uid) !== res.fromUID) {
-    let id = res.toUID
-      ? parseInt(sha256(res.fromUID), 16)
-      : parseInt(sha256("broadcast"), 16);
+  const view = res.toUID ? res.fromUID : "broadcast";
+  const rule = state.aplication.view !== view;
+  if (sha256(state.config.uid) !== res.fromUID && rule) {
+    let id = parseInt(sha256(view), 16);
+
     const result = getInfoMessage(String(id).substr(2, 10));
     const allData =
       result.toUID === "broadcast"

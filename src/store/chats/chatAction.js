@@ -81,8 +81,7 @@ export const getChat = data => async dispatch => {
 };
 
 export const selectedChat = obj => dispatch => {
-  let id = obj.toUID ? obj.toUID : sha256("broadcast");
-  notification.cancelNotif(id);
+  notification.cancelAll();
   dispatch({
     type: ActionTypes.SELECTED_CHAT,
     payload: obj

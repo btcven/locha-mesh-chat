@@ -15,8 +15,7 @@ class Chat extends Component {
   }
 
   componentDidMount = () => {
-    this.props.setView("chat");
-    notify.cancelAll();
+    this.props.setView(this.props.chat[this.props.chatSelected.index].toUID);
   };
 
   static navigationOptions = {
