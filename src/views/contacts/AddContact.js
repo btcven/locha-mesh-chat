@@ -67,29 +67,32 @@ export default class AddContact extends Component {
   };
 
   save = () => {
-    const obj = {
-      name: this.state.name,
-      picture: this.state.image,
-      uid: this.state.uid,
-      hashUID: sha256(this.state.uid)
-    };
-    const update = this.props.selected.length > 0 ? true : false;
-    console.log("aca", update);
-    if (!update) {
-      this.props.saveContact(
-        this.props.userData.uid,
-        obj,
-        this.props.contacts,
-        () => {
+    const verify = this.verifyContacts();
+    console.log("er webo", verify);
+    if (verify) {
+      const obj = {
+        name: this.state.name,
+        picture: this.state.image,
+        uid: this.state.uid,
+        hashUID: sha256(this.state.uid)
+      };
+      const update = this.props.selected.length > 0 ? true : false;
+      if (!update) {
+        this.props.saveContact(
+          this.props.userData.uid,
+          obj,
+          this.props.contacts,
+          () => {
+            androidToast("Contacto creado exitosamente!");
+            this.props.close();
+          }
+        );
+      } else {
+        this.props.editContats(obj, () => {
           androidToast("Contacto creado exitosamente!");
           this.props.close();
-        }
-      );
-    } else {
-      this.props.editContats(obj, () => {
-        androidToast("Contacto creado exitosamente!");
-        this.props.close();
-      });
+        });
+      }
     }
   };
 
@@ -113,10 +116,31 @@ export default class AddContact extends Component {
     }
   };
 
+  verifyContacts = data => {
+    const uidExist = this.props.contacts.find(contact => {
+      return contact.name === this.state.uid;
+    });
+
+    if (uidExist) {
+      androidToast("contacto existente");
+      return false;
+    }
+
+    const nameExist = this.props.contacts.find(contact => {
+      return contact.name === this.state.name;
+    });
+
+    if (nameExist) {
+      androidToast("ya existe un contacto con ese nombre");
+      return false;
+    }
+
+    console.log(uidExist, nameExist);
+    return true;
+  };
+
   render() {
     let disabled = this.props.selected.length > 0 ? true : false;
-
-    console.log("mardita seaa", disabled, this.props.selected);
     return (
       <View>
         <Modal

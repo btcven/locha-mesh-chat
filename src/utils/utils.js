@@ -60,6 +60,32 @@ export const onNotification = res => {
   }
 };
 
+export const unSelect = (selected, contact) => {
+  const result = selected.filter(selected => {
+    if (selected.toUID) {
+      return contact.toUID !== selected.toUID;
+    } else {
+      return contact.uid !== selected.uid;
+    }
+  });
+
+  return selected.length === result.length
+    ? { found: false }
+    : { found: true, data: result };
+};
+
+export const getSelectedColor = (selected, id) => {
+  const result = selected.find(selected => {
+    if (selected.toUID) {
+      return selected.toUID === id;
+    } else {
+      return selected.uid === id;
+    }
+  });
+
+  return result ? "#f5f5f5" : "#fff";
+};
+
 getInfoMessage = id => {
   console.log("entro aca");
   let state = store.getState();

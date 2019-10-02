@@ -4,7 +4,8 @@ import {
   setMessage,
   addTemporalInfo,
   verifyContact,
-  getTemporalContact
+  getTemporalContact,
+  deleteChatss
 } from "../../database/realmDatabase";
 import { notification } from "../../utils/utils";
 import { sendSocket } from "../../utils/socket";
@@ -93,4 +94,14 @@ export const realoadBroadcastChat = data => {
     type: ActionTypes.RELOAD_BROADCAST_CHAT,
     payload: data
   };
+};
+
+export const deleteChat = (obj, callback) => dispatch => {
+  deleteChatss(obj).then(() => {
+    dispatch({
+      type: ActionTypes.DELETE_MESSAGE,
+      payload: obj
+    });
+    callback();
+  });
 };

@@ -14,19 +14,62 @@ import {
 } from "native-base";
 import Header from "../../components/Header";
 import { connect } from "react-redux";
-import { selectedChat } from "../../store/chats";
+import { Alert } from "react-native";
+import { selectedChat, deleteChat } from "../../store/chats";
+import { getSelectedColor, unSelect } from "../../utils/utils";
 import Moment from "moment";
-//import Bitcoin from 'bitcore-lib'
+
 class index extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      selected: []
+    };
+  }
   static navigationOptions = {
     header: null
   };
 
   selectedChat = (info, obj) => {
-    const result = this.getContactInformation(obj);
-    const contacts = result.name === "broadcast" ? undefined : result;
-    this.props.selectedChat(obj);
-    this.props.navigation.push("chat", contacts);
+    if (this.state.selected.length === 0) {
+      const result = this.getContactInformation(obj);
+      const contacts = result.name === "broadcast" ? undefined : result;
+      this.props.selectedChat(obj);
+      this.props.navigation.push("chat", contacts);
+      return;
+    }
+
+    const selected = unSelect(this.state.selected, obj);
+
+    if (selected.found) {
+      this.setState({ selected: selected.data });
+    } else {
+      this.setState({
+        selected: this.state.selected.concat(obj)
+      });
+    }
+  };
+
+  deleteChat = () => {
+    Alert.alert(
+      "Eliminar Chat",
+      "¿Esta seguro de eliminar este chat?",
+      [
+        {
+          text: "Cancel",
+          onPress: () => this.setState({ selected: [] }),
+          style: "cancel"
+        },
+        {
+          text: "OK",
+          onPress: () =>
+            this.props.deleteChat(this.state.selected, () => {
+              this.setState({ selected: [] });
+            })
+        }
+      ],
+      { cancelable: false }
+    );
   };
 
   getContactInformation = data => {
@@ -37,12 +80,34 @@ class index extends Component {
     return result ? result : chats[0];
   };
 
+  seleted = data => {
+    const object = Object.assign({}, data);
+    delete object.messages;
+
+    this.setState({
+      selected: this.state.selected.concat(data)
+    });
+  };
+
+  closeSelected = () => {
+    this.setState({ selected: [] });
+  };
+
   render() {
     return (
       <Container>
-        <Header {...this.props} />
+        <Header
+          {...this.props}
+          {...this.state}
+          delete={this.deleteChat}
+          back={this.closeSelected}
+        />
         <Content>
           {Object.values(this.props.chats).map((chat, key) => {
+            const backgroundColor = getSelectedColor(
+              this.state.selected,
+              chat.toUID
+            );
             infoData = this.getContactInformation(chat);
             const messages = Object.values(chat.messages);
             const lastmessage = messages.length
@@ -55,13 +120,14 @@ class index extends Component {
 
             if (messages.length !== 0 || chat.toUID === "broadcast") {
               return (
-                <List key={key}>
+                <List key={key} style={{ backgroundColor: backgroundColor }}>
                   <ListItem
                     avatar
                     button
                     onPress={() => {
                       this.selectedChat(infoData, chat);
                     }}
+                    onLongPress={() => this.seleted(chat)}
                   >
                     <Left>
                       <Thumbnail source={chats[0].picture} />
@@ -99,5 +165,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { selectedChat }
+  { selectedChat, deleteChat }
 )(index);

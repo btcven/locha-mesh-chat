@@ -15,12 +15,13 @@ export const ActionTypes = {
 
   ADD_CONTACTS: "@@contacts/ADD_CONTACTS",
   DELETE_CONTACT: "@contacts/DELETE_CONTACT",
-  EDIT_CONTACT:"@contacts/EDIT_CONTACT",
-  
+  EDIT_CONTACT: "@contacts/EDIT_CONTACT",
+
   //CHATS
 
   RELOAD_BROADCAST_CHAT: "@@chat/RELOAD_BROADCAST_CHAT",
   IN_VIEW: "@@chat/IN_VIEW",
   SELECTED_CHAT: "@@chat/SELETED_CHAT",
-  NEW_MESSAGE: "@@chat/NEW_MESSAGE"
+  NEW_MESSAGE: "@@chat/NEW_MESSAGE",
+  DELETE_MESSAGE: "@@chat/DELETE_MESSAGE"
 };

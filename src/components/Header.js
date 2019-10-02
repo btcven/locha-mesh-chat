@@ -108,7 +108,7 @@ class HeaderComponent extends Component {
             >
               <Icon style={styles.iconStyle} name="trash" />
             </TouchableHighlight>
-            {this.props.selected.length === 1 && (
+            {this.props.selected.length === 1 && this.props.edit && (
               <TouchableHighlight
                 underlayColor="#eeeeee"
                 style={{

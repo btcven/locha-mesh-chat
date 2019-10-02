@@ -13,7 +13,7 @@ import {
   Text
 } from "native-base";
 import { selectedChat } from "../../store/chats";
-
+import { getSelectedColor, unSelect } from "../../utils/utils";
 import { Image, StyleSheet, Alert } from "react-native";
 import {
   saveContact,
@@ -43,22 +43,9 @@ class Contacts extends Component {
     this.setState({ openModal: false });
   };
 
-  unSelect = contact => {
-    const result = this.state.selected.filter(selected => {
-      return contact.uid !== selected.uid;
-    });
-
-    console.log(result);
-
-    return this.state.selected.length === result.length
-      ? { found: false }
-      : { found: true, data: result };
-  };
 
   onSelect = (contact, chat) => {
-    console.log("aca", this.state.selected.length === 0);
     if (this.state.selected.length === 0) {
-      console.log("paso esto", chat);
       this.props.selectedChat(chat);
       this.props.navigation.push("chat", {
         ...contact
@@ -66,7 +53,7 @@ class Contacts extends Component {
       return;
     }
 
-    const selected = this.unSelect(contact);
+    const selected = unSelect(this.state.selected, contact);
 
     if (selected.found) {
       this.setState({ selected: selected.data });
@@ -121,13 +108,6 @@ class Contacts extends Component {
     this.setState({ selected: [] });
   };
 
-  getSelectedColor = id => {
-    const result = this.state.selected.find(selected => {
-      return selected.uid === id;
-    });
-    return result ? "#f5f5f5" : "#fff";
-  };
-
   render() {
     return (
       <Container>
@@ -146,7 +126,10 @@ class Contacts extends Component {
         <Content>
           {this.props.contacts.map((contact, key) => {
             const chatInfo = this.getContactChat(contact);
-            const backgroundColor = this.getSelectedColor(contact.uid);
+            const backgroundColor = getSelectedColor(
+              this.state.selected,
+              contact.uid
+            );
             return (
               <List key={key} style={{ backgroundColor: backgroundColor }}>
                 <ListItem

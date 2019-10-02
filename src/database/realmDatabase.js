@@ -220,3 +220,26 @@ export const realmObservable = () => {
     chats.addListener(listener);
   });
 };
+
+export const deleteChatss = obj =>
+  new Promise(resolve => {
+    Realm.open(databaseOptions).then(realm => {
+      realm.write(() => {
+        const chat = realm.objects("Chat").filter(msg => {
+          const result = obj.find(data => {
+            return data.toUID === msg.toUID;
+          });
+
+          if (result) {
+            return result.toUID === msg.toUID;
+          }
+        });
+
+        chat.forEach(msg => {
+          realm.delete(msg.messages);
+        });
+
+        resolve(obj);
+      });
+    });
+  });
