@@ -46,12 +46,12 @@ export const getContacts = () => async dispatch => {
 };
 
 export const deleteContactAction = (data, callback) => dispatch => {
-  deleteContact(data.uid).then(res => {
+  deleteContact(data).then(res => {
     dispatch({
       type: ActionTypes.DELETE_CONTACT,
-      payload: data.uid,
-      chat: data.hashUID
+      payload: data
     });
+    callback();
   });
 };
 

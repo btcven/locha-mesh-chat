@@ -157,16 +157,34 @@ export const getMessageByTime = () =>
     });
   });
 
-export const deleteContact = id =>
+export const deleteContact = data =>
   new Promise(resolve => {
     Realm.open(databaseOptions).then(realm => {
       realm.write(() => {
-        const contact = realm.objectForPrimaryKey("Contact", id);
-        const chat = realm.objectForPrimaryKey("Chat", contact.hashUID);
-        realm.delete(chat);
+        const contact = realm.objects("Contact").filter(contact => {
+          let result = data.find(element => {
+            return contact.uid === element.uid;
+          });
+
+          if (result) {
+            return result.uid === contact.uid;
+          }
+        });
+
+        const chats = realm.objects("Chat").filter(chat => {
+          const resultContact = contact.find(cont => {
+            return cont.hashUID === chat.toUID;
+          });
+
+          if (resultContact) {
+            return resultContact.hashUID === chat.toUID;
+          }
+        });
+
+        realm.delete(chats);
         realm.delete(contact);
 
-        resolve();
+        resolve(contact);
       });
     });
   });

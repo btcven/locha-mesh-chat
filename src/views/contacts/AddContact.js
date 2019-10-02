@@ -31,11 +31,11 @@ export default class AddContact extends Component {
 
   componentDidMount = () => {
     const { selected } = this.props;
-    if (selected) {
+    if (selected.length > 0) {
       this.setState({
-        name: selected.name,
-        image: selected.picture,
-        uid: selected.uid
+        name: selected[0].name,
+        image: selected[0].picture,
+        uid: selected[0].uid
       });
     }
   };
@@ -73,7 +73,8 @@ export default class AddContact extends Component {
       uid: this.state.uid,
       hashUID: sha256(this.state.uid)
     };
-    const update = this.props.selected ? true : false;
+    const update = this.props.selected.length > 0 ? true : false;
+    console.log("aca", update);
     if (!update) {
       this.props.saveContact(
         this.props.userData.uid,
@@ -113,7 +114,9 @@ export default class AddContact extends Component {
   };
 
   render() {
-    disabled = this.props.selected ? true : false;
+    let disabled = this.props.selected.length > 0 ? true : false;
+
+    console.log("mardita seaa", disabled, this.props.selected);
     return (
       <View>
         <Modal
@@ -153,10 +156,10 @@ export default class AddContact extends Component {
                 <Icon style={styles.iconStyle} name="arrow-back" />
               </TouchableOpacity>
             )}
-            {!this.props.selected && (
+            {this.props.selected.length < 1 && (
               <Text style={styles.textStyle}>Agregar Contacto</Text>
             )}
-            {this.props.selected && (
+            {this.props.selected.length > 0 && (
               <Text style={styles.textStyle}>Editar Contacto</Text>
             )}
             {

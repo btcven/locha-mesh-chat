@@ -16,9 +16,15 @@ export const contactsReducer = (state = AplicationState, action) => {
     }
 
     case ActionTypes.DELETE_CONTACT: {
-      let result = Object.values(state.contacts).filter(
-        data => data.uid !== action.payload
-      );
+      const contacts = Object.values(state.contacts);
+      let result = contacts.filter(data => {
+        const payload = action.payload.find(contact => {
+          return contact.uid === data.uid;
+        });
+        if (payload) {
+          return payload.uid !== data.uid;
+        }
+      });
 
       return { contacts: result };
     }

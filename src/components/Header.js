@@ -30,7 +30,12 @@ class HeaderComponent extends Component {
 
   render() {
     const router = this.getNameContact(this.props.navigation);
-    if (!this.props.selected) {
+    const selected = this.props.selected
+      ? this.props.selected.length < 1
+        ? true
+        : false
+      : true;
+    if (selected) {
       return (
         <Header
           style={styles.container}
@@ -85,7 +90,11 @@ class HeaderComponent extends Component {
             </TouchableHighlight>
           </Left>
           <Body>
-            <Title>{this.props.selected.name}</Title>
+            {this.props.selected.length === 1 ? (
+              <Title>{this.props.selected[0].name}</Title>
+            ) : (
+              <Title>{this.props.selected.length}</Title>
+            )}
           </Body>
           <Right>
             <TouchableHighlight
@@ -99,17 +108,19 @@ class HeaderComponent extends Component {
             >
               <Icon style={styles.iconStyle} name="trash" />
             </TouchableHighlight>
-            <TouchableHighlight
-              underlayColor="#eeeeee"
-              style={{
-                paddingHorizontal: 10,
-                paddingVertical: 6,
-                borderRadius: 100
-              }}
-              onPress={ this.props.edit}
-            >
-              <Icon style={styles.iconStyle} name="create" />
-            </TouchableHighlight>
+            {this.props.selected.length === 1 && (
+              <TouchableHighlight
+                underlayColor="#eeeeee"
+                style={{
+                  paddingHorizontal: 10,
+                  paddingVertical: 6,
+                  borderRadius: 100
+                }}
+                onPress={this.props.edit}
+              >
+                <Icon style={styles.iconStyle} name="create" />
+              </TouchableHighlight>
+            )}
           </Right>
         </Header>
       );

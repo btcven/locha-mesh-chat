@@ -28,7 +28,7 @@ class Contacts extends Component {
     super(props);
     this.state = {
       openModal: false,
-      selected: undefined
+      selected: []
     };
   }
   static navigationOptions = {
@@ -43,12 +43,22 @@ class Contacts extends Component {
     this.setState({ openModal: false });
   };
 
-  onSuccess = e => {
-    console.log("aca", e);
+  unSelect = contact => {
+    const result = this.state.selected.filter(selected => {
+      return contact.uid !== selected.uid;
+    });
+
+    console.log(result);
+
+    return this.state.selected.length === result.length
+      ? { found: false }
+      : { found: true, data: result };
   };
 
   onSelect = (contact, chat) => {
-    if (!this.state.selected) {
+    console.log("aca", this.state.selected.length === 0);
+    if (this.state.selected.length === 0) {
+      console.log("paso esto", chat);
       this.props.selectedChat(chat);
       this.props.navigation.push("chat", {
         ...contact
@@ -56,15 +66,14 @@ class Contacts extends Component {
       return;
     }
 
-    // ----- For later --------
-    // const result = Object.values(this.state.selected).find(selected => {
-    //   return contact.uid === selected.uid;
-    // });
+    const selected = this.unSelect(contact);
 
-    if (this.state.selected.uid === contact.uid) {
-      this.setState({ selected: undefined });
+    if (selected.found) {
+      this.setState({ selected: selected.data });
     } else {
-      this.setState({ selected: contact });
+      this.setState({
+        selected: this.state.selected.concat(contact)
+      });
     }
   };
 
@@ -77,24 +86,20 @@ class Contacts extends Component {
   };
 
   deleteContact = () => {
-    let id = {
-      uid: this.state.selected.uid,
-      hashUID: this.state.selected.hashUID
-    };
     Alert.alert(
       "Eliminar Contactos",
       "¿Esta seguro de eliminar este contacto?",
       [
         {
           text: "Cancel",
-          onPress: () => this.setState({ selected: undefined }),
+          onPress: () => this.setState({ selected: [] }),
           style: "cancel"
         },
         {
           text: "OK",
           onPress: () =>
-            this.props.deleteContact(id, () => {
-              this.setState({ selected: undefined });
+            this.props.deleteContact(this.state.selected, () => {
+              this.setState({ selected: [] });
             })
         }
       ],
@@ -107,11 +112,20 @@ class Contacts extends Component {
   };
 
   seleted = data => {
-    this.setState({ selected: data });
+    this.setState({
+      selected: this.state.selected.concat(data)
+    });
   };
 
   closeSelected = () => {
-    this.setState({ selected: undefined });
+    this.setState({ selected: [] });
+  };
+
+  getSelectedColor = id => {
+    const result = this.state.selected.find(selected => {
+      return selected.uid === id;
+    });
+    return result ? "#f5f5f5" : "#fff";
   };
 
   render() {
@@ -132,10 +146,7 @@ class Contacts extends Component {
         <Content>
           {this.props.contacts.map((contact, key) => {
             const chatInfo = this.getContactChat(contact);
-            const backgroundColor =
-              this.state.selected && contact.uid === this.state.selected.uid
-                ? "#f5f5f5"
-                : "#fff";
+            const backgroundColor = this.getSelectedColor(contact.uid);
             return (
               <List key={key} style={{ backgroundColor: backgroundColor }}>
                 <ListItem
@@ -176,7 +187,7 @@ class Contacts extends Component {
             );
           })}
         </Content>
-        {!this.state.selected && <FloatButton add={this.openModal} />}
+        {this.state.selected.length < 1 && <FloatButton add={this.openModal} />}
       </Container>
     );
   }
