@@ -3,15 +3,23 @@ import { Container } from "native-base";
 import Header from "../../components/Header";
 import ChatBody from "./ChatBody";
 import ChatForm from "./ChatForm";
-import { initialChat } from "../../store/chats";
+import { initialChat, cleanAllChat } from "../../store/chats";
 import { setView } from "../../store/aplication";
 import { connect } from "react-redux";
-import { notify } from "../../index";
+import { Alert } from "react-native";
 
 class Chat extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      menu: [
+        {
+          label: "Limpiar chat",
+          action: () => this.cleanAllMessages(),
+          broadcast: true
+        }
+      ]
+    };
   }
 
   componentDidMount = () => {
@@ -26,6 +34,26 @@ class Chat extends Component {
     this.props.setView(undefined);
   };
 
+  cleanAllMessages = () => {
+    const chat = this.props.chat[this.props.chatSelected.index];
+    Alert.alert(
+      "Eliminar chat",
+      "¿Esta seguro de eliminar todos los mensajes?",
+      [
+        {
+          text: "Cancel",
+          onPress: () => {},
+          style: "cancel"
+        },
+        {
+          text: "OK",
+          onPress: () => this.props.cleanAllChat(chat.toUID)
+        }
+      ],
+      { cancelable: false }
+    );
+  };
+
   render() {
     const { navigation } = this.props;
 
@@ -38,8 +66,12 @@ class Chat extends Component {
       : [];
     return (
       <Container>
-        <Header {...this.props} />
-        <ChatBody chats={messages} user={this.props.userData} />
+        <Header {...this.props} menu={this.state.menu} />
+        <ChatBody
+          chats={messages}
+          user={this.props.userData}
+          contacts={this.props.contact}
+        />
         <ChatForm
           user={this.props.userData}
           navigation={navigation.state}
@@ -54,10 +86,11 @@ class Chat extends Component {
 const mapStateToProps = state => ({
   userData: state.config,
   chat: state.chats.chat,
-  chatSelected: state.chats.seletedChat
+  chatSelected: state.chats.seletedChat,
+  contact: Object.values(state.contacts.contacts)
 });
 
 export default connect(
   mapStateToProps,
-  { initialChat, setView }
+  { initialChat, setView, cleanAllChat }
 )(Chat);

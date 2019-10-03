@@ -56,7 +56,7 @@ export const chatReducer = (state = AplicationState, action) => {
 
     case ActionTypes.DELETE_MESSAGE: {
       const chats = Object.values(state.chat);
-      const result = chats.map((chat, key) => {
+      chats.map((chat, key) => {
         action.payload.map(payload => {
           if (payload.toUID === chat.toUID) {
             chats[key].messages = [];
@@ -65,6 +65,15 @@ export const chatReducer = (state = AplicationState, action) => {
       });
 
       return { chat: chats.slice() };
+    }
+
+    case ActionTypes.DELETE_ALL_MESSAGE: {
+      Object.values(state.chat).map((chat, key) => {
+        if (chat.toUID === action.payload) {
+          state.chat[key].messages = [];
+        }
+      });
+      return { ...state, chat: Object.values(state.chat).slice() };
     }
     default: {
       return state;

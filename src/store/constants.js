@@ -23,5 +23,6 @@ export const ActionTypes = {
   IN_VIEW: "@@chat/IN_VIEW",
   SELECTED_CHAT: "@@chat/SELETED_CHAT",
   NEW_MESSAGE: "@@chat/NEW_MESSAGE",
-  DELETE_MESSAGE: "@@chat/DELETE_MESSAGE"
+  DELETE_MESSAGE: "@@chat/DELETE_MESSAGE",
+  DELETE_ALL_MESSAGE: "@@chat/DELETE_ALL_MESSAGE"
 };

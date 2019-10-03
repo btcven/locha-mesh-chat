@@ -67,8 +67,8 @@ export default class AddContact extends Component {
   };
 
   save = () => {
-    const verify = this.verifyContacts();
-    console.log("er webo", verify);
+    const update = this.props.selected.length > 0 ? true : false;
+    const verify = this.verifyContacts(update);
     if (verify) {
       const obj = {
         name: this.state.name,
@@ -76,7 +76,6 @@ export default class AddContact extends Component {
         uid: this.state.uid,
         hashUID: sha256(this.state.uid)
       };
-      const update = this.props.selected.length > 0 ? true : false;
       if (!update) {
         this.props.saveContact(
           this.props.userData.uid,
@@ -116,26 +115,26 @@ export default class AddContact extends Component {
     }
   };
 
-  verifyContacts = data => {
-    const uidExist = this.props.contacts.find(contact => {
-      return contact.name === this.state.uid;
-    });
+  verifyContacts = update => {
+    if (!update) {
+      const uidExist = this.props.contacts.find(contact => {
+        return contact.name === this.state.uid;
+      });
 
-    if (uidExist) {
-      androidToast("contacto existente");
-      return false;
+      if (uidExist) {
+        androidToast("contacto existente");
+        return false;
+      }
+
+      const nameExist = this.props.contacts.find(contact => {
+        return contact.name === this.state.name;
+      });
+
+      if (nameExist) {
+        androidToast("ya existe un contacto con ese nombre");
+        return false;
+      }
     }
-
-    const nameExist = this.props.contacts.find(contact => {
-      return contact.name === this.state.name;
-    });
-
-    if (nameExist) {
-      androidToast("ya existe un contacto con ese nombre");
-      return false;
-    }
-
-    console.log(uidExist, nameExist);
     return true;
   };
 

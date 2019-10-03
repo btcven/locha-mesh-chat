@@ -11,14 +11,19 @@ import {
   Button,
   Icon
 } from "native-base";
-import { StyleSheet, TouchableHighlight } from "react-native";
+import { StyleSheet, TouchableHighlight, TextInput } from "react-native";
 import { connect } from "react-redux";
+import * as Animatable from "react-native-animatable";
+import Menu from "./Menu";
+
 class HeaderComponent extends Component {
   constructor(props) {
     super(props);
     this.state = {
       nav: null,
-      routerName: null
+      routerName: null,
+      search: false,
+      searchBarFocused: false
     };
   }
 
@@ -26,6 +31,10 @@ class HeaderComponent extends Component {
     if (navigation) {
       return navigation.state;
     }
+  };
+
+  onChange = () => {
+    this.setState({ search: !this.state.search });
   };
 
   render() {
@@ -42,7 +51,8 @@ class HeaderComponent extends Component {
           androidStatusBarColor={this.props.modal ? "white" : "#af7d00"}
         >
           {this.props.navigation &&
-            this.props.navigation.state.routeName !== "initial" && (
+            this.props.navigation.state.routeName !== "initial" &&
+            !this.state.search && (
               <Left>
                 <TouchableHighlight
                   underlayColor="#eeeeee"
@@ -59,15 +69,66 @@ class HeaderComponent extends Component {
                 </TouchableHighlight>
               </Left>
             )}
-          <Body>
-            {router.routeName === "initial" && (
-              <Title style={{ color: "#fff" }}>Locha Mesh</Title>
+          {!this.state.search && (
+            <Body>
+              {router.routeName === "initial" && (
+                <Title style={{ color: "#fff" }}>Locha Mesh</Title>
+              )}
+              {router.routeName === "chat" && (
+                <Title>
+                  {router.params ? router.params.name : "broadcast"}
+                </Title>
+              )}
+            </Body>
+          )}
+          <Right>
+            {this.props.menu && <Menu menu={this.props.menu} />}
+            {!this.state.search && this.props.search && (
+              <TouchableHighlight
+                underlayColor="#eeeeee"
+                style={{
+                  paddingHorizontal: 10,
+                  paddingVertical: 6,
+                  borderRadius: 100
+                }}
+                onPress={() => this.onChange()}
+              >
+                <Icon name="search" style={{ fontSize: 24, color: "white" }} />
+              </TouchableHighlight>
             )}
-            {router.routeName === "chat" && (
-              <Title>{router.params ? router.params.name : "broadcast"}</Title>
-            )}
-          </Body>
-          <Right />
+          </Right>
+
+          {this.state.search && (
+            <Animatable.View
+              animation="slideInRight"
+              duration={500}
+              style={styles.search}
+            >
+              <Animatable.View
+                animation={
+                  this.state.searchBarFocused ? "fadeInLeft" : "fadeInRight"
+                }
+                duration={400}
+              >
+                <Icon
+                  type="MaterialIcons"
+                  name={"arrow-back"}
+                  style={{ fontSize: 24 }}
+                  onPress={() => this.onChange()}
+                />
+              </Animatable.View>
+              <TextInput
+                placeholder="Search"
+                style={{
+                  fontSize: 17,
+                  marginTop: 5,
+                  marginLeft: 10,
+                  width: 100
+                }}
+                onChangeText={text => this.props.search(text)}
+              />
+            </Animatable.View>
+          )}
         </Header>
       );
     } else {
@@ -142,6 +203,16 @@ const styles = StyleSheet.create({
   container: {
     width: "100%",
     backgroundColor: "#FAB300"
+  },
+  search: {
+    height: 45,
+    backgroundColor: "white",
+    width: "100%",
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 10,
+    marginTop: 5
   },
 
   iconStyle: {

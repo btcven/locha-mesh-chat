@@ -11,6 +11,14 @@ export default class ChatBody extends Component {
     this.state = {};
   }
 
+  getContactInfo = item => {
+    const result = this.props.contacts.find(contact => {
+      return item.fromUID === contact.hashUID;
+    });
+
+    return result;
+  };
+
   render() {
     return (
       <View style={{ flex: 1 }}>
@@ -20,10 +28,12 @@ export default class ChatBody extends Component {
           data={this.props.chats}
           keyExtractor={(item, index) => index.toString()}
           renderItem={({ item, index }) => {
+            const contactInfo = this.getContactInfo(item);
+            let userInfo = contactInfo ? contactInfo : item;
             if (sha256(this.props.user.uid) !== item.fromUID) {
               return (
                 <View key={index.toString()} style={styles.receiveContainer}>
-                  {!item.toUID && (
+                  {!item.toUID && !contactInfo && (
                     <Thumbnail
                       style={{
                         marginLeft: 5,
@@ -31,6 +41,18 @@ export default class ChatBody extends Component {
                       }}
                       source={{
                         uri: `${getIcon(item.fromUID)}`
+                      }}
+                    />
+                  )}
+
+                  {!item.toUID && contactInfo && (
+                    <Thumbnail
+                      style={{
+                        marginLeft: 5,
+                        marginTop: 5
+                      }}
+                      source={{
+                        uri: `${userInfo.picture}`
                       }}
                     />
                   )}
@@ -42,7 +64,7 @@ export default class ChatBody extends Component {
                           color: hashGenerateColort(item.fromUID)
                         }}
                       >
-                        {item.name}
+                        {userInfo.name}
                       </Text>
                     )}
                     <View style={{ minWidth: 110 }}>
@@ -98,7 +120,8 @@ const styles = StyleSheet.create({
   senderContainer: {
     width: "100%",
     alignItems: "flex-end",
-    marginBottom: 10
+    marginBottom: 10,
+    backgroundColor: "red"
   },
   receiveContainer: {
     width: "100%",

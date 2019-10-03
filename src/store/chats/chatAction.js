@@ -5,7 +5,8 @@ import {
   addTemporalInfo,
   verifyContact,
   getTemporalContact,
-  deleteChatss
+  deleteChatss,
+  cleanChat
 } from "../../database/realmDatabase";
 import { notification } from "../../utils/utils";
 import { sendSocket } from "../../utils/socket";
@@ -103,5 +104,14 @@ export const deleteChat = (obj, callback) => dispatch => {
       payload: obj
     });
     callback();
+  });
+};
+
+export const cleanAllChat = id => dispatch => {
+  cleanChat(id).then(() => {
+    dispatch({
+      type: ActionTypes.DELETE_ALL_MESSAGE,
+      payload: id
+    });
   });
 };

@@ -243,3 +243,15 @@ export const deleteChatss = obj =>
       });
     });
   });
+
+export const cleanChat = id =>
+  new Promise(resolve => {
+    Realm.open(databaseOptions).then(realm => {
+      realm.write(() => {
+        const chat = realm.objectForPrimaryKey("Chat", id);
+
+        realm.delete(chat.messages);
+        resolve();
+      });
+    });
+  });

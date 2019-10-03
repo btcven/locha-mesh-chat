@@ -43,7 +43,6 @@ class Contacts extends Component {
     this.setState({ openModal: false });
   };
 
-
   onSelect = (contact, chat) => {
     if (this.state.selected.length === 0) {
       this.props.selectedChat(chat);
@@ -70,6 +69,10 @@ class Contacts extends Component {
     });
 
     return result;
+  };
+
+  search = text => {
+    this.setState({ search: text });
   };
 
   deleteContact = () => {
@@ -109,6 +112,11 @@ class Contacts extends Component {
   };
 
   render() {
+    const result = this.state.search
+      ? this.props.contacts.filter(contact => {
+          return contact.name.toLowerCase().includes(this.state.search);
+        })
+      : this.props.contacts;
     return (
       <Container>
         <Header
@@ -118,13 +126,14 @@ class Contacts extends Component {
           modal={this.state.openModal}
           delete={this.deleteContact}
           edit={this.editContact}
+          search={this.search}
         />
         {this.state.openModal && (
           <AddContact {...this.props} close={this.closeModal} {...this.state} />
         )}
 
         <Content>
-          {this.props.contacts.map((contact, key) => {
+          {result.map((contact, key) => {
             const chatInfo = this.getContactChat(contact);
             const backgroundColor = getSelectedColor(
               this.state.selected,

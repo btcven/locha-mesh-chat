@@ -89,11 +89,23 @@ class index extends Component {
     });
   };
 
+  search = text => {
+    this.setState({ search: text });
+  };
+
   closeSelected = () => {
     this.setState({ selected: [] });
   };
 
   render() {
+    const result = this.state.search
+      ? Object.values(this.props.chats).filter(chat => {
+          return (
+            chat.toUID.toLowerCase().includes(this.state.search) ||
+            this.getContactInformation(chat).name.includes(this.state.search)
+          );
+        })
+      : Object.values(this.props.chats);
     return (
       <Container>
         <Header
@@ -101,9 +113,11 @@ class index extends Component {
           {...this.state}
           delete={this.deleteChat}
           back={this.closeSelected}
+          search={this.search}
         />
+
         <Content>
-          {Object.values(this.props.chats).map((chat, key) => {
+          {result.map((chat, key) => {
             const backgroundColor = getSelectedColor(
               this.state.selected,
               chat.toUID
