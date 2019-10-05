@@ -3,15 +3,17 @@ import { Container } from "native-base";
 import Header from "../../components/Header";
 import ChatBody from "./ChatBody";
 import ChatForm from "./ChatForm";
+import { androidToast } from "../../utils/utils";
 import { initialChat, cleanAllChat } from "../../store/chats";
 import { setView } from "../../store/aplication";
 import { connect } from "react-redux";
-import { Alert } from "react-native";
+import { Alert, Clipboard } from "react-native";
 
 class Chat extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      selected: [],
       menu: [
         {
           label: "Limpiar chat",
@@ -54,6 +56,43 @@ class Chat extends Component {
     );
   };
 
+  onClick = item => {
+    if (this.state.selected.length > 0) {
+      const result = this.state.selected.filter(selected => {
+        return item.id !== selected.id;
+      });
+
+      if (result && result.length !== this.state.selected.length) {
+        this.setState({
+          selected: result
+        });
+      } else {
+        this.setState({ selected: this.state.selected.concat(item) });
+      }
+    }
+  };
+
+  onSelected = item => {
+    this.setState({
+      selected: this.state.selected.concat(item)
+    });
+  };
+
+  back = () => {
+    this.setState({ selected: [] });
+  };
+
+  copy = () => {
+    const selected = this.state.selected;
+
+    Clipboard.setString(selected[this.state.selected.length - 1].msg);
+    androidToast("Mensaje copiado");
+  };
+
+  delete = () => {
+    alert("no disponible");
+  };
+
   render() {
     const { navigation } = this.props;
 
@@ -66,11 +105,21 @@ class Chat extends Component {
       : [];
     return (
       <Container>
-        <Header {...this.props} menu={this.state.menu} />
+        <Header
+          {...this.props}
+          menu={this.state.menu}
+          selected={this.state.selected}
+          back={this.back}
+          copy={this.copy}
+          delete={this.delete}
+        />
         <ChatBody
           chats={messages}
           user={this.props.userData}
           contacts={this.props.contact}
+          onClick={this.onClick}
+          onSelected={this.onSelected}
+          selected={this.state.selected}
         />
         <ChatForm
           user={this.props.userData}

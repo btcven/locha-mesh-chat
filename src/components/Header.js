@@ -158,17 +158,37 @@ class HeaderComponent extends Component {
             )}
           </Body>
           <Right>
-            <TouchableHighlight
-              underlayColor="#eeeeee"
-              style={{
-                paddingHorizontal: 10,
-                paddingVertical: 6,
-                borderRadius: 100
-              }}
-              onPress={this.props.delete}
-            >
-              <Icon style={styles.iconStyle} name="trash" />
-            </TouchableHighlight>
+            {this.props.copy && (
+              <TouchableHighlight
+                underlayColor="#eeeeee"
+                style={{
+                  paddingHorizontal: 10,
+                  paddingVertical: 6,
+                  borderRadius: 100
+                }}
+                onPress={this.props.copy}
+              >
+                <Icon
+                  style={styles.iconStyle}
+                  type="FontAwesome5"
+                  name="copy"
+                />
+              </TouchableHighlight>
+            )}
+            {
+              <TouchableHighlight
+                underlayColor="#eeeeee"
+                style={{
+                  paddingHorizontal: 10,
+                  paddingVertical: 6,
+                  borderRadius: 100
+                }}
+                onPress={this.props.delete}
+              >
+                <Icon style={styles.iconStyle} name="trash" />
+              </TouchableHighlight>
+            }
+
             {this.props.selected.length === 1 && this.props.edit && (
               <TouchableHighlight
                 underlayColor="#eeeeee"
