@@ -11,7 +11,12 @@ import store from "../store";
 import { sha256 } from "js-sha256";
 
 export const notification = new NotifService();
-
+/**
+ * function to request store permissions
+ * @function
+ * @async
+ *
+ */
 async function requestStoragePermission() {
   try {
     await PermissionsAndroid.request(
@@ -25,12 +30,26 @@ async function requestStoragePermission() {
 export const FileDirectory =
   RNFS.ExternalStorageDirectoryPath + "/Pictures/LochaMesh/";
 
+/**
+ *
+ * function to create the application folder
+ * @function
+ * @async
+ * @returns {Promise<string>}
+ */
+
 export const createFolder = async () => {
   await requestStoragePermission();
   const directory = RNFS.ExternalStorageDirectoryPath + "/Pictures/LochaMesh/";
   await RNFS.mkdir(FileDirectory.toString());
   return directory;
 };
+
+/**
+ *
+ * function to redirect when clicking on the notification
+ * @param {object} data
+ */
 
 export const notifyRedirect = data => {
   const result = getInfoMessage(data.id);
@@ -42,6 +61,12 @@ export const notifyRedirect = data => {
     uid: result.uid
   });
 };
+
+/**
+ *
+ * is activated when a new message is received filters the data necessary for the notification
+ * @param {object} res
+ */
 
 export const onNotification = res => {
   let state = store.getState();
@@ -60,12 +85,19 @@ export const onNotification = res => {
   }
 };
 
-export const unSelect = (selected, contact) => {
+/**
+ *
+ * function to remove a contact or a chat from a list of selected
+ * @param {array}  selected  objects already selected in the state
+ * @param {object} unSelected objecto a remover del la lista de seleccionados
+ * @returns {object}
+ */
+export const unSelect = (selected, unSelected) => {
   const result = selected.filter(selected => {
     if (selected.toUID) {
-      return contact.toUID !== selected.toUID;
+      return unSelected.toUID !== selected.toUID;
     } else {
-      return contact.uid !== selected.uid;
+      return unSelected.uid !== selected.uid;
     }
   });
 
@@ -73,6 +105,14 @@ export const unSelect = (selected, contact) => {
     ? { found: false }
     : { found: true, data: result };
 };
+
+/**
+ *
+ * function used to change the background color of a selected list
+ * @param {array} selected
+ * @param {string} id
+ * @returns {string}
+ */
 
 export const getSelectedColor = (selected, id) => {
   const result = selected.find(selected => {
@@ -86,8 +126,14 @@ export const getSelectedColor = (selected, id) => {
   return result ? "#f5f5f5" : "#fff";
 };
 
-getInfoMessage = id => {
-  console.log("entro aca");
+/**
+ *
+ * This function is used to return the chat and contact information
+ * @param {string} id
+ * @returns {object}
+ */
+
+const getInfoMessage = id => {
   let state = store.getState();
   const result = state.chats.chat.find(data => {
     const sub = String(parseInt(sha256(data.toUID), 16)).substr(2, 10);
@@ -100,6 +146,10 @@ getInfoMessage = id => {
   return { toUID: result.toUID, ...contact };
 };
 
+/**
+ * This function is used as an observable that runs from time to time verifies the messages of the public chat and eliminates them
+ * @function
+ */
 export const backgroundTimer = () => {
   BackgroundTimer.runBackgroundTimer(() => {
     const state = store.getState();
@@ -121,7 +171,11 @@ export const backgroundTimer = () => {
     }
   }, 60000);
 };
-
+/**
+ *
+ * function to display a message on the phone works only for android
+ * @param {string} message
+ */
 export const androidToast = message => {
   ToastAndroid.showWithGravityAndOffset(
     message,
@@ -132,6 +186,12 @@ export const androidToast = message => {
   );
 };
 
+/**
+ *
+ * function that generates a hexadecimal color from a string
+ * @param {string} str string received to generate the color
+ * @returns {string}
+ */
 export const hashGenerateColort = str => {
   var hash = 0;
   for (var i = 0; i < str.length; i++) {
@@ -145,6 +205,13 @@ export const hashGenerateColort = str => {
   }
   return colour;
 };
+
+/**
+ *
+ * function to generate an icon with a hash
+ * @param {string} data string received to generate the icon
+ * @returns
+ */
 
 export const getIcon = data => {
   var icon = new Identicon(data, {
@@ -163,6 +230,11 @@ const getRandomInt = (min, max) => {
   return Math.floor(Math.random() * (max - min)) + min;
 };
 
+/**
+ *
+ * function to generate random names
+ * @returns {string }
+ */
 export const generateName = () => {
   var name1 = [
     "abandoned",
