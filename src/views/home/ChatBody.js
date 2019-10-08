@@ -85,7 +85,6 @@ export default class ChatBody extends Component {
                 ? this.verifySelected(this.props.selected, item)
                 : null;
 
-      
             let userInfo = contactInfo ? contactInfo : item;
             if (sha256(this.props.user.uid) !== item.fromUID) {
               return (
@@ -93,68 +92,72 @@ export default class ChatBody extends Component {
                   key={index.toString()}
                   style={[styles.receiveContainer, selected]}
                 >
-                  <Button
+                  <TouchableHighlight
+                    useForeground
+                    underlayColor="#f5f5f5"
                     onLongPress={() => this.props.onSelected(item)}
                     onPress={() => this.props.onClick(item)}
-                    transparent
                     style={{
                       marginVertical: 5,
                       minHeight: 70,
-                      width: "100%"
+                      width: "100%",
+                      flexDirection: "row"
                     }}
                   >
-                    {!item.toUID && !contactInfo && (
-                      <Thumbnail
-                        style={{
-                          marginLeft: 5,
-                          marginTop: 5
-                        }}
-                        source={{
-                          uri: `${getIcon(item.fromUID)}`
-                        }}
-                      />
-                    )}
+                    <>
+                      {!item.toUID && !contactInfo && (
+                        <Thumbnail
+                          style={{
+                            marginLeft: 5,
+                            marginTop: 5
+                          }}
+                          source={{
+                            uri: `${getIcon(item.fromUID)}`
+                          }}
+                        />
+                      )}
 
-                    {!item.toUID && contactInfo && (
-                      <Thumbnail
-                        style={{
-                          marginLeft: 5,
-                          marginTop: 5
-                        }}
-                        source={{
-                          uri: `${userInfo.picture}`
-                        }}
-                      />
-                    )}
-                    <View style={{ width: "90%", flexDirection: "row" }}>
-                      <View style={styles.textContent1}>
-                        {item.name && (
+                      {!item.toUID && contactInfo && (
+                        <Thumbnail
+                          style={{
+                            marginLeft: 5,
+                            marginTop: 5
+                          }}
+                          source={{
+                            uri: `${userInfo.picture}`
+                          }}
+                        />
+                      )}
+                      <View style={{ width: "90%", flexDirection: "row" }}>
+                        <View style={styles.textContent1}>
+                          {item.name && (
+                            <Text
+                              style={{
+                                paddingBottom: 7,
+                                color: hashGenerateColort(item.fromUID)
+                              }}
+                            >
+                              {userInfo.name}
+                            </Text>
+                          )}
+                          <View style={{ minWidth: 110 }}>
+                            <Text style={{ fontSize: 15 }}>{item.msg}</Text>
+                          </View>
                           <Text
                             style={{
-                              paddingBottom: 7,
-                              color: hashGenerateColort(item.fromUID)
+                              paddingTop: 3,
+                              paddingLeft: 10,
+                              paddingBottom: 6,
+                              fontSize: 12,
+                              textAlign: "right"
                             }}
                           >
-                            {userInfo.name}
+                            {Moment(Number(item.timestamp)).format("LT")}
                           </Text>
-                        )}
-                        <View style={{ minWidth: 110 }}>
-                          <Text style={{ fontSize: 15 }}>{item.msg}</Text>
                         </View>
-                        <Text
-                          style={{
-                            paddingTop: 3,
-                            paddingLeft: 10,
-                            paddingBottom: 6,
-                            fontSize: 12,
-                            textAlign: "right"
-                          }}
-                        >
-                          {Moment(Number(item.timestamp)).format("LT")}
-                        </Text>
                       </View>
-                    </View>
-                  </Button>
+                    </>
+                  </TouchableHighlight>
                 </View>
               );
             } else {
@@ -163,12 +166,14 @@ export default class ChatBody extends Component {
                   key={index.toString()}
                   style={[styles.senderContainer, selected]}
                 >
-                  <Button
-                    transparent
+                  <TouchableHighlight
+                    useForeground
+                    underlayColor="#f5f5f5"
                     style={{
                       marginVertical: 5,
                       width: "100%",
-                      justifyContent: "flex-end"
+                      justifyContent: "flex-end",
+                      flexDirection: "row"
                     }}
                     onLongPress={() => this.props.onSelected(item)}
                     onPress={() => this.props.onClick(item)}
@@ -187,7 +192,7 @@ export default class ChatBody extends Component {
                         {Moment(Number(item.timestamp)).format("LT")}
                       </Text>
                     </View>
-                  </Button>
+                  </TouchableHighlight>
                 </View>
               );
             }
@@ -212,7 +217,7 @@ const styles = StyleSheet.create({
   },
 
   selected: {
-    backgroundColor: "rgba(255, 221, 1, 0.4)"
+    backgroundColor: "#f5f5f5"
   },
 
   receiveContainer: {

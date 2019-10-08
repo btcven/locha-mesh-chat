@@ -27,7 +27,7 @@ import { connect } from "react-redux";
  * @class Contacts
  * @description main component of contacts
  * @extends {Component}
- * 
+ *
  */
 class Contacts extends Component {
   constructor(props) {
@@ -108,9 +108,13 @@ class Contacts extends Component {
   };
 
   seleted = data => {
-    this.setState({
-      selected: this.state.selected.concat(data)
-    });
+    const selected = unSelect(this.state.selected, data);
+
+    if (!selected.found) {
+      this.setState({
+        selected: this.state.selected.concat(data)
+      });
+    }
   };
 
   closeSelected = () => {

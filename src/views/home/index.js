@@ -14,7 +14,7 @@ import {
 } from "native-base";
 import Header from "../../components/Header";
 import { connect } from "react-redux";
-import { Alert } from "react-native";
+import { Alert, Image } from "react-native";
 import { selectedChat, deleteChat } from "../../store/chats";
 import { getSelectedColor, unSelect } from "../../utils/utils";
 import Moment from "moment";
@@ -83,7 +83,7 @@ class index extends Component {
       return data.toUID === contact.hashUID;
     });
 
-    return result ? result : chats[0];
+    return result ? result : { ...chats[0], picture: null };
   };
 
   seleted = data => {
@@ -138,6 +138,8 @@ class index extends Component {
               ? Number(messages[messages.length - 1].timestamp)
               : new Date();
 
+            console.log("acaa!!!!!!!!", infoData);
+
             if (messages.length !== 0 || chat.toUID === "broadcast") {
               return (
                 <List key={key} style={{ backgroundColor: backgroundColor }}>
@@ -150,7 +152,18 @@ class index extends Component {
                     onLongPress={() => this.seleted(chat)}
                   >
                     <Left>
-                      <Thumbnail source={chats[0].picture} />
+                      {!infoData.picture && (
+                        <Thumbnail source={chats[0].picture} />
+                      )}
+
+                      {infoData.picture && (
+                        <Thumbnail
+                          source={{
+                            uri: infoData.picture,
+                            cache: "force-cache"
+                          }}
+                        />
+                      )}
                     </Left>
                     <Body>
                       <Text>{infoData.name}</Text>

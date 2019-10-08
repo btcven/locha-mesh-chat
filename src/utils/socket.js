@@ -100,6 +100,7 @@ export default class Socket {
     };
 
     this.socket.onclose = e => {
+      console.log("close", e);
       this.store.dispatch(reestarConnection);
     };
   };
