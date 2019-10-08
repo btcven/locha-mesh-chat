@@ -1,6 +1,13 @@
 import React, { Component } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-
+/**
+ *
+ *
+ * @export
+ * @class FloatButtons
+ * @description reusable component is a floating button
+ * @extends {Component}
+ */
 export default class FloatButtons extends Component {
   constructor(props) {
     super(props);

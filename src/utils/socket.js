@@ -4,16 +4,28 @@ import { getUserData } from "../database/realmDatabase";
 import { sha256 } from "js-sha256";
 
 export let sendSocket = undefined;
-
+/**
+ *
+ * websocket client management class
+ * @export
+ * @class Socket
+ */
 export default class Socket {
   constructor(store) {
     this.socket = new WebSocket("wss://lochat.coinlab.info");
+    //this.socket = new WebSocket("wss://192.168.1.1");
     this.openSocketConnection();
     this.onMenssage();
     this.store = store;
     sendSocket = this.socket;
     this.checkingSocketStatus(store);
   }
+
+  /**
+   * @function
+   * @description websocket client management class
+   * @memberof Socket
+   */
 
   checkingSocketStatus = store => {
     setInterval(() => {
@@ -27,14 +39,21 @@ export default class Socket {
     }, 1000);
   };
 
-  getSocket = () =>
-    new Promise(resolve => {
-      resolve(this.socket);
-    });
-
+  /**
+   * @function
+   * @description Sending messages
+   * @memberof Socket
+   */
   sendMenssage = data => {
     this.socket.send(data);
   };
+
+  /**
+   * @function
+   * @description makes a request to the database looking for user data to pass them to the initial connection
+   * @param {callback} callback
+   * @memberof Socket
+   */
 
   getUserObject = callback => {
     getUserData().then(res => {
@@ -47,6 +66,12 @@ export default class Socket {
     });
   };
 
+  /**
+   * @function
+   * @description start the connection to the socket
+   * @memberof Socket
+   */
+
   openSocketConnection = async () => {
     this.getUserObject(res => {
       this.store.dispatch(loading());
@@ -57,6 +82,12 @@ export default class Socket {
     });
   };
 
+  /**
+   *
+   * @function
+   * @description contains the onMessage, onError and onClose of the webscket
+   * @memberof Socket
+   */
   onMenssage = () => {
     this.socket.onmessage = e => {
       // a message was received

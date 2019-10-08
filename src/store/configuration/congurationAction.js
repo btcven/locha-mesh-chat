@@ -5,6 +5,13 @@ import { ActionTypes } from "../constants";
 import { createFolder } from "../../utils/utils";
 import { writteUser, getUserData } from "../../database/realmDatabase";
 
+/**
+ * @function
+ * @description function to get the photo of the gallery cut and move to the app folder
+ * @param {string} id user id
+ * @param {callback} callback
+ */
+
 export const getPhotosFromUser = (id, callback) => async dispatch => {
   const directory = await createFolder();
   ImagePicker.openPicker({
@@ -27,10 +34,23 @@ export const getPhotosFromUser = (id, callback) => async dispatch => {
   });
 };
 
+/**
+ * @function function to get the names of the images
+ * @description function to get the photo of the gallery cut and move to the app folder
+ * @param {object} id information of the photograph obtained
+ * @returns {string}
+ */
+
 const getName = data => {
   const result = data.path.split("/");
   return result[7];
 };
+
+/**
+ * @function
+ * @description verify that the user has a photo added and if it exists, delete it
+ *
+ */
 
 const deletePhotoFromPhone = async () => {
   getUserData("user").then(async res => {
@@ -44,6 +64,12 @@ const deletePhotoFromPhone = async () => {
     }
   });
 };
+/**
+ *
+ * @description activate the phone's camera, cut the photo and move it to the folder
+ * @param {string}  id user id
+ * @param {callback} callback
+ */
 
 export const openCamera = (id, callback) => async dispatch => {
   const directory = await createFolder();
@@ -69,6 +95,15 @@ export const openCamera = (id, callback) => async dispatch => {
     });
   });
 };
+/**
+ *
+ * @description save the name of the user in the database
+ * @param {object} obj  user information
+ * @param {string} obj.name  User name
+ * @param {string} obj.uid   User uid
+ * @param {string | null} obj.picture  user profile picture
+ * @param {callback} callback
+ */
 
 export const editName = (obj, callback) => async dispatch => {
   console.log();
@@ -79,9 +114,4 @@ export const editName = (obj, callback) => async dispatch => {
       payload: res.name
     });
   });
-  // console.log("action", name);
-  // await AsyncStorage.mergeItem("user", JSON.stringify({ name: name })).then(
-  //   () => {
-  //   }
-  // );
 };

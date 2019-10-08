@@ -16,6 +16,12 @@ import { connect } from "react-redux";
 import * as Animatable from "react-native-animatable";
 import Menu from "./Menu";
 
+/**
+ *
+ * @class HeaderComponent
+ * @extends {Component}
+ * @description reusable component is the application header
+ */
 class HeaderComponent extends Component {
   constructor(props) {
     super(props);

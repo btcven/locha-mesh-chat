@@ -12,6 +12,15 @@ import { Thumbnail, Button } from "native-base";
 import { sha256 } from "js-sha256";
 import { getIcon, hashGenerateColort } from "../../utils/utils";
 
+/**
+ *
+ *
+ * @export
+ * @class ChatBody
+ * @description component where messages sent and received are displayed
+ * @extends {Component}
+ */
+
 export default class ChatBody extends Component {
   constructor(props) {
     super(props);

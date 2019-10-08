@@ -18,7 +18,13 @@ import { Alert } from "react-native";
 import { selectedChat, deleteChat } from "../../store/chats";
 import { getSelectedColor, unSelect } from "../../utils/utils";
 import Moment from "moment";
-
+/**
+ *
+ * @class index
+ * @description main component of the home where the list of open chats are
+ * @extends {Component}
+ *
+ */
 class index extends Component {
   constructor(props) {
     super(props);

@@ -4,6 +4,15 @@ import { images } from "../../utils/constans";
 import { View, Text, TouchableOpacity } from "react-native";
 import { Thumbnail } from "native-base";
 
+/**
+ *
+ *
+ * @export
+ * @class EditPhoto
+ * @description 
+ * @extends {Component}
+ */
+
 export default class EditPhoto extends Component {
   constructor(props) {
     super(props);

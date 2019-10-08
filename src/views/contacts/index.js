@@ -22,7 +22,13 @@ import {
   editContats
 } from "../../store/contacts";
 import { connect } from "react-redux";
-
+/**
+ *
+ * @class Contacts
+ * @description main component of contacts
+ * @extends {Component}
+ * 
+ */
 class Contacts extends Component {
   constructor(props) {
     super(props);

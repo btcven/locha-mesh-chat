@@ -3,6 +3,15 @@ import { Text, View } from "react-native";
 import { Button, Icon } from "native-base";
 import Menu, { MenuItem, MenuDivider } from "react-native-material-menu";
 
+/**
+ * @export
+ * @class MenuComponent
+ * @extends {Component}
+ * @description Reusable component is a menu that works as a select
+ *
+ *
+ */
+
 export default class MenuComponent extends Component {
   setMenuRef = ref => {
     this._menu = ref;

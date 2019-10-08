@@ -8,7 +8,13 @@ import { initialChat, cleanAllChat } from "../../store/chats";
 import { setView } from "../../store/aplication";
 import { connect } from "react-redux";
 import { Alert, Clipboard } from "react-native";
-
+/**
+ *
+ *
+ * @class Chat
+ * @description main message component
+ * @extends {Component}
+ */
 class Chat extends Component {
   constructor(props) {
     super(props);

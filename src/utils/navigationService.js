@@ -1,10 +1,28 @@
 import { NavigationActions } from "react-navigation";
 
+/**
+ * service to redirect out of react-navigation.
+ * @module navigationService
+ */
+
 let _navigator;
+
+/**
+ *
+ * @description assign the react-nativation props to a local variable
+ * @param {object} navigatorRef
+ */
 
 function setTopLevelNavigator(navigatorRef) {
   _navigator = navigatorRef;
 }
+
+/**
+ *
+ * @description function used to redirect
+ * @param {string} routeName route name
+ * @param {object | null} params parameters passed through the route
+ */
 
 function navigate(routeName, params) {
   _navigator.dispatch(
@@ -15,14 +33,9 @@ function navigate(routeName, params) {
   );
 }
 
-function propsNavigation() {
-  return _navigator
-}
-
 // add other navigation functions that you need and export them
 
 export default {
   navigate,
-  setTopLevelNavigator,
-  propsNavigation
+  setTopLevelNavigator
 };

@@ -2,6 +2,13 @@ import PushNotification from "react-native-push-notification";
 import { sha256 } from "js-sha256";
 import { notifyRedirect } from "./utils";
 
+/**
+ *
+ * notification settings
+ * @export
+ * @class NotifService
+ */
+
 export default class NotifService {
   constructor(onRegister, onNotification) {
     this.configure(onRegister, onNotification);
@@ -35,7 +42,7 @@ export default class NotifService {
       largeIcon: "ic_launcher", // (optional) default: "ic_launcher"
       smallIcon: "ic_launcher", // (optional) default: "ic_notification" with fallback for "ic_launcher"
       // bigText: "My big text that will be shown when notification is expanded", // (optional) default: "message" prop
-    //  subText: "This is a subText", // (optional) default: none
+      //  subText: "This is a subText", // (optional) default: none
       color: "red", // (optional) default: system default
       vibrate: true, // (optional) default: true
       vibration: 300, // vibration length in milliseconds, ignored if vibrate=false, default: 1000

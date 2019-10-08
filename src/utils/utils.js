@@ -101,25 +101,25 @@ getInfoMessage = id => {
 };
 
 export const backgroundTimer = () => {
-  // BackgroundTimer.runBackgroundTimer(() => {
-  //   const state = store.getState();
-  //   let broadCast = state.chats.chat[0].messages
-  //     ? Object.values(state.chats.chat[0].messages)
-  //     : [];
-  //   if (broadCast) {
-  //     getMessageByTime().then(data => {
-  //       const result = data ? Object.values(data) : [];
-  //       if (broadCast.length !== result.length) {
-  //         const newData = state.chats.chat[0];
-  //         newData.messages = result;
-  //         let obj = state.chats.chat.slice();
-  //         obj.shift();
-  //         obj.unshift(newData);
-  //         store.dispatch(realoadBroadcastChat(obj));
-  //       }
-  //     });
-  //   }
-  // }, 60000);
+  BackgroundTimer.runBackgroundTimer(() => {
+    const state = store.getState();
+    let broadCast = state.chats.chat[0].messages
+      ? Object.values(state.chats.chat[0].messages)
+      : [];
+    if (broadCast) {
+      getMessageByTime().then(data => {
+        const result = data ? Object.values(data) : [];
+        if (broadCast.length !== result.length) {
+          const newData = state.chats.chat[0];
+          newData.messages = result;
+          let obj = state.chats.chat.slice();
+          obj.shift();
+          obj.unshift(newData);
+          store.dispatch(realoadBroadcastChat(obj));
+        }
+      });
+    }
+  }, 60000);
 };
 
 export const androidToast = message => {

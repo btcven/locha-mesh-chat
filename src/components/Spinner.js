@@ -1,7 +1,11 @@
 import React from "react";
 import { View, ActivityIndicator, Modal } from "react-native";
-
-const componentName = ({ params }) => (
+/**
+ *
+ *@function
+ *@description reusable component is a spinner that is used when the app is loading something
+ */
+const componentName = () => (
   <Modal
     animationType="fade"
     transparent={true}

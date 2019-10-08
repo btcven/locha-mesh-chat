@@ -8,7 +8,14 @@ import {
   TouchableOpacity
 } from "react-native";
 import { sha256 } from "js-sha256";
-
+/**
+ *
+ *
+ * @export
+ * @class ChatForm
+ * @description component where is the form to write the message send notes from you and files
+ * @extends {Component}
+ */
 export default class ChatForm extends Component {
   constructor(props) {
     super(props);

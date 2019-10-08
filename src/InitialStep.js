@@ -3,7 +3,12 @@ import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
 import { Form, Input, Item, Label, Icon, Button } from "native-base";
 import { setInitialUser } from "./store/aplication/aplicationAction";
 import { connect } from "react-redux";
-
+/**
+ *
+ * @description Welcome component when the application is first opened
+ * @class InitialStep
+ * @extends {Component}
+ */
 class InitialStep extends Component {
   constructor(props) {
     super(props);

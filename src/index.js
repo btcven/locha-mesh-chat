@@ -12,6 +12,12 @@ import NotifService from "./utils/notificationService";
 import { selectedChat } from "./store/chats";
 import { realmObservable } from "./database/realmDatabase";
 
+/**
+ *
+ * @description application views container
+ * @class DualComponent
+ * @extends {Component}
+ */
 class DualComponent extends Component {
   constructor(props) {
     super(props);

@@ -22,6 +22,14 @@ import EditPhoto from "./EditPhoto";
 import QRCode from "react-native-qrcode-svg";
 import { androidToast } from "../../utils/utils";
 
+
+/**
+ * @class Config
+ * @extends {Component}
+ * @description main configuration component
+ * 
+ */
+
 class Config extends Component {
   constructor(props) {
     super(props);

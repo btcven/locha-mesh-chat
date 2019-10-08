@@ -5,6 +5,8 @@ import Config from "./views/config";
 import Chat from './views/home/Chat'
 // import Gallery from "./components/Gallery";
 
+
+
 export const AppStackNavigator = createStackNavigator({
   initial: DualComponent,
   contacts: Contact,

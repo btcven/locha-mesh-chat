@@ -8,6 +8,12 @@ import store from "../../store";
 const bitcoin = new Bitcoin();
 export let ws = undefined;
 
+/**
+ *@function
+ *@description executes when starting the application verifying that the user exists and if it exists initiates the connection with the socket
+ *@returns {object}
+ */
+
 export const InitialState = () => async dispatch => {
   //backgroundTimer();
   getUserData().then(async res => {
@@ -17,6 +23,13 @@ export const InitialState = () => async dispatch => {
     }
   });
 };
+
+/**
+ * @function
+ * @description the user is added and saved in the database
+ * @param {object} obj Information about the user.
+ * @param {string} obj.name The name of the user.
+ */
 
 export const setInitialUser = obj => async dispatch => {
   dispatch(loading());
@@ -40,6 +53,13 @@ export const setInitialUser = obj => async dispatch => {
   });
 };
 
+/**
+ * @function
+ * @description return user data to state
+ * @param {object} data
+ * @returns {object}
+ */
+
 const writeAction = data => {
   return {
     type: ActionTypes.INITIAL_STATE,
@@ -47,12 +67,26 @@ const writeAction = data => {
   };
 };
 
-export const setView = view => {
+/**
+ * @function
+ * @description Identify if we have an open chat so that notifications do not arrive
+ * @param {string} idChat
+ * @returns {object}
+ */
+
+export const setView = idChat => {
   return {
     type: ActionTypes.IN_VIEW,
-    payload: view
+    payload: idChat
   };
 };
+
+/**
+ * @function
+ * @description function to change menu tabs
+ * @param {number} tab - tab id
+ * @returns {object}
+ */
 
 export const changeTab = tab => {
   return {
@@ -61,17 +95,34 @@ export const changeTab = tab => {
   };
 };
 
+/**
+ * @function
+ * @description open the application spinner
+ * @returns {object}
+ */
+
 export const loading = () => {
   return {
     type: ActionTypes.LOADING_ON
   };
 };
 
+/**
+ * @function
+ * @description hide application spinner
+ * @returns
+ */
+
 export const loaded = () => {
   return {
     type: ActionTypes.LOADING_OFF
   };
 };
+
+/**
+ * @function
+ * @description open the connection to the socket again
+ */
 
 export const reestarConnection = () => {
   ws = new Socket(store);

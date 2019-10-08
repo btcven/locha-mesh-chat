@@ -15,6 +15,14 @@ import EditPhoto from "../config/EditPhoto";
 import ImagePicker from "react-native-image-crop-picker";
 import QRCodeScanner from "react-native-qrcode-scanner";
 import { sha256 } from "js-sha256";
+/**
+ *
+ *
+ * @export
+ * @class AddContact
+ * @description component where we add the contact information.
+ * @extends {Component}
+ */
 
 export default class AddContact extends Component {
   constructor(props) {

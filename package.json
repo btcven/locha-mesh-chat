@@ -80,7 +80,8 @@
     "jest": "^24.8.0",
     "metro-react-native-babel-preset": "^0.55.0",
     "react-test-renderer": "16.8.3",
-    "rn-nodeify": "tradle/rn-nodeify"
+    "rn-nodeify": "tradle/rn-nodeify",
+    "jsdoc": "^3.6.3"
   },
   "jest": {
     "preset": "react-native"
