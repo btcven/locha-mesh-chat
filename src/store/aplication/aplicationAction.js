@@ -127,3 +127,26 @@ export const loaded = () => {
 export const reestarConnection = () => {
   ws = new Socket(store);
 };
+
+/**
+ * @function
+ * @description open drawer Menu
+ * @returns {object}
+ */
+export const openMenu = () => {
+  return {
+    type: ActionTypes.OPEN_MENU
+  };
+};
+
+/**
+ * @function
+ * @description close drawer Menu
+ * @returns {object}
+ */
+
+export const closeMenu = () => {
+  return {
+    type: ActionTypes.CLOSE_MENU
+  };
+};

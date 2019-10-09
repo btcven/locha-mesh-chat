@@ -138,8 +138,6 @@ class index extends Component {
               ? Number(messages[messages.length - 1].timestamp)
               : new Date();
 
-            console.log("acaa!!!!!!!!", infoData);
-
             if (messages.length !== 0 || chat.toUID === "broadcast") {
               return (
                 <List key={key} style={{ backgroundColor: backgroundColor }}>

@@ -42,7 +42,7 @@ class DualComponent extends Component {
               <Contact navigation={this.props.navigation} />
             )}
             {this.props.tabPosition === 3 && <Config {...this.props} />}
-            <Footer />
+            {/* <Footer /> */}
           </View>
         )}
         <View>{!this.props.user && <InitialStep />}</View>

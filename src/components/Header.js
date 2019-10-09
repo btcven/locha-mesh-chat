@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-
 import {
   Container,
   Header,
@@ -15,6 +14,7 @@ import { StyleSheet, TouchableHighlight, TextInput } from "react-native";
 import { connect } from "react-redux";
 import * as Animatable from "react-native-animatable";
 import Menu from "./Menu";
+import { openMenu } from "../store/aplication";
 
 /**
  *
@@ -33,6 +33,12 @@ class HeaderComponent extends Component {
     };
   }
 
+  /**
+   *get the current route
+   * @function
+   * @memberof HeaderComponent
+   * @returns {object}
+   */
   getNameContact = navigation => {
     if (navigation) {
       return navigation.state;
@@ -50,6 +56,7 @@ class HeaderComponent extends Component {
         ? true
         : false
       : true;
+
     if (selected) {
       return (
         <Header
@@ -75,6 +82,24 @@ class HeaderComponent extends Component {
                 </TouchableHighlight>
               </Left>
             )}
+
+          {router.routeName === "initial" && (
+            <Left>
+              <TouchableHighlight
+                underlayColor="#eeeeee"
+                style={{
+                  paddingHorizontal: 10,
+                  paddingVertical: 6,
+                  borderRadius: 100
+                }}
+                onPress={() => {
+                  this.props.openMenu();
+                }}
+              >
+                <Icon style={styles.iconStyle} name="menu" />
+              </TouchableHighlight>
+            </Left>
+          )}
           {!this.state.search && (
             <Body>
               {router.routeName === "initial" && (
@@ -222,7 +247,7 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  null
+  { openMenu }
 )(HeaderComponent);
 
 const styles = StyleSheet.create({
