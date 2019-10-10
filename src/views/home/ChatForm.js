@@ -57,7 +57,7 @@ export default class ChatForm extends Component {
           contentContainerStyle={styles.contentForm}
           keyboardShouldPersistTaps={"handled"}
         >
-          <TouchableOpacity onPress={() => console.log("click me!")}>
+          <TouchableOpacity onPress={() => this.props.openFileModal()}>
             <Icon
               style={styles.iconChatStyle}
               type="MaterialIcons"

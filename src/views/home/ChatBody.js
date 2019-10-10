@@ -11,6 +11,7 @@ import Moment from "moment";
 import { Thumbnail, Button } from "native-base";
 import { sha256 } from "js-sha256";
 import { getIcon, hashGenerateColort } from "../../utils/utils";
+import FileModal from "./fileModal";
 
 /**
  *
@@ -58,6 +59,7 @@ export default class ChatBody extends Component {
   render() {
     return (
       <View style={{ flex: 1 }}>
+        <FileModal open={this.props.open} close={this.props.close} />
         <FlatList
           inverted
           extraData={this.props.selected}

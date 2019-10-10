@@ -20,6 +20,7 @@ class Chat extends Component {
     super(props);
     this.state = {
       selected: [],
+      fileModal: false,
       menu: [
         {
           label: "Limpiar chat",
@@ -99,6 +100,14 @@ class Chat extends Component {
     alert("no disponible");
   };
 
+  openFileModal = () => {
+    this.setState({ fileModal: true });
+  };
+
+  closeFileModal = () => {
+    this.setState({ fileModal: false });
+  };
+
   render() {
     const { navigation } = this.props;
 
@@ -126,12 +135,15 @@ class Chat extends Component {
           onClick={this.onClick}
           onSelected={this.onSelected}
           selected={this.state.selected}
+          close={this.closeFileModal}
+          open={this.state.fileModal}
         />
         <ChatForm
           user={this.props.userData}
           navigation={navigation.state}
           setChat={this.props.initialChat}
           previousChat={this.props.chatSelected}
+          openFileModal={this.openFileModal}
         />
       </Container>
     );
