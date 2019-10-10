@@ -20,7 +20,8 @@ export default class FloatButtons extends Component {
         onPress={() => this.props.add()}
         style={styles.floatButton}
       >
-        <Text style={styles.textButton}> +</Text>
+        {!this.props.icon && <Text style={styles.textButton}> + </Text>}
+        {this.props.icon && this.props.icon}
       </TouchableOpacity>
     );
   }

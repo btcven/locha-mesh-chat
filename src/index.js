@@ -12,6 +12,7 @@ import NotifService from "./utils/notificationService";
 import { selectedChat } from "./store/chats";
 import { realmObservable } from "./database/realmDatabase";
 
+
 /**
  *
  * @description application views container
@@ -42,7 +43,6 @@ class DualComponent extends Component {
               <Contact navigation={this.props.navigation} />
             )}
             {this.props.tabPosition === 3 && <Config {...this.props} />}
-            <Footer />
           </View>
         )}
         <View>{!this.props.user && <InitialStep />}</View>

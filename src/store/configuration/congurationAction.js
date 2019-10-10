@@ -106,7 +106,7 @@ export const openCamera = (id, callback) => async dispatch => {
  */
 
 export const editName = (obj, callback) => async dispatch => {
-  console.log();
+
   writteUser({ ...obj, id: obj.uid }).then(res => {
     callback();
     dispatch({

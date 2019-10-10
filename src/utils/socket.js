@@ -30,6 +30,7 @@ export default class Socket {
   checkingSocketStatus = store => {
     setInterval(() => {
       if (this.socket.readyState !== 1) {
+        console.log("acaaa",this.socket.readyState)
         this.store.dispatch(loading());
       } else {
         store.getState().aplication.loading === false

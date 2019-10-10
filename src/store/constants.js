@@ -6,6 +6,8 @@ export const ActionTypes = {
   CHANGE_TAB: "@@aplication/CHANGE_TAB",
   LOADING_ON: "@@aplication/LOADING_ON",
   LOADING_OFF: "@@aplication/LOADING_OFF",
+  OPEN_MENU: "@@aplication/OPEN_MENU",
+  CLOSE_MENU: "@@aplication/CLOSE_MENU",
 
   //CONFIGURATION
   GET_PHOTO_USER: "@@configuration/GET_PHOTO",

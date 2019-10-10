@@ -5,6 +5,7 @@ const AplicationState = {
   photos: [],
   loading: false,
   tab: 1,
+  menu: false,
   view: undefined
 };
 
@@ -31,6 +32,14 @@ export const AplicationReducer = (state = AplicationState, action) => {
 
     case ActionTypes.LOADING_OFF: {
       return { ...state, loading: false };
+    }
+
+    case ActionTypes.OPEN_MENU: {
+      return { ...state, menu: true };
+    }
+
+    case ActionTypes.CLOSE_MENU: {
+      return { ...state, menu: false };
     }
     default: {
       return state;

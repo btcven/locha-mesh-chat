@@ -5,7 +5,7 @@ import {
   StyleSheet,
   TextInput,
   FlatList,
-  TouchableHighlight
+  TouchableNativeFeedback
 } from "react-native";
 import Moment from "moment";
 import { Thumbnail, Button } from "native-base";
@@ -37,30 +37,16 @@ export default class ChatBody extends Component {
     return result;
   };
 
-  onClick = item => {
-    if (this.state.selected.length > 0) {
-      const result = this.state.selected.filter(selected => {
-        return item.id !== selected.id;
-      });
-
-      if (result && result.length !== this.state.selected.length) {
-        this.setState({
-          selected: result
-        });
-      } else {
-        this.setState({ selected: this.state.selected.concat(item) });
-      }
-    }
-  };
-
   onSelected = item => {
     this.setState({
       selected: this.state.selected.concat(item)
     });
   };
 
-  verifySelected = (selected, item) => {
-    const result = selected.find(select => {
+  verifySelected = item => {
+    const result = this.props.selected.find(select => {
+      console.log("holaaa", select.id === item.id);
+      console.log(select.id, item.id);
       return select.id === item.id;
     });
 
@@ -74,35 +60,33 @@ export default class ChatBody extends Component {
       <View style={{ flex: 1 }}>
         <FlatList
           inverted
-          extraData={this.props}
+          extraData={this.props.selected}
           contentContainerStyle={styles.container}
           data={this.props.chats}
           keyExtractor={(item, index) => index.toString()}
           renderItem={({ item, index }) => {
             const contactInfo = this.getContactInfo(item);
             const selected =
-              this.props.selected.length > 0
-                ? this.verifySelected(this.props.selected, item)
-                : null;
+              this.props.selected.length > 0 ? this.verifySelected(item) : null;
+
+            console.log("acaaa", selected);
 
             let userInfo = contactInfo ? contactInfo : item;
             if (sha256(this.props.user.uid) !== item.fromUID) {
               return (
-                <View
-                  key={index.toString()}
-                  style={[styles.receiveContainer, selected]}
+                <TouchableNativeFeedback
+                  onLongPress={() => this.props.onSelected(item)}
+                  onPress={() => this.props.onClick(item)}
+                  style={{
+                    marginVertical: 5,
+                    minHeight: 70,
+                    width: "100%",
+                    flexDirection: "row"
+                  }}
                 >
-                  <TouchableHighlight
-                    useForeground
-                    underlayColor="#f5f5f5"
-                    onLongPress={() => this.props.onSelected(item)}
-                    onPress={() => this.props.onClick(item)}
-                    style={{
-                      marginVertical: 5,
-                      minHeight: 70,
-                      width: "100%",
-                      flexDirection: "row"
-                    }}
+                  <View
+                    key={index.toString()}
+                    style={[styles.receiveContainer, selected]}
                   >
                     <>
                       {!item.toUID && !contactInfo && (
@@ -157,26 +141,25 @@ export default class ChatBody extends Component {
                         </View>
                       </View>
                     </>
-                  </TouchableHighlight>
-                </View>
+                  </View>
+                </TouchableNativeFeedback>
               );
             } else {
               return (
-                <View
-                  key={index.toString()}
-                  style={[styles.senderContainer, selected]}
+                <TouchableNativeFeedback
+                  useForeground
+                  style={{
+                    marginVertical: 5,
+                    width: "100%",
+                    justifyContent: "flex-end",
+                    flexDirection: "row"
+                  }}
+                  onLongPress={() => this.props.onSelected(item)}
+                  onPress={() => this.props.onClick(item)}
                 >
-                  <TouchableHighlight
-                    useForeground
-                    underlayColor="#f5f5f5"
-                    style={{
-                      marginVertical: 5,
-                      width: "100%",
-                      justifyContent: "flex-end",
-                      flexDirection: "row"
-                    }}
-                    onLongPress={() => this.props.onSelected(item)}
-                    onPress={() => this.props.onClick(item)}
+                  <View
+                    key={index.toString()}
+                    style={[styles.senderContainer, selected]}
                   >
                     <View style={styles.textContent2}>
                       <Text style={{ fontSize: 15 }}>{item.msg}</Text>
@@ -192,8 +175,8 @@ export default class ChatBody extends Component {
                         {Moment(Number(item.timestamp)).format("LT")}
                       </Text>
                     </View>
-                  </TouchableHighlight>
-                </View>
+                  </View>
+                </TouchableNativeFeedback>
               );
             }
           }}
@@ -212,12 +195,12 @@ const styles = StyleSheet.create({
   senderContainer: {
     width: "100%",
     flexDirection: "row",
-    alignItems: "flex-end",
+    justifyContent: "flex-end",
     marginBottom: 10
   },
 
   selected: {
-    backgroundColor: "#f5f5f5"
+    backgroundColor: "rgba(255, 235, 59 , 0.5)"
   },
 
   receiveContainer: {

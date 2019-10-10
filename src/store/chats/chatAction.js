@@ -26,8 +26,6 @@ import { sha256 } from "js-sha256";
 
 export const initialChat = data => dispatch => {
   let uidChat = data.toUID ? data.toUID : "broadcast";
-  console.log(uidChat);
-
   setMessage(uidChat, { ...data }).then(() => {
     sendSocket.send(JSON.stringify(data));
     dispatch({
@@ -35,7 +33,8 @@ export const initialChat = data => dispatch => {
       payload: {
         name: undefined,
         ...data,
-        msg: data.msg.text
+        msg: data.msg.text,
+        id: data.msgID
       }
     });
   });
@@ -113,7 +112,8 @@ export const getChat = data => async dispatch => {
       payload: {
         name: name,
         ...parse,
-        msg: parse.msg.text
+        msg: parse.msg.text,
+        id: parse.msgID
       }
     });
   });
@@ -169,7 +169,6 @@ export const deleteChat = (obj, callback) => dispatch => {
     callback();
   });
 };
-
 
 /**
  * @function
