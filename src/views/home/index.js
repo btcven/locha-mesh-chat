@@ -10,7 +10,8 @@ import {
   Body,
   Right,
   Thumbnail,
-  Text
+  Text,
+  Icon
 } from "native-base";
 import Header from "../../components/Header";
 import { connect } from "react-redux";
@@ -18,6 +19,7 @@ import { Alert, Image } from "react-native";
 import { selectedChat, deleteChat } from "../../store/chats";
 import { getSelectedColor, unSelect } from "../../utils/utils";
 import Moment from "moment";
+import FloatButton from "../../components/FloatButton";
 /**
  *
  * @class index
@@ -184,6 +186,16 @@ class index extends Component {
             }
           })}
         </Content>
+        <FloatButton
+          add={() => this.props.navigation.push("contacts")}
+          icon={
+            <Icon
+              type="MaterialIcons"
+              name="message"
+              style={{ fontSize: 24, color: "#f5f5f5" }}
+            />
+          }
+        />
       </Container>
     );
   }

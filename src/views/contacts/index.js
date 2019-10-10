@@ -10,7 +10,8 @@ import {
   ListItem,
   Left,
   Right,
-  Text
+  Text,
+  Icon
 } from "native-base";
 import { selectedChat } from "../../store/chats";
 import { getSelectedColor, unSelect } from "../../utils/utils";
@@ -189,7 +190,18 @@ class Contacts extends Component {
             );
           })}
         </Content>
-        {this.state.selected.length < 1 && <FloatButton add={this.openModal} />}
+        {this.state.selected.length < 1 && (
+          <FloatButton
+            add={this.openModal}
+            icon={
+              <Icon
+                type="MaterialIcons"
+                name="person-add"
+                style={{ fontSize: 24, color: "#f5f5f5" }}
+              />
+            }
+          />
+        )}
       </Container>
     );
   }

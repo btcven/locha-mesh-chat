@@ -75,7 +75,7 @@ class HeaderComponent extends Component {
                     borderRadius: 100
                   }}
                   onPress={() => {
-                    this.props.navigation.pop();
+                    this.props.navigation.push("initial");
                   }}
                 >
                   <Icon style={styles.iconStyle} name="arrow-back" />
@@ -105,6 +105,15 @@ class HeaderComponent extends Component {
               {router.routeName === "initial" && (
                 <Title style={{ color: "#fff" }}>Locha Mesh</Title>
               )}
+
+              {router.routeName === "contacts" && (
+                <Title style={{ color: "#fff" }}>Contactos</Title>
+              )}
+
+              {router.routeName === "config" && (
+                <Title style={{ color: "#fff" }}>Configuracion</Title>
+              )}
+
               {router.routeName === "chat" && (
                 <Title>
                   {router.params ? router.params.name : "broadcast"}

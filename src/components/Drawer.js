@@ -12,11 +12,17 @@ import { View, Text, StyleSheet, Image } from "react-native";
 import { connect } from "react-redux";
 import { closeMenu } from "../store/aplication/aplicationAction";
 import { images } from "../utils/constans";
+import NavigationService from "../utils/navigationService";
 
 class DrawerComponent extends Component {
   constructor(props) {
     super(props);
   }
+
+  handleChange = view => {
+    NavigationService.navigate(view);
+    this.props.closeMenu();
+  };
 
   render() {
     return (
@@ -59,7 +65,7 @@ class DrawerComponent extends Component {
               <ListItem itemDivider>
                 <Text>Locha Mesh</Text>
               </ListItem>
-              <ListItem icon button onPress={() => this.handleChange("create")}>
+              <ListItem icon button onPress={() => this.handleChange("contacts")}>
                 <Left>
                   <Button style={{ backgroundColor: "#ef6c00" }}>
                     <Icon active name="person" />
@@ -70,7 +76,7 @@ class DrawerComponent extends Component {
                 </Body>
               </ListItem>
 
-              <ListItem icon button onPress={() => this.handleChange("create")}>
+              <ListItem icon button onPress={() => this.handleChange("config")}>
                 <Left>
                   <Button style={{ backgroundColor: "#ef6c00" }}>
                     <Icon active name="settings" />
