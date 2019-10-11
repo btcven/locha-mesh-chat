@@ -81,10 +81,13 @@ class Config extends Component {
                 underlayColor="#eeeeee"
               >
                 <Image
-                  source={{
+                  source={
+                    {
                     uri: this.props.config.image + "?" + new Date().getDate(),
                     cache: "force-cache"
-                  }}
+                  }
+                
+                }
                   style={styles.imageStyle}
                 />
               </TouchableHighlight>

@@ -59,7 +59,9 @@ export default class ChatBody extends Component {
   render() {
     return (
       <View style={{ flex: 1 }}>
-        <FileModal open={this.props.open} close={this.props.close} />
+        {this.props.open && (
+          <FileModal open={this.props.open} close={this.props.close} />
+        )}
         <FlatList
           inverted
           extraData={this.props.selected}
@@ -70,8 +72,6 @@ export default class ChatBody extends Component {
             const contactInfo = this.getContactInfo(item);
             const selected =
               this.props.selected.length > 0 ? this.verifySelected(item) : null;
-
-            console.log("acaaa", selected);
 
             let userInfo = contactInfo ? contactInfo : item;
             if (sha256(this.props.user.uid) !== item.fromUID) {

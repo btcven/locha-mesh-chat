@@ -38,13 +38,19 @@ class DrawerComponent extends Component {
                 source={images.logo.url}
               />
 
-              <Image
-                source={{
-                  uri: this.props.user.image + "?" + new Date().getDate(),
-                  cache: "force-cache"
-                }}
-                style={styles.imageStyle}
-              />
+              {this.props.user.image && (
+                <Image
+                  source={{
+                    uri: this.props.user.image + "?" + new Date().getDate(),
+                    cache: "force-cache"
+                  }}
+                  style={styles.imageStyle}
+                />
+              )}
+
+              {!this.props.user.image && (
+                <Image source={images.noPhoto.url} style={styles.imageStyle} />
+              )}
 
               <Text style={styles.textTitle}>{this.props.user.name}</Text>
 
@@ -65,7 +71,11 @@ class DrawerComponent extends Component {
               <ListItem itemDivider>
                 <Text>Locha Mesh</Text>
               </ListItem>
-              <ListItem icon button onPress={() => this.handleChange("contacts")}>
+              <ListItem
+                icon
+                button
+                onPress={() => this.handleChange("contacts")}
+              >
                 <Left>
                   <Button style={{ backgroundColor: "#ef6c00" }}>
                     <Icon active name="person" />

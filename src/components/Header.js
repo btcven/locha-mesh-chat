@@ -1,15 +1,5 @@
 import React, { Component } from "react";
-import {
-  Container,
-  Header,
-  Left,
-  Body,
-  Right,
-  Title,
-  Thumbnail,
-  Button,
-  Icon
-} from "native-base";
+import { Header, Left, Body, Right, Title, Icon } from "native-base";
 import { StyleSheet, TouchableHighlight, TextInput } from "react-native";
 import { connect } from "react-redux";
 import * as Animatable from "react-native-animatable";

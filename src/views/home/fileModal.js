@@ -1,8 +1,10 @@
 import React, { Component } from "react";
 import Modal from "react-native-modal";
 import { images } from "../../utils/constans";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, Dimensions } from "react-native";
 import { Thumbnail } from "native-base";
+import ImagePicker from "react-native-image-crop-picker";
+import ImagesView from "./imagesView";
 
 /**
  *
@@ -16,21 +18,61 @@ import { Thumbnail } from "native-base";
 export default class FileModal extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      imagesView: []
+    };
   }
 
   getPhotosFromGallery = () => {
-    console.log("click");
+    imageArray = [];
+    ImagePicker.openPicker({
+      width: 500,
+      height: 500,
+      multiple: true
+    }).then(image => {
+      image.forEach(data => {
+        imageArray.push({
+          url: data.path,
+          width: Dimensions.get("window").width,
+          height: 400,
+          props: {
+            resizeMode: "stretch"
+          }
+        });
+      });
+      this.setState({ imagesView: imageArray });
+    });
   };
 
   GetphotoFromCamera = () => {
-    console.log("click");
+    ImagePicker.openCamera({
+      width: 500,
+      height: 500,
+      cropping: true
+    }).then(image => {
+      console.log(image);
+    });
+  };
+
+  closeView = () => {
+    this.setState({ imagesView: [] });
   };
 
   render() {
     const { open, close } = this.props;
+    let { imagesView } = this.state;
+    let viewImages = imagesView.length === 0 ? false : true;
+
+    console.log("holaaaa", imagesView);
     return (
       <View>
+        {viewImages && (
+          <ImagesView
+            open={viewImages}
+            images={imagesView}
+            close={this.closeView}
+          />
+        )}
         <Modal
           style={{
             justifyContent: "flex-end",
