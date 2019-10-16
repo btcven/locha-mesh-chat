@@ -10,6 +10,7 @@ export let sendSocket = undefined;
  * @export
  * @class Socket
  */
+
 export default class Socket {
   constructor(store) {
     this.socket = new WebSocket("wss://lochat.coinlab.info");
@@ -19,19 +20,24 @@ export default class Socket {
     this.store = store;
     sendSocket = this.socket;
     this.checkingSocketStatus(store);
+    this.idInterval = undefined;
   }
+
+  closeTimmer = () => {
+    clearInterval(this.idInterval);
+  };
 
   /**
    * @function
    * @description websocket client management class
    * @memberof Socket
    */
-
   checkingSocketStatus = store => {
-    setInterval(() => {
-      if (this.socket.readyState !== 1) {
-        console.log("acaaa",this.socket.readyState)
+    this.idInterval = setInterval(() => {
+      if (this.socket.readyState !== 1 && this.socket.readyState !== 3) {
         this.store.dispatch(loading());
+      } else if (this.socket.readyState === 3) {
+        this.closeTimmer();
       } else {
         store.getState().aplication.loading === false
           ? null

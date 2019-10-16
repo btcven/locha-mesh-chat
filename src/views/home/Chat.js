@@ -4,10 +4,16 @@ import Header from "../../components/Header";
 import ChatBody from "./ChatBody";
 import ChatForm from "./ChatForm";
 import { androidToast } from "../../utils/utils";
-import { initialChat, cleanAllChat } from "../../store/chats";
+import {
+  initialChat,
+  cleanAllChat,
+  sendMessageWithFile
+} from "../../store/chats";
 import { setView } from "../../store/aplication";
 import { connect } from "react-redux";
 import { Alert, Clipboard } from "react-native";
+import { sha256 } from "js-sha256";
+
 /**
  *
  *
@@ -108,6 +114,61 @@ class Chat extends Component {
     this.setState({ fileModal: false });
   };
 
+  /**
+   * Prepare the message structure before being sent
+   * @param { obj } data
+   * @param {array<obj>} data.images contains the list of images
+   * @param {number} data.position array position where the comment will be written
+   * @param {string} data.message
+   * @memberof Chat text to send
+   */
+
+  sendFileWithImage = data => {
+    const { userData, navigation, setChat, previousChat } = this.props;
+    const toUID = navigation.state.params
+      ? navigation.state.params.hashUID
+      : null;
+    const sendObject = {
+      fromUID: sha256(userData.uid),
+      toUID: toUID,
+      msg: {
+        text: ""
+      },
+      timestamp: new Date().getTime(),
+      type: "msg"
+    };
+    data.images.map((image, key) => {
+      const id = sha256(
+        `${sha256(userData.uid)} + ${toUID}  +  ${sendObject.msg.text +
+          sendObject.msg.file}  + ${new Date().getTime()}`
+      );
+      if (data.position === key) {
+        const sendData = Object.assign({}, sendObject);
+
+        sendData.msg = {
+          text: data.message,
+          typeFile: "image"
+        };
+
+        this.props.sendMessageWithFile(
+          { ...sendData, msgID: id },
+          image.url,
+          image.base64
+        );
+      } else {
+        const sendData = Object.assign({}, sendObject);
+        sendData.msg.text = "";
+        sendData.msg.file = image.base64;
+        sendData.msg.typeFile = "image";
+        this.props.sendMessageWithFile(
+          { ...sendData, msgID: id },
+          image.url,
+          image.base64
+        );
+      }
+    });
+  };
+
   render() {
     const { navigation } = this.props;
 
@@ -137,6 +198,7 @@ class Chat extends Component {
           selected={this.state.selected}
           close={this.closeFileModal}
           open={this.state.fileModal}
+          sendFileWithImage={this.sendFileWithImage}
         />
         <ChatForm
           user={this.props.userData}
@@ -159,5 +221,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { initialChat, setView, cleanAllChat }
+  { initialChat, setView, cleanAllChat, sendMessageWithFile }
 )(Chat);

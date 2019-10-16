@@ -46,8 +46,6 @@ export default class ChatBody extends Component {
 
   verifySelected = item => {
     const result = this.props.selected.find(select => {
-      console.log("holaaa", select.id === item.id);
-      console.log(select.id, item.id);
       return select.id === item.id;
     });
 
@@ -60,7 +58,11 @@ export default class ChatBody extends Component {
     return (
       <View style={{ flex: 1 }}>
         {this.props.open && (
-          <FileModal open={this.props.open} close={this.props.close} />
+          <FileModal
+            open={this.props.open}
+            close={this.props.close}
+            sendFileWithImage={this.props.sendFileWithImage}
+          />
         )}
         <FlatList
           inverted

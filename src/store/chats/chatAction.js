@@ -11,6 +11,8 @@ import {
 import { notification } from "../../utils/utils";
 import { sendSocket } from "../../utils/socket";
 import { sha256 } from "js-sha256";
+import fetch_blob from "react-native-fetch-blob";
+import RNFS from "react-native-fs";
 
 /**
  * @function
@@ -98,11 +100,16 @@ export const broadcastRandomData = async (parse, id) =>
 
 export const getChat = data => async dispatch => {
   const parse = JSON.parse(data);
+
+  console.log("llegando", parse);
   let infoMensagge = undefined;
   if (!parse.toUID) {
     infoMensagge = await broadcastRandomData(parse);
   }
 
+  if (parse.msg.file) {
+    await saveFile(parse.msg);
+  }
   let uidChat = parse.toUID ? parse.fromUID : "broadcast";
 
   let name = infoMensagge ? infoMensagge.name : undefined;
@@ -116,6 +123,17 @@ export const getChat = data => async dispatch => {
         id: parse.msgID
       }
     });
+  });
+};
+
+saveFile = obj => {
+  const base64File = obj.file;
+  console.log(base64File);
+  const directory =
+    `file:///${RNFS.ExternalStorageDirectoryPath}` +
+    "/Pictures/LochaMesh/received.png";
+  RNFS.writeFile(directory, base64File, "base64").then(res => {
+    console.log("la guardo", res);
   });
 };
 
@@ -181,6 +199,34 @@ export const cleanAllChat = id => dispatch => {
     dispatch({
       type: ActionTypes.DELETE_ALL_MESSAGE,
       payload: id
+    });
+  });
+};
+
+/**
+ *
+ * sending images with files
+ * @function
+ * @param {Object} data
+ * @param {String} path
+ */
+
+export const sendMessageWithFile = (data, path, base64) => dispatch => {
+  let uidChat = data.toUID ? data.toUID : "broadcast";
+  const saveDatabase = Object.assign({}, data);
+  saveDatabase.msg.file = path;
+  setMessage(uidChat, { ...saveDatabase }).then(file => {
+    saveDatabase.msg.file = base64;
+    sendSocket.send(JSON.stringify(saveDatabase));
+    dispatch({
+      type: ActionTypes.NEW_MESSAGE,
+      payload: {
+        name: undefined,
+        ...data,
+        msg: data.msg.text,
+        id: data.msgID,
+        file: file
+      }
     });
   });
 };

@@ -15,9 +15,10 @@ const databaseOptions = {
     contactSchema,
     chatSquema,
     messageSquema,
-    BroadCasContacts
+    BroadCasContacts,
+    fileSchema
   ],
-  schemaVersion: 12
+  schemaVersion: 17
 };
 
 const getRealm = () =>
@@ -87,8 +88,20 @@ export const setMessage = (id, obj) =>
       realm.write(() => {
         try {
           let chat = realm.objectForPrimaryKey("Chat", id);
-          chat.messages.push({ ...obj, id: obj.msgID, msg: obj.msg.text });
-          resolve();
+          const file = obj.msg.typeFile
+            ? {
+                fileType: obj.msg.typeFile,
+                file: obj.msg.file
+              }
+            : null;
+
+          chat.messages.push({
+            ...obj,
+            id: obj.msgID,
+            msg: obj.msg.text,
+            file: file
+          });
+          resolve(file);
         } catch (err) {
           console.log(err);
         }

@@ -26,18 +26,14 @@ export default class FileModal extends Component {
   getPhotosFromGallery = () => {
     imageArray = [];
     ImagePicker.openPicker({
-      width: 500,
-      height: 500,
-      multiple: true
+      multiple: true,
+      includeBase64: true
     }).then(image => {
       image.forEach(data => {
         imageArray.push({
           url: data.path,
-          width: Dimensions.get("window").width,
-          height: 400,
-          props: {
-            resizeMode: "stretch"
-          }
+          base64: data.data,
+          width: Dimensions.get("window").width
         });
       });
       this.setState({ imagesView: imageArray });
@@ -50,7 +46,7 @@ export default class FileModal extends Component {
       height: 500,
       cropping: true
     }).then(image => {
-      console.log(image);
+      console.log("en la image", image);
     });
   };
 
@@ -62,12 +58,11 @@ export default class FileModal extends Component {
     const { open, close } = this.props;
     let { imagesView } = this.state;
     let viewImages = imagesView.length === 0 ? false : true;
-
-    console.log("holaaaa", imagesView);
     return (
       <View>
         {viewImages && (
           <ImagesView
+            sendFileWithImage={this.props.sendFileWithImage}
             open={viewImages}
             images={imagesView}
             close={this.closeView}

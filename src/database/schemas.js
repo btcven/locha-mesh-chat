@@ -1,11 +1,19 @@
 export const contactSchema = {
   name: "Contact",
-  primaryKey:"uid",
+  primaryKey: "uid",
   properties: {
     uid: "string",
     name: "string",
     picture: "string?",
     hashUID: "string"
+  }
+};
+
+fileSchema = {
+  name: "File",
+  properties: {
+    fileType: "string",
+    file: "string"
   }
 };
 
@@ -18,6 +26,7 @@ export const messageSquema = {
     fromUID: "string",
     toUID: "string?",
     msg: "string",
+    file: "File?",
     timestamp: "int",
     type: "string"
   }

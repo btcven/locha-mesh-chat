@@ -15,9 +15,21 @@ export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      height: 20
+      height: 20,
+      postition: 0,
+      message: ""
     };
   }
+
+  sendFile = () => {
+    const obj = {
+      position: this.state.postition,
+      message: this.state.message,
+      images: this.props.images
+    };
+    this.props.sendFileWithImage(obj);
+  };
+
   render() {
     return (
       <Modal
@@ -27,8 +39,8 @@ export default class App extends React.Component {
       >
         <ImageViewer
           imageUrls={this.props.images}
-          renderIndicator={() => null}
-          renderHeader={() => (
+          // onChange={event => this.setState({ postition: event })}
+          renderHeader={props => (
             <Header
               style={styles.headerContainer}
               androidStatusBarColor="black"
@@ -52,9 +64,7 @@ export default class App extends React.Component {
                   />
                 </TouchableHighlight>
               </Left>
-              <Body>
-                <Title>Locha Mesh</Title>
-              </Body>
+              <Body></Body>
             </Header>
           )}
         />
@@ -82,10 +92,10 @@ export default class App extends React.Component {
                 height: event.nativeEvent.contentSize.height
               });
             }}
-            placeholder="Mensaje"
+            placeholder="Agregar comentario"
           />
 
-          <TouchableOpacity onPress={this.send}>
+          <TouchableOpacity onPress={this.sendFile}>
             <Icon
               style={styles.iconChatStyle}
               type="MaterialIcons"
