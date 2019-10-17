@@ -100,42 +100,49 @@ export const broadcastRandomData = async (parse, id) =>
 
 export const getChat = data => async dispatch => {
   const parse = JSON.parse(data);
+  let math = undefined;
 
-  console.log("llegando", parse);
   let infoMensagge = undefined;
   if (!parse.toUID) {
     infoMensagge = await broadcastRandomData(parse);
   }
 
   if (parse.msg.file) {
-    await saveFile(parse.msg);
+    parse.msg.file = await saveFile(parse.msg);
   }
+
   let uidChat = parse.toUID ? parse.fromUID : "broadcast";
 
+  
   let name = infoMensagge ? infoMensagge.name : undefined;
-  setMessage(uidChat, { ...parse, name: name }).then(() => {
+  setMessage(uidChat, { ...parse, name: name }).then(file => {
     dispatch({
       type: ActionTypes.NEW_MESSAGE,
       payload: {
         name: name,
         ...parse,
         msg: parse.msg.text,
-        id: parse.msgID
+        id: parse.msgID,
+        file: file
       }
     });
   });
 };
 
-saveFile = obj => {
-  const base64File = obj.file;
-  console.log(base64File);
-  const directory =
-    `file:///${RNFS.ExternalStorageDirectoryPath}` +
-    "/Pictures/LochaMesh/received.png";
-  RNFS.writeFile(directory, base64File, "base64").then(res => {
-    console.log("la guardo", res);
+/**
+ * save the images in the phone memory
+ * @param {Object} obj
+ * @returns {Promise<string>}
+ */
+const saveFile = obj =>
+  new Promise(resolve => {
+    const base64File = obj.file;
+    const name = `IMG_${new Date().getTime()}`;
+    const directory = `file:///${RNFS.ExternalStorageDirectoryPath}/Pictures/LochaMesh/${name}.jpg`;
+    RNFS.writeFile(directory, base64File, "base64").then(res => {
+      resolve(directory);
+    });
   });
-};
 
 /**
  * @function

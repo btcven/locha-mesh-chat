@@ -5,7 +5,8 @@ import {
   StyleSheet,
   TextInput,
   FlatList,
-  TouchableNativeFeedback
+  TouchableNativeFeedback,
+  Image
 } from "react-native";
 import Moment from "moment";
 import { Thumbnail, Button } from "native-base";
@@ -74,7 +75,6 @@ export default class ChatBody extends Component {
             const contactInfo = this.getContactInfo(item);
             const selected =
               this.props.selected.length > 0 ? this.verifySelected(item) : null;
-
             let userInfo = contactInfo ? contactInfo : item;
             if (sha256(this.props.user.uid) !== item.fromUID) {
               return (
@@ -129,6 +129,21 @@ export default class ChatBody extends Component {
                             </Text>
                           )}
                           <View style={{ minWidth: 110 }}>
+                            {item.file && (
+                              <View style={{ minWidth: "80%" }}>
+                                <Image
+                                  style={{ width: "100%", height: 150 }}
+                                  source={{
+                                    resizeMode: "contain",
+                                    uri:
+                                      item.file.file +
+                                      "?" +
+                                      new Date().getDate(),
+                                    cache: "force-cache"
+                                  }}
+                                />
+                              </View>
+                            )}
                             <Text style={{ fontSize: 15 }}>{item.msg}</Text>
                           </View>
                           <Text
@@ -166,6 +181,18 @@ export default class ChatBody extends Component {
                     style={[styles.senderContainer, selected]}
                   >
                     <View style={styles.textContent2}>
+                      {item.file && (
+                        <View style={{ minWidth: "80%" }}>
+                          <Image
+                            style={{ width: "100%", height: 150 }}
+                            source={{
+                              resizeMode: "contain",
+                              uri: item.file.file + "?" + new Date().getDate(),
+                              cache: "force-cache"
+                            }}
+                          />
+                        </View>
+                      )}
                       <Text style={{ fontSize: 15 }}>{item.msg}</Text>
                       <Text
                         style={{

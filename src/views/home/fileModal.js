@@ -5,6 +5,7 @@ import { View, Text, TouchableOpacity, Dimensions } from "react-native";
 import { Thumbnail } from "native-base";
 import ImagePicker from "react-native-image-crop-picker";
 import ImagesView from "./imagesView";
+import RNFS from "react-native-fs";
 
 /**
  *
@@ -23,6 +24,12 @@ export default class FileModal extends Component {
     };
   }
 
+  /**
+   *
+   * Search the photos in the gallery and send it to the chat image viewer
+   * @memberof FileModal
+   */
+
   getPhotosFromGallery = () => {
     imageArray = [];
     ImagePicker.openPicker({
@@ -40,13 +47,34 @@ export default class FileModal extends Component {
     });
   };
 
+  /**
+   *
+   * take the photo, cut it, move the application folder and send it in chat image viewer
+   * @memberof FileModal
+   */
+
   GetphotoFromCamera = () => {
     ImagePicker.openCamera({
       width: 500,
       height: 500,
-      cropping: true
+      cropping: true,
+      includeBase64: true
     }).then(image => {
-      console.log("en la image", image);
+      const newPath = `file:///${
+        RNFS.ExternalStorageDirectoryPath
+      }//Pictures/LochaMesh/IMG_${new Date().getTime()} `;
+
+      RNFS.moveFile(image.path, newPath).then(() => {
+        this.setState({
+          imagesView: [
+            {
+              url: newPath,
+              base64: image.data,
+              width: Dimensions.get("window").width
+            }
+          ]
+        });
+      });
     });
   };
 

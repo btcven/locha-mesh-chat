@@ -27,7 +27,9 @@ export default class App extends React.Component {
       message: this.state.message,
       images: this.props.images
     };
-    this.props.sendFileWithImage(obj);
+    this.props.sendFileWithImage(obj, () => {
+      this.props.close();
+    });
   };
 
   render() {

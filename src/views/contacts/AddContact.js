@@ -75,32 +75,32 @@ export default class AddContact extends Component {
   };
 
   save = () => {
-    const update = this.props.selected.length > 0 ? true : false;
-    const verify = this.verifyContacts(update);
-    if (verify) {
-      const obj = {
-        name: this.state.name,
-        picture: this.state.image,
-        uid: this.state.uid,
-        hashUID: sha256(this.state.uid)
-      };
-      if (!update) {
-        this.props.saveContact(
-          this.props.userData.uid,
-          obj,
-          this.props.contacts,
-          () => {
-            androidToast("Contacto creado exitosamente!");
-            this.props.close();
-          }
-        );
-      } else {
-        this.props.editContats(obj, () => {
-          androidToast("Contacto creado exitosamente!");
-          this.props.close();
-        });
-      }
-    }
+    // const update = this.props.selected.length > 0 ? true : false;
+    // const verify = this.verifyContacts(update);
+    // if (verify) {
+    //   const obj = {
+    //     name: this.state.name,
+    //     picture: this.state.image,
+    //     uid: this.state.uid,
+    //     hashUID: sha256(this.state.uid)
+    //   };
+    //   if (!update) {
+    //     this.props.saveContact(
+    //       this.props.userData.uid,
+    //       obj,
+    //       this.props.contacts,
+    //       () => {
+    //         androidToast("Contacto creado exitosamente!");
+    //         this.props.close();
+    //       }
+    //     );
+    //   } else {
+    //     this.props.editContats(obj, () => {
+    //       androidToast("Contacto creado exitosamente!");
+    //       this.props.close();
+    //     });
+    //   }
+    // }
   };
 
   onSuccess = event => {
@@ -147,7 +147,13 @@ export default class AddContact extends Component {
   };
 
   render() {
-    let disabled = this.props.selected.length > 0 ? true : false;
+    let disabled1 = this.props.selected.length > 0 ? true : false;
+    let disabled2 =
+      this.state.name.length === 0 || this.state.uid.length === 0
+        ? true
+        : false;
+
+    console.log(disabled2);
     return (
       <View>
         <Modal
@@ -194,10 +200,7 @@ export default class AddContact extends Component {
               <Text style={styles.textStyle}>Editar Contacto</Text>
             )}
             {
-              <TouchableOpacity
-                disabled={this.state.openQrCode}
-                onPress={this.save}
-              >
+              <TouchableOpacity disabled={disabled2} onPress={this.save}>
                 <Icon
                   style={styles.iconStyle}
                   type="MaterialIcons"
@@ -241,7 +244,7 @@ export default class AddContact extends Component {
                   </View>
                   <Item style={{ height: 30 }}>
                     <Input
-                      disabled={disabled}
+                      disabled={disabled1}
                       value={this.state.uid}
                       style={{ fontSize: 16 }}
                       onChangeText={text => this.setState({ uid: text })}

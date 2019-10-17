@@ -123,7 +123,7 @@ class Chat extends Component {
    * @memberof Chat text to send
    */
 
-  sendFileWithImage = data => {
+  sendFileWithImage = (data, callback) => {
     const { userData, navigation, setChat, previousChat } = this.props;
     const toUID = navigation.state.params
       ? navigation.state.params.hashUID
@@ -165,6 +165,11 @@ class Chat extends Component {
           image.url,
           image.base64
         );
+      }
+
+      if (data.images.length === key + 1) {
+        callback();
+        this.closeFileModal();
       }
     });
   };
