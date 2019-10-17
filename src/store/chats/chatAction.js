@@ -11,7 +11,6 @@ import {
 import { notification } from "../../utils/utils";
 import { sendSocket } from "../../utils/socket";
 import { sha256 } from "js-sha256";
-import fetch_blob from "react-native-fetch-blob";
 import RNFS from "react-native-fs";
 
 /**
