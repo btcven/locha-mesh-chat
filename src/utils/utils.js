@@ -27,8 +27,7 @@ async function requestStoragePermission() {
   }
 }
 
-export const FileDirectory =
-  RNFS.ExternalStorageDirectoryPath + "/Pictures/LochaMesh/";
+export const FileDirectory = RNFS.ExternalStorageDirectoryPath + "/LochaMesh";
 
 /**
  *

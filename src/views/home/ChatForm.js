@@ -8,7 +8,8 @@ import {
   TouchableOpacity,
   Platform
 } from "react-native";
-import Sound from 'react-native-sound';
+import Sound from "react-native-sound";
+import RNFS from "react-native-fs";
 
 import { sha256 } from "js-sha256";
 import { AudioRecorder, AudioUtils } from "react-native-audio";
@@ -32,7 +33,8 @@ export default class ChatForm extends Component {
       paused: false,
       stoppedRecording: false,
       finished: false,
-      audioPath: AudioUtils.DocumentDirectoryPath + "/test.aac",
+      audioPath:
+        AudioUtils.DocumentDirectoryPath + `/AUDIO_${new Date().getTime()}.aac`,
       hasPermission: undefined
     };
   }
@@ -54,14 +56,11 @@ export default class ChatForm extends Component {
 
     // These timeouts are a hacky workaround for some issues with react-native-sound.
     // See https://github.com/zmxv/react-native-sound/issues/89.
-    setTimeout(() => {
-      var sound = new Sound(this.state.audioPath, "", error => {
-        if (error) {
-          console.log("failed to load the sound", error);
-        }
-      });
 
-      setTimeout(() => {
+    var sound = new Sound(this.state.audioPath, "", error => {
+      if (error) {
+        console.log("failed to load the sound", error);
+      } else {
         sound.play(success => {
           if (success) {
             console.log("successfully finished playing");
@@ -69,8 +68,8 @@ export default class ChatForm extends Component {
             console.log("playback failed due to audio decoding errors");
           }
         });
-      }, 100);
-    }, 100);
+      }
+    });
   };
 
   _record = async () => {
@@ -94,6 +93,8 @@ export default class ChatForm extends Component {
 
     try {
       const filePath = await AudioRecorder.startRecording();
+
+      console.log("holaaaaaa", filePath);
     } catch (error) {
       console.error(error);
     }
@@ -112,14 +113,14 @@ export default class ChatForm extends Component {
       };
 
       AudioRecorder.onFinished = data => {
-        // Android callback comes in the form of a promise instead.
-        if (Platform.OS === "ios") {
-          this._finishRecording(
-            data.status === "OK",
-            data.audioFileURL,
-            data.audioFileSize
-          );
-        }
+        const newPath = `file:///${
+          RNFS.ExternalStorageDirectoryPath
+        }//Pictures/LochaMesh//AUDIO_${new Date().getTime()}.aac`;
+        RNFS.exists(this.state.audioPath).then(data => {
+          RNFS.moveFile(this.state.audioPath, newPath).then(() => {
+            console.log("se guardo");
+          });
+        });
       };
     });
   };
