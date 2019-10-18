@@ -5,9 +5,14 @@ import {
   StyleSheet,
   TextInput,
   ScrollView,
-  TouchableOpacity
+  TouchableOpacity,
+  Platform
 } from "react-native";
+import Sound from 'react-native-sound';
+
 import { sha256 } from "js-sha256";
+import { AudioRecorder, AudioUtils } from "react-native-audio";
+
 /**
  *
  *
@@ -21,8 +26,131 @@ export default class ChatForm extends Component {
     super(props);
     this.state = {
       message: "",
-      height: 20
+      height: 20,
+      currentTime: 0.0,
+      recording: false,
+      paused: false,
+      stoppedRecording: false,
+      finished: false,
+      audioPath: AudioUtils.DocumentDirectoryPath + "/test.aac",
+      hasPermission: undefined
     };
+  }
+
+  prepareRecordingPath = audioPath => {
+    AudioRecorder.prepareRecordingAtPath(audioPath, {
+      SampleRate: 22050,
+      Channels: 1,
+      AudioQuality: "Low",
+      AudioEncoding: "aac",
+      AudioEncodingBitRate: 32000
+    });
+  };
+
+  _play = async () => {
+    if (this.state.recording) {
+      await this._stop();
+    }
+
+    // These timeouts are a hacky workaround for some issues with react-native-sound.
+    // See https://github.com/zmxv/react-native-sound/issues/89.
+    setTimeout(() => {
+      var sound = new Sound(this.state.audioPath, "", error => {
+        if (error) {
+          console.log("failed to load the sound", error);
+        }
+      });
+
+      setTimeout(() => {
+        sound.play(success => {
+          if (success) {
+            console.log("successfully finished playing");
+          } else {
+            console.log("playback failed due to audio decoding errors");
+          }
+        });
+      }, 100);
+    }, 100);
+  };
+
+  _record = async () => {
+    if (this.state.recording) {
+      console.warn("Already recording!");
+      return;
+    }
+
+    if (!this.state.hasPermission) {
+      console.warn("Can't record, no permission granted!");
+      return;
+    }
+
+    if (this.state.stoppedRecording) {
+      this.prepareRecordingPath(this.state.audioPath);
+    }
+
+    this.setState({ recording: true, paused: false });
+
+    console.log("acaaa", this.state.audioPath);
+
+    try {
+      const filePath = await AudioRecorder.startRecording();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  componentDidMount = () => {
+    AudioRecorder.requestAuthorization().then(isAuthorised => {
+      this.setState({ hasPermission: isAuthorised });
+
+      if (!isAuthorised) return;
+
+      this.prepareRecordingPath(this.state.audioPath);
+
+      AudioRecorder.onProgress = data => {
+        this.setState({ currentTime: Math.floor(data.currentTime) });
+      };
+
+      AudioRecorder.onFinished = data => {
+        // Android callback comes in the form of a promise instead.
+        if (Platform.OS === "ios") {
+          this._finishRecording(
+            data.status === "OK",
+            data.audioFileURL,
+            data.audioFileSize
+          );
+        }
+      };
+    });
+  };
+
+  _stop = async () => {
+    if (!this.state.recording) {
+      console.warn("Can't stop, not recording!");
+      return;
+    }
+
+    this.setState({ stoppedRecording: true, recording: false, paused: false });
+
+    try {
+      const filePath = await AudioRecorder.stopRecording();
+
+      if (Platform.OS === "android") {
+        this._finishRecording(true, filePath);
+      }
+      return filePath;
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  _finishRecording(didSucceed, filePath, fileSize) {
+    this.setState({ finished: didSucceed });
+    console.log(
+      `Finished recording of duration ${
+        this.state.currentTime
+      } seconds at path: ${filePath} and size of ${fileSize || 0} bytes`
+    );
   }
 
   send = () => {
@@ -57,7 +185,7 @@ export default class ChatForm extends Component {
           contentContainerStyle={styles.contentForm}
           keyboardShouldPersistTaps={"handled"}
         >
-          <TouchableOpacity onPress={() => this.props.openFileModal()}>
+          <TouchableOpacity onPress={() => this._stop()}>
             <Icon
               style={styles.iconChatStyle}
               type="MaterialIcons"
@@ -79,12 +207,22 @@ export default class ChatForm extends Component {
           />
 
           {this.state.message.length === 0 && (
-            <TouchableOpacity onPress={() => console.log("click me!")}>
+            <TouchableOpacity
+              onPress={() => {
+                this._record();
+              }}
+            >
               <Icon
                 style={styles.iconChatStyle}
                 type="MaterialIcons"
                 name="mic"
               />
+            </TouchableOpacity>
+          )}
+
+          {this.state.message.length === 0 && (
+            <TouchableOpacity onPress={() => this._play()}>
+              <Icon style={styles.iconChatStyle} name="play" />
             </TouchableOpacity>
           )}
 
