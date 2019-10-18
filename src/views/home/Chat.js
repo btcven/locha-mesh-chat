@@ -11,8 +11,9 @@ import {
 } from "../../store/chats";
 import { setView } from "../../store/aplication";
 import { connect } from "react-redux";
-import { Alert, Clipboard } from "react-native";
+import { Alert, Clipboard, Dimensions } from "react-native";
 import { sha256 } from "js-sha256";
+import ImagesView from "./imagesView";
 
 /**
  *
@@ -26,6 +27,7 @@ class Chat extends Component {
     super(props);
     this.state = {
       selected: [],
+      imagesView: [],
       fileModal: false,
       menu: [
         {
@@ -82,6 +84,15 @@ class Chat extends Component {
       } else {
         this.setState({ selected: this.state.selected.concat(item) });
       }
+    } else if (item.file) {
+      this.setState({
+        imagesView: [
+          {
+            url: item.file.file,
+            width: Dimensions.get("window").width
+          }
+        ]
+      });
     }
   };
 
@@ -174,9 +185,13 @@ class Chat extends Component {
     });
   };
 
+  closeView = () => {
+    this.setState({ imagesView: [] });
+  };
+
   render() {
     const { navigation } = this.props;
-
+    let viewImages = this.state.imagesView.length === 0 ? false : true;
     const chatSelected = this.props.chat[this.props.chatSelected.index];
 
     const messages = Object.values(chatSelected.messages).length
@@ -186,6 +201,13 @@ class Chat extends Component {
       : [];
     return (
       <Container>
+        {viewImages && (
+          <ImagesView
+            open={viewImages}
+            images={this.state.imagesView}
+            close={this.closeView}
+          />
+        )}
         <Header
           {...this.props}
           menu={this.state.menu}

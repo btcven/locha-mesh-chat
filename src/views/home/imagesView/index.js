@@ -70,41 +70,44 @@ export default class App extends React.Component {
             </Header>
           )}
         />
-        <View
-          style={{
-            backgroundColor: "black",
-            minHeight: 50,
-            alignItems: "flex-end",
-            flexDirection: "row"
-          }}
-        >
-          <TextInput
-            placeholderTextColor="gray"
-            multiline={true}
-            style={{
-              height: this.state.height,
-              flex: 1,
-              color: "gray",
-              backgroundColor: "black"
-            }}
-            value={this.state.message}
-            onChangeText={text => this.setState({ message: text })}
-            onContentSizeChange={event => {
-              this.setState({
-                height: event.nativeEvent.contentSize.height
-              });
-            }}
-            placeholder="Agregar comentario"
-          />
 
-          <TouchableOpacity onPress={this.sendFile}>
-            <Icon
-              style={styles.iconChatStyle}
-              type="MaterialIcons"
-              name="send"
+        {this.props.sendFileWithImage && (
+          <View
+            style={{
+              backgroundColor: "black",
+              minHeight: 50,
+              alignItems: "flex-end",
+              flexDirection: "row"
+            }}
+          >
+            <TextInput
+              placeholderTextColor="gray"
+              multiline={true}
+              style={{
+                height: this.state.height,
+                flex: 1,
+                color: "gray",
+                backgroundColor: "black"
+              }}
+              value={this.state.message}
+              onChangeText={text => this.setState({ message: text })}
+              onContentSizeChange={event => {
+                this.setState({
+                  height: event.nativeEvent.contentSize.height
+                });
+              }}
+              placeholder="Agregar comentario"
             />
-          </TouchableOpacity>
-        </View>
+
+            <TouchableOpacity onPress={this.sendFile}>
+              <Icon
+                style={styles.iconChatStyle}
+                type="MaterialIcons"
+                name="send"
+              />
+            </TouchableOpacity>
+          </View>
+        )}
       </Modal>
     );
   }
