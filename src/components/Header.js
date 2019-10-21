@@ -35,6 +35,13 @@ class HeaderComponent extends Component {
     }
   };
 
+  back = () => {
+    this.props.navigation.push("initial");
+    if (this.props.setView) {
+      this.props.setView(undefined);
+    }
+  };
+
   onChange = () => {
     this.setState({ search: !this.state.search });
   };
@@ -64,9 +71,7 @@ class HeaderComponent extends Component {
                     paddingVertical: 6,
                     borderRadius: 100
                   }}
-                  onPress={() => {
-                    this.props.navigation.push("initial");
-                  }}
+                  onPress={() => this.back()}
                 >
                   <Icon style={styles.iconStyle} name="arrow-back" />
                 </TouchableHighlight>

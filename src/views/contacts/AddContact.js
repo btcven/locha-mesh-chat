@@ -75,32 +75,32 @@ export default class AddContact extends Component {
   };
 
   save = () => {
-    // const update = this.props.selected.length > 0 ? true : false;
-    // const verify = this.verifyContacts(update);
-    // if (verify) {
-    //   const obj = {
-    //     name: this.state.name,
-    //     picture: this.state.image,
-    //     uid: this.state.uid,
-    //     hashUID: sha256(this.state.uid)
-    //   };
-    //   if (!update) {
-    //     this.props.saveContact(
-    //       this.props.userData.uid,
-    //       obj,
-    //       this.props.contacts,
-    //       () => {
-    //         androidToast("Contacto creado exitosamente!");
-    //         this.props.close();
-    //       }
-    //     );
-    //   } else {
-    //     this.props.editContats(obj, () => {
-    //       androidToast("Contacto creado exitosamente!");
-    //       this.props.close();
-    //     });
-    //   }
-    // }
+    const update = this.props.selected.length > 0 ? true : false;
+    const verify = this.verifyContacts(update);
+    if (verify) {
+      const obj = {
+        name: this.state.name,
+        picture: this.state.image,
+        uid: this.state.uid,
+        hashUID: sha256(this.state.uid)
+      };
+      if (!update) {
+        this.props.saveContact(
+          this.props.userData.uid,
+          obj,
+          this.props.contacts,
+          () => {
+            androidToast("Contacto creado exitosamente!");
+            this.props.close();
+          }
+        );
+      } else {
+        this.props.editContats(obj, () => {
+          androidToast("Contacto creado exitosamente!");
+          this.props.close();
+        });
+      }
+    }
   };
 
   onSuccess = event => {

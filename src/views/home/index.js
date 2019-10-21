@@ -16,7 +16,7 @@ import {
 import Header from "../../components/Header";
 import { connect } from "react-redux";
 import { Alert, Image } from "react-native";
-import { selectedChat, deleteChat } from "../../store/chats";
+import { selectedChat, deleteChat,  } from "../../store/chats";
 import { getSelectedColor, unSelect } from "../../utils/utils";
 import Moment from "moment";
 import FloatButton from "../../components/FloatButton";
@@ -36,6 +36,10 @@ class index extends Component {
   }
   static navigationOptions = {
     header: null
+  };
+
+  componentDidMount = () => {
+    console.log("data", this.props.navigation.state.routeName);
   };
 
   selectedChat = (info, obj) => {

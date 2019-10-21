@@ -22,6 +22,7 @@ import ImagesView from "./imagesView";
  * @description main message component
  * @extends {Component}
  */
+
 class Chat extends Component {
   constructor(props) {
     super(props);
@@ -48,8 +49,13 @@ class Chat extends Component {
   };
 
   componentWillUnmount = () => {
-    this.props.setView(undefined);
+    console.log("holaaaa");
   };
+
+  // componentWillUnmount = () => {
+  //   console.log("willUnmount");
+  //   this.props.setView(undefined);
+  // };
 
   cleanAllMessages = () => {
     const chat = this.props.chat[this.props.chatSelected.index];
@@ -215,6 +221,7 @@ class Chat extends Component {
           back={this.back}
           copy={this.copy}
           delete={this.delete}
+          setView={this.props.setView}
         />
         <ChatBody
           chats={messages}
