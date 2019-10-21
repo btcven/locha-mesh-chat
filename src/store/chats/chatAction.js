@@ -8,7 +8,7 @@ import {
   deleteChatss,
   cleanChat
 } from "../../database/realmDatabase";
-import { notification } from "../../utils/utils";
+import { notification, FileDirectory } from "../../utils/utils";
 import { sendSocket } from "../../utils/socket";
 import { sha256 } from "js-sha256";
 import RNFS from "react-native-fs";
@@ -112,9 +112,9 @@ export const getChat = data => async dispatch => {
 
   let uidChat = parse.toUID ? parse.fromUID : "broadcast";
 
-  
   let name = infoMensagge ? infoMensagge.name : undefined;
   setMessage(uidChat, { ...parse, name: name }).then(file => {
+    console.log("acaaa", file);
     dispatch({
       type: ActionTypes.NEW_MESSAGE,
       payload: {
@@ -135,12 +135,21 @@ export const getChat = data => async dispatch => {
  */
 const saveFile = obj =>
   new Promise(resolve => {
-    const base64File = obj.file;
-    const name = `IMG_${new Date().getTime()}`;
-    const directory = `file:///${RNFS.ExternalStorageDirectoryPath}/Pictures/LochaMesh/${name}.jpg`;
-    RNFS.writeFile(directory, base64File, "base64").then(res => {
-      resolve(directory);
-    });
+    if (obj.typeFile === "image") {
+      const base64File = obj.file;
+      const name = `IMG_${new Date().getTime()}`;
+      const directory = `file:///${FileDirectory}/Pictures/${name}.jpg`;
+      RNFS.writeFile(directory, base64File, "base64").then(res => {
+        resolve(directory);
+      });
+    } else {
+      const base64File = obj.file;
+      const name = `AUDIO_${new Date().getTime()}`;
+      const directory = `file:///${FileDirectory}/Audios/${name}.aac`;
+      RNFS.writeFile(directory, base64File, "base64").then(res => {
+        resolve(directory);
+      });
+    }
   });
 
 /**
@@ -215,6 +224,7 @@ export const cleanAllChat = id => dispatch => {
  * @function
  * @param {Object} data
  * @param {String} path
+ * @param {String} base64
  */
 
 export const sendMessageWithFile = (data, path, base64) => dispatch => {
@@ -235,4 +245,25 @@ export const sendMessageWithFile = (data, path, base64) => dispatch => {
       }
     });
   });
+};
+
+export const sendMessagesWithSound = (data, path, base64) => dispatch => {
+  console.log("err webo", data, path, base64);
+  // let uidChat = data.toUID ? data.toUID : "broadcast";
+  // const saveDatabase = Object.assign({}, data);
+  // saveDatabase.msg.file = path;
+  // setMessage(uidChat, { ...saveDatabase }).then(file => {
+  //   saveDatabase.msg.file = base64;
+  //   sendSocket.send(JSON.stringify(saveDatabase));
+  //   dispatch({
+  //     type: ActionTypes.NEW_MESSAGE,
+  //     payload: {
+  //       name: undefined,
+  //       ...data,
+  //       msg: data.msg.text,
+  //       id: data.msgID,
+  //       file: file
+  //     }
+  //   });
+  // });
 };

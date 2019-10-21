@@ -7,7 +7,8 @@ import { androidToast } from "../../utils/utils";
 import {
   initialChat,
   cleanAllChat,
-  sendMessageWithFile
+  sendMessageWithFile,
+  sendMessagesWithSound
 } from "../../store/chats";
 import { setView } from "../../store/aplication";
 import { connect } from "react-redux";
@@ -211,6 +212,7 @@ class Chat extends Component {
           setChat={this.props.initialChat}
           previousChat={this.props.chatSelected}
           openFileModal={this.openFileModal}
+          sendMessagesWithSound={this.props.sendMessageWithFile}
         />
       </Container>
     );
@@ -226,5 +228,11 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { initialChat, setView, cleanAllChat, sendMessageWithFile }
+  {
+    initialChat,
+    setView,
+    cleanAllChat,
+    sendMessageWithFile,
+    sendMessagesWithSound
+  }
 )(Chat);
