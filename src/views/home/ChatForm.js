@@ -202,7 +202,7 @@ export default class ChatForm extends Component {
         >
           {!this.state.recording && (
             <>
-              <TouchableOpacity onPress={() => this._stop()}>
+              <TouchableOpacity onPress={() => this.props.openFileModal()}>
                 <Icon
                   style={styles.iconChatStyle}
                   type="MaterialIcons"
