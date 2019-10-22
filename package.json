@@ -10,6 +10,7 @@
   "dependencies": {
     "@react-native-community/async-storage": "^1.6.1",
     "@react-native-community/cameraroll": "^1.1.1",
+    "@react-native-community/slider": "1.1.4",
     "@tradle/react-native-http": "^2.0.0",
     "assert": "^1.1.1",
     "base64-arraybuffer": "^0.2.0",

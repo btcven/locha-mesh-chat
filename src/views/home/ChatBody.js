@@ -13,6 +13,7 @@ import { Thumbnail, Button } from "native-base";
 import { sha256 } from "js-sha256";
 import { getIcon, hashGenerateColort } from "../../utils/utils";
 import FileModal from "./fileModal";
+import { ReceiveMessage, SenderMessage, SoundMessage } from "./Messages";
 
 /**
  *
@@ -76,138 +77,38 @@ export default class ChatBody extends Component {
             const selected =
               this.props.selected.length > 0 ? this.verifySelected(item) : null;
             let userInfo = contactInfo ? contactInfo : item;
-            if (sha256(this.props.user.uid) !== item.fromUID) {
-              return (
-                <TouchableNativeFeedback
-                  onLongPress={() => this.props.onSelected(item)}
-                  onPress={() => this.props.onClick(item)}
-                  style={{
-                    marginVertical: 5,
-                    minHeight: 70,
-                    width: "100%",
-                    flexDirection: "row"
-                  }}
-                >
-                  <View
-                    key={index.toString()}
-                    style={[styles.receiveContainer, selected]}
-                  >
-                    <>
-                      {!item.toUID && !contactInfo && (
-                        <Thumbnail
-                          style={{
-                            marginLeft: 5,
-                            marginTop: 5
-                          }}
-                          source={{
-                            uri: `${getIcon(item.fromUID)}`
-                          }}
-                        />
-                      )}
+            const file = item.file ? item.file.fileType : undefined;
+            const rule =
+              sha256(this.props.user.uid) === item.fromUID ? true : false;
 
-                      {!item.toUID && contactInfo && (
-                        <Thumbnail
-                          style={{
-                            marginLeft: 5,
-                            marginTop: 5
-                          }}
-                          source={{
-                            uri: `${userInfo.picture}`
-                          }}
-                        />
-                      )}
-                      <View style={{ width: "90%", flexDirection: "row" }}>
-                        <View style={styles.textContent1}>
-                          {item.name && (
-                            <Text
-                              style={{
-                                paddingBottom: 7,
-                                color: hashGenerateColort(item.fromUID)
-                              }}
-                            >
-                              {userInfo.name}
-                            </Text>
-                          )}
-                          <View style={{ minWidth: 110 }}>
-                            {item.file && (
-                              <View style={{ minWidth: "80%" }}>
-                                <Image
-                                  style={{ width: "100%", height: 150 }}
-                                  source={{
-                                    resizeMode: "contain",
-                                    uri:
-                                      item.file.file +
-                                      "?" +
-                                      new Date().getDate(),
-                                    cache: "force-cache"
-                                  }}
-                                />
-                              </View>
-                            )}
-                            <Text style={{ fontSize: 15 }}>{item.msg}</Text>
-                          </View>
-                          <Text
-                            style={{
-                              paddingTop: 3,
-                              paddingLeft: 10,
-                              paddingBottom: 6,
-                              fontSize: 12,
-                              textAlign: "right"
-                            }}
-                          >
-                            {Moment(Number(item.timestamp)).format("LT")}
-                          </Text>
-                        </View>
-                      </View>
-                    </>
-                  </View>
-                </TouchableNativeFeedback>
+            if (!rule && file !== "audio") {
+              return (
+                <ReceiveMessage
+                  {...this.props}
+                  item={item}
+                  contactInfo={contactInfo}
+                  userInfo={userInfo}
+                  selected={selected}
+                />
+              );
+            } else if (rule && file !== "audio") {
+              return (
+                <SenderMessage
+                  {...this.props}
+                  item={item}
+                  selected={selected}
+                />
               );
             } else {
               return (
-                <TouchableNativeFeedback
-                  useForeground
-                  style={{
-                    marginVertical: 5,
-                    width: "100%",
-                    justifyContent: "flex-end",
-                    flexDirection: "row"
-                  }}
-                  onLongPress={() => this.props.onSelected(item)}
-                  onPress={() => this.props.onClick(item)}
-                >
-                  <View
-                    key={index.toString()}
-                    style={[styles.senderContainer, selected]}
-                  >
-                    <View style={styles.textContent2}>
-                      {item.file && (
-                        <View style={{ minWidth: "80%" }}>
-                          <Image
-                            style={{ width: "100%", height: 150 }}
-                            source={{
-                              resizeMode: "contain",
-                              uri: item.file.file + "?" + new Date().getDate(),
-                              cache: "force-cache"
-                            }}
-                          />
-                        </View>
-                      )}
-                      <Text style={{ fontSize: 15 }}>{item.msg}</Text>
-                      <Text
-                        style={{
-                          paddingTop: 7,
-                          paddingLeft: 5,
-                          paddingBottom: 6,
-                          fontSize: 12,
-                          textAlign: "right"
-                        }}
-                      >
-                        {Moment(Number(item.timestamp)).format("LT")}
-                      </Text>
-                    </View>
-                  </View>
-                </TouchableNativeFeedback>
+                <SoundMessage
+                  {...this.props}
+                  item={item}
+                  rule={rule}
+                  contactInfo={contactInfo}
+                  userInfo={userInfo}
+                  selected={selected}
+                />
               );
             }
           }}

@@ -91,7 +91,7 @@ class Chat extends Component {
       } else {
         this.setState({ selected: this.state.selected.concat(item) });
       }
-    } else if (item.file) {
+    } else if (item.file && item.file.fileType !== "audio") {
       this.setState({
         imagesView: [
           {
