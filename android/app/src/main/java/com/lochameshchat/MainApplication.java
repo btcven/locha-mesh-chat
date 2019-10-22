@@ -1,14 +1,14 @@
 package com.lochameshchat;
 
 import android.app.Application;
-
 import com.facebook.react.ReactApplication;
+import com.zmxv.RNSound.RNSoundPackage;
+import com.rnim.rn.audio.ReactNativeAudioPackage;
 import com.ocetnik.timer.BackgroundTimerPackage;
 import com.dieam.reactnativepushnotification.ReactNativePushNotificationPackage;
 import com.bitgo.randombytes.RandomBytesPackage;
 import com.horcrux.svg.SvgPackage;
 import io.realm.react.RealmReactPackage;
-
 import org.reactnative.camera.RNCameraPackage;
 import com.rnfs.RNFSPackage;
 import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
@@ -35,6 +35,8 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
             new MainReactPackage(),
+            new RNSoundPackage(),
+            new ReactNativeAudioPackage(),
             new BackgroundTimerPackage(),
             new ReactNativePushNotificationPackage(),
             new RandomBytesPackage(),

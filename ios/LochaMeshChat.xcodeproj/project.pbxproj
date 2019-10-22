@@ -79,6 +79,8 @@
 		A4A22DB695B843A3AC335EE9 /* libTcpSockets.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 726DE6149FEA4716A5D68FB3 /* libTcpSockets.a */; };
 		6EE39A9340E648D09847BF19 /* libUdpSockets.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EC88A8A86AC5456C9529681C /* libUdpSockets.a */; };
 		A49FC03EFA43456C9851CA67 /* libVoice.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A25B66A7E8E54330B4C73DD8 /* libVoice.a */; };
+		3FDE5BBDBE7848F48B9BBD59 /* libRNAudio.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 362022D49D0744D78CDF899C /* libRNAudio.a */; };
+		7D6321F8828E48CBBC19C3AF /* libRNSound.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 70155F6ADC9444B0AF764CA9 /* libRNSound.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -444,6 +446,10 @@
 		EC88A8A86AC5456C9529681C /* libUdpSockets.a */ = {isa = PBXFileReference; name = "libUdpSockets.a"; path = "libUdpSockets.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 		55D96C2740A94F00A5FA63BC /* Voice.xcodeproj */ = {isa = PBXFileReference; name = "Voice.xcodeproj"; path = "../node_modules/react-native-voice/ios/Voice.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
 		A25B66A7E8E54330B4C73DD8 /* libVoice.a */ = {isa = PBXFileReference; name = "libVoice.a"; path = "libVoice.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		2EF50D3197BA45F8A7434739 /* RNAudio.xcodeproj */ = {isa = PBXFileReference; name = "RNAudio.xcodeproj"; path = "../node_modules/react-native-audio/ios/RNAudio.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		362022D49D0744D78CDF899C /* libRNAudio.a */ = {isa = PBXFileReference; name = "libRNAudio.a"; path = "libRNAudio.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		90F7D5E3077E4777978C50A2 /* RNSound.xcodeproj */ = {isa = PBXFileReference; name = "RNSound.xcodeproj"; path = "../node_modules/react-native-sound/RNSound.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		70155F6ADC9444B0AF764CA9 /* libRNSound.a */ = {isa = PBXFileReference; name = "libRNSound.a"; path = "libRNSound.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -492,6 +498,8 @@
 				A4A22DB695B843A3AC335EE9 /* libTcpSockets.a in Frameworks */,
 				6EE39A9340E648D09847BF19 /* libUdpSockets.a in Frameworks */,
 				A49FC03EFA43456C9851CA67 /* libVoice.a in Frameworks */,
+				3FDE5BBDBE7848F48B9BBD59 /* libRNAudio.a in Frameworks */,
+				7D6321F8828E48CBBC19C3AF /* libRNSound.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -705,6 +713,8 @@
 				2BA9EE81F7BB4623963E6CA3 /* TcpSockets.xcodeproj */,
 				072FD424ABB44EE1B6BC91EB /* UdpSockets.xcodeproj */,
 				55D96C2740A94F00A5FA63BC /* Voice.xcodeproj */,
+				2EF50D3197BA45F8A7434739 /* RNAudio.xcodeproj */,
+				90F7D5E3077E4777978C50A2 /* RNSound.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -1380,6 +1390,8 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1401,6 +1413,8 @@
 					"$(SRCROOT)\..\node_modules\react-native-tcp\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-udp\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-voice\ios\Voice",
+					"$(SRCROOT)\..\node_modules\react-native-audio\ios",
+					"$(SRCROOT)\..\node_modules\react-native-sound\RNSound",
 				);
 			};
 			name = Debug;
@@ -1429,6 +1443,8 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1450,6 +1466,8 @@
 					"$(SRCROOT)\..\node_modules\react-native-tcp\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-udp\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-voice\ios\Voice",
+					"$(SRCROOT)\..\node_modules\react-native-audio\ios",
+					"$(SRCROOT)\..\node_modules\react-native-sound\RNSound",
 				);
 			};
 			name = Release;
@@ -1490,6 +1508,8 @@
 					"$(SRCROOT)\..\node_modules\react-native-tcp\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-udp\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-voice\ios\Voice",
+					"$(SRCROOT)\..\node_modules\react-native-audio\ios",
+					"$(SRCROOT)\..\node_modules\react-native-sound\RNSound",
 				);
 			};
 			name = Debug;
@@ -1529,6 +1549,8 @@
 					"$(SRCROOT)\..\node_modules\react-native-tcp\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-udp\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-voice\ios\Voice",
+					"$(SRCROOT)\..\node_modules\react-native-audio\ios",
+					"$(SRCROOT)\..\node_modules\react-native-sound\RNSound",
 				);
 			};
 			name = Release;
@@ -1565,6 +1587,8 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1586,6 +1610,8 @@
 					"$(SRCROOT)\..\node_modules\react-native-tcp\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-udp\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-voice\ios\Voice",
+					"$(SRCROOT)\..\node_modules\react-native-audio\ios",
+					"$(SRCROOT)\..\node_modules\react-native-sound\RNSound",
 				);
 			};
 			name = Debug;
@@ -1622,6 +1648,8 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1643,6 +1671,8 @@
 					"$(SRCROOT)\..\node_modules\react-native-tcp\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-udp\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-voice\ios\Voice",
+					"$(SRCROOT)\..\node_modules\react-native-audio\ios",
+					"$(SRCROOT)\..\node_modules\react-native-sound\RNSound",
 				);
 			};
 			name = Release;
@@ -1678,6 +1708,8 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1699,6 +1731,8 @@
 					"$(SRCROOT)\..\node_modules\react-native-tcp\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-udp\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-voice\ios\Voice",
+					"$(SRCROOT)\..\node_modules\react-native-audio\ios",
+					"$(SRCROOT)\..\node_modules\react-native-sound\RNSound",
 				);
 			};
 			name = Debug;
@@ -1734,6 +1768,8 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1755,6 +1791,8 @@
 					"$(SRCROOT)\..\node_modules\react-native-tcp\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-udp\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-voice\ios\Voice",
+					"$(SRCROOT)\..\node_modules\react-native-audio\ios",
+					"$(SRCROOT)\..\node_modules\react-native-sound\RNSound",
 				);
 			};
 			name = Release;

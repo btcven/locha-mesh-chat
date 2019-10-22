@@ -151,6 +151,8 @@ android {
 }
 
 dependencies {
+    implementation project(':react-native-sound')
+    implementation project(':react-native-audio')
     implementation project(':react-native-os')
     implementation project(':react-native-background-timer')
     implementation project(':react-native-randombytes')

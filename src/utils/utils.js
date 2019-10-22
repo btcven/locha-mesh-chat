@@ -27,8 +27,7 @@ async function requestStoragePermission() {
   }
 }
 
-export const FileDirectory =
-  RNFS.ExternalStorageDirectoryPath + "/Pictures/LochaMesh/";
+export const FileDirectory = RNFS.ExternalStorageDirectoryPath + "/LochaMesh";
 
 /**
  *
@@ -40,9 +39,14 @@ export const FileDirectory =
 
 export const createFolder = async () => {
   await requestStoragePermission();
-  const directory = RNFS.ExternalStorageDirectoryPath + "/Pictures/LochaMesh/";
+  const pictureDirectory =
+    RNFS.ExternalStorageDirectoryPath + "/LochaMesh/Pictures";
+  const audioDirectory =
+    RNFS.ExternalStorageDirectoryPath + "/LochaMesh/Audios";
   await RNFS.mkdir(FileDirectory.toString());
-  return directory;
+  await RNFS.mkdir(pictureDirectory.toString());
+  await RNFS.mkdir(audioDirectory.toString());
+  return pictureDirectory;
 };
 
 /**
