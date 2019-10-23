@@ -9,7 +9,6 @@ import {
   Platform,
   Text
 } from "react-native";
-import Sound from "react-native-sound";
 import RNFS from "react-native-fs";
 import { FileDirectory } from "../../utils/utils";
 import { sha256 } from "js-sha256";
@@ -101,29 +100,6 @@ export default class ChatForm extends Component {
     });
   };
 
-  // _play = async () => {
-  //   if (this.state.recording) {
-  //     await this._stop();
-  //   }
-
-  //   // These timeouts are a hacky workaround for some issues with react-native-sound.
-  //   // See https://github.com/zmxv/react-native-sound/issues/89.
-
-  //   var sound = new Sound(this.state.audioPath, "", error => {
-  //     if (error) {
-  //       console.log("failed to load the sound", error);
-  //     } else {
-  //       sound.play(success => {
-  //         if (success) {
-  //           console.log("successfully finished playing");
-  //         } else {
-  //           console.log("playback failed due to audio decoding errors");
-  //         }
-  //       });
-  //     }
-  //   });
-  // };
-
   _record = async () => {
     this.setState({ recording: true });
     if (this.state.recording) {
@@ -138,7 +114,6 @@ export default class ChatForm extends Component {
       this.prepareRecordingPath(this.state.audioPath);
     }
     this.setState({ recording: true, paused: false });
-    console.log("acaaa", this.state.audioPath);
     try {
       const filePath = await AudioRecorder.startRecording();
     } catch (error) {

@@ -129,7 +129,7 @@ export const getChat = data => async dispatch => {
 };
 
 /**
- * save the images in the phone memory
+ * save the files in the phone memory
  * @param {Object} obj
  * @returns {Promise<string>}
  */
@@ -145,8 +145,8 @@ const saveFile = obj =>
     } else {
       const base64File = obj.file;
       const name = `AUDIO_${new Date().getTime()}`;
-      const directory = `file:///${FileDirectory}/Audios/${name}.aac`;
-      RNFS.writeFile(directory, base64File, "base64").then(res => {
+      const directory = `${FileDirectory}/Audios/${name}.aac`;
+      RNFS.writeFile(`file:///${directory}`, base64File, "base64").then(res => {
         resolve(directory);
       });
     }

@@ -154,11 +154,14 @@ export const SoundMessage = ({
   item,
   contactInfo,
   selected,
-  rule
+  rule,
+  index,
+  chats
 }) => {
   if (!rule) {
     return (
       <TouchableNativeFeedback
+        key={index}
         onLongPress={() => onSelected(item)}
         onPress={() => onClick(item)}
         style={{
@@ -204,7 +207,7 @@ export const SoundMessage = ({
                   {userInfo.name}
                 </Text>
               )}
-              <Player />
+              <Player path={item.file.file} />
               <Text
                 style={{
                   paddingTop: 3,
@@ -222,36 +225,39 @@ export const SoundMessage = ({
       </TouchableNativeFeedback>
     );
   } else {
-    return (
-      <TouchableNativeFeedback
-        useForeground
-        style={{
-          marginVertical: 5,
-          width: "100%",
-          justifyContent: "flex-end",
-          flexDirection: "row"
-        }}
-        onLongPress={() => onSelected(item)}
-        onPress={() => onClick(item)}
-      >
-        <View style={[styles.senderContainer, selected]}>
-          <View style={styles.textContent2}>
-            <Player />
-            <Text
-              style={{
-                paddingTop: 7,
-                paddingLeft: 5,
-                paddingBottom: 6,
-                fontSize: 12,
-                textAlign: "right"
-              }}
-            >
-              {Moment(Number(item.timestamp)).format("LT")}
-            </Text>
+    if (item.file.file === chats[index].file.file) {
+      return (
+        <TouchableNativeFeedback
+          key={index}
+          useForeground
+          style={{
+            marginVertical: 5,
+            width: "100%",
+            justifyContent: "flex-end",
+            flexDirection: "row"
+          }}
+          onLongPress={() => onSelected(item)}
+          onPress={() => onClick(item)}
+        >
+          <View style={[styles.senderContainer, selected]}>
+            <View style={styles.textContent2}>
+              <Player path={item.file.file} index={index} />
+              <Text
+                style={{
+                  paddingTop: 7,
+                  paddingLeft: 5,
+                  paddingBottom: 6,
+                  fontSize: 12,
+                  textAlign: "right"
+                }}
+              >
+                {Moment(Number(item.timestamp)).format("LT")}
+              </Text>
+            </View>
           </View>
-        </View>
-      </TouchableNativeFeedback>
-    );
+        </TouchableNativeFeedback>
+      );
+    }
   }
 };
 

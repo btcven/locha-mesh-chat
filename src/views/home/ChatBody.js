@@ -1,17 +1,6 @@
 import React, { Component } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  TextInput,
-  FlatList,
-  TouchableNativeFeedback,
-  Image
-} from "react-native";
-import Moment from "moment";
-import { Thumbnail, Button } from "native-base";
+import { View, StyleSheet, FlatList } from "react-native";
 import { sha256 } from "js-sha256";
-import { getIcon, hashGenerateColort } from "../../utils/utils";
 import FileModal from "./fileModal";
 import { ReceiveMessage, SenderMessage, SoundMessage } from "./Messages";
 
@@ -57,6 +46,7 @@ export default class ChatBody extends Component {
   };
 
   render() {
+    console.log("chats", this.props.chats);
     return (
       <View style={{ flex: 1 }}>
         {this.props.open && (
@@ -66,9 +56,10 @@ export default class ChatBody extends Component {
             sendFileWithImage={this.props.sendFileWithImage}
           />
         )}
+
         <FlatList
           inverted
-          extraData={this.props.selected}
+          // extraData={this.props.selected}
           contentContainerStyle={styles.container}
           data={this.props.chats}
           keyExtractor={(item, index) => index.toString()}
@@ -78,6 +69,7 @@ export default class ChatBody extends Component {
               this.props.selected.length > 0 ? this.verifySelected(item) : null;
             let userInfo = contactInfo ? contactInfo : item;
             const file = item.file ? item.file.fileType : undefined;
+
             const rule =
               sha256(this.props.user.uid) === item.fromUID ? true : false;
 
@@ -89,6 +81,7 @@ export default class ChatBody extends Component {
                   contactInfo={contactInfo}
                   userInfo={userInfo}
                   selected={selected}
+                  index={index}
                 />
               );
             } else if (rule && file !== "audio") {
@@ -97,6 +90,7 @@ export default class ChatBody extends Component {
                   {...this.props}
                   item={item}
                   selected={selected}
+                  index={index}
                 />
               );
             } else {
@@ -108,6 +102,8 @@ export default class ChatBody extends Component {
                   contactInfo={contactInfo}
                   userInfo={userInfo}
                   selected={selected}
+                  index={index}
+                 
                 />
               );
             }

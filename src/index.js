@@ -35,7 +35,7 @@ class DualComponent extends Component {
   render() {
     return (
       <View style={styles.container}>
-        {this.props.loading && <Spinner />}
+        {/* {this.props.loading && <Spinner />} */}
         {this.props.user && (
           <View style={styles.container}>
             {this.props.tabPosition === 1 && <Home {...this.props} />}
