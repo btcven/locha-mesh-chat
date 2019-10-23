@@ -6,14 +6,26 @@ const networkConfiguration = {
   network_data: "testnet",
   bip44_id: 0
 };
+/**
+ *
+ *
+ * @export
+ * @class Bitcoin
+ * @description here are all the functions of the wallet
+ */
 
 export default class Bitcoin {
   constructor() {
     this.WalletInfo = {};
     this.initialIndex = 0;
   }
-
-  generateAddress = async () => {
+/**
+ *
+ * @function
+ * @memberof Bitcoin
+ * @description generate the private key and public key
+ */
+generateAddress = async () => {
     let code;
     code = new Mnemonic(256);
 

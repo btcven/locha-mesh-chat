@@ -2,7 +2,14 @@ import React, { Component } from "react";
 import Modal from "react-native-modal";
 import { View, Text, StyleSheet } from "react-native";
 import { Item, Input, Form, Button, Right } from "native-base";
-
+/**
+ *
+ *
+ * @export
+ * @class EditName
+ * @description component to edit the username
+ * @extends {Component}
+ */
 export default class EditName extends Component {
   constructor(props) {
     super(props);

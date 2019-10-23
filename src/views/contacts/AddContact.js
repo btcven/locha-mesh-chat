@@ -14,6 +14,15 @@ import { Icon, Form, Item, Input, Label, Spinner } from "native-base";
 import EditPhoto from "../config/EditPhoto";
 import ImagePicker from "react-native-image-crop-picker";
 import QRCodeScanner from "react-native-qrcode-scanner";
+import { sha256 } from "js-sha256";
+/**
+ *
+ *
+ * @export
+ * @class AddContact
+ * @description component where we add the contact information.
+ * @extends {Component}
+ */
 
 export default class AddContact extends Component {
   constructor(props) {
@@ -27,6 +36,17 @@ export default class AddContact extends Component {
       openQrCode: false
     };
   }
+
+  componentDidMount = () => {
+    const { selected } = this.props;
+    if (selected.length > 0) {
+      this.setState({
+        name: selected[0].name,
+        image: selected[0].picture,
+        uid: selected[0].uid
+      });
+    }
+  };
 
   close = name => {
     this.setState({ openModalPhoto: false });
@@ -55,31 +75,43 @@ export default class AddContact extends Component {
   };
 
   save = () => {
-    const obj = {
-      name: this.state.name,
-      picture: this.state.image,
-      uid: this.state.uid
-    };
-    this.props.saveContact(
-      this.props.userData.uid,
-      obj,
-      this.props.contacts,
-      () => {
-        androidToast("Contacto creado exitosamente!");
-        this.props.close();
+    const update = this.props.selected.length > 0 ? true : false;
+    const verify = this.verifyContacts(update);
+    if (verify) {
+      const obj = {
+        name: this.state.name,
+        picture: this.state.image,
+        uid: this.state.uid,
+        hashUID: sha256(this.state.uid)
+      };
+      if (!update) {
+        this.props.saveContact(
+          this.props.userData.uid,
+          obj,
+          this.props.contacts,
+          () => {
+            androidToast("Contacto creado exitosamente!");
+            this.props.close();
+          }
+        );
+      } else {
+        this.props.editContats(obj, () => {
+          androidToast("Contacto creado exitosamente!");
+          this.props.close();
+        });
       }
-    );
+    }
   };
 
   onSuccess = event => {
     this.setState({ spinner: false });
     try {
       const result = JSON.parse(event.data);
-      if (result.name && result.id) {
+      if (result.name && result.uid) {
         setTimeout(() => {
           this.setState({
             openQrCode: false,
-            uid: result.id,
+            uid: result.uid,
             name: result.name
           });
         }, 50);
@@ -91,7 +123,36 @@ export default class AddContact extends Component {
     }
   };
 
+  verifyContacts = update => {
+    if (!update) {
+      const uidExist = this.props.contacts.find(contact => {
+        return contact.name === this.state.uid;
+      });
+
+      if (uidExist) {
+        androidToast("contacto existente");
+        return false;
+      }
+
+      const nameExist = this.props.contacts.find(contact => {
+        return contact.name === this.state.name;
+      });
+
+      if (nameExist) {
+        androidToast("ya existe un contacto con ese nombre");
+        return false;
+      }
+    }
+    return true;
+  };
+
   render() {
+    let disabled1 = this.props.selected.length > 0 ? true : false;
+    let disabled2 =
+      this.state.name.length === 0 || this.state.uid.length === 0
+        ? true
+        : false;
+
     return (
       <View>
         <Modal
@@ -131,12 +192,14 @@ export default class AddContact extends Component {
                 <Icon style={styles.iconStyle} name="arrow-back" />
               </TouchableOpacity>
             )}
-            <Text style={styles.textStyle}>Agregar Contacto</Text>
+            {this.props.selected.length < 1 && (
+              <Text style={styles.textStyle}>Agregar Contacto</Text>
+            )}
+            {this.props.selected.length > 0 && (
+              <Text style={styles.textStyle}>Editar Contacto</Text>
+            )}
             {
-              <TouchableOpacity
-                disabled={this.state.openQrCode}
-                onPress={this.save}
-              >
+              <TouchableOpacity disabled={disabled2} onPress={this.save}>
                 <Icon
                   style={styles.iconStyle}
                   type="MaterialIcons"
@@ -180,6 +243,7 @@ export default class AddContact extends Component {
                   </View>
                   <Item style={{ height: 30 }}>
                     <Input
+                      disabled={disabled1}
                       value={this.state.uid}
                       style={{ fontSize: 16 }}
                       onChangeText={text => this.setState({ uid: text })}

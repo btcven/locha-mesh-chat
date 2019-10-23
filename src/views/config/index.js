@@ -8,7 +8,8 @@ import {
   Image,
   StyleSheet,
   TouchableHighlight,
-  TouchableOpacity
+  TouchableOpacity,
+  Clipboard
 } from "react-native";
 import {
   getPhotosFromUser,
@@ -18,7 +19,16 @@ import {
 import { connect } from "react-redux";
 import EditName from "./EditName";
 import EditPhoto from "./EditPhoto";
-import QRCode from 'react-native-qrcode-svg';
+import QRCode from "react-native-qrcode-svg";
+import { androidToast } from "../../utils/utils";
+
+
+/**
+ * @class Config
+ * @extends {Component}
+ * @description main configuration component
+ * 
+ */
 
 class Config extends Component {
   constructor(props) {
@@ -39,8 +49,13 @@ class Config extends Component {
     header: null
   };
 
+  _setContent = async data => {
+    Clipboard.setString(data);
+    androidToast("uid copiado");
+  };
+
   render() {
-    console.log(this.props.config);
+  
     return (
       <Container>
         <Header {...this.props} />
@@ -66,10 +81,13 @@ class Config extends Component {
                 underlayColor="#eeeeee"
               >
                 <Image
-                  source={{
+                  source={
+                    {
                     uri: this.props.config.image + "?" + new Date().getDate(),
                     cache: "force-cache"
-                  }}
+                  }
+                
+                }
                   style={styles.imageStyle}
                 />
               </TouchableHighlight>
@@ -175,7 +193,7 @@ class Config extends Component {
               style={styles.touchable}
               underlayColor="#eeeeee"
               onPress={() => {
-                console.log("copy");
+                this._setContent(this.props.config.uid);
               }}
             >
               <Icon

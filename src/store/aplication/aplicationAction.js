@@ -1,28 +1,38 @@
 import { ActionTypes } from "../constants";
-import AsyncStorage from "@react-native-community/async-storage";
-import { IntialUser } from "../../utils/constans";
-import { createFolder } from "../../utils/utils";
+import { createFolder, backgroundTimer } from "../../utils/utils";
 import { writteUser, getUserData } from "../../database/realmDatabase";
 import Bitcoin from "../../utils/Bitcoin";
 import Socket from "../../utils/socket";
 import store from "../../store";
 
 const bitcoin = new Bitcoin();
+export let ws = undefined;
 
-let ws = Socket;
+/**
+ *@function
+ *@description executes when starting the application verifying that the user exists and if it exists initiates the connection with the socket
+ *@returns {object}
+ */
 
 export const InitialState = () => async dispatch => {
+  //backgroundTimer();
   getUserData().then(async res => {
     if (res.length >= 1) {
-      const result = JSON.parse(JSON.stringify(res[0]));
       dispatch(writeAction(JSON.parse(JSON.stringify(res[0]))));
-    } else {
-      dispatch(writeAction(IntialUser));
+      ws = new Socket(store);
     }
   });
 };
 
+/**
+ * @function
+ * @description the user is added and saved in the database
+ * @param {object} obj Information about the user.
+ * @param {string} obj.name The name of the user.
+ */
+
 export const setInitialUser = obj => async dispatch => {
+  dispatch(loading());
   await createFolder();
   const result = await bitcoin.generateAddress();
   writteUser({
@@ -39,8 +49,16 @@ export const setInitialUser = obj => async dispatch => {
     ]
   }).then(res => {
     dispatch(writeAction(res));
+    ws = new Socket(store);
   });
 };
+
+/**
+ * @function
+ * @description return user data to state
+ * @param {object} data
+ * @returns {object}
+ */
 
 const writeAction = data => {
   return {
@@ -49,6 +67,27 @@ const writeAction = data => {
   };
 };
 
+/**
+ * @function
+ * @description Identify if we have an open chat so that notifications do not arrive
+ * @param {string} idChat
+ * @returns {object}
+ */
+
+export const setView = idChat => {
+  return {
+    type: ActionTypes.IN_VIEW,
+    payload: idChat
+  };
+};
+
+/**
+ * @function
+ * @description function to change menu tabs
+ * @param {number} tab - tab id
+ * @returns {object}
+ */
+
 export const changeTab = tab => {
   return {
     type: ActionTypes.CHANGE_TAB,
@@ -56,11 +95,23 @@ export const changeTab = tab => {
   };
 };
 
+/**
+ * @function
+ * @description open the application spinner
+ * @returns {object}
+ */
+
 export const loading = () => {
   return {
     type: ActionTypes.LOADING_ON
   };
 };
+
+/**
+ * @function
+ * @description hide application spinner
+ * @returns
+ */
 
 export const loaded = () => {
   return {
@@ -68,6 +119,34 @@ export const loaded = () => {
   };
 };
 
+/**
+ * @function
+ * @description open the connection to the socket again
+ */
+
 export const reestarConnection = () => {
   ws = new Socket(store);
+};
+
+/**
+ * @function
+ * @description open drawer Menu
+ * @returns {object}
+ */
+export const openMenu = () => {
+  return {
+    type: ActionTypes.OPEN_MENU
+  };
+};
+
+/**
+ * @function
+ * @description close drawer Menu
+ * @returns {object}
+ */
+
+export const closeMenu = () => {
+  return {
+    type: ActionTypes.CLOSE_MENU
+  };
 };
