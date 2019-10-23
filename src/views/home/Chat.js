@@ -49,15 +49,6 @@ class Chat extends Component {
     header: null
   };
 
-  componentWillUnmount = () => {
-    console.log("holaaaa");
-  };
-
-  // componentWillUnmount = () => {
-  //   console.log("willUnmount");
-  //   this.props.setView(undefined);
-  // };
-
   cleanAllMessages = () => {
     const chat = this.props.chat[this.props.chatSelected.index];
     Alert.alert(

@@ -46,7 +46,7 @@ export default class ChatBody extends Component {
   };
 
   render() {
-    console.log("chats", this.props.chats);
+    
     return (
       <View style={{ flex: 1 }}>
         {this.props.open && (

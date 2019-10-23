@@ -248,7 +248,6 @@ export const sendMessageWithFile = (data, path, base64) => dispatch => {
 };
 
 export const sendMessagesWithSound = (data, path, base64) => dispatch => {
-  console.log("err webo", data, path, base64);
   // let uidChat = data.toUID ? data.toUID : "broadcast";
   // const saveDatabase = Object.assign({}, data);
   // saveDatabase.msg.file = path;

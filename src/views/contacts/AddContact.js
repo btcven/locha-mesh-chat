@@ -153,7 +153,6 @@ export default class AddContact extends Component {
         ? true
         : false;
 
-    console.log(disabled2);
     return (
       <View>
         <Modal
