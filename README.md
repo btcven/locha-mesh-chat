@@ -1,23 +1,41 @@
-# LochaMesh Chat
+# Locha Mesh Chat
 
-### Requirements:
+The first mobile application for to use into the Locha Mesh. The objective is to build a communication solution using text messages, images, documents or voice notes and of course, bitcoin transactions.
 
-    - Node.js v10 +
+## Requirements
+Before you start, make sure you have the following requirements
+
+    - Node.js v10 or greater
     - Java SE Development Kit (JDK 8)
-    - Python 2
+    - Python 2.7 or greater
 
 
-#### 1. Clone and Install
+## 2. Clone and Install
+
+### Clone this repository
+```bash
+git clone https://github.com/btcven/locha-mesh-chat.git
+```
+
+### Go into directory
+```bash
+cd locha-mesh-chat
+```
+
+### Install dependencies
+
+With yarn _(recommended)_ [https://github.com/yarnpkg/yarn](https://github.com/yarnpkg/yarn)
 
 ```bash
-# Clone the repo
-git clone https://github.com/btcven/LochaMesh-Chat.git
-
-
-
-# Install dependencies
-  yarn install or npm install
+  yarn install
 ```
+
+or npm
+
+```bash
+npm install
+```
+
 ### Equipment configuration
 
 You need to configure your equipment to run this app in this link are the steps to follow from the official
