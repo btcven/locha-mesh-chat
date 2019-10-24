@@ -32,5 +32,6 @@ When prompted for the instalation type, select _Custom_ and make sure the next c
 - Android Virtual Device
 
 ### 2. Install the Android SDK
+The android sdk manager can be accessed via the Welcome window
 
 ### 3. Configure the ANDROID_HOME environment variable
