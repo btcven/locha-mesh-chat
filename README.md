@@ -40,8 +40,8 @@ npm install
 You need to configure your equipment to run this app, the process is different depending on your development system:
   
   * [macOS](conf_macOS.md)
-  * Windows
-  * Linux
+  * Windows :construction_worker:
+  * Linux :construction_worker:
 
 In this link are the steps to follow the official [Documentation](https://facebook.github.io/react-native/docs/0.59/getting-started)
 
