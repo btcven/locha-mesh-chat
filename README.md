@@ -39,7 +39,7 @@ npm install
 
 You need to configure your equipment to run this app, the process is different depending on your development system:
   
-  * [macOS](conf_macOS.md)
+  * [macOS](documents/configuration/macOS.md)
   * Windows :construction_worker:
   * Linux :construction_worker:
 
