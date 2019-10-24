@@ -7,7 +7,8 @@ Before you start, make sure you have the following requirements
 
     - Node.js v10.x or greater
     - Java SE Development Kit (JDK 8)
-    - Python 2.7 or greater(recommended)
+    - Python 2.7
+    - git
     
 Check to have a dependency manager installed like [**npm**](https://) _(bundled with node)_ or [**yarn**](https://github.com/yarnpkg/yarn) _(recommended)_
 
