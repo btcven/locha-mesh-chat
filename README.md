@@ -24,7 +24,7 @@ cd locha-mesh-chat
 
 ### Install dependencies
 
-With yarn _(recommended)_ <a href="https://github.com/yarnpkg/yarn" target="_blank">:octocat:</a>
+With yarn _(recommended)_ [:octocat:](https://github.com/yarnpkg/yarn)
 
 ```bash
   yarn install
