@@ -4,23 +4,24 @@ import { images } from "../../utils/constans";
 import { View, Text, TouchableOpacity } from "react-native";
 import { Thumbnail } from "native-base";
 
-/**
- *
- *
- * @export
- * @class EditPhoto
- * @description 
- * @extends {Component}
- */
+/** 
+ Reusable component to display the modal with the gallery and camera buttons
+*/
 
-export default class EditPhoto extends Component {
+class EditPhoto extends Component {
+  /**
+   *Creates an instance of EditPhoto.
+   * @param {Object} props
+   * @memberof EditPhoto
+   */
+
   constructor(props) {
     super(props);
     this.state = {};
   }
 
   getPhotosFromGallery = () => {
-    this.props.getPhotosFromUser(this.props.config.uid,() => {
+    this.props.getPhotosFromUser(this.props.config.uid, () => {
       this.props.close();
     });
   };
@@ -78,3 +79,5 @@ export default class EditPhoto extends Component {
     );
   }
 }
+
+export default EditPhoto;

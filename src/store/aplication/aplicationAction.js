@@ -110,7 +110,6 @@ export const loading = () => {
 /**
  * @function
  * @description hide application spinner
- * @returns
  */
 
 export const loaded = () => {

@@ -1,0 +1,401 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>JSDoc: views/config/index.js</title>
+
+    <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="./build/entry.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link href="https://fonts.googleapis.com/css?family=Muli:100,400,700|Oswald:300|Inconsolata,700" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+    <link type="text/css" rel="stylesheet" href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/tomorrow-night.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/app.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/iframe.css">
+</head>
+
+<body>
+    <div id="stickyNavbarOverlay"></div>
+    <div class="top-navbar">
+        <div class="container">
+            <nav class="navbar" role="navigation" aria-label="main navigation">
+                <div class="navbar-brand">
+                    
+                    
+                        <h1 class="navbar-item">Documentation</h1>
+                    
+                    <a id="hamburger" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+                        <span aria-hidden="true"></span>
+                        <span aria-hidden="true"></span>
+                        <span aria-hidden="true"></span>
+                    </a>
+                </div>
+                
+            </nav>
+        </div>
+    </div>
+    <div class="container">
+        <div class="columns">
+            <div class="column is-3" id="sidebarNav">
+                <div class="sidebar">
+                    <nav>
+                        <h2><a href="index.html">Home</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-navigationService.html">navigationService</a></li></ul><h3>Classes</h3><ul><li><a href="AddContact.html">AddContact</a></li><li><a href="Bitcoin.html">Bitcoin</a></li><li><a href="Chat.html">Chat</a></li><li><a href="ChatBody.html">ChatBody</a></li><li><a href="ChatForm.html">ChatForm</a></li><li><a href="Config.html">Config</a></li><li><a href="Contacts.html">Contacts</a></li><li><a href="DualComponent.html">DualComponent</a></li><li><a href="EditName.html">EditName</a></li><li><a href="EditPhoto.html">EditPhoto</a></li><li><a href="FloatButtons.html">FloatButtons</a></li><li><a href="HeaderComponent.html">HeaderComponent</a></li><li><a href="index_.html">index</a></li><li><a href="InitialStep.html">InitialStep</a></li><li><a href="MenuComponent.html">MenuComponent</a></li><li><a href="NotifService.html">NotifService</a></li><li><a href="Socket.html">Socket</a></li></ul><h3>Global</h3><ul><li><a href="global.html#androidToast">androidToast</a></li><li><a href="global.html#backgroundTimer">backgroundTimer</a></li><li><a href="global.html#broadcastRandomData">broadcastRandomData</a></li><li><a href="global.html#changeTab">changeTab</a></li><li><a href="global.html#cleanAllChat">cleanAllChat</a></li><li><a href="global.html#closeMenu">closeMenu</a></li><li><a href="global.html#componentName">componentName</a></li><li><a href="global.html#createFolder">createFolder</a></li><li><a href="global.html#deleteChat">deleteChat</a></li><li><a href="global.html#deletePhotoFromPhone">deletePhotoFromPhone</a></li><li><a href="global.html#editName">editName</a></li><li><a href="global.html#functiontogetthenamesoftheimages">function to get the names of the images</a></li><li><a href="global.html#generateName">generateName</a></li><li><a href="global.html#getChat">getChat</a></li><li><a href="global.html#getIcon">getIcon</a></li><li><a href="global.html#getInfoMessage">getInfoMessage</a></li><li><a href="global.html#getPhotosFromUser">getPhotosFromUser</a></li><li><a href="global.html#getSelectedColor">getSelectedColor</a></li><li><a href="global.html#hashGenerateColort">hashGenerateColort</a></li><li><a href="global.html#initialChat">initialChat</a></li><li><a href="global.html#InitialState">InitialState</a></li><li><a href="global.html#loaded">loaded</a></li><li><a href="global.html#loading">loading</a></li><li><a href="global.html#notifyRedirect">notifyRedirect</a></li><li><a href="global.html#onNotification">onNotification</a></li><li><a href="global.html#openCamera">openCamera</a></li><li><a href="global.html#openMenu">openMenu</a></li><li><a href="global.html#realoadBroadcastChat">realoadBroadcastChat</a></li><li><a href="global.html#reestarConnection">reestarConnection</a></li><li><a href="global.html#requestStoragePermission">requestStoragePermission</a></li><li><a href="global.html#saveFile">saveFile</a></li><li><a href="global.html#selectedChat">selectedChat</a></li><li><a href="global.html#sendMessageWithFile">sendMessageWithFile</a></li><li><a href="global.html#setInitialUser">setInitialUser</a></li><li><a href="global.html#setView">setView</a></li><li><a href="global.html#unSelect">unSelect</a></li><li><a href="global.html#writeAction">writeAction</a></li></ul></div>
+                    </nav>
+                </div>
+            </div>
+            <div class="column is-9-desktop">
+                <div class="content" id="main-content-wrapper">
+                    <header class="page-title">
+                        <p>Source</p>
+                        <h1>views/config/index.js</h1>
+                    </header>
+                    
+                    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { Component } from "react";
+import { Container, Icon, Left, Right } from "native-base";
+import { images } from "../../utils/constans";
+import Header from "../../components/Header";
+import {
+  Text,
+  View,
+  Image,
+  StyleSheet,
+  TouchableHighlight,
+  TouchableOpacity,
+  Clipboard
+} from "react-native";
+import {
+  getPhotosFromUser,
+  openCamera,
+  editName
+} from "../../store/configuration/congurationAction";
+import { connect } from "react-redux";
+import EditName from "./EditName";
+import EditPhoto from "./EditPhoto";
+import QRCode from "react-native-qrcode-svg";
+import { androidToast } from "../../utils/utils";
+
+
+/**
+ * @class Config
+ * @extends {Component}
+ * @description main configuration component
+ * 
+ */
+
+class Config extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      openModalPhoto: false,
+      openModalName: false
+    };
+  }
+
+  close = name => {
+    this.setState({
+      [name]: false
+    });
+  };
+
+  static navigationOptions = {
+    header: null
+  };
+
+  _setContent = async data => {
+    Clipboard.setString(data);
+    androidToast("uid copiado");
+  };
+
+  render() {
+  
+    return (
+      &lt;Container>
+        &lt;Header {...this.props} />
+        {this.state.openModalPhoto &amp;&amp; (
+          &lt;EditPhoto
+            open={this.state.openModalPhoto}
+            {...this.props}
+            close={this.close}
+          />
+        )}
+        {this.state.openModalName &amp;&amp; (
+          &lt;EditName
+            open={this.state.openModalName}
+            {...this.props}
+            close={this.close}
+          />
+        )}
+        &lt;View style={styles.sectionContainer}>
+          &lt;View style={styles.imageContainer}>
+            {this.props.config.image &amp;&amp; (
+              &lt;TouchableHighlight
+                style={styles.touchable}
+                underlayColor="#eeeeee"
+              >
+                &lt;Image
+                  source={
+                    {
+                    uri: this.props.config.image + "?" + new Date().getDate(),
+                    cache: "force-cache"
+                  }
+                
+                }
+                  style={styles.imageStyle}
+                />
+              &lt;/TouchableHighlight>
+            )}
+
+            {!this.props.config.image &amp;&amp; (
+              &lt;TouchableHighlight
+                style={styles.touchable}
+                underlayColor="#eeeeee"
+                onPress={() => {
+                  this.setState({ openModalPhoto: true });
+                }}
+              >
+                &lt;Image source={images.noPhoto.url} style={styles.imageStyle} />
+              &lt;/TouchableHighlight>
+            )}
+            &lt;View style={styles.actionButtonContainer}>
+              &lt;TouchableOpacity
+                style={{
+                  height: "100%",
+                  width: "100%",
+                  borderRadius: 100,
+                  justifyContent: "center",
+                  display: "flex"
+                }}
+                underlayColor="#eeeeee"
+                onPress={() => {
+                  this.setState({ openModalPhoto: true });
+                }}
+              >
+                &lt;Icon
+                  style={styles.iconStyles}
+                  type="MaterialIcons"
+                  name="camera-alt"
+                />
+              &lt;/TouchableOpacity>
+            &lt;/View>
+          &lt;/View>
+        &lt;/View>
+
+        &lt;View style={styles.infoContainer}>
+          &lt;Left>
+            &lt;Icon
+              style={{ color: "#fbc233" }}
+              type="MaterialIcons"
+              name="person"
+            />
+          &lt;/Left>
+          &lt;View
+            style={{
+              width: "70%",
+              alignContent: "flex-start",
+              paddingLeft: 10,
+              minHeight: 30
+            }}
+          >
+            &lt;Text style={styles.textLabel}>Nombre&lt;/Text>
+            &lt;Text style={styles.textInfo}>{this.props.config.name}&lt;/Text>
+          &lt;/View>
+          &lt;Right
+            style={{
+              top: 5
+            }}
+          >
+            &lt;TouchableHighlight
+              style={styles.touchable}
+              underlayColor="#eeeeee"
+              onPress={() => {
+                this.setState({ openModalName: true });
+              }}
+            >
+              &lt;Icon
+                style={{
+                  color: "#bdbdbd",
+                  fontSize: 25,
+                  paddingVertical: 10,
+                  paddingHorizontal: 10
+                }}
+                type="MaterialIcons"
+                name="edit"
+              />
+            &lt;/TouchableHighlight>
+          &lt;/Right>
+        &lt;/View>
+
+        &lt;View style={styles.infoContainerAddress}>
+          &lt;View
+            style={{
+              width: "85%",
+              justifyContent: "flex-end",
+              paddingLeft: 10,
+              minHeight: 30
+            }}
+          >
+            &lt;Text style={styles.textInfo}>{this.props.config.uid}&lt;/Text>
+          &lt;/View>
+          &lt;Right
+            style={{
+              top: 5
+            }}
+          >
+            &lt;TouchableHighlight
+              style={styles.touchable}
+              underlayColor="#eeeeee"
+              onPress={() => {
+                this._setContent(this.props.config.uid);
+              }}
+            >
+              &lt;Icon
+                style={{
+                  color: "#bdbdbd",
+                  fontSize: 25,
+                  paddingVertical: 10,
+                  paddingHorizontal: 10
+                }}
+                type="FontAwesome5"
+                name="copy"
+              />
+            &lt;/TouchableHighlight>
+          &lt;/Right>
+        &lt;/View>
+
+        &lt;View style={styles.qrCodeContainer}>
+          &lt;QRCode
+            value={JSON.stringify({
+              name: this.props.config.name,
+              uid: this.props.config.uid
+            })}
+            color={"gray"}
+            size={130}
+          />
+        &lt;/View>
+      &lt;/Container>
+    );
+  }
+}
+
+const mapStateToProps = state => ({
+  config: state.config
+});
+
+export default connect(
+  mapStateToProps,
+  { getPhotosFromUser, openCamera, editName }
+)(Config);
+
+const styles = StyleSheet.create({
+  qrCodeContainer: {
+    alignItems: "center",
+    paddingTop: "5%"
+  },
+
+  infoContainer: {
+    display: "flex",
+    flexDirection: "row",
+
+    alignItems: "center",
+    borderBottomWidth: 0.5,
+    borderBottomColor: "gray",
+    marginLeft: 20,
+    minHeight: 90,
+    marginRight: 20
+  },
+
+  infoContainerAddress: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    borderBottomWidth: 0.5,
+    borderBottomColor: "gray",
+    marginLeft: 20,
+    minHeight: 90,
+    marginRight: 20
+  },
+
+  textLabel: {
+    paddingBottom: 3,
+    color: "#bdbdbd"
+  },
+  touchable: {
+    borderRadius: 100
+  },
+  textInfo: {
+    fontSize: 16
+  },
+  imageStyle: {
+    height: 130,
+    width: 130,
+    borderRadius: 100
+  },
+  sectionContainer: {
+    width: "100%",
+    alignItems: "flex-end"
+  },
+  imageContainer: {
+    width: 220,
+    alignItems: "center",
+    paddingVertical: 20
+  },
+  actionButtonContainer: {
+    backgroundColor: "#fbc233",
+    height: 45,
+    width: 45,
+    borderRadius: 100,
+    position: "absolute",
+    top: "93%",
+    right: "40%",
+    borderWidth: 0,
+    justifyContent: "center"
+  },
+
+  iconStyles: {
+    display: "flex",
+    color: "white",
+    textAlign: "center",
+    justifyContent: "center",
+    fontSize: 18
+  }
+});
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+<footer class="footer">
+    <div class="content has-text-centered">
+        <p>Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a> on Thu Oct 24 2019 16:56:47 GMT-0400 (GMT-04:00)</p>
+        <p class="sidebar-created-by">
+            <a href="https://github.com/SoftwareBrothers/better-docs" target="_blank">BetterDocs theme</a> provided with <i class="fas fa-heart"></i> by 
+            <a href="http://softwarebrothers.co" target="_blank">SoftwareBrothers - JavaScript Development Agency</a>
+        </p>
+    </div>
+</footer>
+
+<script src="scripts/app.min.js"></script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
