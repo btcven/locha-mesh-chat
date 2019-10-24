@@ -33,5 +33,6 @@ When prompted for the instalation type, select _Custom_ and make sure the next c
 
 ### 2. Install the Android SDK
 The android sdk manager can be accessed via the Welcome window
+[Welcome window](files/SDK_selection.png)
 
 ### 3. Configure the ANDROID_HOME environment variable
