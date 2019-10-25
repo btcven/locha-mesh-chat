@@ -58,33 +58,35 @@ export default class ChatForm extends Component {
       };
 
       AudioRecorder.onFinished = data => {
-        const newPath = `${FileDirectory}/Audios/AUDIO_${new Date().getTime()}.aac`;
-        RNFS.exists(this.state.audioPath).then(() => {
-          RNFS.moveFile(this.state.audioPath, newPath).then(() => {
-            const sendObject = {
-              fromUID: sha256(user.uid),
-              toUID: toUID,
-              msg: {
-                text: "",
-                typeFile: "audio"
-              },
-              timestamp: new Date().getTime(),
-              type: "msg"
-            };
+        if (this.state.currentTime !== 0) {
+          const newPath = `${FileDirectory}/Audios/AUDIO_${new Date().getTime()}.aac`;
+          RNFS.exists(this.state.audioPath).then(() => {
+            RNFS.moveFile(this.state.audioPath, newPath).then(() => {
+              const sendObject = {
+                fromUID: sha256(user.uid),
+                toUID: toUID,
+                msg: {
+                  text: "",
+                  typeFile: "audio"
+                },
+                timestamp: new Date().getTime(),
+                type: "msg"
+              };
 
-            const id = sha256(
-              `${sha256(user.uid)} + ${toUID}  +  ${
-                sendObject.msg.text
-              }  + ${new Date().getTime()}`
-            );
+              const id = sha256(
+                `${sha256(user.uid)} + ${toUID}  +  ${
+                  sendObject.msg.text
+                }  + ${new Date().getTime()}`
+              );
 
-            this.props.sendMessagesWithSound(
-              { ...sendObject, msgID: id },
-              newPath,
-              data.base64
-            );
+              this.props.sendMessagesWithSound(
+                { ...sendObject, msgID: id },
+                newPath,
+                data.base64
+              );
+            });
           });
-        });
+        }
       };
     });
   };
@@ -117,17 +119,20 @@ export default class ChatForm extends Component {
     try {
       const filePath = await AudioRecorder.startRecording();
     } catch (error) {
-      console.error(error);
+      console.log(error);
     }
   };
 
   _stop = async () => {
-    // this.setState({ recording: false });
     if (!this.state.recording) {
       console.warn("Can't stop, not recording!");
       return;
     }
-    this.setState({ stoppedRecording: true, recording: false, paused: false });
+    this.setState({
+      stoppedRecording: true,
+      recording: false,
+      paused: false
+    });
     try {
       const filePath = await AudioRecorder.stopRecording();
       if (Platform.OS === "android") {
@@ -135,7 +140,7 @@ export default class ChatForm extends Component {
       }
       return filePath;
     } catch (error) {
-      console.error(error);
+      console.log(error);
     }
   };
 
