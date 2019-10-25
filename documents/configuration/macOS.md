@@ -39,7 +39,8 @@ The android sdk manager can be accessed via the Welcome window
 <img src="files/SDK_selection.png" width="75%"/>
 
 - Select the package for the platform that you want to install, Locha Mesh Chat is intended to be used on affordable mobile devices, and can be installed in Android KitKat 4.4, it also can be installed in the latest Android versions. 
-In the tab SDK manager. e.g. select `Android 4.4 (KitKat)`-`API Level: 19` and click `Apply`
+In the tab SDK manager. e.g. select `Android 4.4 (KitKat)`-`API Level: 19` and click `Apply`. 
+The SDK and related tools will be downloaded, when it finishes click `OK`.
 
 <img src="files/API_selection.png" width="75%"/>
 
