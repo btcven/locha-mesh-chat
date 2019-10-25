@@ -28,7 +28,7 @@ From here, the process is a bit different if we want to build for iOS or Android
 When prompted for the instalation type, select _Custom_ and make sure the next components will be installed:
 - Android SDK
 - Android SDK Platform
-- Performance (Intel ® HAXM) (See here for AMD)
+- Performance (Intel ® HAXM) [(See for AMD)](https://android-developers.googleblog.com/2018/07/android-emulator-amd-processor-hyper-v.html)
 - Android Virtual Device
 
 ### 2. Install the Android SDK
