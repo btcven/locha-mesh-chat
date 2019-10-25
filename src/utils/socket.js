@@ -4,10 +4,11 @@ import { getUserData } from "../database/realmDatabase";
 import { sha256 } from "js-sha256";
 
 export let sendSocket = undefined;
+
 /**
  *
  * websocket client management class
- * @export
+ * @export 
  * @class Socket
  */
 

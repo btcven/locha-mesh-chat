@@ -8,6 +8,24 @@ import {
   editContact
 } from "../../database/realmDatabase";
 
+/**
+ * here are all the actions references to contacts
+ * @module ContactAction
+ */
+
+/**
+ * @function
+ * @param {string} id user id
+ * @param {Object} data contact information to save
+ * @param {String} data.name photo of the new contact
+ * @param {String} data.picture picture of the new contact
+ * @param {String} data.uid uid of the new contact
+ * @param {String} data.hashUID hashUID of the new contact
+ * @param {callback} callback
+ * @param {Array<Object>} lastContact array of existing contacts
+ * @returns {{type:String  , payload: Object }}
+ */
+
 export const saveContact = (
   id,
   data,
@@ -36,6 +54,12 @@ export const saveContact = (
   });
 };
 
+/**
+ * function to get all contacts
+ * @function
+ * @returns {Object}
+ */
+
 export const getContacts = () => async dispatch => {
   const contacts = await AsyncStorage.getItem("contacts");
   parse = JSON.parse(contacts);
@@ -44,6 +68,14 @@ export const getContacts = () => async dispatch => {
     payload: contacts ? Object.values(JSON.parse(contacts)) : []
   });
 };
+
+/**
+ * function to delete multiple contacts
+ * @param {Array<ContactData>} data data array of a contact
+ * @param {callback} callback
+ * @function
+ * @returns {{type:String  , payload: Object }}
+ */
 
 export const deleteContactAction = (data, callback) => dispatch => {
   deleteContact(data).then(res => {
@@ -54,6 +86,14 @@ export const deleteContactAction = (data, callback) => dispatch => {
     callback();
   });
 };
+
+/**
+ * function used to edit contacts
+ * @param {Object} contact information to edit
+ * @function
+ * @param {callback} callback
+ * @returns {{type:String  , payload: Object }}
+ */
 
 export const editContats = (obj, callback) => dispatch => {
   editContact(obj).then(res => {

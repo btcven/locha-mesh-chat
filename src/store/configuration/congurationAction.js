@@ -6,6 +6,11 @@ import { createFolder } from "../../utils/utils";
 import { writteUser, getUserData } from "../../database/realmDatabase";
 
 /**
+ * in this module are the configuration actions
+ * @module ConfigurationAction
+ */
+
+/**
  * @function
  * @description function to get the photo of the gallery cut and move to the app folder
  * @param {string} id user id
@@ -35,7 +40,7 @@ export const getPhotosFromUser = (id, callback) => async dispatch => {
 };
 
 /**
- * @function function to get the names of the images
+ * @function
  * @description function to get the photo of the gallery cut and move to the app folder
  * @param {object} id information of the photograph obtained
  * @returns {string}
@@ -106,7 +111,6 @@ export const openCamera = (id, callback) => async dispatch => {
  */
 
 export const editName = (obj, callback) => async dispatch => {
-
   writteUser({ ...obj, id: obj.uid }).then(res => {
     callback();
     dispatch({

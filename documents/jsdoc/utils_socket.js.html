@@ -1,0 +1,207 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>JSDoc: utils/socket.js</title>
+
+    <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="./build/entry.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link href="https://fonts.googleapis.com/css?family=Muli:100,400,700|Oswald:300|Inconsolata,700" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+    <link type="text/css" rel="stylesheet" href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/tomorrow-night.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/app.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/iframe.css">
+</head>
+
+<body>
+    <div id="stickyNavbarOverlay"></div>
+    <div class="top-navbar">
+        <div class="container">
+            <nav class="navbar" role="navigation" aria-label="main navigation">
+                <div class="navbar-brand">
+                    
+                    
+                        <h1 class="navbar-item">Documentation</h1>
+                    
+                    <a id="hamburger" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+                        <span aria-hidden="true"></span>
+                        <span aria-hidden="true"></span>
+                        <span aria-hidden="true"></span>
+                    </a>
+                </div>
+                
+            </nav>
+        </div>
+    </div>
+    <div class="container">
+        <div class="columns">
+            <div class="column is-3" id="sidebarNav">
+                <div class="sidebar">
+                    <nav>
+                        <h2><a href="index.html">Home</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-AplicationAction.html">AplicationAction</a></li><li><a href="module-ChatAction.html">ChatAction</a></li><li><a href="module-ConfigurationAction.html">ConfigurationAction</a></li><li><a href="module-ContactAction.html">ContactAction</a></li><li><a href="module-navigationService.html">navigationService</a></li><li><a href="module-Utils.html">Utils</a></li></ul><h3>Classes</h3><ul><li><a href="AddContact.html">AddContact</a></li><li><a href="Bitcoin.html">Bitcoin</a></li><li><a href="Chat.html">Chat</a></li><li><a href="ChatBody.html">ChatBody</a></li><li><a href="ChatForm.html">ChatForm</a></li><li><a href="Config.html">Config</a></li><li><a href="Contacts.html">Contacts</a></li><li><a href="DualComponent.html">DualComponent</a></li><li><a href="EditName.html">EditName</a></li><li><a href="EditPhoto.html">EditPhoto</a></li><li><a href="FloatButtons.html">FloatButtons</a></li><li><a href="HeaderComponent.html">HeaderComponent</a></li><li><a href="index_.html">index</a></li><li><a href="InitialStep.html">InitialStep</a></li><li><a href="MenuComponent.html">MenuComponent</a></li><li><a href="NotifService.html">NotifService</a></li><li><a href="Socket.html">Socket</a></li></ul><h3>Global</h3><ul><li><a href="global.html#componentName">componentName</a></li></ul></div>
+                    </nav>
+                </div>
+            </div>
+            <div class="column is-9-desktop">
+                <div class="content" id="main-content-wrapper">
+                    <header class="page-title">
+                        <p>Source</p>
+                        <h1>utils/socket.js</h1>
+                    </header>
+                    
+                    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { getChat } from "../store/chats";
+import { reestarConnection, loading, loaded } from "../store/aplication";
+import { getUserData } from "../database/realmDatabase";
+import { sha256 } from "js-sha256";
+
+export let sendSocket = undefined;
+
+/**
+ *
+ * websocket client management class
+ * @export 
+ * @class Socket
+ */
+
+export default class Socket {
+  constructor(store) {
+    this.socket = new WebSocket("wss://lochat.coinlab.info");
+    //this.socket = new WebSocket("wss://192.168.1.1");
+    this.openSocketConnection();
+    this.onMenssage();
+    this.store = store;
+    sendSocket = this.socket;
+    this.checkingSocketStatus(store);
+    this.idInterval = undefined;
+  }
+
+  closeTimmer = () => {
+    clearInterval(this.idInterval);
+  };
+
+  /**
+   * @function
+   * @description websocket client management class
+   * @memberof Socket
+   */
+  checkingSocketStatus = store => {
+    this.idInterval = setInterval(() => {
+      if (this.socket.readyState !== 1 &amp;&amp; this.socket.readyState !== 3) {
+        this.store.dispatch(loading());
+      } else if (this.socket.readyState === 3) {
+        this.closeTimmer();
+      } else {
+        store.getState().aplication.loading === false
+          ? null
+          : this.store.dispatch(loaded());
+      }
+    }, 1000);
+  };
+
+  /**
+   * @function
+   * @description Sending messages
+   * @memberof Socket
+   */
+  sendMenssage = data => {
+    this.socket.send(data);
+  };
+
+  /**
+   * @function
+   * @description makes a request to the database looking for user data to pass them to the initial connection
+   * @param {callback} callback
+   * @memberof Socket
+   */
+
+  getUserObject = callback => {
+    getUserData().then(res => {
+      const object = {
+        hashUID: sha256(res[0].uid),
+        timestamp: new Date().getTime(),
+        type: "handshake"
+      };
+      callback(object);
+    });
+  };
+
+  /**
+   * @function
+   * @description start the connection to the socket
+   * @memberof Socket
+   */
+
+  openSocketConnection = async () => {
+    this.getUserObject(res => {
+      this.store.dispatch(loading());
+      this.socket.onopen = () => {
+        console.log("conecto");
+        this.socket.send(JSON.stringify(res));
+      };
+    });
+  };
+
+  /**
+   *
+   * @function
+   * @description contains the onMessage, onError and onClose of the webscket
+   * @memberof Socket
+   */
+  onMenssage = () => {
+    this.socket.onmessage = e => {
+      // a message was received
+      this.store.dispatch(getChat(e.data));
+    };
+
+    this.socket.onerror = e => {
+      // a message was received
+      console.log("OnError", e);
+    };
+
+    this.socket.onclose = e => {
+      console.log("close", e);
+      this.store.dispatch(reestarConnection);
+    };
+  };
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+<footer class="footer">
+    <div class="content has-text-centered">
+        <p>Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a> on Fri Oct 25 2019 14:50:01 GMT-0400 (GMT-04:00)</p>
+        <p class="sidebar-created-by">
+            <a href="https://github.com/SoftwareBrothers/better-docs" target="_blank">BetterDocs theme</a> provided with <i class="fas fa-heart"></i> by 
+            <a href="http://softwarebrothers.co" target="_blank">SoftwareBrothers - JavaScript Development Agency</a>
+        </p>
+    </div>
+</footer>
+
+<script src="scripts/app.min.js"></script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

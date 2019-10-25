@@ -5,6 +5,12 @@ import Bitcoin from "../../utils/Bitcoin";
 import Socket from "../../utils/socket";
 import store from "../../store";
 
+/**
+ * in this module are the global actions of the application
+ * @module AplicationAction
+ 
+ */
+
 const bitcoin = new Bitcoin();
 export let ws = undefined;
 

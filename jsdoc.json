@@ -8,7 +8,7 @@
   "opts": {
     "encoding": "utf8",
     "readme": "./readme.md",
-    "destination": "documents/",
+    "destination": "documents/jsdoc",
     "recurse": true,
     "verbose": true,
     "template": "node_modules/better-docs"

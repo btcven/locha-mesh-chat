@@ -22,7 +22,9 @@ import {
   deleteContactAction,
   editContats
 } from "../../store/contacts";
+
 import { connect } from "react-redux";
+
 /**
  *
  * @class Contacts
@@ -30,6 +32,7 @@ import { connect } from "react-redux";
  * @extends {Component}
  *
  */
+
 class Contacts extends Component {
   constructor(props) {
     super(props);

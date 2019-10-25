@@ -2,13 +2,13 @@ import PushNotification from "react-native-push-notification";
 import { sha256 } from "js-sha256";
 import { notifyRedirect } from "./utils";
 
+
 /**
  *
  * notification settings
  * @export
  * @class NotifService
  */
-
 export default class NotifService {
   constructor(onRegister, onNotification) {
     this.configure(onRegister, onNotification);
