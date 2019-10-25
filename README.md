@@ -1,28 +1,50 @@
-# LochaMesh Chat
+# Locha Mesh Chat
 
-### Requirements:
+The first mobile application for the Locha Mesh. The aim is to build an app for communication using text messages, images, documents or voice notes, and also for broadcasting offline signed Bitcoin transactions.
 
-    - Node.js v10 +
+## Requirements
+Before you start, make sure you have the following requirements
+
+    - Node.js v10.x or greater
     - Java SE Development Kit (JDK 8)
-    - Python 2
+    - Python 2.7
+    - git
+    
+Check to have a dependency manager installed like [**npm**](https://) _(bundled with node)_ or [**yarn**](https://github.com/yarnpkg/yarn) _(recommended)_
 
+## 2. Clone and Install
 
-#### 1. Clone and Install
+### Clone this repository 
+```bash
+git clone https://github.com/btcven/locha-mesh-chat.git
+```
+
+### Go into directory
+```bash
+cd locha-mesh-chat
+```
+
+### Install dependencies
+
+With yarn
 
 ```bash
-# Clone the repo
-git clone https://github.com/btcven/LochaMesh-Chat.git
-
-
-
-# Install dependencies
-  yarn install or npm install
+yarn install
 ```
+or npm
+```bash
+npm install
+```
+
 ### Equipment configuration
 
-You need to configure your equipment to run this app in this link are the steps to follow from the official
-[Documentation](https://facebook.github.io/react-native/docs/0.59/getting-started)
+You need to configure your equipment to run this app, the process is different depending on your development system:
+  
+  * [macOS](documents/configuration/macOS.md)
+  * Windows :construction_worker:
+  * Linux :construction_worker:
 
+In this link are the steps to follow the official [Documentation](https://facebook.github.io/react-native/docs/0.59/getting-started)
 
 ### Add native dependencies to the project
 
