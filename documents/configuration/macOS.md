@@ -54,3 +54,11 @@ export PATH=$PATH:$ANDROID_HOME/tools
 export PATH=$PATH:$ANDROID_HOME/tools/bin
 export PATH=$PATH:$ANDROID_HOME/platform-tools
 ```
+
+### 4. Run the Locha Mesh Chat application.
+You can run the application in the android emulator or in your mobile phone.
+
+#### Use your mobile phone
+You can use your physical device plugging it to your computer using a USB cable and following the [next steps](https://facebook.github.io/react-native/docs/next/running-on-device)
+
+#### Use a virtual device
