@@ -17,7 +17,7 @@ In a terminal run the following command.
 npm install -g react-native-cli
 ```
 
-From here, the process is a bit different if we want to build for iOS or Android.
+From here, the process is a bit different if we want to build for [iOS]() or [Android](macOS_Android.md).
 
 ## Android
 
