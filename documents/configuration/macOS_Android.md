@@ -1,4 +1,4 @@
-# Using macOS to compile Locha Mesh Chat for Android devices
+## Using macOS to compile Locha Mesh Chat for Android
 
 ### 1. Install Android Studio
 
