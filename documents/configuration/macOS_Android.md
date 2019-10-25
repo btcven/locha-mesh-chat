@@ -51,4 +51,4 @@ Now, inside the locha-mesh-chat folder we can run the application:
 react-native run-android
 ```
 
-That's all ;)
+That's all :wink:
