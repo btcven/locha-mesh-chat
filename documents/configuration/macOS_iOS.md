@@ -11,6 +11,7 @@ You can run the application in the android emulator or in your mobile phone.
 
 #### Use your mobile phone
 
+If you want to run Locha Mesh Chat in your physical iOS device follow the [next guide](https://facebook.github.io/react-native/docs/next/running-on-device)
 
 #### Use the iOS simulator
 
