@@ -2,3 +2,5 @@
 Before to proceed you need to install some tools, the easiest way is installing [**Xcode** via the Mac App Store](https://itunes.apple.com/us/app/xcode/id497799835?mt=12), this also will install the iOS simulator and other stuffs. If you have already installed **Xcode** on your computer, make sure it's version 9.4 or greater.
 
 when you have installed Xcode run it and go to `Xcode` > `Preferences`, click on `Locations` in the Preferences window and select the most recent version available in the **Command Line Tools** dropdown.
+
+<img src="files/CLT_selection.png" width="75%"/>
