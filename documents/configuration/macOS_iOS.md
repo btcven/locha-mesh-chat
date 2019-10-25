@@ -4,3 +4,20 @@ Before to proceed you need to install some tools, the easiest way is installing 
 when you have installed Xcode run it and go to `Xcode` > `Preferences`, click on `Locations` in the Preferences window and select the most recent version available in the **Command Line Tools** dropdown.
 
 <img src="files/CLT_selection.png" width="75%"/>
+
+### Run the Locha Mesh Chat application
+
+You can run the application in the android emulator or in your mobile phone.
+
+#### Use your mobile phone
+
+
+#### Use the iOS simulator
+
+Inside the locha-mesh-chat folder we can run the application
+
+```bash
+react-native run-ios
+```
+
+That's all :wink:
