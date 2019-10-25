@@ -62,3 +62,10 @@ You can run the application in the android emulator or in your mobile phone.
 You can use your physical device plugging it to your computer using a USB cable and following the [next steps](https://facebook.github.io/react-native/docs/next/running-on-device)
 
 #### Use a virtual device
+If you don't have any virtual device yet you need to create almost one following the [next steps](https://developer.android.com/studio/run/managing-avds.html)
+
+Now, inside the locha-mesh-chat folder we can run the application:
+
+```bash
+react-native run-android
+```
