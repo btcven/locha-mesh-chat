@@ -64,6 +64,8 @@ You can use your physical device plugging it to your computer using a USB cable 
 #### Use a virtual device
 If you don't have any virtual device yet you need to create almost one following the [next steps](https://developer.android.com/studio/run/managing-avds.html)
 
+___
+
 Now, inside the locha-mesh-chat folder we can run the application:
 
 ```bash
