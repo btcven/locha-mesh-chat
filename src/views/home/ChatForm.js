@@ -7,7 +7,9 @@ import {
   ScrollView,
   TouchableOpacity,
   Platform,
-  Text
+  Text,
+  Animated,
+  PanResponder
 } from "react-native";
 import RNFS from "react-native-fs";
 import { FileDirectory } from "../../utils/utils";
@@ -15,6 +17,7 @@ import { sha256 } from "js-sha256";
 import { AudioRecorder, AudioUtils } from "react-native-audio";
 import * as Animatable from "react-native-animatable";
 import moment from "moment";
+import Draggable from "../../components/Draggable";
 
 /**
  *
@@ -32,8 +35,10 @@ export default class ChatForm extends Component {
       height: 20,
       currentTime: 0.0,
       recording: false,
+      moveText: new Animated.ValueXY(),
       paused: false,
       stoppedRecording: false,
+
       finished: false,
       audioPath:
         AudioUtils.DocumentDirectoryPath + `/AUDIO_${new Date().getTime()}.aac`,
@@ -41,14 +46,12 @@ export default class ChatForm extends Component {
     };
   }
 
-  handleViewRef = ref => (this.view = ref);
-
   componentDidMount = () => {
     const { user, navigation, setChat, previousChat } = this.props;
     const toUID = navigation.params ? navigation.params.hashUID : null;
+    this._val = { x: 0, y: 0 };
     AudioRecorder.requestAuthorization().then(isAuthorised => {
       this.setState({ hasPermission: isAuthorised });
-
       if (!isAuthorised) return;
 
       this.prepareRecordingPath(this.state.audioPath);
@@ -171,6 +174,10 @@ export default class ChatForm extends Component {
     this.setState({ message: "" });
   };
 
+  moveText = value => {
+    this.state.moveText.setValue(value.__getValue());
+  };
+
   render() {
     return (
       <View
@@ -231,41 +238,46 @@ export default class ChatForm extends Component {
                         .utc(this.state.currentTime * 1000)
                         .format("mm:ss")}
                     </Text>
-                    <View
-                      style={{
-                        marginHorizontal: 10,
-                        flexDirection: "row",
-                        justifyContent: "center",
-                        alignItems: "center"
-                      }}
+                    <Animated.View
+                      style={[
+                        this.state.moveText.getLayout(),
+                        {
+                          marginHorizontal: 10,
+                          flexDirection: "row",
+                          justifyContent: "center",
+                          alignItems: "center"
+                        }
+                      ]}
                     >
                       <Icon
                         name="arrow-dropleft"
                         style={{ marginHorizontal: 10, color: "#9e9e9e" }}
                       />
                       <Text>Desliza para Cancelar</Text>
-                    </View>
+                    </Animated.View>
                   </View>
                 </Animatable.View>
               </View>
             )}
 
             {this.state.message.length === 0 && (
-              <TouchableOpacity
-                activeOpacity={1}
+              <Draggable
+                moveText={this.moveText}
                 onPressIn={() => this._record()}
                 onPressOut={() => this._stop()}
               >
-                <Icon
-                  style={
-                    this.state.recording
-                      ? styles.buttonTouch
-                      : styles.iconChatStyle
-                  }
-                  type="MaterialIcons"
-                  name="mic"
-                />
-              </TouchableOpacity>
+                <TouchableOpacity activeOpacity={1}>
+                  <Icon
+                    style={
+                      this.state.recording
+                        ? styles.buttonTouch
+                        : styles.iconChatStyle
+                    }
+                    type="MaterialIcons"
+                    name="mic"
+                  />
+                </TouchableOpacity>
+              </Draggable>
             )}
           </View>
           {this.state.message.length !== 0 && (
