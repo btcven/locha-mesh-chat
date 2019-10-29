@@ -39,8 +39,15 @@ export default class Draggable extends Component {
       },
 
       onPanResponderMove: (e, gesture) => {
-        Animated.event([null, { dx: this.state.pan.x, dy: 0 }])(e, gesture);
-        this.props.moveText(this.state.pan);
+        const postion = this.state.pan.__getValue();
+
+        if (postion.x > -65) {
+          this.props.moveText(this.state.pan);
+          Animated.event([null, { dx: this.state.pan.x, dy: 0 }])(e, gesture);
+        } else {
+          this.props.onPressOut();
+          this.state.pan.setValue({ x: 0, y: 0 });
+        }
       },
 
       onPanResponderTerminationRequest: (evt, gestureState) => true,

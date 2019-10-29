@@ -17,11 +17,16 @@ export const chatReducer = (state = AplicationState, action) => {
     }
 
     case ActionTypes.DELETE_CONTACT: {
-      const result = Object.values(state.chat).filter(obj => {
-        return obj.toUID !== action.chat;
+      const res = Object.values(state.chat).filter(obj => {
+        const result = action.payload.find(payload => {
+          console.log(obj.toUID, payload.hashUID);
+          return obj.toUID !== payload.hashUID;
+        });
+
+        return result;
       });
 
-      return { ...state, chat: result };
+      return { ...state, chat: res };
     }
 
     case ActionTypes.NEW_MESSAGE: {

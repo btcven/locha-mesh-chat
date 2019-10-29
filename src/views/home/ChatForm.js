@@ -38,7 +38,7 @@ export default class ChatForm extends Component {
       moveText: new Animated.ValueXY(),
       paused: false,
       stoppedRecording: false,
-
+      cancelRecoding: false,
       finished: false,
       audioPath:
         AudioUtils.DocumentDirectoryPath + `/AUDIO_${new Date().getTime()}.aac`,
@@ -61,7 +61,7 @@ export default class ChatForm extends Component {
       };
 
       AudioRecorder.onFinished = data => {
-        if (this.state.currentTime !== 0) {
+        if (this.state.currentTime !== 0 && !this.state.cancelRecoding) {
           const newPath = `${FileDirectory}/Audios/AUDIO_${new Date().getTime()}.aac`;
           RNFS.exists(this.state.audioPath).then(() => {
             RNFS.moveFile(this.state.audioPath, newPath).then(() => {
@@ -106,7 +106,6 @@ export default class ChatForm extends Component {
   };
 
   _record = async () => {
-    this.setState({ recording: true });
     if (this.state.recording) {
       console.warn("Already recording!");
       return;
@@ -118,7 +117,7 @@ export default class ChatForm extends Component {
     if (this.state.stoppedRecording) {
       this.prepareRecordingPath(this.state.audioPath);
     }
-    this.setState({ recording: true, paused: false });
+    this.setState({ recording: true, paused: false, cancelRecoding: false });
     try {
       const filePath = await AudioRecorder.startRecording();
     } catch (error) {
@@ -128,7 +127,6 @@ export default class ChatForm extends Component {
 
   _stop = async () => {
     if (!this.state.recording) {
-      console.warn("Can't stop, not recording!");
       return;
     }
     this.setState({
@@ -175,6 +173,9 @@ export default class ChatForm extends Component {
   };
 
   moveText = value => {
+    if (value.__getValue().x < -30 && !this.state.cancelRecoding) {
+      this.setState({ cancelRecoding: true });
+    }
     this.state.moveText.setValue(value.__getValue());
   };
 

@@ -119,7 +119,7 @@ export const getChat = data => async dispatch => {
 
   let name = infoMensagge ? infoMensagge.name : undefined;
   setMessage(uidChat, { ...parse, name: name }).then(file => {
-    console.log("acaaa", file);
+   
     dispatch({
       type: ActionTypes.NEW_MESSAGE,
       payload: {

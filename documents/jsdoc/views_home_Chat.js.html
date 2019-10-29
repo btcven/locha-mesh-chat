@@ -177,7 +177,7 @@ class Chat extends Component {
    */
 
   onClick = item => {
-    console.log("onclick", item);
+   
     if (this.state.selected.length > 0) {
       const result = this.state.selected.filter(selected => {
         return item.id !== selected.id;

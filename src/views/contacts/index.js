@@ -14,7 +14,7 @@ import {
   Icon
 } from "native-base";
 import { selectedChat } from "../../store/chats";
-import { getSelectedColor, unSelect } from "../../utils/utils";
+import { getSelectedColor, unSelect, getIcon } from "../../utils/utils";
 import { Image, StyleSheet, Alert } from "react-native";
 import {
   saveContact,
@@ -184,7 +184,9 @@ class Contacts extends Component {
                     {!contact.picture && (
                       <Image
                         style={styles.imageStyles}
-                        source={images.noPhoto.url}
+                        source={{
+                          uri: `${getIcon(contact.hashUID)}`
+                        }}
                       />
                     )}
                   </Right>

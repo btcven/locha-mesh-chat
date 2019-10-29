@@ -24,7 +24,7 @@ if (typeof localStorage !== "undefined") {
 // If using the crypto shim, uncomment the following line to ensure
 // crypto is loaded first, so it can populate global.crypto
 
-// import crypto from "crypto";
+
 // import Bitcoin from "bitcore-lib";
 
 // console.log(crypto.randomBytes(32).toString("hex"));
