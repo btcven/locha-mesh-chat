@@ -26,35 +26,30 @@ class DrawerComponent extends Component {
 
   render() {
     return (
-      <Drawer
-        tapToClose={true}
-        type="overlay"
-        open={this.props.menu}
-        content={
-          <Container>
-            <View style={styles.headerDrawer}>
-              <Image
-                style={{ width: "100%", height: "100%" }}
-                source={images.logo.url}
-              />
+      <Container>
+        <View style={styles.headerDrawer}>
+          <Image
+            style={{ width: "100%", height: "100%" }}
+            source={images.logo.url}
+          />
 
-              {this.props.user.image && (
-                <Image
-                  source={{
-                    uri: this.props.user.image + "?" + new Date().getDate(),
-                    cache: "force-cache"
-                  }}
-                  style={styles.imageStyle}
-                />
-              )}
+          {this.props.user.image && (
+            <Image
+              source={{
+                uri: this.props.user.image + "?" + new Date().getDate(),
+                cache: "force-cache"
+              }}
+              style={styles.imageStyle}
+            />
+          )}
 
-              {!this.props.user.image && (
-                <Image source={images.noPhoto.url} style={styles.imageStyle} />
-              )}
+          {!this.props.user.image && (
+            <Image source={images.noPhoto.url} style={styles.imageStyle} />
+          )}
 
-              <Text style={styles.textTitle}>{this.props.user.name}</Text>
+          <Text style={styles.textTitle}>{this.props.user.name}</Text>
 
-              {/* <Text
+          {/* <Text
                 style={{
                   position: "absolute",
                   color: "white",
@@ -65,44 +60,35 @@ class DrawerComponent extends Component {
               >
                 {`${this.props.user.uid}`.substr(0, 30) + "..."}
               </Text> */}
-            </View>
+        </View>
 
-            <View>
-              <ListItem itemDivider>
-                <Text>Locha Mesh</Text>
-              </ListItem>
-              <ListItem
-                icon
-                button
-                onPress={() => this.handleChange("contacts")}
-              >
-                <Left>
-                  <Button style={{ backgroundColor: "#ef6c00" }}>
-                    <Icon active name="person" />
-                  </Button>
-                </Left>
-                <Body>
-                  <Text>Contactos</Text>
-                </Body>
-              </ListItem>
+        <View>
+          <ListItem itemDivider>
+            <Text>Locha Mesh</Text>
+          </ListItem>
+          <ListItem icon button onPress={() => this.handleChange("contacts")}>
+            <Left>
+              <Button style={{ backgroundColor: "#ef6c00" }}>
+                <Icon active name="person" />
+              </Button>
+            </Left>
+            <Body>
+              <Text>Contactos</Text>
+            </Body>
+          </ListItem>
 
-              <ListItem icon button onPress={() => this.handleChange("config")}>
-                <Left>
-                  <Button style={{ backgroundColor: "#ef6c00" }}>
-                    <Icon active name="settings" />
-                  </Button>
-                </Left>
-                <Body>
-                  <Text>Configuración</Text>
-                </Body>
-              </ListItem>
-            </View>
-          </Container>
-        }
-        onClose={() => this.props.closeMenu()}
-      >
-        {this.props.children}
-      </Drawer>
+          <ListItem icon button onPress={() => this.handleChange("config")}>
+            <Left>
+              <Button style={{ backgroundColor: "#ef6c00" }}>
+                <Icon active name="settings" />
+              </Button>
+            </Left>
+            <Body>
+              <Text>Configuración</Text>
+            </Body>
+          </ListItem>
+        </View>
+      </Container>
     );
   }
 }

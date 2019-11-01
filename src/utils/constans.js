@@ -2,7 +2,7 @@ export const chats = [
   {
     idChat: "1",
     name: "broadcast",
-    lastMessage: "hi, how are you?",
+    lastMessage: "welcome to locha mesh",
     picture: require("./img/fotoperfil.jpg"),
     date: new Date()
   }

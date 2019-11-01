@@ -11,13 +11,11 @@ export default class App extends Component {
     store.dispatch(InitialState());
     return (
       <Provider store={store}>
-        <DrawerComponent>
-          <RouteContainer
-            ref={ref => {
-              NativationService.setTopLevelNavigator(ref);
-            }}
-          />
-        </DrawerComponent>
+        <RouteContainer
+          ref={ref => {
+            NativationService.setTopLevelNavigator(ref);
+          }}
+        />
       </Provider>
     );
   }

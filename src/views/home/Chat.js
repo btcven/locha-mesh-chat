@@ -8,7 +8,7 @@ import {
   initialChat,
   cleanAllChat,
   sendMessageWithFile,
-  sendMessagesWithSound
+  deleteMessages
 } from "../../store/chats";
 import { setView } from "../../store/aplication";
 import { connect } from "react-redux";
@@ -111,7 +111,6 @@ class Chat extends Component {
    */
 
   onClick = item => {
-    console.log("onclick", item);
     if (this.state.selected.length > 0) {
       const result = this.state.selected.filter(selected => {
         return item.id !== selected.id;
@@ -171,7 +170,10 @@ class Chat extends Component {
   };
 
   delete = () => {
-    alert("no disponible");
+    const chatSelected = this.props.chat[this.props.chatSelected.index];
+    this.props.deleteMessages(chatSelected.toUID, this.state.selected, () => {
+      this.setState({ selected: [] });
+    });
   };
 
   // -----------------------------------------
@@ -327,6 +329,6 @@ export default connect(
     setView,
     cleanAllChat,
     sendMessageWithFile,
-    sendMessagesWithSound
+    deleteMessages
   }
 )(Chat);

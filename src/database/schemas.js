@@ -48,7 +48,9 @@ export const chatSquema = {
   properties: {
     fromUID: "string",
     toUID: "string",
-    messages: { type: "list", objectType: "Message" }
+    messages: { type: "list", objectType: "Message" },
+    timestamp: "int?",
+    queue: "string[]"
   }
 };
 

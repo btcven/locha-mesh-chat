@@ -6,7 +6,9 @@ import {
   verifyContact,
   getTemporalContact,
   deleteChatss,
-  cleanChat
+  deleteMessage,
+  cleanChat,
+  unreadMessages
 } from "../../database/realmDatabase";
 import { notification, FileDirectory } from "../../utils/utils";
 import { sendSocket } from "../../utils/socket";
@@ -119,7 +121,6 @@ export const getChat = data => async dispatch => {
 
   let name = infoMensagge ? infoMensagge.name : undefined;
   setMessage(uidChat, { ...parse, name: name }).then(file => {
-   
     dispatch({
       type: ActionTypes.NEW_MESSAGE,
       payload: {
@@ -252,22 +253,24 @@ export const sendMessageWithFile = (data, path, base64) => dispatch => {
   });
 };
 
-export const sendMessagesWithSound = (data, path, base64) => dispatch => {
-  // let uidChat = data.toUID ? data.toUID : "broadcast";
-  // const saveDatabase = Object.assign({}, data);
-  // saveDatabase.msg.file = path;
-  // setMessage(uidChat, { ...saveDatabase }).then(file => {
-  //   saveDatabase.msg.file = base64;
-  //   sendSocket.send(JSON.stringify(saveDatabase));
-  //   dispatch({
-  //     type: ActionTypes.NEW_MESSAGE,
-  //     payload: {
-  //       name: undefined,
-  //       ...data,
-  //       msg: data.msg.text,
-  //       id: data.msgID,
-  //       file: file
-  //     }
-  //   });
-  // });
+export const deleteMessages = (id, data, callback) => dispatch => {
+  deleteMessage(id, data).then(res => {
+    dispatch({
+      type: ActionTypes.DELETE_SELECTED_MESSAGE,
+      id: id,
+      payload: data
+    });
+    callback();
+  });
+};
+
+export const messageQueue = (index, id, view) => dispatch => {
+  unreadMessages(view, id).then((time) => {
+    dispatch({
+      type: ActionTypes.UNREAD_MESSAGES,
+      index,
+      payload: id,
+      time:time
+    });
+  });
 };

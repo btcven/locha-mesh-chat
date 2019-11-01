@@ -80,6 +80,53 @@ export const chatReducer = (state = AplicationState, action) => {
       });
       return { ...state, chat: Object.values(state.chat).slice() };
     }
+    case ActionTypes.DELETE_SELECTED_MESSAGE: {
+      const chat = state.chat[state.seletedChat.index];
+      const messages = Object.values(chat.messages).filter(message => {
+        const res = action.payload.find(payload => {
+          return message.id === payload.id;
+        });
+
+        return !res;
+      });
+
+      state.chat[state.seletedChat.index].messages = messages;
+
+      return { ...state, chat: Object.values(state.chat).slice() };
+    }
+
+    case ActionTypes.UNREAD_MESSAGES: {
+      state.chat[action.index] = {
+        ...state.chat[action.index],
+        timestamp: action.time,
+        queue: Object.values(state.chat[action.index].queue)
+          ? Object.values(state.chat[action.index].queue).concat(action.payload)
+          : [action.payload]
+      };
+
+      return { ...state, chat: Object.values(state.chat).slice() };
+    }
+
+    case ActionTypes.IN_VIEW: {
+      console.log(action.payload);
+      const index = Object.values(state.chat).findIndex(chat => {
+        return chat.toUID === action.payload;
+      });
+
+      if (index !== -1) {
+        state.chat[index] = {
+          ...state.chat[index],
+          queue: []
+        };
+
+        return { ...state, chat: Object.values(state.chat) };
+      } else {
+        return state;
+      }
+
+      // // return { ...state, chat: Object.values(state.chat).slice() };
+      return state;
+    }
     default: {
       return state;
     }

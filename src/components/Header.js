@@ -88,7 +88,7 @@ class HeaderComponent extends Component {
                   borderRadius: 100
                 }}
                 onPress={() => {
-                  this.props.openMenu();
+                  this.props.navigation.openDrawer();
                 }}
               >
                 <Icon style={styles.iconStyle} name="menu" />

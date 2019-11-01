@@ -18,7 +18,7 @@ const databaseOptions = {
     BroadCasContacts,
     fileSchema
   ],
-  schemaVersion: 17
+  schemaVersion: 18
 };
 
 const getRealm = () =>
@@ -265,6 +265,39 @@ export const cleanChat = id =>
 
         realm.delete(chat.messages);
         resolve();
+      });
+    });
+  });
+
+export const deleteMessage = (id, obj) =>
+  new Promise(resolve => {
+    Realm.open(databaseOptions).then(realm => {
+      realm.write(() => {
+        const chat = realm.objectForPrimaryKey("Chat", id);
+
+        const messages = chat.messages.filter(data => {
+          const result = obj.find(message => {
+            return message.id === data.id;
+          });
+
+          return result;
+        });
+
+        realm.delete(messages);
+        resolve();
+      });
+    });
+  });
+
+export const unreadMessages = (id, idMessage) =>
+  new Promise(resolve => {
+    Realm.open(databaseOptions).then(realm => {
+      realm.write(() => {
+        const time = new Date().getTime();
+        const chat = realm.objectForPrimaryKey("Chat", id);
+        chat.queue.push(idMessage);
+        chat.timestamp = time;
+        resolve(time);
       });
     });
   });

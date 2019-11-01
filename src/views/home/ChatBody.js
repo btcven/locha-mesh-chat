@@ -46,7 +46,6 @@ export default class ChatBody extends Component {
   };
 
   render() {
-    
     return (
       <View style={{ flex: 1 }}>
         {this.props.open && (
@@ -59,7 +58,6 @@ export default class ChatBody extends Component {
 
         <FlatList
           inverted
-          // extraData={this.props.selected}
           contentContainerStyle={styles.container}
           data={this.props.chats}
           keyExtractor={(item, index) => index.toString()}
@@ -103,7 +101,6 @@ export default class ChatBody extends Component {
                   userInfo={userInfo}
                   selected={selected}
                   index={index}
-                 
                 />
               );
             }

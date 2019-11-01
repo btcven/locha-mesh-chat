@@ -15,9 +15,9 @@ import {
 } from "native-base";
 import Header from "../../components/Header";
 import { connect } from "react-redux";
-import { Alert, Image } from "react-native";
+import { Alert, Image, View } from "react-native";
 import { selectedChat, deleteChat } from "../../store/chats";
-import { getSelectedColor, unSelect } from "../../utils/utils";
+import { getSelectedColor, unSelect, getFilesInfo } from "../../utils/utils";
 import Moment from "moment";
 import FloatButton from "../../components/FloatButton";
 /**
@@ -34,8 +34,9 @@ class index extends Component {
       selected: []
     };
   }
+
   static navigationOptions = {
-    header: null
+    drawerLabel: "Home"
   };
 
   selectedChat = (info, obj) => {
@@ -101,6 +102,51 @@ class index extends Component {
     this.setState({ search: text });
   };
 
+  /**
+   *
+   * This function is used to return the chat and contact information
+   * @param {string} id
+   * @returns {object}
+   */
+
+  getFilesInfo = typeFile => {
+    if (typeFile === "image") {
+      return (
+        <View style={{ flexDirection: "row", alignItems: "flex-end" }}>
+          <Icon style={{ fontSize: 20, color: "#9e9e9e" }} name="camera" />
+          <Text style={{ marginHorizontal: 5 }} note>
+            Photo
+          </Text>
+        </View>
+      );
+    } else if (typeFile === "audio") {
+      return (
+        <View style={{ flexDirection: "row", alignItems: "flex-end" }}>
+          <Icon style={{ fontSize: 20, color: "#9e9e9e" }} name="mic" />
+          <Text style={{ marginHorizontal: 5 }} note>
+            Audio
+          </Text>
+        </View>
+      );
+    } else {
+      return (
+        <Text note>
+          {typeFile.length > 25
+            ? `${typeFile}`.substr(0, 25) + `...`
+            : typeFile}
+        </Text>
+      );
+    }
+  };
+
+  getDataTypeMessage = message => {
+    if (message.file) {
+      return this.getFilesInfo(message.file.fileType);
+    } else {
+      return this.getFilesInfo(message.msg);
+    }
+  };
+
   closeSelected = () => {
     this.setState({ selected: [] });
   };
@@ -126,15 +172,19 @@ class index extends Component {
 
         <Content>
           {result.map((chat, key) => {
+            const queue = Object.values(chat.queue);
+
             const backgroundColor = getSelectedColor(
               this.state.selected,
               chat.toUID
             );
             infoData = this.getContactInformation(chat);
             const messages = Object.values(chat.messages);
-            const lastmessage = messages.length
-              ? messages[messages.length - 1].msg
-              : chats[0].lastMessage;
+            const lastmessage = messages.length ? (
+              this.getDataTypeMessage(messages[messages.length - 1])
+            ) : (
+              <Text note> {chats[0].lastMessage} </Text>
+            );
 
             const lasTime = messages.length
               ? Number(messages[messages.length - 1].timestamp)
@@ -167,11 +217,7 @@ class index extends Component {
                     </Left>
                     <Body>
                       <Text>{infoData.name}</Text>
-                      <Text note>
-                        {lastmessage.length > 25
-                          ? `${lastmessage}`.substr(0, 25) + `...`
-                          : lastmessage}{" "}
-                      </Text>
+                      {lastmessage}
                     </Body>
                     <Right
                       style={{
@@ -179,6 +225,31 @@ class index extends Component {
                       }}
                     >
                       <Text note> {Moment(lasTime).format("LT")}</Text>
+
+                      {queue.length > 0 && (
+                        <View
+                          style={{
+                            backgroundColor: "#52b202",
+                            width: 25,
+                            height: 24,
+                            borderRadius: 100,
+                            alignItems: "center",
+                            justifyContent: "center",
+                            marginTop: "10%",
+                            marginRight: "10%"
+                          }}
+                        >
+                          <Text
+                            style={{
+                              color: "white",
+                              fontSize: 14,
+                              marginBottom: 2
+                            }}
+                          >
+                            {queue.length}
+                          </Text>
+                        </View>
+                      )}
                     </Right>
                   </ListItem>
                 </List>
