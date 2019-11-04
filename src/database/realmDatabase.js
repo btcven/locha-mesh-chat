@@ -66,7 +66,8 @@ export const addContacts = (uid, obj, update) =>
           user.chats.push({
             fromUID: uid,
             toUID: obj[0].hashUID,
-            messages: []
+            messages: [],
+            queue: []
           });
         }
         resolve({ fromUID: uid, toUID: obj[0].hashUID, messages: {} });
@@ -88,6 +89,7 @@ export const setMessage = (id, obj) =>
       realm.write(() => {
         try {
           let chat = realm.objectForPrimaryKey("Chat", id);
+          const time = new Date().getTime();
           const file = obj.msg.typeFile
             ? {
                 fileType: obj.msg.typeFile,
@@ -101,7 +103,8 @@ export const setMessage = (id, obj) =>
             msg: obj.msg.text,
             file: file
           });
-          resolve(file);
+          chat.timestamp = new Date().getTime();
+          resolve({ file, time });
         } catch (err) {
           console.log(err);
         }
@@ -222,6 +225,7 @@ const listener = (chats, changes) => {
   changes.insertions.forEach(index => {
     let changeChat = chats[index];
 
+    console.log("acaaaa", changeChat);
     onNotification(JSON.parse(JSON.stringify(changeChat)));
   });
 };
@@ -290,14 +294,35 @@ export const deleteMessage = (id, obj) =>
   });
 
 export const unreadMessages = (id, idMessage) =>
-  new Promise(resolve => {
+  new Promise((resolve, reject) => {
     Realm.open(databaseOptions).then(realm => {
       realm.write(() => {
         const time = new Date().getTime();
         const chat = realm.objectForPrimaryKey("Chat", id);
-        chat.queue.push(idMessage);
-        chat.timestamp = time;
-        resolve(time);
+        console.log("dataa", chat);
+        try {
+          chat.queue.push(idMessage);
+          chat.timestamp = time;
+          resolve(time);
+        } catch (err) {
+          reject(err);
+        }
+      });
+    });
+  });
+
+export const cancelUnreadMessages = id =>
+  new Promise(resolve => {
+    Realm.open(databaseOptions).then(realm => {
+      realm.write(() => {
+        if (id) {
+          const chat = realm.objectForPrimaryKey("Chat", id);
+          chat.queue = [];
+
+          resolve();
+        } else {
+          resolve();
+        }
       });
     });
   });

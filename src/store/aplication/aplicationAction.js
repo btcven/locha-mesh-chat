@@ -1,6 +1,10 @@
 import { ActionTypes } from "../constants";
 import { createFolder, backgroundTimer } from "../../utils/utils";
-import { writteUser, getUserData } from "../../database/realmDatabase";
+import {
+  writteUser,
+  getUserData,
+  cancelUnreadMessages
+} from "../../database/realmDatabase";
 import Bitcoin from "../../utils/Bitcoin";
 import Socket from "../../utils/socket";
 import store from "../../store";
@@ -80,11 +84,13 @@ const writeAction = data => {
  * @returns {object}
  */
 
-export const setView = idChat => {
-  return {
-    type: ActionTypes.IN_VIEW,
-    payload: idChat
-  };
+export const setView = idChat => dispatch => {
+  cancelUnreadMessages(idChat).then(() => {
+    dispatch({
+      type: ActionTypes.IN_VIEW,
+      payload: idChat
+    });
+  });
 };
 
 /**

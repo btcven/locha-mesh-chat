@@ -163,7 +163,7 @@ export default class ChatForm extends Component {
     };
 
     const id = sha256(
-      `${sha256(user.uid)} + ${toUID}  +  ${
+      `${user.uid} + ${toUID}  +  ${
         sendObject.msg.text
       }  + ${new Date().getTime()}`
     );

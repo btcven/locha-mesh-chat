@@ -34,13 +34,14 @@ import RNFS from "react-native-fs";
 
 export const initialChat = data => dispatch => {
   let uidChat = data.toUID ? data.toUID : "broadcast";
-  setMessage(uidChat, { ...data }).then(() => {
+  setMessage(uidChat, { ...data }).then(res => {
     sendSocket.send(JSON.stringify(data));
     dispatch({
       type: ActionTypes.NEW_MESSAGE,
       payload: {
         name: undefined,
         ...data,
+        time: res.time,
         msg: data.msg.text,
         id: data.msgID
       }
@@ -120,7 +121,7 @@ export const getChat = data => async dispatch => {
   let uidChat = parse.toUID ? parse.fromUID : "broadcast";
 
   let name = infoMensagge ? infoMensagge.name : undefined;
-  setMessage(uidChat, { ...parse, name: name }).then(file => {
+  setMessage(uidChat, { ...parse, name: name }).then(res => {
     dispatch({
       type: ActionTypes.NEW_MESSAGE,
       payload: {
@@ -128,7 +129,8 @@ export const getChat = data => async dispatch => {
         ...parse,
         msg: parse.msg.text,
         id: parse.msgID,
-        file: file
+        file: res.file,
+        time: res.time
       }
     });
   });
@@ -200,13 +202,13 @@ export const realoadBroadcastChat = data => {
  */
 
 export const deleteChat = (obj, callback) => dispatch => {
-  deleteChatss(obj).then(() => {
-    dispatch({
-      type: ActionTypes.DELETE_MESSAGE,
-      payload: obj
-    });
-    callback();
+  // deleteChatss(obj).then(() => {
+  dispatch({
+    type: ActionTypes.DELETE_MESSAGE,
+    payload: obj
   });
+  callback();
+  // });
 };
 
 /**
@@ -237,7 +239,7 @@ export const sendMessageWithFile = (data, path, base64) => dispatch => {
   let uidChat = data.toUID ? data.toUID : "broadcast";
   const saveDatabase = Object.assign({}, data);
   saveDatabase.msg.file = path;
-  setMessage(uidChat, { ...saveDatabase }).then(file => {
+  setMessage(uidChat, { ...saveDatabase }).then(res => {
     saveDatabase.msg.file = base64;
     sendSocket.send(JSON.stringify(saveDatabase));
     dispatch({
@@ -247,7 +249,8 @@ export const sendMessageWithFile = (data, path, base64) => dispatch => {
         ...data,
         msg: data.msg.text,
         id: data.msgID,
-        file: file
+        file: res.file,
+        time: res.time
       }
     });
   });
@@ -265,12 +268,12 @@ export const deleteMessages = (id, data, callback) => dispatch => {
 };
 
 export const messageQueue = (index, id, view) => dispatch => {
-  unreadMessages(view, id).then((time) => {
+  unreadMessages(view, id).then(time => {
     dispatch({
       type: ActionTypes.UNREAD_MESSAGES,
       index,
       payload: id,
-      time:time
+      time: time
     });
   });
 };

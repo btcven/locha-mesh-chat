@@ -37,7 +37,9 @@ export const chatReducer = (state = AplicationState, action) => {
         return chat.toUID === chatUID || chat.toUID === chatFromUID;
       });
 
+      chat[result].timestamp = action.payload.time;
       const messages = Object.values(chat[result].messages);
+
       chat[result].messages = messages.length
         ? messages.concat(action.payload)
         : [action.payload];
@@ -69,7 +71,7 @@ export const chatReducer = (state = AplicationState, action) => {
         });
       });
 
-      return { chat: chats.slice() };
+      return { ...state, chat: chats.slice() };
     }
 
     case ActionTypes.DELETE_ALL_MESSAGE: {
@@ -123,9 +125,6 @@ export const chatReducer = (state = AplicationState, action) => {
       } else {
         return state;
       }
-
-      // // return { ...state, chat: Object.values(state.chat).slice() };
-      return state;
     }
     default: {
       return state;

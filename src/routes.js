@@ -25,13 +25,8 @@ const MyDrawerNavigator = createDrawerNavigator(
     }
   },
   {
-    drawerOpenRoute: "DrawerOpen",
-    drawerCloseRoute: "DrawerClose",
-    drawerToggleRoute: "DrawerToggle",
-    contentComponent: Drawer,
-    navigationOptions: {
-      drawerLockMode: "locked-closed"
-    }
+    useNativeAnimations: false,
+    contentComponent: Drawer
   }
 );
 

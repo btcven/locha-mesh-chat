@@ -151,6 +151,17 @@ class index extends Component {
     this.setState({ selected: [] });
   };
 
+  orderChats = chats => {
+    const sort = chats.sort((a, b) => {
+      if (b.toUID !== "broadcast" && a.toUID !== "broadcast") {
+        return new Date(b.timestamp) - new Date(a.timestamp);
+      }
+    });
+
+    console.log("sort", sort);
+    return sort;
+  };
+
   render() {
     const result = this.state.search
       ? Object.values(this.props.chats).filter(chat => {
@@ -171,8 +182,8 @@ class index extends Component {
         />
 
         <Content>
-          {result.map((chat, key) => {
-            const queue = Object.values(chat.queue);
+          {this.orderChats(result).map((chat, key) => {
+            const queue = chat.queue ? Object.values(chat.queue) : [];
 
             const backgroundColor = getSelectedColor(
               this.state.selected,

@@ -21,7 +21,6 @@ class DrawerComponent extends Component {
 
   handleChange = view => {
     NavigationService.navigate(view);
-    this.props.closeMenu();
   };
 
   render() {

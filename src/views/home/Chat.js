@@ -208,6 +208,10 @@ class Chat extends Component {
    * @memberof Chat
    */
 
+  componentWillUnmount = () => {
+    console.log("ejecuto");
+  };
+
   sendFileWithImage = (data, callback) => {
     const { userData, navigation, setChat, previousChat } = this.props;
     const toUID = navigation.state.params
