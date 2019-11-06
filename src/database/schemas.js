@@ -28,6 +28,8 @@ export const messageSquema = {
     msg: "string",
     file: "File?",
     timestamp: "int",
+    viewed: "int?",
+    status: "string?",
     type: "string"
   }
 };

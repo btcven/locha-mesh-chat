@@ -8,7 +8,8 @@ import {
   deleteChatss,
   deleteMessage,
   cleanChat,
-  unreadMessages
+  unreadMessages,
+  addStatusOnly
 } from "../../database/realmDatabase";
 import { notification, FileDirectory } from "../../utils/utils";
 import { sendSocket } from "../../utils/socket";
@@ -32,9 +33,9 @@ import RNFS from "react-native-fs";
  * @returns {object}
  */
 
-export const initialChat = data => dispatch => {
+export const initialChat = (data, status) => dispatch => {
   let uidChat = data.toUID ? data.toUID : "broadcast";
-  setMessage(uidChat, { ...data }).then(res => {
+  setMessage(uidChat, { ...data }, status).then(res => {
     sendSocket.send(JSON.stringify(data));
     dispatch({
       type: ActionTypes.NEW_MESSAGE,
@@ -43,7 +44,8 @@ export const initialChat = data => dispatch => {
         ...data,
         time: res.time,
         msg: data.msg.text,
-        id: data.msgID
+        id: data.msgID,
+        status
       }
     });
   });
@@ -107,33 +109,35 @@ export const broadcastRandomData = async (parse, id) =>
 
 export const getChat = data => async dispatch => {
   const parse = JSON.parse(data);
-  let math = undefined;
-
   let infoMensagge = undefined;
-  if (!parse.toUID) {
-    infoMensagge = await broadcastRandomData(parse);
-  }
+  if (parse.type !== "status") {
+    sendStatus(parse);
+    if (!parse.toUID) {
+      infoMensagge = await broadcastRandomData(parse);
+    }
 
-  if (parse.msg.file) {
-    parse.msg.file = await saveFile(parse.msg);
-  }
+    if (parse.msg.file) {
+      parse.msg.file = await saveFile(parse.msg);
+    }
 
-  let uidChat = parse.toUID ? parse.fromUID : "broadcast";
-
-  let name = infoMensagge ? infoMensagge.name : undefined;
-  setMessage(uidChat, { ...parse, name: name }).then(res => {
-    dispatch({
-      type: ActionTypes.NEW_MESSAGE,
-      payload: {
-        name: name,
-        ...parse,
-        msg: parse.msg.text,
-        id: parse.msgID,
-        file: res.file,
-        time: res.time
-      }
+    let uidChat = parse.toUID ? parse.fromUID : "broadcast";
+    let name = infoMensagge ? infoMensagge.name : undefined;
+    setMessage(uidChat, { ...parse, name: name }, "delivered").then(res => {
+      dispatch({
+        type: ActionTypes.NEW_MESSAGE,
+        payload: {
+          name: name,
+          ...parse,
+          msg: parse.msg.text,
+          id: parse.msgID,
+          file: res.file,
+          time: res.time
+        }
+      });
     });
-  });
+  } else {
+    addStatusOnly(parse, "delivered");
+  }
 };
 
 /**
@@ -202,13 +206,13 @@ export const realoadBroadcastChat = data => {
  */
 
 export const deleteChat = (obj, callback) => dispatch => {
-  // deleteChatss(obj).then(() => {
-  dispatch({
-    type: ActionTypes.DELETE_MESSAGE,
-    payload: obj
+  deleteChatss(obj).then(() => {
+    dispatch({
+      type: ActionTypes.DELETE_MESSAGE,
+      payload: obj
+    });
+    callback();
   });
-  callback();
-  // });
 };
 
 /**
@@ -276,4 +280,24 @@ export const messageQueue = (index, id, view) => dispatch => {
       time: time
     });
   });
+};
+
+export const sendStatus = data => {
+  const store = require("../../store");
+  const state = store.default.getState();
+
+  const sendStatus = {
+    fromUID: state.config.uid,
+    timestamp: new Date().getTime(),
+    data: {
+      status: "delivered",
+      msgID: data.msgID
+    },
+    type: "status"
+  };
+
+  if (!data.toUID) {
+    sendStatus.toUID = null;
+    sendSocket.send(JSON.stringify(sendStatus));
+  }
 };

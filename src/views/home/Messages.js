@@ -3,8 +3,6 @@ import {
   View,
   Text,
   StyleSheet,
-  TextInput,
-  FlatList,
   TouchableNativeFeedback,
   Image
 } from "react-native";
@@ -105,6 +103,12 @@ export const ReceiveMessage = ({
 };
 
 export const SenderMessage = ({ onClick, onSelected, item, selected }) => {
+  console.log("acaaa!!!!!!!!!!!!!!!!", item);
+  const styleBody =
+    item.msg.length < 40 ? styles.styleBody1 : styles.styleBody2;
+
+  const textStyle =
+    item.msg.length < 40 ? styles.textStyle1 : styles.textStyle2;
   return (
     <TouchableNativeFeedback
       useForeground
@@ -131,18 +135,27 @@ export const SenderMessage = ({ onClick, onSelected, item, selected }) => {
               />
             </View>
           )}
-          <Text style={{ fontSize: 15 }}>{item.msg}</Text>
-          <Text
-            style={{
-              paddingTop: 7,
-              paddingLeft: 5,
-              paddingBottom: 6,
-              fontSize: 12,
-              textAlign: "right"
-            }}
-          >
-            {Moment(Number(item.timestamp)).format("LT")}
-          </Text>
+          <View style={styleBody}>
+            <Text style={{ fontSize: 15 }}>{item.msg}</Text>
+            <View style={textStyle}>
+              <Text style={{ fontSize: 12, textAlign: "right" }}>
+                {Moment(Number(item.timestamp)).format("LT")} &nbsp;
+                {item.status === "pending" && (
+                  <Icon
+                    style={{ color: "gray", fontSize: 15, marginLeft: 10 }}
+                    name="time"
+                  />
+                )}
+                {item.status === "delivered" && (
+                  <Icon
+                    style={{ color: "gray", fontSize: 15, marginLeft: 10 }}
+                    type="FontAwesome5"
+                    name="user-check"
+                  />
+                )}
+              </Text>
+            </View>
+          </View>
         </View>
       </View>
     </TouchableNativeFeedback>
@@ -306,5 +319,24 @@ const styles = StyleSheet.create({
     borderRadius: 7,
     flexDirection: "column",
     backgroundColor: "#bbdefb"
+  },
+  styleBody1: {
+    flexDirection: "row"
+  },
+  styleBody2: {
+    flexDirection: "column"
+  },
+
+  textStyle1: {
+    paddingTop: 7,
+    paddingLeft: 10,
+    paddingBottom: 6,
+    fontSize: 12,
+    textAlign: "right"
+  },
+
+  textStyle2: {
+    paddingTop: 0,
+    paddingBottom: 6
   }
 });

@@ -8,7 +8,7 @@ export let sendSocket = undefined;
 /**
  *
  * websocket client management class
- * @export 
+ * @export
  * @class Socket
  */
 

@@ -128,7 +128,9 @@ class Contacts extends Component {
   render() {
     const result = this.state.search
       ? this.props.contacts.filter(contact => {
-          return contact.name.toLowerCase().includes(this.state.search);
+          return contact.name
+            .toLowerCase()
+            .includes(this.state.search.toLowerCase());
         })
       : this.props.contacts;
     return (

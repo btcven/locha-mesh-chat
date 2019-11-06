@@ -157,8 +157,6 @@ class index extends Component {
         return new Date(b.timestamp) - new Date(a.timestamp);
       }
     });
-
-    console.log("sort", sort);
     return sort;
   };
 
@@ -167,7 +165,9 @@ class index extends Component {
       ? Object.values(this.props.chats).filter(chat => {
           return (
             chat.toUID.toLowerCase().includes(this.state.search) ||
-            this.getContactInformation(chat).name.includes(this.state.search)
+            this.getContactInformation(chat)
+              .name.toLowerCase()
+              .includes(this.state.search.toLowerCase())
           );
         })
       : Object.values(this.props.chats);

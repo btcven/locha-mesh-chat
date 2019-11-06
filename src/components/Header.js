@@ -36,7 +36,7 @@ class HeaderComponent extends Component {
   };
 
   back = () => {
-    this.props.navigation.pop()
+    this.props.navigation.pop();
     if (this.props.setView) {
       this.props.setView(undefined);
     }
@@ -44,6 +44,7 @@ class HeaderComponent extends Component {
 
   onChange = () => {
     this.setState({ search: !this.state.search });
+    this.props.search(undefined);
   };
 
   render() {

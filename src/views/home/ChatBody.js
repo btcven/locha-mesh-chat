@@ -3,6 +3,8 @@ import { View, StyleSheet, FlatList } from "react-native";
 import { sha256 } from "js-sha256";
 import FileModal from "./fileModal";
 import { ReceiveMessage, SenderMessage, SoundMessage } from "./Messages";
+import Sound from "react-native-sound";
+import { songs } from "../../utils/constans";
 
 /**
  *
@@ -20,6 +22,28 @@ export default class ChatBody extends Component {
       selected: []
     };
   }
+
+  componentDidMount = () => {
+    this.sound = new Sound(songs.song3.url, error => {
+      if (error) {
+        console.warn("failed to load the sound", error);
+      } else {
+      }
+    });
+  };
+
+  componentDidUpdate = prevProps => {
+    const rule1 = prevProps
+      ? this.props.chats.length !== prevProps.chats.length
+      : false;
+
+    lastMessage = this.props.chats[0];
+    if (rule1) {
+      if (sha256(this.props.user.uid) !== lastMessage.fromUID) {
+        this.sound.setVolume(0.1).play();
+      }
+    }
+  };
 
   getContactInfo = item => {
     const result = this.props.contacts.find(contact => {

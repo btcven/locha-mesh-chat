@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import Modal from "react-native-modal";
-import { View, Text, StyleSheet } from "react-native";
-import { Item, Input, Form, Button, Right } from "native-base";
+import { View, StyleSheet } from "react-native";
+import { Item, Input, Form, Button, Right, Text } from "native-base";
 /**
  *
  *
@@ -49,8 +49,12 @@ export default class EditName extends Component {
           >
             <Text style={styles.titleModal}>Editar Nombre </Text>
             <Form>
+              <Text style={{ position: "absolute", top: "40%", right: "5%" }}>
+                {12 - this.state.name.length}
+              </Text>
               <Item stackedLabel>
                 <Input
+                  maxLength={12}
                   placeholder="Ingrese Nombre"
                   value={this.state.name}
                   onChangeText={event => this.setState({ name: event })}
@@ -66,7 +70,7 @@ export default class EditName extends Component {
             >
               <Button
                 onPress={() => close("openModalName")}
-                danger
+                transparent
                 style={{
                   marginHorizontal: 10
                 }}
@@ -74,6 +78,7 @@ export default class EditName extends Component {
                 <Text style={styles.styleTextButton}>Cancelar</Text>
               </Button>
               <Button
+                transparent
                 disabled={disabled}
                 onPress={() => this.saveName()}
                 style={styles.styleTextButton}

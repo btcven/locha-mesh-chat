@@ -53,6 +53,7 @@ class InitialStep extends Component {
         <View style={{ width: "100%", paddingTop: "20%" }}>
           <Item style={{ marginBottom: 30 }}>
             <Input
+              maxLength={12}
               placeholder="Alias"
               value={this.state.userName}
               onChangeText={text => this.setState({ userName: text })}

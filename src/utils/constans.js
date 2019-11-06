@@ -15,6 +15,13 @@ export const images = {
   logo: { url: require("./img/logo.png") }
 };
 
+export const songs = {
+  song1: { url: require("../songs/clicking.mp3") },
+  song2: { url: require("../songs/case-closed.mp3") },
+  song3: { url: require("../songs/guess-what.mp3") },
+  song4: { url: require("../songs/scissors.mp3") }
+};
+
 export const IntialUser = {
   id: undefined,
   name: undefined,

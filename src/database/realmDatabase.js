@@ -18,7 +18,7 @@ const databaseOptions = {
     BroadCasContacts,
     fileSchema
   ],
-  schemaVersion: 18
+  schemaVersion: 19
 };
 
 const getRealm = () =>
@@ -83,7 +83,7 @@ export const getUserData = () =>
     });
   });
 
-export const setMessage = (id, obj) =>
+export const setMessage = (id, obj, status) =>
   new Promise(async (resolve, reject) => {
     Realm.open(databaseOptions).then(realm => {
       realm.write(() => {
@@ -101,7 +101,8 @@ export const setMessage = (id, obj) =>
             ...obj,
             id: obj.msgID,
             msg: obj.msg.text,
-            file: file
+            file: file,
+            status
           });
           chat.timestamp = new Date().getTime();
           resolve({ file, time });
@@ -224,8 +225,6 @@ export const editContact = object =>
 const listener = (chats, changes) => {
   changes.insertions.forEach(index => {
     let changeChat = chats[index];
-
-    console.log("acaaaa", changeChat);
     onNotification(JSON.parse(JSON.stringify(changeChat)));
   });
 };
@@ -299,7 +298,6 @@ export const unreadMessages = (id, idMessage) =>
       realm.write(() => {
         const time = new Date().getTime();
         const chat = realm.objectForPrimaryKey("Chat", id);
-        console.log("dataa", chat);
         try {
           chat.queue.push(idMessage);
           chat.timestamp = time;
@@ -322,6 +320,23 @@ export const cancelUnreadMessages = id =>
           resolve();
         } else {
           resolve();
+        }
+      });
+    });
+  });
+
+export const addStatusOnly = (eventStatus, status) =>
+  new Promise((resolve, reject) => {
+    Realm.open(databaseOptions).then(realm => {
+      realm.write(() => {
+        try{
+          const message = realm.objectForPrimaryKey(
+            "Message",
+            eventStatus.data.msgID
+          );
+          message.status = status
+        } catch(err){
+            console.log(err)
         }
       });
     });

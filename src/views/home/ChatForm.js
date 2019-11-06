@@ -168,7 +168,7 @@ export default class ChatForm extends Component {
       }  + ${new Date().getTime()}`
     );
 
-    setChat({ ...sendObject, msgID: id });
+    setChat({ ...sendObject, msgID: id }, "pending");
     this.setState({ message: "" });
   };
 
