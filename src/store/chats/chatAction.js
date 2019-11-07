@@ -136,7 +136,12 @@ export const getChat = data => async dispatch => {
       });
     });
   } else {
-    addStatusOnly(parse, "delivered");
+    addStatusOnly(parse).then(() => {
+      dispatch({
+        type: ActionTypes.SET_STATUS_MESSAGE,
+        payload: parse
+      });
+    });
   }
 };
 
@@ -285,7 +290,6 @@ export const messageQueue = (index, id, view) => dispatch => {
 export const sendStatus = data => {
   const store = require("../../store");
   const state = store.default.getState();
-
   const sendStatus = {
     fromUID: state.config.uid,
     timestamp: new Date().getTime(),
@@ -299,5 +303,19 @@ export const sendStatus = data => {
   if (!data.toUID) {
     sendStatus.toUID = null;
     sendSocket.send(JSON.stringify(sendStatus));
+  } else {
+    try {
+      const contacts = Object.values(state.contacts.contacts);
+
+      contacts.map(contact => {
+        if (data.fromUID === contact.hashUID) {
+          sendStatus.toUID = contact.hashUID;
+
+          sendSocket.send(JSON.stringify(sendStatus));
+        }
+      });
+    } catch (err) {
+      console.log("entro en el catch", err);
+    }
   }
 };

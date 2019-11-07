@@ -303,7 +303,7 @@ export const unreadMessages = (id, idMessage) =>
           chat.timestamp = time;
           resolve(time);
         } catch (err) {
-          reject(err);
+          console.log("reject");
         }
       });
     });
@@ -325,18 +325,20 @@ export const cancelUnreadMessages = id =>
     });
   });
 
-export const addStatusOnly = (eventStatus, status) =>
+export const addStatusOnly = eventStatus =>
   new Promise((resolve, reject) => {
     Realm.open(databaseOptions).then(realm => {
       realm.write(() => {
-        try{
+        try {
           const message = realm.objectForPrimaryKey(
             "Message",
             eventStatus.data.msgID
           );
-          message.status = status
-        } catch(err){
-            console.log(err)
+          message.status = eventStatus.data.status;
+
+          resolve();
+        } catch (err) {
+          console.log("this error?", eventStatus);
         }
       });
     });

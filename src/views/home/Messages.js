@@ -103,12 +103,14 @@ export const ReceiveMessage = ({
 };
 
 export const SenderMessage = ({ onClick, onSelected, item, selected }) => {
-  console.log("acaaa!!!!!!!!!!!!!!!!", item);
   const styleBody =
     item.msg.length < 40 ? styles.styleBody1 : styles.styleBody2;
 
   const textStyle =
     item.msg.length < 40 ? styles.textStyle1 : styles.textStyle2;
+
+  const iconName = item.toUID ? "checkmark" : "user-check";
+  const IconType = iconName === "checkmark" ? "Ionicons" : "FontAwesome5";
   return (
     <TouchableNativeFeedback
       useForeground
@@ -149,8 +151,8 @@ export const SenderMessage = ({ onClick, onSelected, item, selected }) => {
                 {item.status === "delivered" && (
                   <Icon
                     style={{ color: "gray", fontSize: 15, marginLeft: 10 }}
-                    type="FontAwesome5"
-                    name="user-check"
+                    type={IconType}
+                    name={iconName}
                   />
                 )}
               </Text>

@@ -1,5 +1,6 @@
 import { ActionTypes } from "../constants";
 import { chats } from "../../utils/constans";
+import { sha256 } from "js-sha256";
 
 const AplicationState = {
   chat: []
@@ -110,7 +111,6 @@ export const chatReducer = (state = AplicationState, action) => {
     }
 
     case ActionTypes.IN_VIEW: {
-      console.log(action.payload);
       const index = Object.values(state.chat).findIndex(chat => {
         return chat.toUID === action.payload;
       });
@@ -126,6 +126,37 @@ export const chatReducer = (state = AplicationState, action) => {
         return state;
       }
     }
+
+    case ActionTypes.SET_STATUS_MESSAGE: {
+      try {
+        const index = Object.values(state.chat).findIndex(chat => {
+          return chat.toUID === sha256(action.payload.fromUID);
+        });
+
+        const messageIndex = Object.values(
+          state.chat[index].messages
+        ).findIndex(message => {
+          return message.id === action.payload.data.msgID;
+        });
+
+        state.chat[index].messages[messageIndex].status =
+          action.payload.data.status;
+
+        return { ...state, chat: state.chat.slice() };
+      } catch (err) {
+        const messageIndex = Object.values(state.chat[0].messages).findIndex(
+          message => {
+            return message.id === action.payload.data.msgID;
+          }
+        );
+
+        state.chat[0].messages[messageIndex].status =
+          action.payload.data.status;
+
+        return { ...state, chat: state.chat.slice() };
+      }
+    }
+
     default: {
       return state;
     }
