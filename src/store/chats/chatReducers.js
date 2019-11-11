@@ -133,14 +133,27 @@ export const chatReducer = (state = AplicationState, action) => {
           return chat.toUID === sha256(action.payload.fromUID);
         });
 
-        const messageIndex = Object.values(
-          state.chat[index].messages
-        ).findIndex(message => {
-          return message.id === action.payload.data.msgID;
-        });
+        if (Array.isArray(action.payload.data.msgID)) {
+          action.payload.data.msgID.map((id, key) => {
+            const messageIndex = Object.values(
+              state.chat[index].messages
+            ).findIndex(message => {
+              return message.id === id;
+            });
 
-        state.chat[index].messages[messageIndex].status =
-          action.payload.data.status;
+            state.chat[index].messages[messageIndex].status =
+              action.payload.data.status;
+          });
+        } else {
+          const messageIndex = Object.values(
+            state.chat[index].messages
+          ).findIndex(message => {
+            return message.id === action.payload.data.msgID;
+          });
+
+          state.chat[index].messages[messageIndex].status =
+            action.payload.data.status;
+        }
 
         return { ...state, chat: state.chat.slice() };
       } catch (err) {

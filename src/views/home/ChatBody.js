@@ -33,14 +33,31 @@ export default class ChatBody extends Component {
   };
 
   componentDidUpdate = prevProps => {
-    const rule1 = prevProps
-      ? this.props.chats.length !== prevProps.chats.length
-      : false;
+    if (this.props.chats.length > 0) {
+      const rule1 = prevProps
+        ? this.props.chats.length !== prevProps.chats.length
+        : false;
 
-    lastMessage = this.props.chats[0];
-    if (rule1) {
-      if (sha256(this.props.user.uid) !== lastMessage.fromUID) {
-        this.sound.setVolume(0.1).play();
+      lastMessage = this.props.chats[0];
+      if (rule1) {
+        if (sha256(this.props.user.uid) !== lastMessage.fromUID) {
+          this.sound.setVolume(0.1).play();
+
+          const sendStatus = {
+            fromUID: this.props.user.uid,
+            toUID: lastMessage.fromUID,
+            timestamp: new Date().getTime(),
+            data: {
+              status: "read",
+              msgID: lastMessage.id
+            },
+            type: "status"
+          };
+
+          if (lastMessage.toUID) {
+            this.props.sendReadMessageStatus(sendStatus);
+          }
+        }
       }
     }
   };

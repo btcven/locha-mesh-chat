@@ -155,6 +155,12 @@ export const SenderMessage = ({ onClick, onSelected, item, selected }) => {
                     name={iconName}
                   />
                 )}
+                {item.status === "read" && (
+                  <Icon
+                    style={{ color: "gray", fontSize: 15, marginLeft: 10 }}
+                    name="done-all"
+                  />
+                )}
               </Text>
             </View>
           </View>

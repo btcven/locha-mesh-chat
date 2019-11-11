@@ -315,9 +315,10 @@ export const cancelUnreadMessages = id =>
       realm.write(() => {
         if (id) {
           const chat = realm.objectForPrimaryKey("Chat", id);
+          notRead = chat.queue.slice();
           chat.queue = [];
 
-          resolve();
+          resolve(notRead);
         } else {
           resolve();
         }
@@ -338,7 +339,13 @@ export const addStatusOnly = eventStatus =>
 
           resolve();
         } catch (err) {
-          console.log("this error?", eventStatus);
+          if (Array.isArray(eventStatus.data.msgID)) {
+            eventStatus.data.msgID.map(id => {
+              const message = realm.objectForPrimaryKey("Message", id);
+              message.status = eventStatus.data.status;
+            });
+            resolve();
+          }
         }
       });
     });

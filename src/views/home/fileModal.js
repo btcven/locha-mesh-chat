@@ -6,6 +6,7 @@ import { Thumbnail } from "native-base";
 import ImagePicker from "react-native-image-crop-picker";
 import ImagesView from "./imagesView";
 import RNFS from "react-native-fs";
+import { FileDirectory } from "../../utils/utils";
 
 /**
  *
@@ -60,9 +61,7 @@ export default class FileModal extends Component {
       cropping: true,
       includeBase64: true
     }).then(image => {
-      const newPath = `file:///${
-        RNFS.ExternalStorageDirectoryPath
-      }//Pictures/LochaMesh/IMG_${new Date().getTime()} `;
+      const newPath = `file:///${FileDirectory}/Pictures/IMG_${new Date().getTime()} `;
 
       RNFS.moveFile(image.path, newPath).then(() => {
         this.setState({

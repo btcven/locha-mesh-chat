@@ -9,7 +9,8 @@ import {
   deleteMessage,
   cleanChat,
   unreadMessages,
-  addStatusOnly
+  addStatusOnly,
+  cancelUnreadMessages
 } from "../../database/realmDatabase";
 import { notification, FileDirectory } from "../../utils/utils";
 import { sendSocket } from "../../utils/socket";
@@ -248,7 +249,7 @@ export const sendMessageWithFile = (data, path, base64) => dispatch => {
   let uidChat = data.toUID ? data.toUID : "broadcast";
   const saveDatabase = Object.assign({}, data);
   saveDatabase.msg.file = path;
-  setMessage(uidChat, { ...saveDatabase }).then(res => {
+  setMessage(uidChat, { ...saveDatabase }, "pending").then(res => {
     saveDatabase.msg.file = base64;
     sendSocket.send(JSON.stringify(saveDatabase));
     dispatch({
@@ -259,7 +260,8 @@ export const sendMessageWithFile = (data, path, base64) => dispatch => {
         msg: data.msg.text,
         id: data.msgID,
         file: res.file,
-        time: res.time
+        time: res.time,
+        status: "pending"
       }
     });
   });
@@ -318,4 +320,46 @@ export const sendStatus = data => {
       console.log("entro en el catch", err);
     }
   }
+};
+
+/**
+ * @function
+ * @description Identify if we have an open chat so that notifications do not arrive
+ * @param {string} idChat
+ * @returns {object}
+ */
+
+export const setView = idChat => dispatch => {
+  cancelUnreadMessages(idChat).then(res => {
+    const store = require("../../store");
+    const state = store.default.getState();
+
+    if (idChat && res.length > 0) {
+      const chat = Object.values(state.chats.chat).find(chat => {
+        return chat.toUID === idChat;
+      });
+
+      const sendStatus = {
+        fromUID: state.config.uid,
+        toUID: chat.toUID,
+        timestamp: new Date().getTime(),
+        data: {
+          status: "read",
+          msgID: res
+        },
+        type: "status"
+      };
+      sendSocket.send(JSON.stringify(sendStatus));
+    }
+
+    dispatch({
+      type: ActionTypes.IN_VIEW,
+      payload: idChat
+    });
+  });
+};
+
+export const sendReadMessageStatus = data => dispatch => {
+  console.log("acaaaaaaaaaa!!!!!!!", data);
+  sendSocket.send(JSON.stringify(data));
 };

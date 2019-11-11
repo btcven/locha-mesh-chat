@@ -8,9 +8,11 @@ import {
   initialChat,
   cleanAllChat,
   sendMessageWithFile,
-  deleteMessages
+  deleteMessages,
+  setView,
+  sendReadMessageStatus
 } from "../../store/chats";
-import { setView } from "../../store/aplication";
+import {} from "../../store/aplication";
 import { connect } from "react-redux";
 import { Alert, Clipboard, Dimensions } from "react-native";
 import { sha256 } from "js-sha256";
@@ -305,6 +307,7 @@ class Chat extends Component {
           close={this.closeFileModal}
           open={this.state.fileModal}
           sendFileWithImage={this.sendFileWithImage}
+          sendReadMessageStatus={this.props.sendReadMessageStatus}
         />
         <ChatForm
           user={this.props.userData}
@@ -333,6 +336,7 @@ export default connect(
     setView,
     cleanAllChat,
     sendMessageWithFile,
-    deleteMessages
+    deleteMessages,
+    sendReadMessageStatus
   }
 )(Chat);

@@ -77,21 +77,6 @@ const writeAction = data => {
   };
 };
 
-/**
- * @function
- * @description Identify if we have an open chat so that notifications do not arrive
- * @param {string} idChat
- * @returns {object}
- */
-
-export const setView = idChat => dispatch => {
-  cancelUnreadMessages(idChat).then(() => {
-    dispatch({
-      type: ActionTypes.IN_VIEW,
-      payload: idChat
-    });
-  });
-};
 
 /**
  * @function
