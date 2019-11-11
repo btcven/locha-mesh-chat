@@ -85,20 +85,24 @@ export const notifyRedirect = data => {
  */
 
 export const onNotification = res => {
-  let state = store.getState();
-  const view = res.toUID ? res.fromUID : "broadcast";
-  const rule = state.aplication.view !== view;
-  this.unreadMessages(rule, state, view, res);
-  if (sha256(state.config.uid) !== res.fromUID && rule) {
-    let id = parseInt(sha256(view), 16);
+  try {
+    let state = store.getState();
+    const view = res.toUID ? res.fromUID : "broadcast";
+    const rule = state.aplication.view !== view;
+    this.unreadMessages(rule, state, view, res);
+    if (sha256(state.config.uid) !== res.fromUID && rule) {
+      let id = parseInt(sha256(view), 16);
 
-    const result = getInfoMessage(String(id).substr(2, 10));
-    const allData =
-      result.toUID === "broadcast"
-        ? { ...res, name: result.toUID }
-        : { ...res, name: result.name };
+      const result = getInfoMessage(String(id).substr(2, 10));
+      const allData =
+        result.toUID === "broadcast"
+          ? { ...res, name: result.toUID }
+          : { ...res, name: result.name };
 
-    notification.localNotif(allData, String(id).substr(2, 10));
+      notification.localNotif(allData, String(id).substr(2, 10));
+    }
+  } catch (err) {
+    console.log("onNotification", err);
   }
 };
 

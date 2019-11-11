@@ -360,6 +360,5 @@ export const setView = idChat => dispatch => {
 };
 
 export const sendReadMessageStatus = data => dispatch => {
-  console.log("acaaaaaaaaaa!!!!!!!", data);
   sendSocket.send(JSON.stringify(data));
 };

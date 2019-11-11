@@ -70,7 +70,12 @@ export const addContacts = (uid, obj, update) =>
             queue: []
           });
         }
-        resolve({ fromUID: uid, toUID: obj[0].hashUID, messages: {} });
+        resolve({
+          fromUID: uid,
+          toUID: obj[0].hashUID,
+          messages: {},
+          queue: []
+        });
       });
     });
   });
@@ -107,7 +112,7 @@ export const setMessage = (id, obj, status) =>
           chat.timestamp = new Date().getTime();
           resolve({ file, time });
         } catch (err) {
-          console.log(err);
+          console.log("function setMessage", err);
         }
       });
     });
