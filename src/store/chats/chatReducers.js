@@ -171,6 +171,23 @@ export const chatReducer = (state = AplicationState, action) => {
       }
     }
 
+    case ActionTypes.SEND_AGAIN: {
+      const index = Object.values(state.chat).findIndex(chat => {
+        return chat.toUID === action.payload.toUID;
+      });
+
+      const messageIndex = Object.values(state.chat[index].messages).findIndex(
+        message => {
+          return message.id === action.payload.id;
+        }
+      );
+
+      state.chat[index].messages[messageIndex].timestamp =
+        action.payload.timestamp;
+
+      return { ...state, chat: state.chat.slice() };
+    }
+
     default: {
       return state;
     }

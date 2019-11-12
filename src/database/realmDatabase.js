@@ -355,3 +355,24 @@ export const addStatusOnly = eventStatus =>
       });
     });
   });
+
+export const updateMessage = message =>
+  new Promise((resolve, reject) => {
+    Realm.open(databaseOptions).then(realm => {
+      realm.write(() => {
+        try {
+          realm.create(
+            "Message",
+            {
+              ...message
+            },
+            true
+          );
+
+          resolve();
+        } catch (err) {
+          console.log("in the cath", err);
+        }
+      });
+    });
+  });

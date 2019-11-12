@@ -86,6 +86,12 @@ export default class ChatBody extends Component {
     }
   };
 
+  retry = item => {
+    item.timestamp = new Date().getTime();
+
+    this.props.sendAgain(item);
+  };
+
   render() {
     return (
       <View style={{ flex: 1 }}>
@@ -130,6 +136,7 @@ export default class ChatBody extends Component {
                   item={item}
                   selected={selected}
                   index={index}
+                  retry={this.retry}
                 />
               );
             } else {

@@ -10,7 +10,8 @@ import {
   sendMessageWithFile,
   deleteMessages,
   setView,
-  sendReadMessageStatus
+  sendReadMessageStatus,
+  sendAgain
 } from "../../store/chats";
 import {} from "../../store/aplication";
 import { connect } from "react-redux";
@@ -211,7 +212,7 @@ class Chat extends Component {
    */
 
   componentWillUnmount = () => {
-    console.log("ejecuto");
+    this.props.setView(undefined);
   };
 
   sendFileWithImage = (data, callback) => {
@@ -295,7 +296,6 @@ class Chat extends Component {
           back={this.back}
           copy={this.copy}
           delete={this.delete}
-          setView={this.props.setView}
         />
         <ChatBody
           chats={messages}
@@ -308,6 +308,7 @@ class Chat extends Component {
           open={this.state.fileModal}
           sendFileWithImage={this.sendFileWithImage}
           sendReadMessageStatus={this.props.sendReadMessageStatus}
+          sendAgain={this.props.sendAgain}
         />
         <ChatForm
           user={this.props.userData}
@@ -337,6 +338,7 @@ export default connect(
     cleanAllChat,
     sendMessageWithFile,
     deleteMessages,
-    sendReadMessageStatus
+    sendReadMessageStatus,
+    sendAgain
   }
 )(Chat);

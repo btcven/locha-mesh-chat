@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -11,6 +11,7 @@ import { Thumbnail, Icon } from "native-base";
 import { sha256 } from "js-sha256";
 import { getIcon, hashGenerateColort } from "../../utils/utils";
 import Player from "../../components/Player ";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 export const ReceiveMessage = ({
   onClick,
@@ -102,7 +103,19 @@ export const ReceiveMessage = ({
   );
 };
 
-export const SenderMessage = ({ onClick, onSelected, item, selected }) => {
+export const SenderMessage = ({
+  onClick,
+  onSelected,
+  item,
+  selected,
+  retry
+}) => {
+  const timeCreated = Moment(item.timestamp);
+  const cancelled =
+    Moment().diff(timeCreated, "s") > 30 && item.status === "pending"
+      ? true
+      : false;
+
   const styleBody =
     item.msg.length < 40 ? styles.styleBody1 : styles.styleBody2;
 
@@ -140,9 +153,9 @@ export const SenderMessage = ({ onClick, onSelected, item, selected }) => {
           <View style={styleBody}>
             <Text style={{ fontSize: 15 }}>{item.msg}</Text>
             <View style={textStyle}>
-              <Text style={{ fontSize: 12, textAlign: "right" }}>
-                {Moment(Number(item.timestamp)).format("LT")} &nbsp;
-                {item.status === "pending" && (
+              <View style={{ flexDirection: "row" }}>
+                <Text>{Moment(Number(item.timestamp)).format("LT")}</Text>
+                {item.status === "pending" && !cancelled && (
                   <Icon
                     style={{ color: "gray", fontSize: 15, marginLeft: 10 }}
                     name="time"
@@ -161,7 +174,16 @@ export const SenderMessage = ({ onClick, onSelected, item, selected }) => {
                     name="done-all"
                   />
                 )}
-              </Text>
+                {cancelled && (
+                  <TouchableOpacity onPress={() => retry(item)}>
+                    <Icon
+                      type="MaterialIcons"
+                      style={{ color: "gray", fontSize: 16, marginLeft: 10 }}
+                      name="error"
+                    />
+                  </TouchableOpacity>
+                )}
+              </View>
             </View>
           </View>
         </View>

@@ -10,7 +10,8 @@ import {
   cleanChat,
   unreadMessages,
   addStatusOnly,
-  cancelUnreadMessages
+  cancelUnreadMessages,
+  updateMessage
 } from "../../database/realmDatabase";
 import { notification, FileDirectory } from "../../utils/utils";
 import { sendSocket } from "../../utils/socket";
@@ -361,4 +362,25 @@ export const setView = idChat => dispatch => {
 
 export const sendReadMessageStatus = data => dispatch => {
   sendSocket.send(JSON.stringify(data));
+};
+
+export const sendAgain = message => dispatch => {
+  updateMessage(message).then(() => {
+    const sendObject = {
+      fromUID: message.fromUID,
+      toUID: message.toUID,
+      msg: {
+        text: message.msg
+      },
+      timestamp: message.timestamp,
+      type: "msg",
+      msgID: message.id
+    };
+
+    sendSocket.send(JSON.stringify(sendObject));
+    dispatch({
+      type: ActionTypes.SEND_AGAIN,
+      payload: message
+    });
+  });
 };

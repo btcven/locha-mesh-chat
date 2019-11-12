@@ -37,9 +37,6 @@ class HeaderComponent extends Component {
 
   back = () => {
     this.props.navigation.pop();
-    if (this.props.setView) {
-      this.props.setView(undefined);
-    }
   };
 
   onChange = () => {
