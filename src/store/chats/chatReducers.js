@@ -172,9 +172,11 @@ export const chatReducer = (state = AplicationState, action) => {
     }
 
     case ActionTypes.SEND_AGAIN: {
-      const index = Object.values(state.chat).findIndex(chat => {
+      let index = Object.values(state.chat).findIndex(chat => {
         return chat.toUID === action.payload.toUID;
       });
+
+      index = index === -1 ? 0 : index;
 
       const messageIndex = Object.values(state.chat[index].messages).findIndex(
         message => {
@@ -184,7 +186,12 @@ export const chatReducer = (state = AplicationState, action) => {
 
       state.chat[index].messages[messageIndex].timestamp =
         action.payload.timestamp;
+      state.chat[index].messages[messageIndex].status = "pending";
 
+      return { ...state, chat: state.chat.slice() };
+    }
+
+    case ActionTypes.UPDATE_STATE: {
       return { ...state, chat: state.chat.slice() };
     }
 

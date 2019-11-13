@@ -3,19 +3,19 @@ import React from "react";
 import { ToastAndroid } from "react-native";
 import { PermissionsAndroid } from "react-native";
 import Identicon from "identicon.js";
-import { getMessageByTime } from "../database/realmDatabase";
+import { getMessageByTime, cancelMessages } from "../database/realmDatabase";
 import BackgroundTimer from "react-native-background-timer";
 import {
   realoadBroadcastChat,
   selectedChat,
-  messageQueue
+  messageQueue,
+  updateState
 } from "../store/chats";
 import NotifService from "./notificationService";
 import NavigationService from "./navigationService";
 import store from "../store";
 import { sha256 } from "js-sha256";
-import { View } from "react-native";
-import { Icon, Text } from "native-base";
+import Moment from "moment";
 
 /**
  * global functions used in multiple places in the app
@@ -38,6 +38,14 @@ async function requestStoragePermission() {
     console.warn(err);
   }
 }
+
+export const pendingObservable = () => {
+  BackgroundTimer.runBackgroundTimer(() => {
+    cancelMessages().then(res => {
+      store.dispatch(updateState());
+    });
+  }, 3000);
+};
 
 export const FileDirectory = RNFS.ExternalStorageDirectoryPath + "/LochaMesh";
 

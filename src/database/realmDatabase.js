@@ -1,6 +1,7 @@
 import Realm from "realm";
 import moment from "moment";
 import { onNotification } from "../utils/utils";
+import Store from "../store";
 import {
   userSchema,
   contactSchema,
@@ -307,9 +308,7 @@ export const unreadMessages = (id, idMessage) =>
           chat.queue.push(idMessage);
           chat.timestamp = time;
           resolve(time);
-        } catch (err) {
-          console.log("reject");
-        }
+        } catch (err) {}
       });
     });
   });
@@ -364,7 +363,8 @@ export const updateMessage = message =>
           realm.create(
             "Message",
             {
-              ...message
+              ...message,
+              status: "pending"
             },
             true
           );
@@ -372,6 +372,28 @@ export const updateMessage = message =>
           resolve();
         } catch (err) {
           console.log("in the cath", err);
+        }
+      });
+    });
+  });
+
+export const cancelMessages = () =>
+  new Promise((resolve, reject) => {
+    Realm.open(databaseOptions).then(realm => {
+      realm.write(() => {
+        const messages = realm.objects("Message").filter(data => {
+          const timeCreated = moment(data.timestamp);
+          return (
+            moment().diff(timeCreated, "s") > 60 && data.status === "pending"
+          );
+        });
+
+        const msg = messages.slice();
+        messages.map((data, key) => {
+          messages[key].status = "not sent";
+        });
+        if (msg.length >= 1) {
+          resolve(msg.length);
         }
       });
     });

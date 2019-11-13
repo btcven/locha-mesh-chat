@@ -384,3 +384,9 @@ export const sendAgain = message => dispatch => {
     });
   });
 };
+
+export const updateState = () => {
+  return {
+    type: ActionTypes.UPDATE_STATE
+  };
+};

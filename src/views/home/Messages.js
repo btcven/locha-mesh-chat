@@ -112,15 +112,16 @@ export const SenderMessage = ({
 }) => {
   const timeCreated = Moment(item.timestamp);
   const cancelled =
-    Moment().diff(timeCreated, "s") > 30 && item.status === "pending"
+    (Moment().diff(timeCreated, "s") > 30 && item.status === "pending") ||
+    item.status === "not sent"
       ? true
       : false;
 
   const styleBody =
-    item.msg.length < 40 ? styles.styleBody1 : styles.styleBody2;
+    item.msg.length < 20 ? styles.styleBody1 : styles.styleBody2;
 
   const textStyle =
-    item.msg.length < 40 ? styles.textStyle1 : styles.textStyle2;
+    item.msg.length < 20 ? styles.textStyle1 : styles.textStyle2;
 
   const iconName = item.toUID ? "checkmark" : "user-check";
   const IconType = iconName === "checkmark" ? "Ionicons" : "FontAwesome5";
@@ -151,7 +152,9 @@ export const SenderMessage = ({
             </View>
           )}
           <View style={styleBody}>
-            <Text style={{ fontSize: 15 }}>{item.msg}</Text>
+            <View>
+              <Text style={{ fontSize: 15 }}>{item.msg}</Text>
+            </View>
             <View style={textStyle}>
               <View style={{ flexDirection: "row" }}>
                 <Text>{Moment(Number(item.timestamp)).format("LT")}</Text>
@@ -351,7 +354,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#bbdefb"
   },
   styleBody1: {
-    flexDirection: "row"
+    flexDirection: "row",
+    flex: 1
   },
   styleBody2: {
     flexDirection: "column"
@@ -362,11 +366,13 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     paddingBottom: 6,
     fontSize: 12,
-    textAlign: "right"
+    alignItems: "flex-end"
   },
 
   textStyle2: {
-    paddingTop: 0,
-    paddingBottom: 6
+    paddingTop: 5,
+    paddingBottom: 6,
+    flex: 1,
+    alignItems: "flex-end"
   }
 });

@@ -17,7 +17,11 @@ import Header from "../../components/Header";
 import { connect } from "react-redux";
 import { Alert, Image, View } from "react-native";
 import { selectedChat, deleteChat } from "../../store/chats";
-import { getSelectedColor, unSelect, getFilesInfo } from "../../utils/utils";
+import {
+  getSelectedColor,
+  unSelect,
+  pendingObservable
+} from "../../utils/utils";
 import Moment from "moment";
 import FloatButton from "../../components/FloatButton";
 /**
@@ -37,6 +41,10 @@ class index extends Component {
 
   static navigationOptions = {
     drawerLabel: "Home"
+  };
+
+  componentDidMount = () => {
+    pendingObservable();
   };
 
   selectedChat = (info, obj) => {
