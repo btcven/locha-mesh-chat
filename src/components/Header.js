@@ -1,10 +1,12 @@
 import React, { Component } from "react";
-import { Header, Left, Body, Right, Title, Icon } from "native-base";
-import { StyleSheet, TouchableHighlight, TextInput } from "react-native";
+import { Header, Left, Body, Right, Title, Icon, Thumbnail } from "native-base";
+import { StyleSheet, TouchableHighlight, TextInput, View } from "react-native";
 import { connect } from "react-redux";
 import * as Animatable from "react-native-animatable";
 import Menu from "./Menu";
+import { getIcon } from "../utils/utils";
 import { openMenu } from "../store/aplication";
+import { sha256 } from "js-sha256";
 
 /**
  *
@@ -52,6 +54,7 @@ class HeaderComponent extends Component {
         : false
       : true;
 
+    console.log("acaaaaaaaaaaaaa", router.params);
     if (selected) {
       return (
         <Header
@@ -108,9 +111,28 @@ class HeaderComponent extends Component {
               )}
 
               {router.routeName === "chat" && (
-                <Title>
-                  {router.params ? router.params.name : "broadcast"}
-                </Title>
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  {router.params && !router.params.picture && (
+                    <Thumbnail
+                      style={{ marginRight: 10, width: 45, height: 40 }}
+                      source={{
+                        uri: `${getIcon(sha256(router.params.uid))}`
+                      }}
+                    />
+                  )}
+
+                  {router.params && router.params.picture && (
+                    <Thumbnail
+                      style={{ marginRight: 10, width: 45, height: 40 }}
+                      source={{
+                        uri: `${router.params.picture}`
+                      }}
+                    />
+                  )}
+                  <Title>
+                    {router.params ? router.params.name : "broadcast"}
+                  </Title>
+                </View>
               )}
             </Body>
           )}
@@ -247,10 +269,7 @@ const mapStateToProps = state => ({
   other: state.nav
 });
 
-export default connect(
-  mapStateToProps,
-  { openMenu }
-)(HeaderComponent);
+export default connect(mapStateToProps, { openMenu })(HeaderComponent);
 
 const styles = StyleSheet.create({
   container: {

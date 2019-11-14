@@ -22,7 +22,7 @@ class EditPhoto extends Component {
 
   getPhotosFromGallery = () => {
     this.props.getPhotosFromUser(this.props.config.uid, () => {
-      this.props.close();
+      this.props.close("openModalPhoto");
     });
   };
 

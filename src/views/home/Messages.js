@@ -239,7 +239,9 @@ export const SoundMessage = ({
                 marginTop: 5
               }}
               source={{
-                uri: `${userInfo.picture}`
+                uri: userInfo.picture
+                  ? `${userInfo.picture}`
+                  : `${getIcon(item.fromUID)}`
               }}
             />
           )}

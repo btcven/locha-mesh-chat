@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { chats, images } from "../../utils/constans";
 import Header from "../../components/Header";
 import AddContact from "./AddContact";
 import FloatButton from "../../components/FloatButton";

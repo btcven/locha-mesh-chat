@@ -46,20 +46,49 @@ export default class ChatForm extends Component {
     };
   }
 
-  componentDidMount = () => {
+  componentDidMount = async () => {
+    this._val = { x: 0, y: 0 };
+    const recoderPermision = await AudioRecorder.checkAuthorizationStatus();
+    this.setState({ hasPermission: recoderPermision });
+  };
+
+  prepareRecordingPath = audioPath => {
+    try {
+      AudioRecorder.prepareRecordingAtPath(audioPath, {
+        SampleRate: 22050,
+        Channels: 1,
+        AudioQuality: "Low",
+        AudioEncoding: "aac",
+        AudioEncodingBitRate: 32000,
+        IncludeBase64: true
+      });
+    } catch (err) {
+      console.log("error", err);
+    }
+  };
+
+  _record = async () => {
     const { user, navigation, setChat, previousChat } = this.props;
     const toUID = navigation.params ? navigation.params.hashUID : null;
-    this._val = { x: 0, y: 0 };
-    AudioRecorder.requestAuthorization().then(isAuthorised => {
-      this.setState({ hasPermission: isAuthorised });
-      if (!isAuthorised) return;
 
+    if (this.state.hasPermission) {
       this.prepareRecordingPath(this.state.audioPath);
 
       AudioRecorder.onProgress = data => {
         this.setState({ currentTime: Math.floor(data.currentTime) });
       };
 
+      try {
+        this.setState({
+          recording: true,
+          paused: false,
+          cancelRecoding: false
+        });
+
+        const filePath = await AudioRecorder.startRecording();
+      } catch (error) {
+        this.setState({ recording: false });
+      }
       AudioRecorder.onFinished = data => {
         if (this.state.currentTime !== 0 && !this.state.cancelRecoding) {
           const newPath = `${FileDirectory}/Audios/AUDIO_${new Date().getTime()}.aac`;
@@ -91,37 +120,10 @@ export default class ChatForm extends Component {
           });
         }
       };
-    });
-  };
-
-  prepareRecordingPath = audioPath => {
-    AudioRecorder.prepareRecordingAtPath(audioPath, {
-      SampleRate: 22050,
-      Channels: 1,
-      AudioQuality: "Low",
-      AudioEncoding: "aac",
-      AudioEncodingBitRate: 32000,
-      IncludeBase64: true
-    });
-  };
-
-  _record = async () => {
-    if (this.state.recording) {
-      console.warn("Already recording!");
-      return;
-    }
-    if (!this.state.hasPermission) {
-      console.warn("Can't record, no permission granted!");
-      return;
-    }
-    if (this.state.stoppedRecording) {
-      this.prepareRecordingPath(this.state.audioPath);
-    }
-    this.setState({ recording: true, paused: false, cancelRecoding: false });
-    try {
-      const filePath = await AudioRecorder.startRecording();
-    } catch (error) {
-      console.log(error);
+    } else {
+      AudioRecorder.requestAuthorization().then(async isAuthorised => {
+        this.setState({ recording: false, hasPermission: isAuthorised });
+      });
     }
   };
 

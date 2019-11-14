@@ -1,4 +1,12 @@
 rootProject.name = 'LochaMeshChat'
+include ':react-native-voice'
+project(':react-native-voice').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-voice/android')
+include ':react-native-udp'
+project(':react-native-udp').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-udp/android')
+include ':react-native-tcp'
+project(':react-native-tcp').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-tcp/android')
+include ':react-native-locale-detector'
+project(':react-native-locale-detector').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-locale-detector/android')
 include ':@react-native-community_slider'
 project(':@react-native-community_slider').projectDir = new File(rootProject.projectDir, '../node_modules/@react-native-community/slider/android')
 include ':react-native-sound'

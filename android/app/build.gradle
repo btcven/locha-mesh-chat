@@ -151,6 +151,10 @@ android {
 }
 
 dependencies {
+    implementation project(':react-native-voice')
+    implementation project(':react-native-udp')
+    implementation project(':react-native-tcp')
+    implementation project(':react-native-locale-detector')
     implementation project(':@react-native-community_slider')
     implementation project(':react-native-sound')
     implementation project(':react-native-audio')

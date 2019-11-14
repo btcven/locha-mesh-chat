@@ -2,6 +2,10 @@ package com.lochameshchat;
 
 import android.app.Application;
 import com.facebook.react.ReactApplication;
+import com.wenkesj.voice.VoicePackage;
+import com.tradle.react.UdpSocketsModule;
+import com.peel.react.TcpSocketsModule;
+import com.i18n.reactnativei18n.ReactNativeI18n;
 import com.reactnativecommunity.slider.ReactSliderPackage;
 import com.zmxv.RNSound.RNSoundPackage;
 import com.rnim.rn.audio.ReactNativeAudioPackage;
@@ -36,6 +40,10 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
             new MainReactPackage(),
+            new VoicePackage(),
+            new UdpSocketsModule(),
+            new TcpSocketsModule(),
+            new ReactNativeI18n(),
             new ReactSliderPackage(),
             new RNSoundPackage(),
             new ReactNativeAudioPackage(),

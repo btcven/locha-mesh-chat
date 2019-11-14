@@ -82,6 +82,8 @@
 		3FDE5BBDBE7848F48B9BBD59 /* libRNAudio.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 362022D49D0744D78CDF899C /* libRNAudio.a */; };
 		7D6321F8828E48CBBC19C3AF /* libRNSound.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 70155F6ADC9444B0AF764CA9 /* libRNSound.a */; };
 		B09A6C0C95404368A910C394 /* libRNCSlider.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 69F1B82A1B9A459A88C5E120 /* libRNCSlider.a */; };
+		6617E4BCF959462BB6649488 /* libRNI18n.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ACAC5E9AC0F54B73B6F70FD6 /* libRNI18n.a */; };
+		17113C2F0C4941D69AFF4820 /* RNI18nTests.xctest in Resources */ = {isa = PBXBuildFile; fileRef = 64A381EB82FA48E8B49A62D9 /* RNI18nTests.xctest */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -453,6 +455,9 @@
 		70155F6ADC9444B0AF764CA9 /* libRNSound.a */ = {isa = PBXFileReference; name = "libRNSound.a"; path = "libRNSound.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 		6C3F25B24C154FE29FDC1235 /* RNCSlider.xcodeproj */ = {isa = PBXFileReference; name = "RNCSlider.xcodeproj"; path = "../node_modules/@react-native-community/slider/ios/RNCSlider.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
 		69F1B82A1B9A459A88C5E120 /* libRNCSlider.a */ = {isa = PBXFileReference; name = "libRNCSlider.a"; path = "libRNCSlider.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		D55E8031F0444A19941B79A0 /* RNI18n.xcodeproj */ = {isa = PBXFileReference; name = "RNI18n.xcodeproj"; path = "../node_modules/react-native-locale-detector/RNI18n.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		ACAC5E9AC0F54B73B6F70FD6 /* libRNI18n.a */ = {isa = PBXFileReference; name = "libRNI18n.a"; path = "libRNI18n.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		64A381EB82FA48E8B49A62D9 /* RNI18nTests.xctest */ = {isa = PBXFileReference; name = "RNI18nTests.xctest"; path = "RNI18nTests.xctest"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.cfbundle; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -504,6 +509,8 @@
 				3FDE5BBDBE7848F48B9BBD59 /* libRNAudio.a in Frameworks */,
 				7D6321F8828E48CBBC19C3AF /* libRNSound.a in Frameworks */,
 				B09A6C0C95404368A910C394 /* libRNCSlider.a in Frameworks */,
+				6617E4BCF959462BB6649488 /* libRNI18n.a in Frameworks */,
+				17113C2F0C4941D69AFF4820 /* RNI18nTests.xctest in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -720,6 +727,7 @@
 				2EF50D3197BA45F8A7434739 /* RNAudio.xcodeproj */,
 				90F7D5E3077E4777978C50A2 /* RNSound.xcodeproj */,
 				6C3F25B24C154FE29FDC1235 /* RNCSlider.xcodeproj */,
+				D55E8031F0444A19941B79A0 /* RNI18n.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -1398,6 +1406,8 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1422,6 +1432,7 @@
 					"$(SRCROOT)\..\node_modules\react-native-audio\ios",
 					"$(SRCROOT)\..\node_modules\react-native-sound\RNSound",
 					"$(SRCROOT)\..\node_modules\@react-native-community\slider\ios",
+					"$(SRCROOT)\..\node_modules\react-native-locale-detector\RNI18n",
 				);
 			};
 			name = Debug;
@@ -1453,6 +1464,8 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1477,6 +1490,7 @@
 					"$(SRCROOT)\..\node_modules\react-native-audio\ios",
 					"$(SRCROOT)\..\node_modules\react-native-sound\RNSound",
 					"$(SRCROOT)\..\node_modules\@react-native-community\slider\ios",
+					"$(SRCROOT)\..\node_modules\react-native-locale-detector\RNI18n",
 				);
 			};
 			name = Release;
@@ -1520,6 +1534,7 @@
 					"$(SRCROOT)\..\node_modules\react-native-audio\ios",
 					"$(SRCROOT)\..\node_modules\react-native-sound\RNSound",
 					"$(SRCROOT)\..\node_modules\@react-native-community\slider\ios",
+					"$(SRCROOT)\..\node_modules\react-native-locale-detector\RNI18n",
 				);
 			};
 			name = Debug;
@@ -1562,6 +1577,7 @@
 					"$(SRCROOT)\..\node_modules\react-native-audio\ios",
 					"$(SRCROOT)\..\node_modules\react-native-sound\RNSound",
 					"$(SRCROOT)\..\node_modules\@react-native-community\slider\ios",
+					"$(SRCROOT)\..\node_modules\react-native-locale-detector\RNI18n",
 				);
 			};
 			name = Release;
@@ -1601,6 +1617,8 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1625,6 +1643,7 @@
 					"$(SRCROOT)\..\node_modules\react-native-audio\ios",
 					"$(SRCROOT)\..\node_modules\react-native-sound\RNSound",
 					"$(SRCROOT)\..\node_modules\@react-native-community\slider\ios",
+					"$(SRCROOT)\..\node_modules\react-native-locale-detector\RNI18n",
 				);
 			};
 			name = Debug;
@@ -1664,6 +1683,8 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1688,6 +1709,7 @@
 					"$(SRCROOT)\..\node_modules\react-native-audio\ios",
 					"$(SRCROOT)\..\node_modules\react-native-sound\RNSound",
 					"$(SRCROOT)\..\node_modules\@react-native-community\slider\ios",
+					"$(SRCROOT)\..\node_modules\react-native-locale-detector\RNI18n",
 				);
 			};
 			name = Release;
@@ -1726,6 +1748,8 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1750,6 +1774,7 @@
 					"$(SRCROOT)\..\node_modules\react-native-audio\ios",
 					"$(SRCROOT)\..\node_modules\react-native-sound\RNSound",
 					"$(SRCROOT)\..\node_modules\@react-native-community\slider\ios",
+					"$(SRCROOT)\..\node_modules\react-native-locale-detector\RNI18n",
 				);
 			};
 			name = Debug;
@@ -1788,6 +1813,8 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1812,6 +1839,7 @@
 					"$(SRCROOT)\..\node_modules\react-native-audio\ios",
 					"$(SRCROOT)\..\node_modules\react-native-sound\RNSound",
 					"$(SRCROOT)\..\node_modules\@react-native-community\slider\ios",
+					"$(SRCROOT)\..\node_modules\react-native-locale-detector\RNI18n",
 				);
 			};
 			name = Release;
