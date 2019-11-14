@@ -33,7 +33,7 @@ class EditPhoto extends Component {
   };
 
   render() {
-    const { open, close } = this.props;
+    const { open, close, screenProps } = this.props;
     return (
       <View>
         <Modal
@@ -62,7 +62,7 @@ class EditPhoto extends Component {
               }}
             >
               <Thumbnail source={images.file.url} />
-              <Text>Galeria</Text>
+              <Text>{screenProps.t("Settings:gallery")}</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={{ alignItems: "center" }}
@@ -71,7 +71,7 @@ class EditPhoto extends Component {
               }}
             >
               <Thumbnail source={images.camera.url} />
-              <Text>Camara</Text>
+              <Text>{screenProps.t("Settings:camera")}</Text>
             </TouchableOpacity>
           </View>
         </Modal>

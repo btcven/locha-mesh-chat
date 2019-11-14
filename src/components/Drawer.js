@@ -24,6 +24,7 @@ class DrawerComponent extends Component {
   };
 
   render() {
+    const { screenProps } = this.props;
     return (
       <Container>
         <View style={styles.headerDrawer}>
@@ -72,7 +73,7 @@ class DrawerComponent extends Component {
               </Button>
             </Left>
             <Body>
-              <Text>Contactos</Text>
+              <Text>{screenProps.t("Drawer:contacts")}</Text>
             </Body>
           </ListItem>
 
@@ -83,7 +84,7 @@ class DrawerComponent extends Component {
               </Button>
             </Left>
             <Body>
-              <Text>Configuración</Text>
+              <Text>{screenProps.t("Drawer:setting")}</Text>
             </Body>
           </ListItem>
         </View>
@@ -97,10 +98,7 @@ const mapStateToProps = state => ({
   user: state.config
 });
 
-export default connect(
-  mapStateToProps,
-  { closeMenu }
-)(DrawerComponent);
+export default connect(mapStateToProps, { closeMenu })(DrawerComponent);
 
 const styles = StyleSheet.create({
   headerDrawer: {

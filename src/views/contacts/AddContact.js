@@ -90,13 +90,17 @@ export default class AddContact extends Component {
           obj,
           this.props.contacts,
           () => {
-            androidToast("Contacto creado exitosamente!");
+            androidToast(
+              this.props.screenProps.t("Contacts:contactSuccessfully")
+            );
             this.props.close();
           }
         );
       } else {
         this.props.editContats(obj, () => {
-          androidToast("Contacto creado exitosamente!");
+          androidToast(
+            this.props.screenProps.t("Contacts:contactSuccessfully")
+          );
           this.props.close();
         });
       }
@@ -116,10 +120,10 @@ export default class AddContact extends Component {
           });
         }, 50);
       } else {
-        androidToast("Formato Invalido");
+        androidToast(this.props.screenProps.t("Contacts:invalidFormat"));
       }
     } catch (err) {
-      androidToast("Formato Invalido");
+      androidToast(this.props.screenProps.t("Contacts:invalidFormat"));
     }
   };
 
@@ -130,7 +134,7 @@ export default class AddContact extends Component {
       });
 
       if (uidExist) {
-        androidToast("contacto existente");
+        androidToast(this.props.screenProps.t("Contacts:existContact"));
         return false;
       }
 
@@ -139,7 +143,7 @@ export default class AddContact extends Component {
       });
 
       if (nameExist) {
-        androidToast("ya existe un contacto con ese nombre");
+        androidToast(this.props.screenProps.t("Contacts:existName"));
         return false;
       }
     }
@@ -147,6 +151,7 @@ export default class AddContact extends Component {
   };
 
   render() {
+    const { screenProps } = this.props;
     let disabled1 = this.props.selected.length > 0 ? true : false;
     let disabled2 =
       this.state.name.length === 0 || this.state.uid.length === 0
@@ -166,6 +171,7 @@ export default class AddContact extends Component {
           <View style={styles.HeaderModal}>
             {this.state.openModalPhoto && (
               <EditPhoto
+                screenProps={screenProps}
                 open={this.state.openModalPhoto}
                 getPhotosFromUser={this.getPhotosFromUser}
                 openCamera={this.openCamera}
@@ -193,10 +199,14 @@ export default class AddContact extends Component {
               </TouchableOpacity>
             )}
             {this.props.selected.length < 1 && (
-              <Text style={styles.textStyle}>Agregar Contacto</Text>
+              <Text style={styles.textStyle}>
+                {screenProps.t("Contacts:addContact")}
+              </Text>
             )}
             {this.props.selected.length > 0 && (
-              <Text style={styles.textStyle}>Editar Contacto</Text>
+              <Text style={styles.textStyle}>
+                {screenProps.t("Contacts:editContact")}
+              </Text>
             )}
             {
               <TouchableOpacity disabled={disabled2} onPress={this.save}>
@@ -253,7 +263,7 @@ export default class AddContact extends Component {
 
                 {
                   <Item stackedLabel>
-                    <Label>Nombre del contacto</Label>
+                    <Label>{screenProps.t("Contacts:name")}</Label>
                     <Input
                       value={this.state.name}
                       onChangeText={text => this.setState({ name: text })}
@@ -342,7 +352,7 @@ export default class AddContact extends Component {
                   }}
                 >
                   <Spinner />
-                  <Text>Por favor espere</Text>
+                  <Text>{screenProps.t("Contacts:wait")}</Text>
                 </View>
               )}
               <QRCodeScanner

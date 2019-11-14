@@ -68,9 +68,10 @@ class index extends Component {
   };
 
   deleteChat = () => {
+    const { screenProps } = this.props;
     Alert.alert(
-      "Eliminar Chat",
-      "¿Esta seguro de eliminar este chat?",
+      `${screenProps.t("Chats:titleDelete")}`,
+      `${screenProps.t("Chats:deleteBody")}`,
       [
         {
           text: "Cancel",
@@ -118,12 +119,13 @@ class index extends Component {
    */
 
   getFilesInfo = typeFile => {
+    const { screenProps } = this.props;
     if (typeFile === "image") {
       return (
         <View style={{ flexDirection: "row", alignItems: "flex-end" }}>
           <Icon style={{ fontSize: 20, color: "#9e9e9e" }} name="camera" />
           <Text style={{ marginHorizontal: 5 }} note>
-            Photo
+            {screenProps.t("Chats:photo")}
           </Text>
         </View>
       );
@@ -132,7 +134,7 @@ class index extends Component {
         <View style={{ flexDirection: "row", alignItems: "flex-end" }}>
           <Icon style={{ fontSize: 20, color: "#9e9e9e" }} name="mic" />
           <Text style={{ marginHorizontal: 5 }} note>
-            Audio
+            {screenProps.t("Chats:voice")}
           </Text>
         </View>
       );
@@ -296,7 +298,4 @@ const mapStateToProps = state => ({
   contacts: Object.values(state.contacts.contacts)
 });
 
-export default connect(
-  mapStateToProps,
-  { selectedChat, deleteChat }
-)(index);
+export default connect(mapStateToProps, { selectedChat, deleteChat })(index);

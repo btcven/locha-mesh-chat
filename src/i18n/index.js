@@ -5,8 +5,6 @@ import locale from "react-native-locale-detector";
 import en from "./en.json";
 import es from "./es.json";
 
-// creating a language detection plugin using expo
-// http://i18n.com/docs/ownplugin/#languagedetector
 const languageDetector = {
   init: Function.prototype,
   type: "languageDetector",
@@ -26,22 +24,22 @@ i18n
   .use(languageDetector)
   .use(reactI18nextModule)
   .init({
-    fallbackLng: "en",
+    fallbackLng: "es",
     resources: { en, es },
 
     // have a common namespace used around the full app
     ns: ["common"],
     defaultNS: "common",
 
-    debug: true
+    debug: true,
 
     //   cache: {
     //  enabled: true
     // },
 
-    // interpolation: {
-    //   escapeValue: false // not needed for react as it does escape per default to prevent xss!
-    // }
+    interpolation: {
+      escapeValue: false // not needed for react as it does escape per default to prevent xss!
+    }
   });
 
 export default i18n;

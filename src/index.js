@@ -12,7 +12,6 @@ import NotifService from "./utils/notificationService";
 import { selectedChat } from "./store/chats";
 import { realmObservable } from "./database/realmDatabase";
 
-
 /**
  *
  * @description application views container
@@ -45,7 +44,11 @@ class DualComponent extends Component {
             {this.props.tabPosition === 3 && <Config {...this.props} />}
           </View>
         )}
-        <View>{!this.props.user && <InitialStep />}</View>
+        <View>
+          {!this.props.user && (
+            <InitialStep screenProps={this.props.screenProps} />
+          )}
+        </View>
       </View>
     );
   }
@@ -61,10 +64,7 @@ const mapStateToProps = state => ({
   view: state.aplication.view
 });
 
-export default connect(
-  mapStateToProps,
-  { route, selectedChat }
-)(DualComponent);
+export default connect(mapStateToProps, { route, selectedChat })(DualComponent);
 
 const styles = StyleSheet.create({
   container: {

@@ -1,6 +1,53 @@
 {
   "Initial": {
     "title": "Bienvenido",
-    "subtitle": "Gracias por usar Locha Mesh, una app que usa red de radio paracomunicaciones y transacciones de Bitcoin sin internet nielectricidad."
+    "subtitle": "Gracias por usar Locha Mesh, una app que usa red de radio paracomunicaciones y transacciones de Bitcoin sin internet nielectricidad.",
+    "text": "Para continuar por favor ingrese su alias y su contraseña de seguridad",
+    "nickname": "Alias",
+    "password": "Contraseña",
+    "next": "Continuar"
+  },
+
+  "Drawer": {
+    "contacts": "Contactos",
+    "setting": "Configuración"
+  },
+
+  "Settings": {
+    "name": "Nombre",
+    "editName": "Editar nombre",
+    "enterName": "Ingrese nombre",
+    "cancelButton": "cancelar",
+    "saveButton": "guardar",
+    "gallery": "Galeria",
+    "camera": "Camara",
+    "uidCody": "uid copiado"
+  },
+
+  "Contacts": {
+    "addContact": "Agregar contacto",
+    "editContact": "Editar contacto",
+    "name": "Nombre del contacto",
+    "wait": "Por favor espere",
+    "existName": "ya existe un contacto con ese nombre",
+    "existContact": "Contacto existente",
+    "invalidFormat": "Formato invalido",
+    "contactSuccessfully": "Contacto creado exitosamente!"
+  },
+
+  "Header": {
+    "contacts": "Contactos",
+    "settings": "Configuración"
+  },
+
+  "Chats": {
+    "message": "Mensaje",
+    "cancelAudio": "Desliza para cancelar",
+    "commentImage": "Agregar comentario",
+    "titleDelete": "Eliminar chat",
+    "deleteBody": "¿Esta seguro de eliminar todos los mensajes?",
+    "clean": "Limpiar chat",
+    "voice": "Audio",
+    "photo": "Foto"
   }
 }

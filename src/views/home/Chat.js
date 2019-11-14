@@ -38,7 +38,7 @@ class Chat extends Component {
       fileModal: false,
       menu: [
         {
-          label: "Limpiar chat",
+          label: `${this.props.screenProps.t("Chats:clean")}`,
           action: () => this.cleanAllMessages(),
           broadcast: true
         }
@@ -66,10 +66,11 @@ class Chat extends Component {
    * @memberof Chat
    */
   cleanAllMessages = () => {
+    const { screenProps } = this.props;
     const chat = this.props.chat[this.props.chatSelected.index];
     Alert.alert(
-      "Eliminar chat",
-      "¿Esta seguro de eliminar todos los mensajes?",
+      `${screenProps.t("Chats:titleDelete")}`,
+      `${screenProps.t("Chats:deleteBody")}`,
       [
         {
           text: "Cancel",
@@ -271,7 +272,7 @@ class Chat extends Component {
   };
 
   render() {
-    const { navigation } = this.props;
+    const { navigation, screenProps } = this.props;
     let viewImages = this.state.imagesView.length === 0 ? false : true;
     const chatSelected = this.props.chat[this.props.chatSelected.index];
 
@@ -287,6 +288,7 @@ class Chat extends Component {
             open={viewImages}
             images={this.state.imagesView}
             close={this.closeView}
+            screenProps={screenProps}
           />
         )}
         <Header
@@ -309,6 +311,7 @@ class Chat extends Component {
           sendFileWithImage={this.sendFileWithImage}
           sendReadMessageStatus={this.props.sendReadMessageStatus}
           sendAgain={this.props.sendAgain}
+          screenProps={screenProps}
         />
         <ChatForm
           user={this.props.userData}
@@ -317,6 +320,7 @@ class Chat extends Component {
           previousChat={this.props.chatSelected}
           openFileModal={this.openFileModal}
           sendMessagesWithSound={this.props.sendMessageWithFile}
+          screenProps={screenProps}
         />
       </Container>
     );
@@ -330,15 +334,12 @@ const mapStateToProps = state => ({
   contact: Object.values(state.contacts.contacts)
 });
 
-export default connect(
-  mapStateToProps,
-  {
-    initialChat,
-    setView,
-    cleanAllChat,
-    sendMessageWithFile,
-    deleteMessages,
-    sendReadMessageStatus,
-    sendAgain
-  }
-)(Chat);
+export default connect(mapStateToProps, {
+  initialChat,
+  setView,
+  cleanAllChat,
+  sendMessageWithFile,
+  deleteMessages,
+  sendReadMessageStatus,
+  sendAgain
+})(Chat);

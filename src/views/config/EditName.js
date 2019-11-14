@@ -28,7 +28,7 @@ export default class EditName extends Component {
   };
 
   render() {
-    const { open, close } = this.props;
+    const { open, close, screenProps } = this.props;
     const disabled = this.state.name.length > 1 ? false : true;
     return (
       <View>
@@ -47,7 +47,9 @@ export default class EditName extends Component {
               width: "100%"
             }}
           >
-            <Text style={styles.titleModal}>Editar Nombre </Text>
+            <Text style={styles.titleModal}>
+              {screenProps.t("Settings:editName")}
+            </Text>
             <Form>
               <Text style={{ position: "absolute", top: "40%", right: "5%" }}>
                 {12 - this.state.name.length}
@@ -55,7 +57,7 @@ export default class EditName extends Component {
               <Item stackedLabel>
                 <Input
                   maxLength={12}
-                  placeholder="Ingrese Nombre"
+                  placeholder={screenProps.t("Settings:enterName")}
                   value={this.state.name}
                   onChangeText={event => this.setState({ name: event })}
                 />
@@ -75,7 +77,9 @@ export default class EditName extends Component {
                   marginHorizontal: 10
                 }}
               >
-                <Text style={styles.styleTextButton}>Cancelar</Text>
+                <Text style={styles.styleTextButton}>
+                  {screenProps.t("Settings:cancelButton")}
+                </Text>
               </Button>
               <Button
                 transparent
@@ -83,7 +87,7 @@ export default class EditName extends Component {
                 onPress={() => this.saveName()}
                 style={styles.styleTextButton}
               >
-                <Text>Guardar</Text>
+                <Text>{screenProps.t("Settings:saveButton")}</Text>
               </Button>
             </View>
           </View>

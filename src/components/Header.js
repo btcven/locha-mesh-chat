@@ -47,6 +47,7 @@ class HeaderComponent extends Component {
   };
 
   render() {
+    const { screenProps } = this.props;
     const router = this.getNameContact(this.props.navigation);
     const selected = this.props.selected
       ? this.props.selected.length < 1
@@ -54,7 +55,6 @@ class HeaderComponent extends Component {
         : false
       : true;
 
-    console.log("acaaaaaaaaaaaaa", router.params);
     if (selected) {
       return (
         <Header
@@ -103,11 +103,15 @@ class HeaderComponent extends Component {
               )}
 
               {router.routeName === "contacts" && (
-                <Title style={{ color: "#fff" }}>Contactos</Title>
+                <Title style={{ color: "#fff" }}>
+                  {screenProps.t("Header:contacts")}
+                </Title>
               )}
 
               {router.routeName === "config" && (
-                <Title style={{ color: "#fff" }}>Configuracion</Title>
+                <Title style={{ color: "#fff" }}>
+                  {screenProps.t("Header:settings")}
+                </Title>
               )}
 
               {router.routeName === "chat" && (

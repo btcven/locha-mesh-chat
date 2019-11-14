@@ -22,12 +22,11 @@ import EditPhoto from "./EditPhoto";
 import QRCode from "react-native-qrcode-svg";
 import { androidToast } from "../../utils/utils";
 
-
 /**
  * @class Config
  * @extends {Component}
  * @description main configuration component
- * 
+ *
  */
 
 class Config extends Component {
@@ -51,11 +50,11 @@ class Config extends Component {
 
   _setContent = async data => {
     Clipboard.setString(data);
-    androidToast("uid copiado");
+    androidToast(this.props.screenProps.t("Settings:uidCody"));
   };
 
   render() {
-  
+    const { screenProps } = this.props;
     return (
       <Container>
         <Header {...this.props} />
@@ -81,13 +80,10 @@ class Config extends Component {
                 underlayColor="#eeeeee"
               >
                 <Image
-                  source={
-                    {
+                  source={{
                     uri: this.props.config.image + "?" + new Date().getDate(),
                     cache: "force-cache"
-                  }
-                
-                }
+                  }}
                   style={styles.imageStyle}
                 />
               </TouchableHighlight>
@@ -144,7 +140,9 @@ class Config extends Component {
               minHeight: 30
             }}
           >
-            <Text style={styles.textLabel}>Nombre</Text>
+            <Text style={styles.textLabel}>
+              {screenProps.t("Settings:name")}
+            </Text>
             <Text style={styles.textInfo}>{this.props.config.name}</Text>
           </View>
           <Right
@@ -229,10 +227,11 @@ const mapStateToProps = state => ({
   config: state.config
 });
 
-export default connect(
-  mapStateToProps,
-  { getPhotosFromUser, openCamera, editName }
-)(Config);
+export default connect(mapStateToProps, {
+  getPhotosFromUser,
+  openCamera,
+  editName
+})(Config);
 
 const styles = StyleSheet.create({
   qrCodeContainer: {

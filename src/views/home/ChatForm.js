@@ -182,6 +182,7 @@ export default class ChatForm extends Component {
   };
 
   render() {
+    const { screenProps } = this.props;
     return (
       <View
         style={{ minHeight: 50, height: this.state.height, maxHeight: 120 }}
@@ -209,7 +210,7 @@ export default class ChatForm extends Component {
                     height: event.nativeEvent.contentSize.height
                   });
                 }}
-                placeholder="Mensaje"
+                placeholder={screenProps.t("Chats:message")}
                 style={{
                   flex: 1
                 }}
@@ -256,7 +257,7 @@ export default class ChatForm extends Component {
                         name="arrow-dropleft"
                         style={{ marginHorizontal: 10, color: "#9e9e9e" }}
                       />
-                      <Text>Desliza para Cancelar</Text>
+                      <Text>{screenProps.t("Chats:cancelAudio")}</Text>
                     </Animated.View>
                   </View>
                 </Animatable.View>

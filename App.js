@@ -7,16 +7,27 @@ import NativationService from "./src/utils/navigationService";
 import { translate } from "react-i18next";
 import i18n from "./src/i18n/index";
 
+const WrappedStack = ({ t }) => {
+  return (
+    <RouteContainer
+      ref={ref => {
+        NativationService.setTopLevelNavigator(ref);
+      }}
+      screenProps={{ t }}
+    />
+  );
+};
+const ReloadAppOnLanguageChange = translate("common", {
+  bindI18n: "languageChanged",
+  bindStore: false
+})(WrappedStack);
+
 export default class App extends Component {
   render() {
     store.dispatch(InitialState());
     return (
       <Provider store={store}>
-        <RouteContainer
-          ref={ref => {
-            NativationService.setTopLevelNavigator(ref);
-          }}
-        />
+        <ReloadAppOnLanguageChange />
       </Provider>
     );
   }

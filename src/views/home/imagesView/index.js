@@ -33,6 +33,7 @@ export default class App extends React.Component {
   };
 
   render() {
+    const { screenProps } = this.props;
     return (
       <Modal
         visible={this.props.open}
@@ -96,7 +97,7 @@ export default class App extends React.Component {
                   height: event.nativeEvent.contentSize.height
                 });
               }}
-              placeholder="Agregar comentario"
+              placeholder={screenProps.t("Chats:commentImage")}
             />
 
             <TouchableOpacity onPress={this.sendFile}>

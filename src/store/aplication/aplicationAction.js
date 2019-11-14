@@ -77,7 +77,6 @@ const writeAction = data => {
   };
 };
 
-
 /**
  * @function
  * @description function to change menu tabs

@@ -1,5 +1,11 @@
 import React, { Component } from "react";
-import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
+import {
+  Text,
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  AsyncStorage
+} from "react-native";
 import { Form, Input, Item, Label, Icon, Button } from "native-base";
 import { setInitialUser } from "./store/aplication/aplicationAction";
 import { connect } from "react-redux";
@@ -29,6 +35,7 @@ class InitialStep extends Component {
   };
 
   render() {
+    const { screenProps } = this.props;
     const disabled =
       this.state.userName.length > 0 && this.state.password.length > 0
         ? false
@@ -36,25 +43,21 @@ class InitialStep extends Component {
 
     return (
       <View style={styles.container}>
-        <Text style={styles.title}> Bienvenido </Text>
+        <Text style={styles.title}> {screenProps.t("Initial:title")} </Text>
         <Text
           style={{
             paddingBottom: 10
           }}
         >
-          Gracias por usar Locha Mesh, una app que usa red de radio para
-          comunicaciones y transacciones de Bitcoin sin internet ni
-          electricidad.
+          {screenProps.t("Initial:subtitle")}
         </Text>
-        <Text>
-          Para continuar por favor ingrese su alias y su contraseña de seguridad
-        </Text>
+        <Text>{screenProps.t("Initial:text")}</Text>
 
         <View style={{ width: "100%", paddingTop: "20%" }}>
           <Item style={{ marginBottom: 30 }}>
             <Input
               maxLength={12}
-              placeholder="Alias"
+              placeholder={screenProps.t("Initial:nickname")}
               value={this.state.userName}
               onChangeText={text => this.setState({ userName: text })}
             />
@@ -63,7 +66,7 @@ class InitialStep extends Component {
           <Item>
             <Input
               onSubmitEditing={() => this.handleSubmit()}
-              placeholder="password"
+              placeholder={screenProps.t("Initial:password")}
               value={this.state.password}
               onChangeText={text => this.setState({ password: text })}
               secureTextEntry={this.state.secure}
@@ -95,7 +98,9 @@ class InitialStep extends Component {
                 backgroundColor: "#fbc233"
               }}
             >
-              <Text style={{ padding: 6 }}>Continuar</Text>
+              <Text style={{ padding: 6 }}>
+                {screenProps.t("Initial:next")}
+              </Text>
             </Button>
           </View>
         </View>
@@ -104,10 +109,7 @@ class InitialStep extends Component {
   }
 }
 
-export default connect(
-  null,
-  { setInitialUser }
-)(InitialStep);
+export default connect(null, { setInitialUser })(InitialStep);
 
 const styles = StyleSheet.create({
   container: {

@@ -93,6 +93,7 @@ export default class ChatBody extends Component {
   };
 
   render() {
+    const { screenProps } = this.props;
     return (
       <View style={{ flex: 1 }}>
         {this.props.open && (
@@ -100,6 +101,7 @@ export default class ChatBody extends Component {
             open={this.props.open}
             close={this.props.close}
             sendFileWithImage={this.props.sendFileWithImage}
+            screenProps={screenProps}
           />
         )}
 
