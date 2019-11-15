@@ -77,7 +77,7 @@ const deletePhotoFromPhone = async () => {
  */
 
 export const openCamera = (id, callback) => async dispatch => {
-  const directory = await createFolder();
+  const directory = await createFolder()
   ImagePicker.openCamera({
     width: 500,
     height: 500,
@@ -100,6 +100,7 @@ export const openCamera = (id, callback) => async dispatch => {
     });
   });
 };
+
 /**
  *
  * @description save the name of the user in the database

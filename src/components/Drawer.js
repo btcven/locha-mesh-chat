@@ -5,6 +5,7 @@ import {
   ListItem,
   Body,
   Left,
+  Right,
   Button,
   Icon
 } from "native-base";
@@ -13,6 +14,7 @@ import { connect } from "react-redux";
 import { closeMenu } from "../store/aplication/aplicationAction";
 import { images } from "../utils/constans";
 import NavigationService from "../utils/navigationService";
+import Menu from "./Menu";
 
 class DrawerComponent extends Component {
   constructor(props) {
@@ -23,8 +25,19 @@ class DrawerComponent extends Component {
     NavigationService.navigate(view);
   };
 
+  viewItem = () => {
+    return <Text>Hello word</Text>;
+  };
+
   render() {
     const { screenProps } = this.props;
+
+    const menu = [
+      {
+        label: "Ingles",
+        action: () => console.log("click")
+      }
+    ];
     return (
       <Container>
         <View style={styles.headerDrawer}>
@@ -48,18 +61,6 @@ class DrawerComponent extends Component {
           )}
 
           <Text style={styles.textTitle}>{this.props.user.name}</Text>
-
-          {/* <Text
-                style={{
-                  position: "absolute",
-                  color: "white",
-
-                  left: 15,
-                  bottom: "5%"
-                }}
-              >
-                {`${this.props.user.uid}`.substr(0, 30) + "..."}
-              </Text> */}
         </View>
 
         <View>
@@ -87,6 +88,8 @@ class DrawerComponent extends Component {
               <Text>{screenProps.t("Drawer:setting")}</Text>
             </Body>
           </ListItem>
+
+         
         </View>
       </Container>
     );

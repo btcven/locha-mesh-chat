@@ -19,6 +19,8 @@ import {
 import { connect } from "react-redux";
 import EditName from "./EditName";
 import EditPhoto from "./EditPhoto";
+import ViewQR from "./ViewQR";
+import Languajes from "./Language";
 import QRCode from "react-native-qrcode-svg";
 import { androidToast } from "../../utils/utils";
 
@@ -34,7 +36,9 @@ class Config extends Component {
     super(props);
     this.state = {
       openModalPhoto: false,
-      openModalName: false
+      openModalName: false,
+      viewQR: false,
+      language: false
     };
   }
 
@@ -71,6 +75,16 @@ class Config extends Component {
             {...this.props}
             close={this.close}
           />
+        )}
+
+        <Languajes
+          open={this.state.language}
+          {...this.props}
+          close={this.close}
+        />
+
+        {this.state.viewQR && (
+          <ViewQR {...this.props} open={this.state.viewQR} close={this.close} />
         )}
         <View style={styles.sectionContainer}>
           <View style={styles.imageContainer}>
@@ -136,8 +150,7 @@ class Config extends Component {
             style={{
               width: "70%",
               alignContent: "flex-start",
-              paddingLeft: 10,
-              minHeight: 30
+              paddingLeft: 10
             }}
           >
             <Text style={styles.textLabel}>
@@ -174,24 +187,67 @@ class Config extends Component {
         <View style={styles.infoContainerAddress}>
           <View
             style={{
-              width: "85%",
+              width: "90%",
               justifyContent: "flex-end",
               paddingLeft: 10,
               minHeight: 30
             }}
           >
-            <Text style={styles.textInfo}>{this.props.config.uid}</Text>
+            <Text style={styles.textInfo}>
+              {`${this.props.config.uid}`.substr(0, 25)}...
+            </Text>
           </View>
-          <Right
+          <View
             style={{
-              top: 5
+              flexDirection: "row",
+              flex: 1,
+              alignItems: "center"
             }}
           >
             <TouchableHighlight
               style={styles.touchable}
               underlayColor="#eeeeee"
               onPress={() => {
-                this._setContent(this.props.config.uid);
+                this.setState({ viewQR: true });
+              }}
+            >
+              <Icon
+                style={{
+                  color: "#bdbdbd",
+                  fontSize: 25
+                }}
+                type="FontAwesome5"
+                name="qrcode"
+              />
+            </TouchableHighlight>
+          </View>
+        </View>
+
+        <View style={styles.infoContainerAddress}>
+          <Left>
+            <Icon style={{ color: "#fbc233" }} name="globe" />
+          </Left>
+          <View
+            style={{
+              width: "70%",
+              alignContent: "flex-start",
+              paddingLeft: 10
+            }}
+          >
+            <Text style={styles.textInfo}>
+              {screenProps.t("Settings:language")}
+            </Text>
+          </View>
+          <Right
+            style={{
+              top: 5
+            }}
+          >
+            <TouchableOpacity
+              style={styles.touchable}
+              underlayColor="#eeeeee"
+              onPress={() => {
+                this.setState({ language: true });
               }}
             >
               <Icon
@@ -201,22 +257,10 @@ class Config extends Component {
                   paddingVertical: 10,
                   paddingHorizontal: 10
                 }}
-                type="FontAwesome5"
-                name="copy"
+                name="arrow-dropright"
               />
-            </TouchableHighlight>
+            </TouchableOpacity>
           </Right>
-        </View>
-
-        <View style={styles.qrCodeContainer}>
-          <QRCode
-            value={JSON.stringify({
-              name: this.props.config.name,
-              uid: this.props.config.uid
-            })}
-            color={"gray"}
-            size={130}
-          />
         </View>
       </Container>
     );
@@ -258,7 +302,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0.5,
     borderBottomColor: "gray",
     marginLeft: 20,
-    minHeight: 90,
+    minHeight: 70,
     marginRight: 20
   },
 

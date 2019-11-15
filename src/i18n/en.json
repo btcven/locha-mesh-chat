@@ -21,7 +21,8 @@
     "saveButton": "save",
     "gallery": "Gallery",
     "camera": "Camera",
-    "uidCody": "copied uid"
+    "uidCody": "copied uid",
+    "language": "Language"
   },
 
   "Contacts": {
@@ -49,5 +50,10 @@
     "clean": "Clean chat",
     "voice": "Voice",
     "photo": "Photo"
+  },
+
+  "Languajes": {
+    "english": "English",
+    "spanish": "Spanish"
   }
 }

@@ -8,7 +8,6 @@ import {
 } from "react-native";
 import Moment from "moment";
 import { Thumbnail, Icon } from "native-base";
-import { sha256 } from "js-sha256";
 import { getIcon, hashGenerateColort } from "../../utils/utils";
 import Player from "../../components/Player ";
 import { TouchableOpacity } from "react-native-gesture-handler";
