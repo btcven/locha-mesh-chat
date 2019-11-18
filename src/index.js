@@ -10,7 +10,9 @@ import InitialStep from "./InitialStep";
 import Spinner from "./components/Spinner";
 import NotifService from "./utils/notificationService";
 import { selectedChat } from "./store/chats";
+import { AsyncStorage } from "react-native";
 import { realmObservable } from "./database/realmDatabase";
+import i18n from "./i18n/index";
 
 /**
  *
@@ -27,8 +29,12 @@ class DualComponent extends Component {
     header: null
   };
 
-  componentDidMount = () => {
+  componentDidMount = async () => {
     realmObservable();
+    const lng = await AsyncStorage.getItem("@APP:languageCode");
+    if (lng) {
+      i18n.changeLanguage(lng);
+    }
   };
 
   render() {

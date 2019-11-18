@@ -193,9 +193,13 @@ class Config extends Component {
               minHeight: 30
             }}
           >
-            <Text style={styles.textInfo}>
-              {`${this.props.config.uid}`.substr(0, 25)}...
-            </Text>
+            <TouchableOpacity
+              onPress={() => this._setContent(this.props.config.uid)}
+            >
+              <Text style={styles.textInfo}>
+                {`${this.props.config.uid}`.substr(0, 25)}...
+              </Text>
+            </TouchableOpacity>
           </View>
           <View
             style={{

@@ -15,7 +15,9 @@ import {
   Title,
   Icon,
   Right,
-  Radio
+  Radio,
+  List,
+  ListItem
 } from "native-base";
 import i18n from "../../i18n";
 
@@ -45,6 +47,7 @@ export default class Lenguajes extends Component {
   };
 
   async onChangeLang(lang) {
+    console.log("holaaaaaaaaaa", lang);
     i18n.changeLanguage(lang);
     try {
       await AsyncStorage.setItem("@APP:languageCode", lang);
@@ -112,32 +115,23 @@ export default class Lenguajes extends Component {
               <Right></Right>
             </Header>
             <View style={{ flex: 1 }}>
-              {languajes.map(languajes => {
-                return (
-                  <View
-                    key={languajes.key}
-                    style={{
-                      flexDirection: "row",
-                      borderWidth: 0.2,
-                      margin: 10,
-                      height: "10%",
-                      alignItems: "center",
-                      borderRadius: 7,
-                      justifyContent: "space-between"
-                    }}
-                  >
-                    <View style={{ marginHorizontal: 10 }}>
-                      <Text> {languajes.label} </Text>
-                    </View>
-                    <View style={{ marginHorizontal: 10 }}>
-                      <Radio
-                        selected={language === languajes.key ? true : false}
-                        onPress={() => this.onChangeLang(languajes.key)}
-                      />
-                    </View>
-                  </View>
-                );
-              })}
+              <List>
+                {languajes.map(languajes => {
+                  return (
+                    <ListItem key={languajes.key} selected>
+                      <Left>
+                        <Text>{languajes.label}</Text>
+                      </Left>
+                      <Right>
+                        <Radio
+                          selected={language === languajes.key ? true : false}
+                          onPress={() => this.onChangeLang(languajes.key)}
+                        />
+                      </Right>
+                    </ListItem>
+                  );
+                })}
+              </List>
             </View>
           </View>
         </Modal>

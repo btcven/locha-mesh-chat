@@ -20,34 +20,37 @@ const languageDetector = {
   cacheUserLanguage: () => {}
 };
 
-try {
-  i18n
-    .use(languageDetector)
-    .use(reactI18nextModule)
-    .init({
-      debug: true,
-      initImmediate: false,
-      preload: ["en", "es"],
-      fallbackLng: "en",
-      lng: "en",
-      resources: {
-        en,
-        es
-      },
-      // have a common namespace used around the full app
-      ns: ["common"],
-      defaultNS: "common",
+getDefaultLanguage = async () => {
+  const savedDataJSON = await AsyncStorage.getItem(STORAGE_KEY);
+  const lng = savedDataJSON ? savedDataJSON : locale;
 
-      //   cache: {
-      //  enabled: true
-      // },
+  return lng;
+};
 
-      interpolation: {
-        escapeValue: false // not needed for react as it does escape per default to prevent xss!
-      }
-    });
-} catch (err) {
-  console.log(err);
-}
+i18n
+  .use(languageDetector)
+  .use(reactI18nextModule)
+  .init({
+    debug: true,
+    initImmediate: false,
+    preload: ["en", "es"],
+    fallbackLng: "en",
+    lng: "en",
+    resources: {
+      en,
+      es
+    },
+    // have a common namespace used around the full app
+    ns: ["common"],
+    defaultNS: "common",
+
+    //   cache: {
+    //  enabled: true
+    // },
+
+    interpolation: {
+      escapeValue: false // not needed for react as it does escape per default to prevent xss!
+    }
+  });
 
 export default i18n;
