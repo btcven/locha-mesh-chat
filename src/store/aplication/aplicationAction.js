@@ -5,7 +5,7 @@ import {
   getUserData,
   cancelUnreadMessages
 } from "../../database/realmDatabase";
-import Bitcoin from "../../utils/Bitcoin";
+import { bitcoin } from "../../../App";
 import Socket from "../../utils/socket";
 import store from "../../store";
 
@@ -15,7 +15,6 @@ import store from "../../store";
  
  */
 
-const bitcoin = new Bitcoin();
 export let ws = undefined;
 
 /**
@@ -42,25 +41,25 @@ export const InitialState = () => async dispatch => {
  */
 
 export const setInitialUser = obj => async dispatch => {
-  dispatch(loading());
-  await createFolder();
+  // dispatch(loading());
+  // await createFolder();
   const result = await bitcoin.generateAddress();
-  writteUser({
-    uid: result.publicKey.toString(),
-    name: obj.name,
-    image: null,
-    contacts: [],
-    chats: [
-      {
-        fromUID: result.publicKey.toString(),
-        toUID: "broadcast",
-        messages: []
-      }
-    ]
-  }).then(res => {
-    dispatch(writeAction(res));
-    ws = new Socket(store);
-  });
+  // writteUser({
+  //   uid: result.publicKey.toString(),
+  //   name: obj.name,
+  //   image: null,
+  //   contacts: [],
+  //   chats: [
+  //     {
+  //       fromUID: result.publicKey.toString(),
+  //       toUID: "broadcast",
+  //       messages: []
+  //     }
+  //   ]
+  // }).then(res => {
+  //   dispatch(writeAction(res));
+  //   ws = new Socket(store);
+  // });
 };
 
 /**

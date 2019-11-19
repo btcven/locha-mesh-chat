@@ -1,11 +1,12 @@
 {
   "Initial": {
-    "title": "Welcome",
-    "subtitle": "Thank you for using Locha Mesh, an app that uses Bitcoin radio network for communications and transactions without internet electricity.",
-    "text": "To continue please enter your alias and your security password",
+    "title": "Locha Mesh ",
+    "subtitle": "Thank you for using Locha Mesh, is a radio network for communications and Bitcoin transactions without internet or even power grid. We are working not only in a protocol, but also the firmware for affordable devices like the Turpial or Harpia.",
+    "text": "Do you want to create a new account or restore a previously used account?",
     "nickname": "Nickname",
     "password": "Password",
-    "next": "Continue"
+    "next": "Create new account",
+    "restore": "Restore account"
   },
 
   "Drawer": {
@@ -52,8 +53,8 @@
     "photo": "Photo"
   },
 
-  "Languajes": {
-    "english": "English",
-    "spanish": "Spanish"
+  "Languages": {
+    "en": "English",
+    "es": "Spanish"
   }
 }

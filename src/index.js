@@ -6,7 +6,7 @@ import { StyleSheet, View, Alert } from "react-native";
 import Home from "./views/home";
 import Contact from "./views/contacts";
 import Config from "./views/config";
-import InitialStep from "./InitialStep";
+import LoadWallet from "./views/LoadWallet";
 import Spinner from "./components/Spinner";
 import NotifService from "./utils/notificationService";
 import { selectedChat } from "./store/chats";
@@ -52,7 +52,7 @@ class DualComponent extends Component {
         )}
         <View>
           {!this.props.user && (
-            <InitialStep screenProps={this.props.screenProps} />
+            <LoadWallet screenProps={this.props.screenProps} />
           )}
         </View>
       </View>

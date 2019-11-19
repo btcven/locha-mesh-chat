@@ -6,6 +6,7 @@ import { InitialState } from "./src/store/aplication";
 import NativationService from "./src/utils/navigationService";
 import { translate } from "react-i18next";
 import i18n from "./src/i18n/index";
+import Bitcoin from "./src/utils/Bitcoin";
 
 const WrappedStack = ({ t }) => {
   return (
@@ -21,6 +22,8 @@ const ReloadAppOnLanguageChange = translate("common", {
   bindI18n: "languageChanged",
   bindStore: false
 })(WrappedStack);
+
+export const bitcoin = new Bitcoin();
 
 export default class App extends Component {
   render() {

@@ -23,6 +23,7 @@ import ViewQR from "./ViewQR";
 import Languajes from "./Language";
 import QRCode from "react-native-qrcode-svg";
 import { androidToast } from "../../utils/utils";
+import i18n from "../../i18n";
 
 /**
  * @class Config
@@ -238,8 +239,12 @@ class Config extends Component {
               paddingLeft: 10
             }}
           >
-            <Text style={styles.textInfo}>
+            <Text style={styles.textLabel}>
               {screenProps.t("Settings:language")}
+            </Text>
+            <Text style={styles.textInfo}>
+              {" "}
+              {screenProps.t(`Languages:${i18n.language}`)}
             </Text>
           </View>
           <Right

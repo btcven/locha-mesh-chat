@@ -67,10 +67,10 @@ export default class Lenguajes extends Component {
     const languajes = [
       {
         key: "en",
-        label: screenProps.t("Languajes:english")
+        label: screenProps.t("Languages:en")
       },
 
-      { key: "es", label: screenProps.t("Languajes:spanish") }
+      { key: "es", label: screenProps.t("Languages:es") }
     ];
 
     return (
@@ -118,12 +118,13 @@ export default class Lenguajes extends Component {
               <List>
                 {languajes.map(languajes => {
                   return (
-                    <ListItem key={languajes.key} selected>
+                    <ListItem key={languajes.key}>
                       <Left>
                         <Text>{languajes.label}</Text>
                       </Left>
                       <Right>
                         <Radio
+                          selectedColor="#FAB300"
                           selected={language === languajes.key ? true : false}
                           onPress={() => this.onChangeLang(languajes.key)}
                         />

@@ -3,7 +3,7 @@ import Bitcore from "bitcore-lib";
 import Mnemonic from "bitcore-mnemonic";
 
 const networkConfiguration = {
-  network_data: "testnet",
+  network_data: "mainnet",
   bip44_id: 0
 };
 /**
@@ -19,16 +19,15 @@ export default class Bitcoin {
     this.WalletInfo = {};
     this.initialIndex = 0;
   }
-/**
- *
- * @function
- * @memberof Bitcoin
- * @description generate the private key and public key
- */
-generateAddress = async () => {
+  /**
+   *
+   * @function
+   * @memberof Bitcoin
+   * @description generate the private key and public key
+   */
+  generateAddress = async () => {
     let code;
-    code = new Mnemonic(256);
-
+    code = new Mnemonic();
     const password = "";
 
     var hdPrivateKey = code.toHDPrivateKey(
@@ -44,6 +43,7 @@ generateAddress = async () => {
 
     this.WalletInfo = derivationPath.derive(this.initialIndex).privateKey;
 
+    console.log("acaaaaaaaaaaa", this.WalletInfo.toAddress().toString());
     return this.WalletInfo;
   };
 }
