@@ -25,6 +25,7 @@ export default class Bitcoin {
    * @memberof Bitcoin
    * @description generate the private key and public key
    */
+  
   generateAddress = async () => {
     let code;
     code = new Mnemonic();
@@ -43,7 +44,6 @@ export default class Bitcoin {
 
     this.WalletInfo = derivationPath.derive(this.initialIndex).privateKey;
 
-    console.log("acaaaaaaaaaaa", this.WalletInfo.toAddress().toString());
     return this.WalletInfo;
   };
 }
