@@ -67,3 +67,16 @@ export const userSchema = {
     chats: { type: "list", objectType: "Chat" }
   }
 };
+
+
+
+export const WalletInfo = {
+  name: "WalletInfo",
+  primaryKey: "id",
+  properties:{
+    id:'string',
+    seed:'string',
+    balance:'int',
+    history:'string[]'
+  }
+}

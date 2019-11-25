@@ -3,14 +3,15 @@ import { Button } from "native-base";
 import { Text, View, TextInput, StyleSheet, Clipboard } from "react-native";
 import Modal from "react-native-modal";
 import { Formik } from 'formik'
-import { cleanSingle } from "react-native-image-crop-picker";
+import PinView from "./PinView";
 
 
 export default class CreateAccount extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      confirm: null
+      step: 3,
+      seed: null
     }
   }
 
@@ -20,10 +21,11 @@ export default class CreateAccount extends Component {
 
 
   back = () => {
-    if (!this.state.confirm) {
-      this.props.back()
+
+    if (this.state.step === 1) {
+      this.props.close()
     } else {
-      this.setState({ confirm: null })
+      this.setState({ step: this.state.step - 1 })
     }
   }
 
@@ -31,38 +33,39 @@ export default class CreateAccount extends Component {
     const seed = this.props.phrases.slice()
 
 
-    while (seed.reduce((prev, curr) => prev + +(curr === ''), 0) < 3) {
+    while (seed.reduce((prev, curr) => prev + +(curr === ''), 0) < 1) {
       const k = Math.floor(Math.random() * (seed.length - 1));
       seed[k] = '';
     }
 
-    this.setState({ confirm: seed })
+    this.setState({ seed, step: 2 })
 
   }
 
   confirm = (values) => {
-    console.log(this.props.phrases.length , values.length);
     if (this.props.phrases.length !== values.length) return
-  
-  
+
+
     for (let index = 0; index <= values.length; index++) {
-       console.log(values , this.props.phrases[index]);
-      if (values[index] !== this.props.phrases[index]) return false
+      console.log(values, this.props.phrases[index]);
+      if (values[index] !== this.props.phrases[index]) return
     }
 
-    console.log("paso")
+    this.setState({ step: 3 })
+
   }
 
   render() {
-    const { open, close, phrases } = this.props;
-    const values = this.state.confirm ? this.state.confirm : phrases
+    const { open, close, phrases, stringPhrases } = this.props;
+    const values = this.state.step !== 1 ? this.state.seed : phrases
+
     return (
       <Formik
         enableReinitialize
         onSubmit={this.confirm}
         initialValues={values}
         render={
-          ({ values, setFieldValue , handleSubmit }) => {
+          ({ values, setFieldValue, handleSubmit }) => {
             return (
               <Modal
                 isVisible={open}
@@ -73,7 +76,7 @@ export default class CreateAccount extends Component {
                 }}
               >
                 <View style={styles.container}>
-                  {this.state.confirm &&
+                  {this.state.step === 1 &&
                     <View>
                       <Text style={{ textAlign: "center", padding: 10, fontSize: 23 }}>
                         Confirm phrases
@@ -83,7 +86,7 @@ export default class CreateAccount extends Component {
                   </Text>
                     </View>}
 
-                  {!this.state.confirm &&
+                  {this.state.step === 2 &&
                     <View>
                       <Text style={{ textAlign: "center", padding: 10, fontSize: 23 }}>
                         Create new Account
@@ -92,7 +95,7 @@ export default class CreateAccount extends Component {
                   </Text>
                     </View>}
                   <View style={styles.phrasesContainer}>
-                    {values.map((phrase, key) => {
+                    {this.state.step !== 3 && values.map((phrase, key) => {
                       return (
                         <View
                           key={key}
@@ -116,20 +119,12 @@ export default class CreateAccount extends Component {
                         </View>
                       );
                     })}
-
-                    {!this.state.confirm && <View style={{ width: "100%", alignItems: "center", padding: 20 }}>
-                      <Button
-                        onPress={this.copyPhrases}
-                        success
-                        style={{
-                          minWidth: 100,
-                          justifyContent: "center"
-                        }}
-                      >
-                        <Text style={{ marginHorizontal: 25 }}>Copiar</Text>
-                      </Button>
-                    </View>}
                   </View>
+                  {this.state.step === 3 && < View >
+
+                    <PinView />
+                  </View>}
+
                   <View style={styles.buttonContainer}>
                     <Button
                       light
@@ -142,7 +137,7 @@ export default class CreateAccount extends Component {
                     >
                       <Text>{`atras`.toUpperCase()}</Text>
                     </Button>
-                    {!this.state.confirm && <Button
+                    {this.state.step === 1 && <Button
                       onPress={this.continue}
                       style={{
                         marginHorizontal: 10,
@@ -154,8 +149,8 @@ export default class CreateAccount extends Component {
                       <Text>{`Continue`.toUpperCase()}</Text>
                     </Button>}
 
-                    {this.state.confirm && <Button
-                      onPress={this.confirm}
+                    {this.state.step === 2 && <Button
+                      onPress={handleSubmit}
                       style={{
                         marginHorizontal: 10,
                         justifyContent: "center",
@@ -167,7 +162,8 @@ export default class CreateAccount extends Component {
                     </Button>}
                   </View>
                 </View>
-              </Modal>
+
+              </Modal >
             )
           }
         }
@@ -179,7 +175,8 @@ export default class CreateAccount extends Component {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "white",
-    minHeight: "60%",
+    minHeight: 330,
+
     borderRadius: 5,
     marginHorizontal: 5
   },
@@ -195,7 +192,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     flex: 1,
     marginBottom: 10,
-    marginTop: "15%",
+    marginTop: "5%",
     alignItems: "flex-end",
     justifyContent: "space-between"
   }

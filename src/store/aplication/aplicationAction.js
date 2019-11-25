@@ -62,6 +62,11 @@ export const setInitialUser = obj => async dispatch => {
   // });
 };
 
+
+export const createNewAccount = () => {
+
+}
+
 /**
  * @function
  * @description return user data to state
@@ -121,3 +126,4 @@ export const loaded = () => {
 export const reestarConnection = () => {
   ws = new Socket(store);
 };
+
