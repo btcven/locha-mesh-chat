@@ -47,7 +47,7 @@ class InitialStep extends Component {
 
   componentDidMount = async () => {
     const code = new Mnemonic();
-    this.setState({ phrases: code.toString().split(" ") });
+    this.setState({ phrases: code.toString().split(" "), stringPhrases: code.toString() });
     AsyncStorage.setItem(
       "@APP:phrases",
       JSON.stringify(code.toString().split(" "))
@@ -70,6 +70,7 @@ class InitialStep extends Component {
             phrases={this.state.phrases}
             close={this.close}
             open={restore}
+            stringPhrases={this.state.stringPhrases}
           />
         )}
         <>
