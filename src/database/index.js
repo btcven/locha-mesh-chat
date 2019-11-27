@@ -1,49 +1,79 @@
 import { seed } from './schemas';
 import Realm from 'realm';
+import { sha256 } from 'js-sha256';
+import Bitcoin from '../utils/Bitcoin'
+
 // import {} from './realmDatabase'
 
+import {
+    userSchema,
+    contactSchema,
+    chatSquema,
+    BroadCasContacts,
+    messageSquema
+} from "./schemas";
 
-export default class Seed {
-    constructor(data) {
-        this.getRealm()
-    }
 
-    getRealm = (key) => {
-        const buffer = new ArrayBuffer(64);
-        const view = new Int8Array(buffer);
-        view.fill(key);
-        this.realm = new Realm({
-            schema: [
-                seed,
-            ],
-            path: 'seed.realm',
-            encryptionKey: view
-        })
+export default class Database {
+    constructor() {
     }
 
 
-    saveSeed = (data) => {
-        this.realm.then(res => {
-            res.write(() => {
-                res.create(
-                    "Seed",
-                    {
-                        seed: data
-                    },
-                );
+    toByteArray(str) {
+        var array = new Int8Array(str.length);
+        for (i = 0; i < str.length; i++) {
+            array[i] = str.charCodeAt(i);
+        }
+        return array;
+    }
 
-                const hola = res.objects("Seed").map(res => {
-                    console.log(res)
-                })
 
+
+    getRealm = (key, key2) => new Promise((resolve, reject) => {
+        const keySeed = this.toByteArray(key)
+        const keyDatabase = this.toByteArray(key2)
+        try {
+            this.seed = new Realm({
+                schema: [
+                    seed,
+                ],
+                path: 'seed.realm',
+                schemaVersion: 2,
+                encryptionKey: keySeed
             })
-        })
-    }
+
+            this.database = new Realm({
+                schema: [
+                    userSchema,
+                    contactSchema,
+                    chatSquema,
+                    messageSquema,
+                    BroadCasContacts,
+                    fileSchema
+                ],
+                encryptionKey: keyDatabase,
+                schemaVersion: 16
+            })
+
+            resolve(this.database)
+        } catch (err) {
+            console.log(err)
+        }
+    })
 
 
-    getDataSeed = (pin) => {
-                const seed = this.realm.objects("Seed")
+    setDataSeed = (data) => new Promise(resolve => {
+        try {
+            this.seed.write(() => {
+                this.seed.create("Seed", {
+                    id: sha256(data),
+                    seed: data
+                }, true)
 
-                console.log("seed", seed)
-            }
+                resolve()
+            })
+        } catch (err) {
+            console.log("2", err)
+        }
+    })
 }

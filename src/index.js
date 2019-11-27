@@ -30,7 +30,7 @@ class DualComponent extends Component {
   };
 
   componentDidMount = async () => {
-    realmObservable();
+    // realmObservable();
     const lng = await AsyncStorage.getItem("@APP:languageCode");
     if (lng) {
       i18n.changeLanguage(lng);

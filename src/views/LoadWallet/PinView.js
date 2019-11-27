@@ -8,7 +8,7 @@ export default class PinView extends Component {
         super(props);
         this.state = {
             pin: ['', '', '', ''],
-            buttons: ['1', '2', '3', '4', '5', '6', '7', '8', ' 9', '0']
+            buttons: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0']
         }
     }
 

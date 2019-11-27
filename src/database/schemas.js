@@ -74,6 +74,7 @@ export const seed = {
   name: "Seed",
   primaryKey: "seed",
   properties: {
+    id: 'string',
     seed: 'string',
   }
 }

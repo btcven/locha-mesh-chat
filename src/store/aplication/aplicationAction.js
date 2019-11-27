@@ -5,7 +5,7 @@ import {
   getUserData,
   cancelUnreadMessages
 } from "../../database/realmDatabase";
-import Seed from "../../database"
+import Database from "../../database"
 
 import { bitcoin } from "../../../App";
 import Socket from "../../utils/socket";
@@ -17,7 +17,7 @@ import { sha256 } from "js-sha256";
 /**
  * in this module are the global actions of the application
  * @module AplicationAction
- 
+
  */
 
 export let ws = undefined;
@@ -29,13 +29,13 @@ export let ws = undefined;
  */
 
 export const InitialState = () => async dispatch => {
-  //backgroundTimer();
-  getUserData().then(async res => {
-    if (res.length >= 1) {
-      dispatch(writeAction(JSON.parse(JSON.stringify(res[0]))));
-      ws = new Socket(store);
-    }
-  });
+  // //backgroundTimer();
+  // getUserData().then(async res => {
+  //   if (res.length >= 1) {
+  //     dispatch(writeAction(JSON.parse(JSON.stringify(res[0]))));
+  //     ws = new Socket(store);
+  //   }
+  // });
 };
 
 /**
@@ -65,12 +65,36 @@ export const setInitialUser = obj => async dispatch => {
   //   dispatch(writeAction(res));
   //   ws = new Socket(store);
   // });
+
+
 };
 
-
 export const createNewAccount = (obj) => async dispatch => {
-  const seed = new Seed(sha256(obj.pin))
-  seed.getDataSeed(obj.pin)
+  const database = new Database()
+  await database.getRealm(sha256(obj.pin), sha256(obj.seed))
+  console.log("paso1")
+  await database.setDataSeed(obj.seed);
+  console.log("paso2")
+  await createFolder()
+  console.log("paso3")
+  const result = await bitcoin.generateAddress(obj.seed);
+  console.log("paso4")
+  writteUser(database.database, {
+    uid: result.publicKey.toString(),
+    name: 'kevin',
+    image: null,
+    contacts: [],
+    chats: [
+      {
+        fromUID: result.publicKey.toString(),
+        toUID: "broadcast",
+        messages: []
+      }
+    ]
+  }).then(res => {
+    dispatch(writeAction(res));
+    ws = new Socket(store);
+  });
 }
 
 /**
