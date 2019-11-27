@@ -7,14 +7,32 @@ export default class PinView extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            pin: ['', '', '', '']
+            pin: ['', '', '', ''],
+            buttons: ['1', '2', '3', '4', '5', '6', '7', '8', ' 9', '0']
         }
     }
 
-    componentDidUpdate =() =>{
+    componentDidMount = () => {
+        const result = this.shuffle(this.state.buttons)
+        const penultimate = result[result.length - 1]
+        result[result.length - 1] = ''
+        result.push(penultimate)
+        result.push('delete')
 
+        this.setState({ buttons: result })
     }
 
+
+    componentDidUpdate = () => {
+        let pin = ""
+        if (this.state.pin[3] !== "") {
+            this.state.pin.map(arr => {
+                pin += arr
+            })
+
+            this.props.createAccount(pin)
+        }
+    }
 
     setPin = (character) => {
         const array = this.state.pin.slice()
@@ -25,6 +43,8 @@ export default class PinView extends Component {
 
             if (result === -1 && array[array.length - 1] !== "") {
                 array[array.length - 1] = ""
+            } else if (result === 0) {
+                // this.props.back() 
             } else {
                 array[result - 1] = ""
             }
@@ -40,10 +60,35 @@ export default class PinView extends Component {
         }
     }
 
+    shuffle = (array) => {
+        let currentIndex = array.length, temporaryValue, randomIndex;
+
+        // While there remain elements to shuffle...
+        while (0 !== currentIndex) {
+
+            // Pick a remaining element...
+            randomIndex = Math.floor(Math.random() * currentIndex);
+            if (array[currentIndex] !== 'delete') {
+
+                currentIndex -= 1;
+
+                // And swap it with the current element.
+                temporaryValue = array[currentIndex];
+                array[currentIndex] = array[randomIndex];
+                array[randomIndex] = temporaryValue;
+            } else {
+                currentIndex -= 1;
+            }
+        }
+
+        return array;
+
+    }
+
 
 
     render() {
-        const array = ['1', '2', '3', '4', '5', '6', '7', '8', ' 9', '', '0', 'delete',]
+
         return (
             <>
                 <View style={styles.numberContainer}>
@@ -51,7 +96,7 @@ export default class PinView extends Component {
                         return <View
                             key={key}
                             style={{
-                                width: "20%",
+                                width: "15%",
                                 margin: 0,
                                 flexDirection: "row",
                                 justifyContent: 'center',
@@ -62,7 +107,7 @@ export default class PinView extends Component {
                                 value={pin === "" ? pin : "*"}
                                 editable={false}
                                 style={{
-                                    color:"black",
+                                    color: "black",
                                     borderBottomWidth: 0.5,
                                     minWidth: 40,
                                     height: 50,
@@ -74,12 +119,12 @@ export default class PinView extends Component {
                     })}
                 </View>
                 <View style={styles.container}>
-                    {array.map((button, key) => {
+                    {this.state.buttons.map((button, key) => {
                         return (
                             <View key={key} style={styles.buttonContainer}>
                                 <Button transparent onPress={() => this.setPin(button)}>
-                                    {array.length - 1 !== key && <Text style={styles.text}> {button} </Text>}
-                                    {array.length - 1 === key && <Icon name="backspace" />}
+                                    {button !== 'delete' && <Text style={styles.text}> {button} </Text>}
+                                    {button === 'delete' && <Icon name="backspace" />}
                                 </Button>
                             </View>
                         )

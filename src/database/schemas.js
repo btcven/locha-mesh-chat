@@ -70,13 +70,10 @@ export const userSchema = {
 
 
 
-export const WalletInfo = {
-  name: "WalletInfo",
-  primaryKey: "id",
-  properties:{
-    id:'string',
-    seed:'string',
-    balance:'int',
-    history:'string[]'
+export const seed = {
+  name: "Seed",
+  primaryKey: "seed",
+  properties: {
+    seed: 'string',
   }
 }

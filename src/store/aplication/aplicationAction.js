@@ -5,9 +5,14 @@ import {
   getUserData,
   cancelUnreadMessages
 } from "../../database/realmDatabase";
+import Seed from "../../database"
+
 import { bitcoin } from "../../../App";
 import Socket from "../../utils/socket";
 import store from "../../store";
+import { sha256 } from "js-sha256";
+
+
 
 /**
  * in this module are the global actions of the application
@@ -63,8 +68,9 @@ export const setInitialUser = obj => async dispatch => {
 };
 
 
-export const createNewAccount = () => {
-
+export const createNewAccount = (obj) => async dispatch => {
+  const seed = new Seed(sha256(obj.pin))
+  seed.getDataSeed(obj.pin)
 }
 
 /**

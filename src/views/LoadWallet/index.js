@@ -7,12 +7,13 @@ import {
   Image
 } from "react-native";
 import { Form, Input, Item, Label, Icon, Button, Text } from "native-base";
-import { setInitialUser } from "../../store/aplication/aplicationAction";
+import { setInitialUser, createNewAccount } from "../../store/aplication/aplicationAction";
 import { connect } from "react-redux";
 import crypto from "crypto";
 import Mnemonic from "bitcore-mnemonic";
 import { images } from "../../utils/constans";
 import CreateAccount from "./CreateAccount";
+
 /**
  *
  * @description Welcome component when the application is first opened
@@ -71,6 +72,7 @@ class InitialStep extends Component {
             close={this.close}
             open={restore}
             stringPhrases={this.state.stringPhrases}
+            createNewAccount={this.props.createNewAccount}
           />
         )}
         <>
@@ -140,7 +142,7 @@ class InitialStep extends Component {
   }
 }
 
-export default connect(null, { setInitialUser })(InitialStep);
+export default connect(null, { setInitialUser, createNewAccount })(InitialStep);
 
 const styles = StyleSheet.create({
   container: {

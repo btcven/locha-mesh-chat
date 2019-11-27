@@ -47,7 +47,6 @@ export default class CreateAccount extends Component {
 
 
     for (let index = 0; index <= values.length; index++) {
-      console.log(values, this.props.phrases[index]);
       if (values[index] !== this.props.phrases[index]) return
     }
 
@@ -55,10 +54,19 @@ export default class CreateAccount extends Component {
 
   }
 
+
+  createAccount = (pin) => {
+    this.props.createNewAccount({
+      pin: pin,
+      seed: this.props.stringPhrases
+    })
+  }
+
   render() {
     const { open, close, phrases, stringPhrases } = this.props;
     const values = this.state.step !== 1 ? this.state.seed : phrases
 
+    console.log(stringPhrases)
     return (
       <Formik
         enableReinitialize
@@ -80,19 +88,28 @@ export default class CreateAccount extends Component {
                     <View>
                       <Text style={{ textAlign: "center", padding: 10, fontSize: 23 }}>
                         Confirm phrases
-                  </Text>
+                      </Text>
                       <Text style={{ paddingHorizontal: 10 }}>
                         You'll need to save your backup phrase in case this app deleted
-                  </Text>
+                      </Text>
                     </View>}
 
                   {this.state.step === 2 &&
                     <View>
                       <Text style={{ textAlign: "center", padding: 10, fontSize: 23 }}>
                         Create new Account
-                  </Text>
+                      </Text>
                       <Text style={{ paddingHorizontal: 10 }}>Please complete the backup phrase with missing words
-                  </Text>
+                      </Text>
+                    </View>}
+
+                  {this.state.step === 3 &&
+                    <View>
+                      <Text style={{ textAlign: "center", padding: 10, fontSize: 23 }}>
+                        Add your pin
+                      </Text>
+                      <Text style={{ paddingHorizontal: 10 }}>It is very important that you remember the pin entered, with it you will have access to your account.
+                      </Text>
                     </View>}
                   <View style={styles.phrasesContainer}>
                     {this.state.step !== 3 && values.map((phrase, key) => {
@@ -122,11 +139,11 @@ export default class CreateAccount extends Component {
                   </View>
                   {this.state.step === 3 && < View >
 
-                    <PinView />
+                    <PinView back={this.back} createAccount={this.createAccount} />
                   </View>}
 
                   <View style={styles.buttonContainer}>
-                    <Button
+                    {this.state.step !== 3 && <Button
                       light
                       onPress={this.back}
                       style={{
@@ -136,7 +153,7 @@ export default class CreateAccount extends Component {
                       }}
                     >
                       <Text>{`atras`.toUpperCase()}</Text>
-                    </Button>
+                    </Button>}
                     {this.state.step === 1 && <Button
                       onPress={this.continue}
                       style={{
