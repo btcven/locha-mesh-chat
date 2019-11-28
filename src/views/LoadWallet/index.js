@@ -47,13 +47,8 @@ class InitialStep extends Component {
   };
 
   componentDidMount = async () => {
-    const code = "hurdle gadget surface punch wise valley rookie shrimp lottery onion whip aware"
-    // new Mnemonic();
+    const code =  new Mnemonic();
     this.setState({ phrases: code.toString().split(" "), stringPhrases: code.toString() });
-    AsyncStorage.setItem(
-      "@APP:phrases",
-      JSON.stringify(code.toString().split(" "))
-    );
   };
 
   render() {

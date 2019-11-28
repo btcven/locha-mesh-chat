@@ -10,7 +10,7 @@ export default class CreateAccount extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      step: 3,
+      step: 1,
       seed: null
     }
   }
@@ -65,8 +65,6 @@ export default class CreateAccount extends Component {
   render() {
     const { open, close, phrases, stringPhrases } = this.props;
     const values = this.state.step !== 1 ? this.state.seed : phrases
-
-    console.log(stringPhrases)
     return (
       <Formik
         enableReinitialize
@@ -80,7 +78,7 @@ export default class CreateAccount extends Component {
                 onBackdropPress={() => close("openModalPhoto")}
                 swipeDirection={["up", "left", "right", "down"]}
                 style={{
-                  margin: 0
+                  margin: 0, justifyContent: "flex-end",
                 }}
               >
                 <View style={styles.container}>

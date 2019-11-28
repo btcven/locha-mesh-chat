@@ -3,7 +3,7 @@ import Realm from 'realm';
 import { sha256 } from 'js-sha256';
 import Bitcoin from '../utils/Bitcoin'
 
-// import {} from './realmDatabase'
+import CoreDatabase from './realmDatabase'
 
 import {
     userSchema,
@@ -14,11 +14,33 @@ import {
 } from "./schemas";
 
 
-export default class Database {
+const options =
+{
+    schema: [
+        seed,
+    ],
+    path: 'seed.realm',
+    schemaVersion: 2,
+}
+
+const optionsDatabase = {
+    schema: [
+        userSchema,
+        contactSchema,
+        chatSquema,
+        messageSquema,
+        BroadCasContacts,
+        fileSchema
+    ],
+    schemaVersion: 16
+}
+
+
+
+export default class Database extends CoreDatabase {
     constructor() {
+        super()
     }
-
-
     toByteArray(str) {
         var array = new Int8Array(str.length);
         for (i = 0; i < str.length; i++) {
@@ -42,7 +64,7 @@ export default class Database {
                 encryptionKey: keySeed
             })
 
-            this.database = new Realm({
+            this.db = new Realm({
                 schema: [
                     userSchema,
                     contactSchema,
@@ -55,11 +77,28 @@ export default class Database {
                 schemaVersion: 16
             })
 
-            resolve(this.database)
+            resolve(this.db)
         } catch (err) {
             console.log(err)
         }
     })
+
+
+    restoreWithPin = (key) => new Promise(async (resolve, reject) => {
+        options.encryptionKey = this.toByteArray(key)
+        try {
+            this.seed = new Realm(options)
+            const result = this.seed.objects('Seed')
+
+            optionsDatabase.encryptionKey = this.toByteArray(result[0].id)
+            this.db = new Realm(optionsDatabase)
+            const userData = await this.getUserData()
+            resolve(userData);
+        } catch (err) {
+            console.log(err)
+        }
+    })
+
 
 
     setDataSeed = (data) => new Promise(resolve => {

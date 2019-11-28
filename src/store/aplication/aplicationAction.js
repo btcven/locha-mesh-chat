@@ -1,13 +1,8 @@
 import { ActionTypes } from "../constants";
+import { STORAGE_KEY } from '../../utils/constans'
 import { createFolder, backgroundTimer } from "../../utils/utils";
-import {
-  writteUser,
-  getUserData,
-  cancelUnreadMessages
-} from "../../database/realmDatabase";
-import Database from "../../database"
-
-import { bitcoin } from "../../../App";
+import { AsyncStorage } from 'react-native'
+import { bitcoin, database } from "../../../App";
 import Socket from "../../utils/socket";
 import store from "../../store";
 import { sha256 } from "js-sha256";
@@ -28,14 +23,15 @@ export let ws = undefined;
  *@returns {object}
  */
 
-export const InitialState = () => async dispatch => {
-  // //backgroundTimer();
-  // getUserData().then(async res => {
-  //   if (res.length >= 1) {
-  //     dispatch(writeAction(JSON.parse(JSON.stringify(res[0]))));
-  //     ws = new Socket(store);
-  //   }
-  // });
+export const verifyAplicationState = () => async dispatch => {
+  const storage = await AsyncStorage.getItem(STORAGE_KEY)
+  if (storage) {
+    dispatch({
+      type: ActionTypes.APP_STATUS,
+      payload: storage
+    })
+  }
+
 };
 
 /**
@@ -69,17 +65,19 @@ export const setInitialUser = obj => async dispatch => {
 
 };
 
+
+export const restoreAccountWithPin = (pin) => dispatch => {
+  database.restoreWithPin(sha256(pin)).then(res => {
+    dispatch(writeAction(JSON.parse(JSON.stringify(res[0]))));
+  })
+}
+
 export const createNewAccount = (obj) => async dispatch => {
-  const database = new Database()
   await database.getRealm(sha256(obj.pin), sha256(obj.seed))
-  console.log("paso1")
   await database.setDataSeed(obj.seed);
-  console.log("paso2")
   await createFolder()
-  console.log("paso3")
   const result = await bitcoin.generateAddress(obj.seed);
-  console.log("paso4")
-  writteUser(database.database, {
+  database.writteUser({
     uid: result.publicKey.toString(),
     name: 'kevin',
     image: null,
@@ -91,9 +89,11 @@ export const createNewAccount = (obj) => async dispatch => {
         messages: []
       }
     ]
-  }).then(res => {
+  }).then(async res => {
     dispatch(writeAction(res));
-    ws = new Socket(store);
+    const STORAGE_KEY = "@APP:status";
+    await AsyncStorage.setItem(STORAGE_KEY, 'created')
+    ws = new Socket(store, database);
   });
 }
 

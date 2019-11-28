@@ -8,6 +8,8 @@ export const chats = [
   }
 ];
 
+export const STORAGE_KEY = "@APP:status";
+
 export const images = {
   noPhoto: { url: require("./img/fotoperfil.jpg") },
   file: { url: require("./img/archivo.jpg") },

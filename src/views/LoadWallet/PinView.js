@@ -124,7 +124,7 @@ export default class PinView extends Component {
                             <View key={key} style={styles.buttonContainer}>
                                 <Button transparent onPress={() => this.setPin(button)}>
                                     {button !== 'delete' && <Text style={styles.text}> {button} </Text>}
-                                    {button === 'delete' && <Icon name="backspace" />}
+                                    {button === 'delete' && <Icon name="backspace" style={{ color: '#fbc233' }} />}
                                 </Button>
                             </View>
                         )

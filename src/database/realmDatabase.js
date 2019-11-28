@@ -1,52 +1,80 @@
-// import Realm from "realm";
-// import moment from "moment";
-// import { onNotification } from "../utils/utils";
+
+import moment from "moment";
+import { onNotification } from "../utils/utils";
 // import Store from "../store";
-// import {
-//   userSchema,
-//   contactSchema,
-//   chatSquema,
-//   BroadCasContacts,
-//   messageSquema
-// } from "./schemas";
 
-// const databaseOptions = {
-//   schema: [
-//     userSchema,
-//     contactSchema,
-//     chatSquema,
-//     messageSquema,
-//     BroadCasContacts,
-//     fileSchema
-//   ],
-//   schemaVersion: 1
-// };
 
-// const getRealm = () =>
-//   new Promise(resolve => {
-//     resolve(Realm.open(databaseOptions));
-//   });
+export default class CoreDatabase {
+  constructor(data) {
+    this.db = undefined
+  }
 
-export const writteUser = (instance, obj) =>
-  new Promise(async (resolve, reject) => {
-    try {
-      instance.write(() => {
-        instance.create(
-          "user",
-          {
-            uid: obj.uid,
-            name: obj.name,
-            picture: obj.picture,
-            chats: obj.chats
-          },
-          true
-        );
+  getUserData = () =>
+    new Promise(async resolve => {
+      const user = this.db.objects("user");
+      resolve(user.slice(0, 1));
+    });
+
+  writteUser = (obj) =>
+    new Promise(async (resolve, reject) => {
+
+      try {
+        this.db.write(() => {
+          this.db.create(
+            "user",
+            {
+              uid: obj.uid,
+              name: obj.name,
+              picture: obj.picture,
+              chats: obj.chats
+            },
+            true
+          );
+        });
+        resolve(obj);
+      } catch (e) {
+        reject(e);
+      }
+    });
+
+  cancelUnreadMessages = id =>
+    new Promise(resolve => {
+      this.db.write(() => {
+        if (id) {
+          const chat = this.db.objectForPrimaryKey("Chat", id);
+          notRead = chat.queue.slice();
+          chat.queue = [];
+
+          resolve(notRead);
+        } else {
+          resolve();
+        }
       });
-      resolve(obj);
-    } catch (e) {
-      reject(e);
-    }
-  });
+    });
+
+
+
+  cancelMessages = () =>
+    new Promise((resolve, reject) => {
+      this.db.write(() => {
+        const messages = this.db.objects("Message").filter(data => {
+          const timeCreated = moment(data.timestamp);
+          return (
+            moment().diff(timeCreated, "s") > 60 && data.status === "pending"
+          );
+        });
+
+        const msg = messages.slice();
+        messages.map((data, key) => {
+          messages[key].status = "not sent";
+        });
+        if (msg.length >= 1) {
+          resolve(msg.length);
+        }
+      });
+    });
+}
+
 
 // export const addContacts = (uid, obj, update) =>
 //   new Promise(async (resolve, reject) => {
@@ -79,13 +107,6 @@ export const writteUser = (instance, obj) =>
 //     });
 //   });
 
-// export const getUserData = () =>
-//   new Promise(async resolve => {
-//     Realm.open(databaseOptions).then(realm => {
-//       const user = realm.objects("user");
-//       resolve(user.slice(0, 1));
-//     });
-//   });
 
 // export const setMessage = (id, obj, status) =>
 //   new Promise(async (resolve, reject) => {
@@ -311,22 +332,7 @@ export const writteUser = (instance, obj) =>
 //     });
 //   });
 
-// export const cancelUnreadMessages = id =>
-//   new Promise(resolve => {
-//     Realm.open(databaseOptions).then(realm => {
-//       realm.write(() => {
-//         if (id) {
-//           const chat = realm.objectForPrimaryKey("Chat", id);
-//           notRead = chat.queue.slice();
-//           chat.queue = [];
 
-//           resolve(notRead);
-//         } else {
-//           resolve();
-//         }
-//       });
-//     });
-//   });
 
 // export const addStatusOnly = eventStatus =>
 //   new Promise((resolve, reject) => {
@@ -375,24 +381,3 @@ export const writteUser = (instance, obj) =>
 //     });
 //   });
 
-// export const cancelMessages = () =>
-//   new Promise((resolve, reject) => {
-//     Realm.open(databaseOptions).then(realm => {
-//       realm.write(() => {
-//         const messages = realm.objects("Message").filter(data => {
-//           const timeCreated = moment(data.timestamp);
-//           return (
-//             moment().diff(timeCreated, "s") > 60 && data.status === "pending"
-//           );
-//         });
-
-//         const msg = messages.slice();
-//         messages.map((data, key) => {
-//           messages[key].status = "not sent";
-//         });
-//         if (msg.length >= 1) {
-//           resolve(msg.length);
-//         }
-//       });
-//     });
-//   });

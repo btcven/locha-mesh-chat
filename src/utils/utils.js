@@ -3,7 +3,7 @@ import React from "react";
 import { ToastAndroid } from "react-native";
 import { PermissionsAndroid } from "react-native";
 import Identicon from "identicon.js";
-import { getMessageByTime, cancelMessages } from "../database/realmDatabase";
+import { database } from '../../App'
 import BackgroundTimer from "react-native-background-timer";
 import {
   realoadBroadcastChat,
@@ -41,7 +41,7 @@ async function requestStoragePermission() {
 
 export const pendingObservable = () => {
   BackgroundTimer.runBackgroundTimer(() => {
-    cancelMessages().then(res => {
+    database.cancelMessages().then(res => {
       store.dispatch(updateState());
     });
   }, 3000);
@@ -105,8 +105,6 @@ export const onNotification = res => {
       result.toUID === "broadcast"
         ? { ...res, name: result.toUID }
         : { ...res, name: result.name };
-
-    console.log("entro aqui??");
     notification.localNotif(allData, String(id).substr(2, 10));
   }
 };
