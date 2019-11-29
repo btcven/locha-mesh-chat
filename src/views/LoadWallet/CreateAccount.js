@@ -4,13 +4,14 @@ import { Text, View, TextInput, StyleSheet, Clipboard } from "react-native";
 import Modal from "react-native-modal";
 import { Formik } from 'formik'
 import PinView from "./PinView";
+import { androidToast } from "../../utils/utils"
 
 
 export default class CreateAccount extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      step: 3,
+      step: 1,
       seed: null
     }
   }
@@ -20,35 +21,56 @@ export default class CreateAccount extends Component {
   }
 
 
+  componentDidMount = () => {
+    if (this.props.restore) this.setState({ step: 4 })
+  }
+
   back = () => {
 
-    if (this.state.step === 1) {
+    if (this.state.step === 1 || this.state.step === 4) {
       this.props.close()
     } else {
       this.setState({ step: this.state.step - 1 })
     }
   }
 
-  continue = () => {
-    const seed = this.props.phrases.slice()
+  continue = (values) => {
+
+    if (!this.props.restore) {
+      const seed = this.props.phrases.slice()
+      while (seed.reduce((prev, curr) => prev + +(curr === ''), 0) < 6) {
+        const k = Math.floor(Math.random() * (seed.length - 1));
+        seed[k] = '';
+      }
+
+      this.setState({ seed, step: 2 })
+    } else {
 
 
-    while (seed.reduce((prev, curr) => prev + +(curr === ''), 0) < 1) {
-      const k = Math.floor(Math.random() * (seed.length - 1));
-      seed[k] = '';
+      for (let index = 0; index < values.length; index++) {
+        if (values[index] === "") {
+          androidToast(this.props.screenProps.t("Initial:error2"))
+          return
+        }
+      }
+      this.setState({ step: 3 })
     }
-
-    this.setState({ seed, step: 2 })
 
   }
 
   confirm = (values) => {
-    if (this.props.phrases.length !== values.length) return
+    if (this.props.phrases.length !== values.length) {
+      return
+    }
 
 
     for (let index = 0; index <= values.length; index++) {
-      if (values[index] !== this.props.phrases[index]) return
+      if (values[index] !== this.props.phrases[index]) {
+        androidToast("Initial:error3")
+        return
+      }
     }
+
 
     this.setState({ step: 3 })
 
@@ -62,11 +84,27 @@ export default class CreateAccount extends Component {
     })
   }
 
-  render() {
-    const { open, close, phrases, stringPhrases } = this.props;
-    const values = this.state.step !== 1 ? this.state.seed : phrases
+  restoreAccount = (pin, values) => {
+    let phrases
+    for (let index = 0; index < values.length; index++) {
+      if (index === 0) {
+        phrases = values[index]
+      } else {
 
-    console.log(stringPhrases)
+        phrases = phrases + " " + values[index]
+      }
+
+    }
+    this.props.restoreWithPhrase(pin, phrases)
+  }
+
+  render() {
+    const { open, close, phrases, stringPhrases, screenProps } = this.props;
+    const action = this.props.restore ? this.restoreAccount : this.createAccount
+    const values = (this.state.step !== 1 && this.state.step !== 4) ? this.state.seed : phrases
+    const rule = this.state.step === 1 || this.state.step === 4 ? true : false
+
+    console.log(rule)
     return (
       <Formik
         enableReinitialize
@@ -80,35 +118,47 @@ export default class CreateAccount extends Component {
                 onBackdropPress={() => close("openModalPhoto")}
                 swipeDirection={["up", "left", "right", "down"]}
                 style={{
-                  margin: 0
+                  margin: 0, justifyContent: "flex-end",
                 }}
               >
                 <View style={styles.container}>
                   {this.state.step === 1 &&
                     <View>
                       <Text style={{ textAlign: "center", padding: 10, fontSize: 23 }}>
-                        Confirm phrases
+                        {screenProps.t("Initial:titleCreateAccount")}
                       </Text>
                       <Text style={{ paddingHorizontal: 10 }}>
-                        You'll need to save your backup phrase in case this app deleted
+                        {screenProps.t("Initial:subTitleCreateAccount")}
                       </Text>
                     </View>}
 
                   {this.state.step === 2 &&
                     <View>
                       <Text style={{ textAlign: "center", padding: 10, fontSize: 23 }}>
-                        Create new Account
+                        {screenProps.t("Initial:titleConfirm")}
                       </Text>
-                      <Text style={{ paddingHorizontal: 10 }}>Please complete the backup phrase with missing words
+                      <Text style={{ paddingHorizontal: 10 }}>
+                        {screenProps.t("Initial:subTitleCorfirm")}
                       </Text>
                     </View>}
 
                   {this.state.step === 3 &&
                     <View>
                       <Text style={{ textAlign: "center", padding: 10, fontSize: 23 }}>
-                        Add your pin
+                        {screenProps.t("Initial:titlePin")}
                       </Text>
-                      <Text style={{ paddingHorizontal: 10 }}>It is very important that you remember the pin entered, with it you will have access to your account.
+                      <Text style={{ paddingHorizontal: 10 }}>
+                        {screenProps.t("Initial:subtitlePin")}
+                      </Text>
+                    </View>}
+
+                  {this.state.step === 4 &&
+                    <View>
+                      <Text style={{ textAlign: "center", padding: 10, fontSize: 23 }}>
+                        {screenProps.t("Initial:titleRestore")}
+                      </Text>
+                      <Text style={{ paddingHorizontal: 10 }}>
+                        {screenProps.t("Initial:subtitleRestore")}
                       </Text>
                     </View>}
                   <View style={styles.phrasesContainer}>
@@ -138,8 +188,7 @@ export default class CreateAccount extends Component {
                     })}
                   </View>
                   {this.state.step === 3 && < View >
-
-                    <PinView back={this.back} createAccount={this.createAccount} />
+                    <PinView back={this.back} createAccount={action} values={values} />
                   </View>}
 
                   <View style={styles.buttonContainer}>
@@ -152,10 +201,10 @@ export default class CreateAccount extends Component {
                         marginHorizontal: 10
                       }}
                     >
-                      <Text>{`atras`.toUpperCase()}</Text>
+                      <Text>{`${screenProps.t("Initial:back")}`.toUpperCase()}</Text>
                     </Button>}
-                    {this.state.step === 1 && <Button
-                      onPress={this.continue}
+                    {rule && <Button
+                      onPress={() => this.continue(values)}
                       style={{
                         marginHorizontal: 10,
                         justifyContent: "center",
@@ -163,7 +212,7 @@ export default class CreateAccount extends Component {
                         minWidth: 100
                       }}
                     >
-                      <Text>{`Continue`.toUpperCase()}</Text>
+                      <Text>{`${screenProps.t("Initial:next")}`.toUpperCase()}</Text>
                     </Button>}
 
                     {this.state.step === 2 && <Button
@@ -175,7 +224,7 @@ export default class CreateAccount extends Component {
                         minWidth: 100
                       }}
                     >
-                      <Text>{`Confirm`.toUpperCase()}</Text>
+                      <Text>{`${screenProps.t("Initial:confirm")}`.toUpperCase()}</Text>
                     </Button>}
                   </View>
                 </View>

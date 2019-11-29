@@ -8,6 +8,7 @@ export const ActionTypes = {
   LOADING_OFF: "@@aplication/LOADING_OFF",
   OPEN_MENU: "@@aplication/OPEN_MENU",
   CLOSE_MENU: "@@aplication/CLOSE_MENU",
+  APP_STATUS: "@@aplication/VERYFY_STATUS",
 
   //CONFIGURATION
   GET_PHOTO_USER: "@@configuration/GET_PHOTO",

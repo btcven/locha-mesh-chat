@@ -2,11 +2,7 @@ import AsyncStorage from "@react-native-community/async-storage";
 import RNFS from "react-native-fs";
 import { ActionTypes } from "../constants";
 import { createFolder, FileDirectory } from "../../utils/utils";
-import {
-  addContacts,
-  deleteContact,
-  editContact
-} from "../../database/realmDatabase";
+import { database } from '../../../App'
 
 /**
  * here are all the actions references to contacts
@@ -43,7 +39,7 @@ export const saveContact = (
     }
   ];
 
-  addContacts(id, obj).then(res => {
+  database.addContacts(id, obj).then(res => {
     obj.push(...lastContact);
     dispatch({
       type: ActionTypes.ADD_CONTACTS,
@@ -78,7 +74,7 @@ export const getContacts = () => async dispatch => {
  */
 
 export const deleteContactAction = (data, callback) => dispatch => {
-  deleteContact(data).then(res => {
+  database.deleteContact(data).then(res => {
     dispatch({
       type: ActionTypes.DELETE_CONTACT,
       payload: data
@@ -96,7 +92,7 @@ export const deleteContactAction = (data, callback) => dispatch => {
  */
 
 export const editContats = (obj, callback) => dispatch => {
-  editContact(obj).then(res => {
+  database.editContact(obj).then(res => {
     callback();
     dispatch({
       type: ActionTypes.EDIT_CONTACT,

@@ -1,13 +1,8 @@
 import { ActionTypes } from "../constants";
+import { STORAGE_KEY } from '../../utils/constans'
 import { createFolder, backgroundTimer } from "../../utils/utils";
-import {
-  writteUser,
-  getUserData,
-  cancelUnreadMessages
-} from "../../database/realmDatabase";
-import Seed from "../../database"
-
-import { bitcoin } from "../../../App";
+import { AsyncStorage } from 'react-native'
+import { bitcoin, database } from "../../../App";
 import Socket from "../../utils/socket";
 import store from "../../store";
 import { sha256 } from "js-sha256";
@@ -17,7 +12,7 @@ import { sha256 } from "js-sha256";
 /**
  * in this module are the global actions of the application
  * @module AplicationAction
- 
+
  */
 
 export let ws = undefined;
@@ -28,14 +23,15 @@ export let ws = undefined;
  *@returns {object}
  */
 
-export const InitialState = () => async dispatch => {
-  //backgroundTimer();
-  getUserData().then(async res => {
-    if (res.length >= 1) {
-      dispatch(writeAction(JSON.parse(JSON.stringify(res[0]))));
-      ws = new Socket(store);
-    }
-  });
+export const verifyAplicationState = () => async dispatch => {
+  const storage = await AsyncStorage.getItem(STORAGE_KEY)
+  if (storage) {
+    dispatch({
+      type: ActionTypes.APP_STATUS,
+      payload: storage
+    })
+  }
+
 };
 
 /**
@@ -45,32 +41,66 @@ export const InitialState = () => async dispatch => {
  * @param {string} obj.name The name of the user.
  */
 
-export const setInitialUser = obj => async dispatch => {
-  // dispatch(loading());
-  // await createFolder();
-  const result = await bitcoin.generateAddress();
-  // writteUser({
-  //   uid: result.publicKey.toString(),
-  //   name: obj.name,
-  //   image: null,
-  //   contacts: [],
-  //   chats: [
-  //     {
-  //       fromUID: result.publicKey.toString(),
-  //       toUID: "broadcast",
-  //       messages: []
-  //     }
-  //   ]
-  // }).then(res => {
-  //   dispatch(writeAction(res));
-  //   ws = new Socket(store);
-  // });
-};
 
+
+export const restoreAccountWithPin = (pin, callback) => dispatch => {
+  database.restoreWithPin(sha256(pin)).then(res => {
+    dispatch(writeAction(JSON.parse(JSON.stringify(res[0]))));
+    ws = new Socket(store, database);
+  }).catch(err => {
+    callback()
+  })
+}
 
 export const createNewAccount = (obj) => async dispatch => {
-  const seed = new Seed(sha256(obj.pin))
-  seed.getDataSeed(obj.pin)
+  await database.getRealm(sha256(obj.pin), sha256(obj.seed))
+  await database.setDataSeed(obj.seed);
+  await createFolder()
+  const result = await bitcoin.generateAddress(obj.seed);
+  database.writteUser({
+    uid: result.publicKey.toString(),
+    name: 'undefined',
+    image: null,
+    contacts: [],
+    chats: [
+      {
+        fromUID: result.publicKey.toString(),
+        toUID: "broadcast",
+        messages: []
+      }
+    ]
+  }).then(async res => {
+    dispatch(writeAction(res));
+    const STORAGE_KEY = "@APP:status";
+    await AsyncStorage.setItem(STORAGE_KEY, 'created')
+    ws = new Socket(store, database);
+  });
+}
+
+
+export const restoreWithPhrase = (pin, phrase) => dispatch => {
+  database.restoreWithPhrase(pin, phrase).then(async () => {
+    await createFolder()
+    const result = await bitcoin.generateAddress(phrase);
+    database.writteUser({
+      uid: result.publicKey.toString(),
+      name: 'undefined',
+      image: null,
+      contacts: [],
+      chats: [
+        {
+          fromUID: result.publicKey.toString(),
+          toUID: "broadcast",
+          messages: []
+        }
+      ]
+    }).then(async res => {
+      dispatch(writeAction(res));
+      const STORAGE_KEY = "@APP:status";
+      await AsyncStorage.setItem(STORAGE_KEY, 'created')
+      ws = new Socket(store, database);
+    });
+  })
 }
 
 /**

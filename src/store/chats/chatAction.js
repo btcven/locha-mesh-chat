@@ -1,18 +1,6 @@
 import { ActionTypes } from "../constants";
 import { generateName } from "../../utils/utils";
-import {
-  setMessage,
-  addTemporalInfo,
-  verifyContact,
-  getTemporalContact,
-  deleteChatss,
-  deleteMessage,
-  cleanChat,
-  unreadMessages,
-  addStatusOnly,
-  cancelUnreadMessages,
-  updateMessage
-} from "../../database/realmDatabase";
+import { database } from '../../../App'
 import { notification, FileDirectory } from "../../utils/utils";
 import { sendSocket } from "../../utils/socket";
 import { sha256 } from "js-sha256";
@@ -37,7 +25,10 @@ import RNFS from "react-native-fs";
 
 export const initialChat = (data, status) => dispatch => {
   let uidChat = data.toUID ? data.toUID : "broadcast";
-  setMessage(uidChat, { ...data }, status).then(res => {
+  database.setMessage(uidChat, { ...data }, status).then(res => {
+    console.log(sendSocket);
+
+
     sendSocket.send(JSON.stringify(data));
     dispatch({
       type: ActionTypes.NEW_MESSAGE,
@@ -71,7 +62,7 @@ export const broadcastRandomData = async (parse, id) =>
     const store = require("../../store");
     const userData = id ? id : store.default.getState().config.uid;
     if (sha256(userData) !== parse.fromUID) {
-      verifyContact(parse.fromUID).then(res => {
+      database.verifyContact(parse.fromUID).then(res => {
         if (res) {
           resolve(res);
         } else {
@@ -113,7 +104,7 @@ export const getChat = data => async dispatch => {
   const parse = JSON.parse(data);
   let infoMensagge = undefined;
   if (parse.type !== "status") {
-    sendStatus(parse);
+    database.sendStatus(parse);
     if (!parse.toUID) {
       infoMensagge = await broadcastRandomData(parse);
     }
@@ -124,7 +115,7 @@ export const getChat = data => async dispatch => {
 
     let uidChat = parse.toUID ? parse.fromUID : "broadcast";
     let name = infoMensagge ? infoMensagge.name : undefined;
-    setMessage(uidChat, { ...parse, name: name }, "delivered").then(res => {
+    database.setMessage(uidChat, { ...parse, name: name }, "delivered").then(res => {
       dispatch({
         type: ActionTypes.NEW_MESSAGE,
         payload: {
@@ -213,7 +204,7 @@ export const realoadBroadcastChat = data => {
  */
 
 export const deleteChat = (obj, callback) => dispatch => {
-  deleteChatss(obj).then(() => {
+  database.deleteChatss(obj).then(() => {
     dispatch({
       type: ActionTypes.DELETE_MESSAGE,
       payload: obj
@@ -229,7 +220,7 @@ export const deleteChat = (obj, callback) => dispatch => {
  */
 
 export const cleanAllChat = id => dispatch => {
-  cleanChat(id).then(() => {
+  database.cleanChat(id).then(() => {
     dispatch({
       type: ActionTypes.DELETE_ALL_MESSAGE,
       payload: id
@@ -250,7 +241,7 @@ export const sendMessageWithFile = (data, path, base64) => dispatch => {
   let uidChat = data.toUID ? data.toUID : "broadcast";
   const saveDatabase = Object.assign({}, data);
   saveDatabase.msg.file = path;
-  setMessage(uidChat, { ...saveDatabase }, "pending").then(res => {
+  database.setMessage(uidChat, { ...saveDatabase }, "pending").then(res => {
     saveDatabase.msg.file = base64;
     sendSocket.send(JSON.stringify(saveDatabase));
     dispatch({
@@ -269,7 +260,7 @@ export const sendMessageWithFile = (data, path, base64) => dispatch => {
 };
 
 export const deleteMessages = (id, data, callback) => dispatch => {
-  deleteMessage(id, data).then(res => {
+  database.deleteMessage(id, data).then(res => {
     dispatch({
       type: ActionTypes.DELETE_SELECTED_MESSAGE,
       id: id,
@@ -280,7 +271,7 @@ export const deleteMessages = (id, data, callback) => dispatch => {
 };
 
 export const messageQueue = (index, id, view) => dispatch => {
-  unreadMessages(view, id).then(time => {
+  database.unreadMessages(view, id).then(time => {
     dispatch({
       type: ActionTypes.UNREAD_MESSAGES,
       index,
@@ -331,7 +322,7 @@ export const sendStatus = data => {
  */
 
 export const setView = idChat => dispatch => {
-  cancelUnreadMessages(idChat).then(res => {
+  database.cancelUnreadMessages(idChat).then(res => {
     const store = require("../../store");
     const state = store.default.getState();
 
@@ -365,7 +356,7 @@ export const sendReadMessageStatus = data => dispatch => {
 };
 
 export const sendAgain = message => dispatch => {
-  updateMessage(message).then(() => {
+  database.updateMessage(message).then(() => {
     const sendObject = {
       fromUID: message.fromUID,
       toUID: message.toUID,

@@ -2,17 +2,19 @@ import React, { Component } from "react";
 import Footer from "./components/Footer";
 import { connect } from "react-redux";
 import { route } from "./store/aplication/aplicationAction";
-import { StyleSheet, View, Alert } from "react-native";
+import { StyleSheet, View, Alert, Text } from "react-native";
 import Home from "./views/home";
 import Contact from "./views/contacts";
 import Config from "./views/config";
 import LoadWallet from "./views/LoadWallet";
+import RestoreWithPing from './views/LoadWallet/RestoreWithPin'
 import Spinner from "./components/Spinner";
-import NotifService from "./utils/notificationService";
 import { selectedChat } from "./store/chats";
 import { AsyncStorage } from "react-native";
-import { realmObservable } from "./database/realmDatabase";
 import i18n from "./i18n/index";
+import { database } from '../App'
+
+
 
 /**
  *
@@ -30,7 +32,7 @@ class DualComponent extends Component {
   };
 
   componentDidMount = async () => {
-    realmObservable();
+    // database.realmObservable();
     const lng = await AsyncStorage.getItem("@APP:languageCode");
     if (lng) {
       i18n.changeLanguage(lng);
@@ -38,9 +40,11 @@ class DualComponent extends Component {
   };
 
   render() {
+    const open = !this.props.user && this.props.status ? true : false
+
     return (
       <View style={styles.container}>
-        {/* {this.props.loading && <Spinner />} */}
+        {this.props.loading && <Spinner />}
         {this.props.user && (
           <View style={styles.container}>
             {this.props.tabPosition === 1 && <Home {...this.props} />}
@@ -54,20 +58,23 @@ class DualComponent extends Component {
           {!this.props.user && (
             <LoadWallet screenProps={this.props.screenProps} />
           )}
+
+          <RestoreWithPing open={open} screenProps={this.props.screenProps} />
+
         </View>
       </View>
     );
   }
 }
 
-export let notify = {};
 
 const mapStateToProps = state => ({
   tabPosition: state.aplication.tab,
   user: state.config.uid,
   chat: state.chats.chat,
   loading: state.aplication.loading,
-  view: state.aplication.view
+  view: state.aplication.view,
+  status: state.aplication.appStatus
 });
 
 export default connect(mapStateToProps, { route, selectedChat })(DualComponent);

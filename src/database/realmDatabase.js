@@ -1,38 +1,26 @@
-import Realm from "realm";
+
 import moment from "moment";
 import { onNotification } from "../utils/utils";
-import Store from "../store";
-import {
-  userSchema,
-  contactSchema,
-  chatSquema,
-  BroadCasContacts,
-  messageSquema
-} from "./schemas";
+// import Store from "../store";
 
-const databaseOptions = {
-  schema: [
-    userSchema,
-    contactSchema,
-    chatSquema,
-    messageSquema,
-    BroadCasContacts,
-    fileSchema
-  ],
-  schemaVersion: 19
-};
 
-const getRealm = () =>
-  new Promise(resolve => {
-    resolve(Realm.open(databaseOptions));
-  });
+export default class CoreDatabase {
+  constructor(data) {
+    this.db = undefined
+  }
 
-export const writteUser = obj =>
-  new Promise(async (resolve, reject) => {
-    Realm.open(databaseOptions).then(realm => {
+  getUserData = () =>
+    new Promise(async resolve => {
+      const user = this.db.objects("user");
+      resolve(user.slice(0, 1));
+    });
+
+  writteUser = (obj) =>
+    new Promise(async (resolve, reject) => {
+
       try {
-        realm.write(() => {
-          realm.create(
+        this.db.write(() => {
+          this.db.create(
             "user",
             {
               uid: obj.uid,
@@ -48,13 +36,49 @@ export const writteUser = obj =>
         reject(e);
       }
     });
-  });
 
-export const addContacts = (uid, obj, update) =>
-  new Promise(async (resolve, reject) => {
-    Realm.open(databaseOptions).then(realm => {
-      realm.write(() => {
-        let user = realm.objectForPrimaryKey("user", uid);
+  cancelUnreadMessages = id =>
+    new Promise(resolve => {
+      this.db.write(() => {
+        if (id) {
+          const chat = this.db.objectForPrimaryKey("Chat", id);
+          notRead = chat.queue.slice();
+          chat.queue = [];
+
+          resolve(notRead);
+        } else {
+          resolve();
+        }
+      });
+    });
+
+
+
+  cancelMessages = () =>
+    new Promise((resolve, reject) => {
+      this.db.write(() => {
+        const messages = this.db.objects("Message").filter(data => {
+          const timeCreated = moment(data.timestamp);
+          return (
+            moment().diff(timeCreated, "s") > 60 && data.status === "pending"
+          );
+        });
+
+        const msg = messages.slice();
+        messages.map((data, key) => {
+          messages[key].status = "not sent";
+        });
+        if (msg.length >= 1) {
+          resolve(msg.length);
+        }
+      });
+    });
+
+  addContacts = (uid, obj, update) =>
+    new Promise(async (resolve, reject) => {
+
+      this.db.write(() => {
+        let user = this.db.objectForPrimaryKey("user", uid);
 
         user.contacts.push({
           uid: obj[0].uid,
@@ -79,28 +103,20 @@ export const addContacts = (uid, obj, update) =>
         });
       });
     });
-  });
 
-export const getUserData = () =>
-  new Promise(async resolve => {
-    Realm.open(databaseOptions).then(realm => {
-      const user = realm.objects("user");
-      resolve(user.slice(0, 1));
-    });
-  });
 
-export const setMessage = (id, obj, status) =>
-  new Promise(async (resolve, reject) => {
-    Realm.open(databaseOptions).then(realm => {
-      realm.write(() => {
+  setMessage = (id, obj, status) =>
+    new Promise(async (resolve, reject) => {
+
+      this.db.write(() => {
         try {
-          let chat = realm.objectForPrimaryKey("Chat", id);
+          let chat = this.db.objectForPrimaryKey("Chat", id);
           const time = new Date().getTime();
           const file = obj.msg.typeFile
             ? {
-                fileType: obj.msg.typeFile,
-                file: obj.msg.file
-              }
+              fileType: obj.msg.typeFile,
+              file: obj.msg.file
+            }
             : null;
 
           chat.messages.push({
@@ -116,56 +132,51 @@ export const setMessage = (id, obj, status) =>
           console.log("function setMessage", err);
         }
       });
-    });
-  });
 
-export const addTemporalInfo = obj =>
-  new Promise(resolve => {
-    Realm.open(databaseOptions).then(realm => {
-      realm.write(() => {
-        realm.create("temporalContacts", {
+    });
+
+  addTemporalInfo = obj =>
+    new Promise(resolve => {
+
+      this.db.write(() => {
+        this.db.create("temporalContacts", {
           ...obj
         });
         resolve(obj);
       });
     });
-  });
 
-export const verifyContact = hashUID =>
-  new Promise(resolve => {
-    Realm.open(databaseOptions).then(realm => {
-      const contact = realm.objects("Contact").find(data => {
+  verifyContact = hashUID =>
+    new Promise(resolve => {
+      const contact = this.db.objects("Contact").find(data => {
         return data.hashUID === hashUID;
       });
       resolve(contact);
-    });
-  });
 
-export const getTemporalContact = id =>
-  new Promise(resolve => {
-    Realm.open(databaseOptions).then(realm => {
-      temporal = realm.objectForPrimaryKey("temporalContacts", id);
+    });
+
+  getTemporalContact = id =>
+    this.db.open(databaseOptions).then(realm => {
+      temporal = this.db.objectForPrimaryKey("temporalContacts", id);
       if (temporal) {
         resolve(JSON.parse(JSON.stringify(temporal)));
       } else {
         resolve(undefined);
       }
     });
-  });
 
-export const getMessageByTime = () =>
-  new Promise(resolve => {
-    const currentTime = moment();
-    Realm.open(databaseOptions).then(realm => {
+  getMessageByTime = () =>
+    new Promise(resolve => {
+      const currentTime = moment();
       realm.write(() => {
-        const data = realm.objects("Message").filtered("toUID == null");
-        const temporalNames = realm.objects("temporalContacts").filter(data => {
+        const data = this.db.objects("Message").filtered("toUID == null");
+        const temporalNames = this.db.objects("temporalContacts").filter(data => {
           const timeCreated = moment(data.timestamp);
           return currentTime.diff(timeCreated, "h") > 48;
         });
         if (data.length > 500) {
           let result = data.slice(0, 500);
-          realm.delete(result);
+          this.db.delete(result);
         }
 
         let newData = data.filter(data => {
@@ -173,18 +184,18 @@ export const getMessageByTime = () =>
           return currentTime.diff(timeCreated, "h") > 48;
         });
 
-        realm.delete(newData);
-        realm.delete(temporalNames);
+        this.db.delete(newData);
+        this.db.delete(temporalNames);
         resolve(JSON.parse(JSON.stringify(data)));
       });
     });
-  });
 
-export const deleteContact = data =>
-  new Promise(resolve => {
-    Realm.open(databaseOptions).then(realm => {
-      realm.write(() => {
-        const contact = realm.objects("Contact").filter(contact => {
+
+  deleteContact = data =>
+    new Promise(resolve => {
+
+      this.db.write(() => {
+        const contact = this.db.objects("Contact").filter(contact => {
           let result = data.find(element => {
             return contact.uid === element.uid;
           });
@@ -194,7 +205,7 @@ export const deleteContact = data =>
           }
         });
 
-        const chats = realm.objects("Chat").filter(chat => {
+        const chats = this.db.objects("Chat").filter(chat => {
           const resultContact = contact.find(cont => {
             return cont.hashUID === chat.toUID;
           });
@@ -204,50 +215,43 @@ export const deleteContact = data =>
           }
         });
 
-        realm.delete(chats);
-        realm.delete(contact);
+        this.db.delete(chats);
+        this.db.delete(contact);
 
         resolve(contact);
       });
     });
-  });
 
-export const editContact = object =>
-  new Promise(resolve => {
-    Realm.open(databaseOptions).then(realm => {
-      realm.write(() => {
-        realm.create(
-          "Contact",
-          {
-            ...object
-          },
-          true
-        );
-        resolve(object);
-      });
+  editContact = object => new Promise(resolve => {
+    this.db.write(() => {
+      this.db.create(
+        "Contact",
+        {
+          ...object
+        },
+        true
+      );
+      resolve(object);
+
     });
-  });
+  })
 
-const listener = (chats, changes) => {
-  changes.insertions.forEach(index => {
-    let changeChat = chats[index];
-    onNotification(JSON.parse(JSON.stringify(changeChat)));
-  });
-};
+  listener = (chats, changes) => {
+    changes.insertions.forEach(index => {
+      let changeChat = chats[index];
+      onNotification(JSON.parse(JSON.stringify(changeChat)));
+    });
+  };
 
-export const realmObservable = () => {
-  Realm.open(databaseOptions).then(realm => {
-    let chats = realm.objects("Message");
-
+  realmObservable = () => {
+    let chats = this.db.objects("Message");
     chats.addListener(listener);
-  });
-};
+  };
 
-export const deleteChatss = obj =>
-  new Promise(resolve => {
-    Realm.open(databaseOptions).then(realm => {
-      realm.write(() => {
-        const chat = realm.objects("Chat").filter(msg => {
+  deleteChatss = obj =>
+    new Promise(resolve => {
+      this.db.write(() => {
+        const chat = this.db.objects("Chat").filter(msg => {
           const result = obj.find(data => {
             return data.toUID === msg.toUID;
           });
@@ -258,31 +262,30 @@ export const deleteChatss = obj =>
         });
 
         chat.forEach(msg => {
-          realm.delete(msg.messages);
+          this.db.delete(msg.messages);
         });
 
         resolve(obj);
       });
     });
-  });
 
-export const cleanChat = id =>
-  new Promise(resolve => {
-    Realm.open(databaseOptions).then(realm => {
-      realm.write(() => {
-        const chat = realm.objectForPrimaryKey("Chat", id);
 
-        realm.delete(chat.messages);
+  cleanChat = id =>
+    new Promise(resolve => {
+
+      this.db.write(() => {
+        const chat = this.db.objectForPrimaryKey("Chat", id);
+
+        this.db.delete(chat.messages);
         resolve();
       });
     });
-  });
 
-export const deleteMessage = (id, obj) =>
-  new Promise(resolve => {
-    Realm.open(databaseOptions).then(realm => {
-      realm.write(() => {
-        const chat = realm.objectForPrimaryKey("Chat", id);
+
+  deleteMessage = (id, obj) =>
+    new Promise(resolve => {
+      this.db.write(() => {
+        const chat = this.db.objectForPrimaryKey("Chat", id);
 
         const messages = chat.messages.filter(data => {
           const result = obj.find(message => {
@@ -292,50 +295,33 @@ export const deleteMessage = (id, obj) =>
           return result;
         });
 
-        realm.delete(messages);
+        this.db.delete(messages);
         resolve();
       });
     });
-  });
 
-export const unreadMessages = (id, idMessage) =>
-  new Promise((resolve, reject) => {
-    Realm.open(databaseOptions).then(realm => {
-      realm.write(() => {
+
+  unreadMessages = (id, idMessage) =>
+    new Promise((resolve, reject) => {
+      this.db.write(() => {
         const time = new Date().getTime();
-        const chat = realm.objectForPrimaryKey("Chat", id);
+        const chat = this.db.objectForPrimaryKey("Chat", id);
         try {
           chat.queue.push(idMessage);
           chat.timestamp = time;
           resolve(time);
-        } catch (err) {}
+        } catch (err) { }
       });
     });
-  });
 
-export const cancelUnreadMessages = id =>
-  new Promise(resolve => {
-    Realm.open(databaseOptions).then(realm => {
-      realm.write(() => {
-        if (id) {
-          const chat = realm.objectForPrimaryKey("Chat", id);
-          notRead = chat.queue.slice();
-          chat.queue = [];
 
-          resolve(notRead);
-        } else {
-          resolve();
-        }
-      });
-    });
-  });
 
-export const addStatusOnly = eventStatus =>
-  new Promise((resolve, reject) => {
-    Realm.open(databaseOptions).then(realm => {
-      realm.write(() => {
+
+  addStatusOnly = eventStatus =>
+    new Promise((resolve, reject) => {
+      this.db.write(() => {
         try {
-          const message = realm.objectForPrimaryKey(
+          const message = this.db.objectForPrimaryKey(
             "Message",
             eventStatus.data.msgID
           );
@@ -345,7 +331,7 @@ export const addStatusOnly = eventStatus =>
         } catch (err) {
           if (Array.isArray(eventStatus.data.msgID)) {
             eventStatus.data.msgID.map(id => {
-              const message = realm.objectForPrimaryKey("Message", id);
+              const message = this.db.objectForPrimaryKey("Message", id);
               message.status = eventStatus.data.status;
             });
             resolve();
@@ -353,14 +339,13 @@ export const addStatusOnly = eventStatus =>
         }
       });
     });
-  });
 
-export const updateMessage = message =>
-  new Promise((resolve, reject) => {
-    Realm.open(databaseOptions).then(realm => {
-      realm.write(() => {
+
+  updateMessage = message =>
+    new Promise((resolve, reject) => {
+      this.db.write(() => {
         try {
-          realm.create(
+          this.db.create(
             "Message",
             {
               ...message,
@@ -375,26 +360,7 @@ export const updateMessage = message =>
         }
       });
     });
-  });
 
-export const cancelMessages = () =>
-  new Promise((resolve, reject) => {
-    Realm.open(databaseOptions).then(realm => {
-      realm.write(() => {
-        const messages = realm.objects("Message").filter(data => {
-          const timeCreated = moment(data.timestamp);
-          return (
-            moment().diff(timeCreated, "s") > 60 && data.status === "pending"
-          );
-        });
+}
 
-        const msg = messages.slice();
-        messages.map((data, key) => {
-          messages[key].status = "not sent";
-        });
-        if (msg.length >= 1) {
-          resolve(msg.length);
-        }
-      });
-    });
-  });
+

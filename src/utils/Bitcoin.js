@@ -25,14 +25,12 @@ export default class Bitcoin {
    * @memberof Bitcoin
    * @description generate the private key and public key
    */
-  
-  generateAddress = async () => {
-    let code;
-    code = new Mnemonic();
-    const password = "";
+
+  generateAddress = async (seed) => {
+    code = new Mnemonic(seed);
 
     var hdPrivateKey = code.toHDPrivateKey(
-      password,
+      '',
       networkConfiguration.network_data
     );
 
