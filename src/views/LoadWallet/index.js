@@ -6,8 +6,8 @@ import {
   AsyncStorage,
   Image
 } from "react-native";
-import { Form, Input, Item, Label, Icon, Button, Text } from "native-base";
-import { setInitialUser, createNewAccount } from "../../store/aplication/aplicationAction";
+import { Button, Text } from "native-base";
+import { setInitialUser, createNewAccount, restoreWithPhrase } from "../../store/aplication/aplicationAction";
 import { connect } from "react-redux";
 import crypto from "crypto";
 import Mnemonic from "bitcore-mnemonic";
@@ -28,47 +28,41 @@ class InitialStep extends Component {
       userName: "",
       password: "",
       phrases: null,
-      step: 1
+      open: false,
+      restore: false,
     };
   }
 
   close = step => {
-    this.setState({ step: 1 });
+    this.setState({ open: false });
   };
 
   handleSubmit = () => {
-    this.setState({ step: 2 });
-    // const obj = {
-    //   name: this.state.userName,
-    //   password: this.state.password
-    // };
-
-    // this.props.setInitialUser(obj);
+    const code = new Mnemonic();
+    this.setState({ phrases: code.toString().split(" "), open: true, stringPhrases: code.toString() });
   };
 
-  componentDidMount = async () => {
-    const code =  new Mnemonic();
-    this.setState({ phrases: code.toString().split(" "), stringPhrases: code.toString() });
-  };
+
+  restore = () => {
+    const array = ['', '', '', '', '', '', '', '', '', '', '', '']
+    this.setState({ open: true, restore: true, phrases: array })
+  }
 
   render() {
     const { screenProps } = this.props;
-    const restore = this.state.step === 2 ? true : false;
-
-    const disabled =
-      this.state.userName.length > 0 && this.state.password.length > 0
-        ? false
-        : true;
 
     return (
       <View style={styles.container}>
-        {restore && (
+        {this.state.open && (
           <CreateAccount
             phrases={this.state.phrases}
             close={this.close}
-            open={restore}
+            open={this.state.open}
             stringPhrases={this.state.stringPhrases}
             createNewAccount={this.props.createNewAccount}
+            restore={this.state.restore}
+            restoreWithPhrase={this.props.restoreWithPhrase}
+            screenProps={screenProps}
           />
         )}
         <>
@@ -119,7 +113,7 @@ class InitialStep extends Component {
                 flex: 1
               }}
             >
-              <Button onPress={this.handleSubmit} transparent>
+              <Button onPress={this.restore} transparent>
                 <Text style={{ color: "#fbc233", fontWeight: "bold" }}>
                   {screenProps.t("Initial:restore")}
                 </Text>
@@ -127,7 +121,7 @@ class InitialStep extends Component {
 
               <Button transparent onPress={this.handleSubmit}>
                 <Text style={{ color: "#fbc233", fontWeight: "bold" }}>
-                  {screenProps.t("Initial:next")}
+                  {screenProps.t("Initial:create")}
                 </Text>
               </Button>
             </View>
@@ -138,7 +132,7 @@ class InitialStep extends Component {
   }
 }
 
-export default connect(null, { setInitialUser, createNewAccount })(InitialStep);
+export default connect(null, { setInitialUser, createNewAccount, restoreWithPhrase })(InitialStep);
 
 const styles = StyleSheet.create({
   container: {

@@ -41,35 +41,14 @@ export const verifyAplicationState = () => async dispatch => {
  * @param {string} obj.name The name of the user.
  */
 
-export const setInitialUser = obj => async dispatch => {
-  // dispatch(loading());
-  // await createFolder();
-  const result = await bitcoin.generateAddress();
-  // writteUser({
-  //   uid: result.publicKey.toString(),
-  //   name: obj.name,
-  //   image: null,
-  //   contacts: [],
-  //   chats: [
-  //     {
-  //       fromUID: result.publicKey.toString(),
-  //       toUID: "broadcast",
-  //       messages: []
-  //     }
-  //   ]
-  // }).then(res => {
-  //   dispatch(writeAction(res));
-  //   ws = new Socket(store);
-  // });
 
 
-};
-
-
-export const restoreAccountWithPin = (pin) => dispatch => {
+export const restoreAccountWithPin = (pin, callback) => dispatch => {
   database.restoreWithPin(sha256(pin)).then(res => {
     dispatch(writeAction(JSON.parse(JSON.stringify(res[0]))));
     ws = new Socket(store, database);
+  }).catch(err => {
+    callback()
   })
 }
 
@@ -80,7 +59,7 @@ export const createNewAccount = (obj) => async dispatch => {
   const result = await bitcoin.generateAddress(obj.seed);
   database.writteUser({
     uid: result.publicKey.toString(),
-    name: 'kevin',
+    name: 'undefined',
     image: null,
     contacts: [],
     chats: [
@@ -96,6 +75,32 @@ export const createNewAccount = (obj) => async dispatch => {
     await AsyncStorage.setItem(STORAGE_KEY, 'created')
     ws = new Socket(store, database);
   });
+}
+
+
+export const restoreWithPhrase = (pin, phrase) => dispatch => {
+  database.restoreWithPhrase(pin, phrase).then(async () => {
+    await createFolder()
+    const result = await bitcoin.generateAddress(phrase);
+    database.writteUser({
+      uid: result.publicKey.toString(),
+      name: 'undefined',
+      image: null,
+      contacts: [],
+      chats: [
+        {
+          fromUID: result.publicKey.toString(),
+          toUID: "broadcast",
+          messages: []
+        }
+      ]
+    }).then(async res => {
+      dispatch(writeAction(res));
+      const STORAGE_KEY = "@APP:status";
+      await AsyncStorage.setItem(STORAGE_KEY, 'created')
+      ws = new Socket(store, database);
+    });
+  })
 }
 
 /**

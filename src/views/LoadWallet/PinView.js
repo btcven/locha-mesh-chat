@@ -8,7 +8,8 @@ export default class PinView extends Component {
         super(props);
         this.state = {
             pin: ['', '', '', ''],
-            buttons: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0']
+            buttons: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'],
+            values: props.values
         }
     }
 
@@ -19,7 +20,7 @@ export default class PinView extends Component {
         result.push(penultimate)
         result.push('delete')
 
-        this.setState({ buttons: result })
+        this.setState({ buttons: result, })
     }
 
 
@@ -29,8 +30,8 @@ export default class PinView extends Component {
             this.state.pin.map(arr => {
                 pin += arr
             })
-
-            this.props.createAccount(pin)
+            this.setState({ pin: ['', '', '', ''] })
+            this.props.createAccount(pin, this.state.values)
         }
     }
 
@@ -88,7 +89,7 @@ export default class PinView extends Component {
 
 
     render() {
-
+        console.log(this.props.values)
         return (
             <>
                 <View style={styles.numberContainer}>

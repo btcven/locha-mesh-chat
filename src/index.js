@@ -59,8 +59,7 @@ class DualComponent extends Component {
             <LoadWallet screenProps={this.props.screenProps} />
           )}
 
-
-          <RestoreWithPing open={open} />
+          <RestoreWithPing open={open} screenProps={this.props.screenProps} />
 
         </View>
       </View>

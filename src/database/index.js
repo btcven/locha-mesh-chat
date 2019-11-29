@@ -52,30 +52,11 @@ export default class Database extends CoreDatabase {
 
 
     getRealm = (key, key2) => new Promise((resolve, reject) => {
-        const keySeed = this.toByteArray(key)
-        const keyDatabase = this.toByteArray(key2)
+        options.encryptionKey = this.toByteArray(key)
+        optionsDatabase.encryptionKey = this.toByteArray(key2)
         try {
-            this.seed = new Realm({
-                schema: [
-                    seed,
-                ],
-                path: 'seed.realm',
-                schemaVersion: 2,
-                encryptionKey: keySeed
-            })
-
-            this.db = new Realm({
-                schema: [
-                    userSchema,
-                    contactSchema,
-                    chatSquema,
-                    messageSquema,
-                    BroadCasContacts,
-                    fileSchema
-                ],
-                encryptionKey: keyDatabase,
-                schemaVersion: 16
-            })
+            this.seed = new Realm(options)
+            this.db = new Realm(optionsDatabase)
 
             resolve(this.db)
         } catch (err) {
@@ -95,7 +76,7 @@ export default class Database extends CoreDatabase {
             const userData = await this.getUserData()
             resolve(userData);
         } catch (err) {
-            console.log(err)
+            reject(err)
         }
     })
 
@@ -115,4 +96,17 @@ export default class Database extends CoreDatabase {
             console.log("2", err)
         }
     })
+
+    restoreWithPhrase = (pin, phrase) => new Promise(resolve => {
+        this.getRealm(sha256(pin), sha256(phrase)).then(data => {
+            this.setDataSeed(phrase).then(() => {
+                resolve()
+            })
+        })
+    })
+
 }
+
+
+
+
