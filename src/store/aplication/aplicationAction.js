@@ -69,6 +69,7 @@ export const setInitialUser = obj => async dispatch => {
 export const restoreAccountWithPin = (pin) => dispatch => {
   database.restoreWithPin(sha256(pin)).then(res => {
     dispatch(writeAction(JSON.parse(JSON.stringify(res[0]))));
+    ws = new Socket(store, database);
   })
 }
 

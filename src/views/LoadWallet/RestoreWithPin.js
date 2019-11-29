@@ -6,16 +6,9 @@ import { restoreAccountWithPin } from '../../store/aplication/aplicationAction'
 import { connect } from "react-redux"
 
 class RestoreWithPin extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-        };
-    }
-
-
+  
     restoreAccount = (pin) => {
-
-        this.props.restoreAccountWithPin(pin)
+       this.props.restoreAccountWithPin(pin)
     }
 
 
@@ -59,5 +52,9 @@ const styles = StyleSheet.create({
         backgroundColor: "white", borderRadius: 5,
         marginHorizontal: 5
     },
-    viewContainer: { flexDirection: "row", justifyContent: 'center', padding: 20 }
+    viewContainer: {
+        flexDirection: "row",
+        justifyContent: 'center',
+        padding: 20
+    }
 })

@@ -3,6 +3,7 @@ import AsyncStorage from "@react-native-community/async-storage";
 import RNFS from "react-native-fs";
 import { ActionTypes } from "../constants";
 import { createFolder } from "../../utils/utils";
+import { database } from '../../../App'
 import { writteUser, getUserData } from "../../database/realmDatabase";
 
 /**
@@ -28,7 +29,7 @@ export const getPhotosFromUser = (id, callback) => async dispatch => {
     const newPath = `file:///${directory}/${name}`;
     RNFS.moveFile(images.path, newPath).then(async res => {
       await deletePhotoFromPhone();
-      writteUser({ uid: id, picture: newPath }).then(async res => {
+      database.writteUser({ uid: id, picture: newPath }).then(async res => {
         callback();
         dispatch({
           type: ActionTypes.GET_PHOTO_USER,
@@ -58,7 +59,7 @@ const getName = data => {
  */
 
 const deletePhotoFromPhone = async () => {
-  getUserData("user").then(async res => {
+  database.getUserData("user").then(async res => {
     const parse = JSON.parse(JSON.stringify(res));
     if (parse.picture) {
       await RNFS.exists(parse.picture).then(async res => {
@@ -87,7 +88,7 @@ export const openCamera = (id, callback) => async dispatch => {
     const newPath = `file:///${directory}/${name}`;
     RNFS.moveFile(images.path, newPath).then(async () => {
       await deletePhotoFromPhone();
-      writteUser({
+      database.writteUser({
         uid: id,
         picture: newPath
       }).then(async res => {
@@ -112,7 +113,7 @@ export const openCamera = (id, callback) => async dispatch => {
  */
 
 export const editName = (obj, callback) => async dispatch => {
-  writteUser({ ...obj, id: obj.uid }).then(res => {
+  database.writteUser({ ...obj, id: obj.uid }).then(res => {
     callback();
     dispatch({
       type: ActionTypes.EDIT_NAME,

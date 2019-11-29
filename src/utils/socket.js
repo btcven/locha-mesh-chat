@@ -36,7 +36,9 @@ export default class Socket {
   checkingSocketStatus = store => {
     this.idInterval = setInterval(() => {
       if (this.socket.readyState !== 1 && this.socket.readyState !== 3) {
-        this.store.dispatch(loading());
+        if (!store.getState().aplication.loading) {
+          this.store.dispatch(loading());
+        }
       } else if (this.socket.readyState === 3) {
         this.closeTimmer();
       } else {

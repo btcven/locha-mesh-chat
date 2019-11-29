@@ -11,8 +11,8 @@ import RestoreWithPing from './views/LoadWallet/RestoreWithPin'
 import Spinner from "./components/Spinner";
 import { selectedChat } from "./store/chats";
 import { AsyncStorage } from "react-native";
-import { realmObservable } from "./database/realmDatabase";
 import i18n from "./i18n/index";
+import { database } from '../App'
 
 
 
@@ -32,7 +32,7 @@ class DualComponent extends Component {
   };
 
   componentDidMount = async () => {
-    // realmObservable();
+    // database.realmObservable();
     const lng = await AsyncStorage.getItem("@APP:languageCode");
     if (lng) {
       i18n.changeLanguage(lng);
