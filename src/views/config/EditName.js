@@ -39,12 +39,15 @@ export default class EditName extends Component {
           }}
           avoidKeyboard={true}
           isVisible={open}
+          animationIn="slideInUp"
+          animationOut="slideOutDown"
+          animationOutTiming={800}
           onBackdropPress={() => close("openModalName")}
         >
           <View
             style={{
-              backgroundColor: "#fff",
-              width: "100%"
+              backgroundColor: "white", borderRadius: 5,
+              marginHorizontal: 5
             }}
           >
             <Text style={styles.titleModal}>

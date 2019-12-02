@@ -41,7 +41,9 @@ export default class ViewQR extends Component {
           }}
           avoidKeyboard={true}
           isVisible={open}
-          swipeDirection={["up", "left", "right", "down"]}
+          animationIn="slideInUp"
+          animationOut="slideOutDown"
+          animationOutTiming={800}
           onBackdropPress={() => close("viewQR")}
         >
           <View
@@ -72,7 +74,7 @@ export default class ViewQR extends Component {
               }}
             >
               <Text style={{ textAlign: "center" }}>
-                Escannee el codigo QR para agregar como contacto
+                {screenProps.t("Settings:qrText")}
               </Text>
             </View>
           </View>

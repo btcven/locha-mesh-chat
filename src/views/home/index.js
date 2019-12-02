@@ -20,7 +20,8 @@ import { selectedChat, deleteChat } from "../../store/chats";
 import {
   getSelectedColor,
   unSelect,
-  pendingObservable
+  pendingObservable,
+  getIcon
 } from "../../utils/utils";
 import Moment from "moment";
 import FloatButton from "../../components/FloatButton";
@@ -173,14 +174,15 @@ class index extends Component {
 
   render() {
     const result = this.state.search
+
       ? Object.values(this.props.chats).filter(chat => {
-          return (
-            chat.toUID.toLowerCase().includes(this.state.search) ||
-            this.getContactInformation(chat)
-              .name.toLowerCase()
-              .includes(this.state.search.toLowerCase())
-          );
-        })
+        return (
+          chat.toUID.toLowerCase().includes(this.state.search) ||
+          this.getContactInformation(chat)
+            .name.toLowerCase()
+            .includes(this.state.search.toLowerCase())
+        );
+      })
       : Object.values(this.props.chats);
     return (
       <Container>
@@ -205,8 +207,8 @@ class index extends Component {
             const lastmessage = messages.length ? (
               this.getDataTypeMessage(messages[messages.length - 1])
             ) : (
-              <Text note> {chats[0].lastMessage} </Text>
-            );
+                <Text note> {chats[0].lastMessage} </Text>
+              );
 
             const lasTime = messages.length
               ? Number(messages[messages.length - 1].timestamp)
@@ -224,9 +226,16 @@ class index extends Component {
                     onLongPress={() => this.seleted(chat)}
                   >
                     <Left>
-                      {!infoData.picture && (
+                      {chat.toUID === "broadcast" && (
                         <Thumbnail source={chats[0].picture} />
                       )}
+
+                      {!infoData.picture && chat.toUID !== "broadcast" && (
+                        <Thumbnail source={{
+                          uri: `${getIcon(infoData.hashUID)}`
+                        }} />
+                      )}
+
 
                       {infoData.picture && (
                         <Thumbnail

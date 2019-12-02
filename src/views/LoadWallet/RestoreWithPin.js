@@ -14,7 +14,6 @@ class RestoreWithPin extends Component {
         })
     }
 
-
     render() {
         const { screenProps } = this.props
         return (

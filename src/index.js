@@ -12,6 +12,7 @@ import Spinner from "./components/Spinner";
 import { selectedChat } from "./store/chats";
 import { AsyncStorage } from "react-native";
 import i18n from "./i18n/index";
+import locale from "react-native-locale-detector";
 import { database } from '../App'
 
 
@@ -31,9 +32,15 @@ class DualComponent extends Component {
     header: null
   };
 
+  getDefaultLanguage = async () => {
+    const savedDataJSON = await AsyncStorage.getItem("@APP:languageCode");
+    const lng = savedDataJSON ? savedDataJSON : locale;
+
+    return lng;
+  };
+
   componentDidMount = async () => {
-    // database.realmObservable();
-    const lng = await AsyncStorage.getItem("@APP:languageCode");
+    const lng = await this.getDefaultLanguage()
     if (lng) {
       i18n.changeLanguage(lng);
     }
@@ -48,10 +55,6 @@ class DualComponent extends Component {
         {this.props.user && (
           <View style={styles.container}>
             {this.props.tabPosition === 1 && <Home {...this.props} />}
-            {this.props.tabPosition === 2 && (
-              <Contact navigation={this.props.navigation} />
-            )}
-            {this.props.tabPosition === 3 && <Config {...this.props} />}
           </View>
         )}
         <View>
@@ -60,7 +63,6 @@ class DualComponent extends Component {
           )}
 
           <RestoreWithPing open={open} screenProps={this.props.screenProps} />
-
         </View>
       </View>
     );
