@@ -34,7 +34,7 @@ class InitialStep extends Component {
   }
 
   close = step => {
-    this.setState({ open: false });
+    this.setState({ open: false, restore: false });
   };
 
   handleSubmit = () => {

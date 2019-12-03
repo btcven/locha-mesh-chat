@@ -7,30 +7,28 @@
     "password": "Password",
     "next": "continue",
     "back": "back",
-    "confirm":"confirm",
-    "create":"Create new account",
+    "confirm": "confirm",
+    "create": "Create new account",
     "restore": "Restore account",
     "titleCreateAccount": "Create new Account",
-    "subTitleCreateAccount":"You'll need to save your backup phrase in case this app deleted",
-    "titleConfirm":"Confirm phrases",
-    "subTitleCorfirm":"You'll need to save your backup phrase in case this app deleted",
-    "titlePin":"Add your pin",
-    "subtitlePin":"It is very important that you remember the pin entered, with it you will have access to your account.",
-    "subtitlePin2":"Enter your pin to access your account",
+    "subTitleCreateAccount": "You'll need to save your backup phrase in case this app deleted",
+    "titleConfirm": "Confirm phrases",
+    "subTitleCorfirm": "Confirm your words to continue the process of creating an account",
+    "titlePin": "Add your pin",
+    "subtitlePin": "It is very important that you remember the pin entered, with it you will have access to your account.",
+    "subtitlePin2": "Enter your pin to access your account",
     "forgotPin": "Forgot your pin?",
-    "click":"click here",
-    "error1":"Wrong pin",
-    "error2":"It is mandatory to fill in all fields",
+    "click": "click here",
+    "error1": "Wrong pin",
+    "error2": "It is mandatory to fill in all fields",
     "error3": "the words don't match check them I've tried again",
-    "titleRestore":"Restore Account",
-    "subtitleRestore":"restore account with words, it is very important that you enter the words correctly, otherwise your account will not be restored with the same uid"
+    "titleRestore": "Restore Account",
+    "subtitleRestore": "restore account with words, it is very important that you enter the words correctly, otherwise your account will not be restored with the same uid"
   },
-
   "Drawer": {
     "contacts": "Contacts",
     "setting": "Settings"
   },
-
   "Settings": {
     "name": "Name",
     "editName": "Edit name",
@@ -40,9 +38,9 @@
     "gallery": "Gallery",
     "camera": "Camera",
     "uidCody": "copied uid",
-    "language": "Language"
+    "language": "Language",
+    "qrText" : "Scan the QR code to add as a contact"
   },
-
   "Contacts": {
     "addContact": "Add contact",
     "editContact": "Edit contact",
@@ -53,12 +51,10 @@
     "invalidFormat": "Invalid format",
     "contactSuccessfully": "Contact created successfully!"
   },
-
   "Header": {
     "contacts": "Contacts",
     "settings": "Settings"
   },
-
   "Chats": {
     "message": "Message",
     "cancelAudio": "Slide to cancel",
@@ -69,7 +65,6 @@
     "voice": "Voice",
     "photo": "Photo"
   },
-
   "Languages": {
     "en": "English",
     "es": "Spanish"

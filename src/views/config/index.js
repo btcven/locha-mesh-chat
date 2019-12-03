@@ -70,13 +70,12 @@ class Config extends Component {
             close={this.close}
           />
         )}
-        {this.state.openModalName && (
-          <EditName
-            open={this.state.openModalName}
-            {...this.props}
-            close={this.close}
-          />
-        )}
+
+        <EditName
+          open={this.state.openModalName}
+          {...this.props}
+          close={this.close}
+        />
 
         <Languajes
           open={this.state.language}
@@ -84,9 +83,8 @@ class Config extends Component {
           close={this.close}
         />
 
-        {this.state.viewQR && (
-          <ViewQR {...this.props} open={this.state.viewQR} close={this.close} />
-        )}
+        <ViewQR {...this.props} open={this.state.viewQR} close={this.close} />
+
         <View style={styles.sectionContainer}>
           <View style={styles.imageContainer}>
             {this.props.config.image && (

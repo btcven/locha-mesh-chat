@@ -42,8 +42,10 @@ class EditPhoto extends Component {
             margin: 0
           }}
           isVisible={open}
+          animationIn="slideInUp"
+          animationOut="slideOutDown"
+          animationOutTiming={800}
           onBackdropPress={() => close("openModalPhoto")}
-          swipeDirection={["up", "left", "right", "down"]}
         >
           <View
             style={{

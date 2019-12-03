@@ -77,43 +77,27 @@ export default class Lenguajes extends Component {
       <View>
         <Modal
           style={{
-            margin: 0
+            margin: 0,
+            justifyContent: "flex-end"
           }}
           avoidKeyboard={true}
           isVisible={open}
-          animationIn="slideInRight"
-          animationOut="slideOutRight"
+          animationIn="slideInUp"
+          animationOut="slideOutDown"
+          animationOutTiming={800}
           onBackdropPress={() => close("language")}
         >
           <View
             style={{
-              backgroundColor: "#fff",
-              width: "100%",
-              height: "100%"
+              minHeight: "40%",
+              backgroundColor: "white", borderRadius: 5,
+              marginHorizontal: 5
             }}
           >
-            <Header
-              androidStatusBarColor="#af7d00"
-              style={{ backgroundColor: "#FAB300" }}
-            >
-              <Left>
-                <TouchableHighlight
-                  underlayColor="#eeeeee"
-                  style={{
-                    paddingHorizontal: 10,
-                    paddingVertical: 6,
-                    borderRadius: 100
-                  }}
-                  onPress={() => close("language")}
-                >
-                  <Icon style={styles.iconStyle} name="arrow-back" />
-                </TouchableHighlight>
-              </Left>
-              <Body>
-                <Title>Lenguajes</Title>
-              </Body>
-              <Right></Right>
-            </Header>
+            <Text style={styles.titleModal}>
+              {screenProps.t("Settings:language")}
+            </Text>
+
             <View style={{ flex: 1 }}>
               <List>
                 {languajes.map(languajes => {
