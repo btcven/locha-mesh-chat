@@ -163,3 +163,8 @@ export const reestarConnection = () => {
   ws = new Socket(store);
 };
 
+export const clearAll = () => dispatch => {
+  dispatch({
+    type: ActionTypes.CLEAR_ALL
+  })
+}

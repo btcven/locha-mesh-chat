@@ -15,6 +15,10 @@ export const configurationReducer = (state = AplicationState, action) => {
         image: action.payload.picture
       };
     }
+
+    case ActionTypes.CLEAR_ALL: {
+      return { ...AplicationState }
+    }
     case ActionTypes.GET_PHOTO_USER: {
       return { ...state, image: action.payload };
     }

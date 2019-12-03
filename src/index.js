@@ -2,18 +2,18 @@ import React, { Component } from "react";
 import Footer from "./components/Footer";
 import { connect } from "react-redux";
 import { route } from "./store/aplication/aplicationAction";
-import { StyleSheet, View, Alert, Text } from "react-native";
+import { StyleSheet, View, Alert, Text, AppState } from "react-native";
 import Home from "./views/home";
 import Contact from "./views/contacts";
 import Config from "./views/config";
 import LoadWallet from "./views/LoadWallet";
 import RestoreWithPing from './views/LoadWallet/RestoreWithPin'
 import Spinner from "./components/Spinner";
+import { clearAll } from "./store/aplication";
 import { selectedChat } from "./store/chats";
 import { AsyncStorage } from "react-native";
 import i18n from "./i18n/index";
-import { database } from '../App'
-
+import moment from 'moment'
 
 
 /**
@@ -25,14 +25,42 @@ import { database } from '../App'
 class DualComponent extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      appState: "active",
+      timeBackgroud: null
+    }
   }
 
   static navigationOptions = {
     header: null
   };
 
+  verifyState = (nextAppState) => {
+    this.setState({
+      appState: nextAppState
+    })
+  }
+
+  componentDidUpdate = () => {
+    if (this.state.appState === "background" && !this.state.timeBackgroud) {
+      this.setState({ timeBackgroud: new Date().getTime() })
+    }
+
+
+    if (this.state.appState !== "background" && this.state.timeBackgroud) {
+      const timeCreated = moment(this.state.timeBackgroud);
+      if (moment().diff(timeCreated, "m" > 14)) {
+        this.props.clearAll()
+        this.setState({ timeBackgroud: null })
+      } else {
+        this.setState({ timeBackgroud: null })
+      }
+    }
+
+  }
+
   componentDidMount = async () => {
-    // database.realmObservable();
+    AppState.addEventListener("change", this.verifyState)
     const lng = await AsyncStorage.getItem("@APP:languageCode");
     if (lng) {
       i18n.changeLanguage(lng);
@@ -77,7 +105,7 @@ const mapStateToProps = state => ({
   status: state.aplication.appStatus
 });
 
-export default connect(mapStateToProps, { route, selectedChat })(DualComponent);
+export default connect(mapStateToProps, { route, selectedChat, clearAll })(DualComponent);
 
 const styles = StyleSheet.create({
   container: {

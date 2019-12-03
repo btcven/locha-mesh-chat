@@ -8,6 +8,11 @@ const AplicationState = {
 
 export const chatReducer = (state = AplicationState, action) => {
   switch (action.type) {
+
+    case ActionTypes.CLEAR_ALL: {
+      return { ...AplicationState }
+    }
+
     case ActionTypes.INITIAL_STATE: {
       return { ...state, chat: action.payload.chats };
     }

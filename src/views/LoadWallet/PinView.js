@@ -89,7 +89,6 @@ export default class PinView extends Component {
 
 
     render() {
-        console.log(this.props.values)
         return (
             <>
                 <View style={styles.numberContainer}>
