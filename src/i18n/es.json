@@ -1,18 +1,31 @@
 {
   "Initial": {
     "title": "Bienvenido",
-    "subtitle": "Gracias por usar Locha Mesh, una app que usa red de radio paracomunicaciones y transacciones de Bitcoin sin internet nielectricidad.",
+    "subtitle": "Gracias por usar Locha Mesh, es una red de radio para comunicaciones y transacciones de Bitcoin sin internet o incluso red eléctrica. Estamos trabajando no solo en un protocolo, sino también en el firmware para dispositivos asequibles como Turpial o Harpia.",
     "text": "Para continuar por favor ingrese su alias y su contraseña de seguridad",
-    "nickname": "Alias",
-    "password": "Contraseña",
-    "next": "Continuar"
+    "next": "continuar",
+    "back": "atras",
+    "create": "Crear nueva cuenta",
+    "restore": "Restaurar  cuenta",
+    "titleCreateAccount": "Crear nueva cuenta",
+    "subTitleCreateAccount": "Tendrá que guardar su frase de respaldo en caso de que esta aplicación se elimine",
+    "titleConfirm": "Confirmar Palabras",
+    "subTitleCorfirm": "Confirme sus palabras para continuar con el proceso de crear cuenta",
+    "titlePin": "Agregue si codigo pin",
+    "subtitlePin": "Es muy importante que recuerde el pin ingresado, con él tendrá acceso a su cuenta.",
+    "subtitlePin2": "Ingrese su PIN para acceder a su cuenta",
+    "forgotPin": "¿Olvidaste tú pin?",
+    "click": "click aqui",
+    "error1": "Pin erróneo",
+    "error2": "Es obligatorio completar todos los campos.",
+    "error3": "las palabras no coinciden, compruébalo, lo he intentado de nuevo",
+    "titleRestore": "Restaurar cuenta",
+    "subtitleRestore": "es muy importante que ingrese las palabras correctamente, de lo contrario su cuenta no se restaurará con el mismo uid"
   },
-
   "Drawer": {
     "contacts": "Contactos",
     "setting": "Configuración"
   },
-
   "Settings": {
     "name": "Nombre",
     "editName": "Editar nombre",
@@ -22,9 +35,9 @@
     "gallery": "Galeria",
     "camera": "Camara",
     "uidCody": "uid copiado",
-    "language": "Idioma"
+    "language": "Idioma",
+    "qrText": "Escanee el código QR para agregarlo como contacto"
   },
-
   "Contacts": {
     "addContact": "Agregar contacto",
     "editContact": "Editar contacto",
@@ -35,12 +48,10 @@
     "invalidFormat": "Formato invalido",
     "contactSuccessfully": "Contacto creado exitosamente!"
   },
-
   "Header": {
     "contacts": "Contactos",
     "settings": "Configuración"
   },
-
   "Chats": {
     "message": "Mensaje",
     "cancelAudio": "Desliza para cancelar",
@@ -51,9 +62,8 @@
     "voice": "Audio",
     "photo": "Foto"
   },
-
   "Languages": {
-    "english": "Ingles",
-    "spanish": "Español"
+    "en": "Ingles",
+    "es": "Español"
   }
 }

@@ -86,8 +86,6 @@ export default class PinView extends Component {
 
     }
 
-
-
     render() {
         return (
             <>
@@ -122,7 +120,7 @@ export default class PinView extends Component {
                     {this.state.buttons.map((button, key) => {
                         return (
                             <View key={key} style={styles.buttonContainer}>
-                                <Button transparent onPress={() => this.setPin(button)}>
+                                <Button style={{ width: "50%", justifyContent: 'center' }} transparent onPress={() => this.setPin(button)}>
                                     {button !== 'delete' && <Text style={styles.text}> {button} </Text>}
                                     {button === 'delete' && <Icon name="backspace" style={{ color: '#fbc233' }} />}
                                 </Button>

@@ -20,13 +20,6 @@ const languageDetector = {
   cacheUserLanguage: () => {}
 };
 
-getDefaultLanguage = async () => {
-  const savedDataJSON = await AsyncStorage.getItem(STORAGE_KEY);
-  const lng = savedDataJSON ? savedDataJSON : locale;
-
-  return lng;
-};
-
 i18n
   .use(languageDetector)
   .use(reactI18nextModule)

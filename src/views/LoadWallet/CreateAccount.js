@@ -66,7 +66,7 @@ export default class CreateAccount extends Component {
 
     for (let index = 0; index <= values.length; index++) {
       if (values[index] !== this.props.phrases[index]) {
-        androidToast("Initial:error3")
+        androidToast(this.props.screenProps.t("Initial:error3"))
         return
       }
     }
@@ -104,7 +104,7 @@ export default class CreateAccount extends Component {
     const values = (this.state.step !== 1 && this.state.step !== 4) ? this.state.seed : phrases
     const rule = this.state.step === 1 || this.state.step === 4 ? true : false
 
-    console.log(rule)
+    console.log("hellllo", this.state.step)
     return (
       <Formik
         enableReinitialize

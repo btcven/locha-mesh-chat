@@ -1,11 +1,8 @@
 import React, { Component } from "react";
-import Footer from "./components/Footer";
 import { connect } from "react-redux";
 import { route } from "./store/aplication/aplicationAction";
 import { StyleSheet, View, Alert, Text, AppState } from "react-native";
 import Home from "./views/home";
-import Contact from "./views/contacts";
-import Config from "./views/config";
 import LoadWallet from "./views/LoadWallet";
 import RestoreWithPing from './views/LoadWallet/RestoreWithPin'
 import Spinner from "./components/Spinner";
@@ -14,6 +11,7 @@ import { selectedChat } from "./store/chats";
 import { AsyncStorage } from "react-native";
 import i18n from "./i18n/index";
 import moment from 'moment'
+import locale from "react-native-locale-detector";
 
 
 /**
@@ -59,9 +57,15 @@ class DualComponent extends Component {
 
   }
 
+  getDefaultLanguage = async () => {
+    const savedDataJSON = await AsyncStorage.getItem("@APP:languageCode");
+    const lng = savedDataJSON ? savedDataJSON : locale;
+
+    return lng;
+  };
+
   componentDidMount = async () => {
-    AppState.addEventListener("change", this.verifyState)
-    const lng = await AsyncStorage.getItem("@APP:languageCode");
+    const lng = await this.getDefaultLanguage()
     if (lng) {
       i18n.changeLanguage(lng);
     }
@@ -76,10 +80,6 @@ class DualComponent extends Component {
         {this.props.user && (
           <View style={styles.container}>
             {this.props.tabPosition === 1 && <Home {...this.props} />}
-            {this.props.tabPosition === 2 && (
-              <Contact navigation={this.props.navigation} />
-            )}
-            {this.props.tabPosition === 3 && <Config {...this.props} />}
           </View>
         )}
         <View>
@@ -88,7 +88,6 @@ class DualComponent extends Component {
           )}
 
           <RestoreWithPing open={open} screenProps={this.props.screenProps} />
-
         </View>
       </View>
     );
