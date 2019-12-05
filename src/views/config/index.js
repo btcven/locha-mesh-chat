@@ -1,29 +1,24 @@
 import React, { Component } from "react";
-import { Container, Icon, Left, Right } from "native-base";
+import { Container, Icon, Left, Right, Button } from "native-base";
 import { images } from "../../utils/constans";
 import Header from "../../components/Header";
-import {
-  Text,
-  View,
-  Image,
-  StyleSheet,
-  TouchableHighlight,
-  TouchableOpacity,
-  Clipboard
-} from "react-native";
-import {
-  getPhotosFromUser,
-  openCamera,
-  editName
-} from "../../store/configuration/congurationAction";
+import { Text, View, Image, StyleSheet, TouchableHighlight, TouchableOpacity, Clipboard } from "react-native";
+import { getPhotosFromUser, openCamera, editName, } from "../../store/configuration/congurationAction";
 import { connect } from "react-redux";
 import EditName from "./EditName";
 import EditPhoto from "./EditPhoto";
 import ViewQR from "./ViewQR";
 import Languajes from "./Language";
-import QRCode from "react-native-qrcode-svg";
-import { androidToast } from "../../utils/utils";
+import { androidToast, FileDirectory } from "../../utils/utils";
 import i18n from "../../i18n";
+import CryptoJS from "crypto-js"
+import { database } from '../../../App'
+import AddPin from "../LoadWallet/RestoreWithPin"
+import { sha256 } from "js-sha256";
+import RNFS from "react-native-fs"
+import moment from "moment"
+import Share from 'react-native-share';
+
 
 /**
  * @class Config
@@ -39,7 +34,8 @@ class Config extends Component {
       openModalPhoto: false,
       openModalName: false,
       viewQR: false,
-      language: false
+      language: false,
+      pin: false
     };
   }
 
@@ -57,6 +53,36 @@ class Config extends Component {
     Clipboard.setString(data);
     androidToast(this.props.screenProps.t("Settings:uidCody"));
   };
+
+
+
+  createBackupFile = async (pin) => {
+    this.close("pin")
+    database.verifyPin(pin).then(async () => {
+      const data = await database.getAllData()
+      const ciphertext = CryptoJS.AES.encrypt(JSON.stringify(data), sha256(pin)).toString()
+      let base64 = new Buffer(ciphertext).toString('base64')
+      const path = `${FileDirectory}/emuladorPhotojh.jpg`
+      base64 = `data:text/plain;base64,${base64}`
+
+      console.log(ciphertext)
+      await Share.open({
+        url: base64,
+        filename: "Backup"
+      })
+
+
+
+      // RNFS.writeFile(path, ciphertext, "utf8").then(() => {
+      //   console.log("dataaaaa", path)
+
+      // }).catch(err => {
+      //   console.warn(err)
+      // })
+    }).catch(err => {
+      console.log(err)
+    })
+  }
 
   render() {
     const { screenProps } = this.props;
@@ -84,6 +110,14 @@ class Config extends Component {
         />
 
         <ViewQR {...this.props} open={this.state.viewQR} close={this.close} />
+
+        <AddPin
+          {...this.props}
+          open={this.state.pin}
+          text={screenProps.t("Settings:textBackup")}
+          action={this.createBackupFile}
+          close={this.close}
+          config={true} />
 
         <View style={styles.sectionContainer}>
           <View style={styles.imageContainer}>
@@ -268,7 +302,11 @@ class Config extends Component {
               />
             </TouchableOpacity>
           </Right>
+
         </View>
+        <Button onPress={() => this.setState({ pin: true })}>
+          <Text> CLICK ME</Text>
+        </Button>
       </Container>
     );
   }
@@ -281,7 +319,7 @@ const mapStateToProps = state => ({
 export default connect(mapStateToProps, {
   getPhotosFromUser,
   openCamera,
-  editName
+  editName,
 })(Config);
 
 const styles = StyleSheet.create({

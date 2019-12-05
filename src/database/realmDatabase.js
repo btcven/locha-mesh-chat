@@ -361,6 +361,18 @@ export default class CoreDatabase {
       });
     });
 
+
+  getAllData = () => new Promise((resolve, reject) => {
+    try {
+      const user = this.db.objects("user");
+      const seed = this.seed.objects("Seed");
+      resolve({ user: user[0], seed: seed[0] })
+    } catch (err) {
+      console.log(err)
+      reject()
+    }
+  })
+
 }
 
 

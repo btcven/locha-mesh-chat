@@ -105,6 +105,18 @@ export default class Database extends CoreDatabase {
         })
     })
 
+
+
+    verifyPin = (pin) => new Promise((resolve, reject) => {
+        try {
+            options.encryptionKey = this.toByteArray(sha256(pin))
+            new Realm(options)
+            resolve()
+        } catch (err) {
+            reject(err)
+        }
+    })
+
 }
 
 

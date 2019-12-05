@@ -36,7 +36,8 @@
     "camera": "Camara",
     "uidCody": "uid copiado",
     "language": "Idioma",
-    "qrText": "Escanee el código QR para agregarlo como contacto"
+    "qrText": "Escanee el código QR para agregarlo como contacto",
+    "textBackup": "Ingrese su codigo pin para continuar"
   },
   "Contacts": {
     "addContact": "Agregar contacto",

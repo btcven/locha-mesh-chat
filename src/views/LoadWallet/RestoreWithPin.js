@@ -14,8 +14,14 @@ class RestoreWithPin extends Component {
         })
     }
 
+
+
+
+
     render() {
-        const { screenProps } = this.props
+        const { screenProps, text, action, config, close } = this.props
+
+        const actionCreate = config ? action : this.restoreAccount
         return (
             <View>
                 <Modal
@@ -23,22 +29,24 @@ class RestoreWithPin extends Component {
                     animationIn="slideInUp"
                     animationOut="slideOutDown"
                     animationOutTiming={800}
+                    onBackdropPress={() => config ? close("pin") : null}
                     style={{
                         margin: 0, justifyContent: "flex-end",
                     }}
                 >
                     <View style={styles.container}>
                         <View style={styles.viewContainer}>
-                            <Text> {screenProps.t("Initial:subtitlePin2")}</Text>
+                            {!config && <Text> {screenProps.t("Initial:subtitlePin2")}</Text>}
+                            {config && <Text>{text} </Text>}
                         </View>
-                        <PinView createAccount={this.restoreAccount} />
+                        <PinView createAccount={actionCreate} />
 
-                        <View style={styles.viewContainer}>
+                        {!config && <View style={styles.viewContainer}>
                             <Text>{screenProps.t("Initial:forgotPin")}</Text>
                             <TouchableOpacity onPress={() => alert('not available at the moment')}>
                                 <Text style={{ paddingHorizontal: 5, color: '#fbc233' }}>{screenProps.t("Initial:click")}</Text>
                             </TouchableOpacity>
-                        </View>
+                        </View>}
                     </View>
                 </Modal>
             </View>
