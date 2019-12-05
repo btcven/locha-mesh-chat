@@ -117,6 +117,31 @@ export default class Database extends CoreDatabase {
         }
     })
 
+
+
+    restoreWithFile = (pin, data) => new Promise((resolve, reject) => {
+        this.getRealm(sha256(pin), sha256(data.seed.seed)).then(async () => {
+
+            const chats = Object.values(data.user.chats)
+            const contacts = Object.values(data.user.contacts)
+
+            for (let index = 0; index < chats.length; index++) {
+                chats[index].messages = Object.values(chats[index].messages)
+                chats[index].queue = []
+            }
+
+            try {
+                await this.setDataSeed(data.seed.seed)
+                await this.writteUser({
+                    ...data.user,
+                    chats, contacts
+                })
+                resolve()
+            } catch (err) {
+                console.log(err)
+            }
+        })
+    })
 }
 
 

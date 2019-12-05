@@ -5,6 +5,12 @@ import Modal from "react-native-modal";
 import { Formik } from 'formik'
 import PinView from "./PinView";
 import { androidToast } from "../../utils/utils"
+import DocumentPicker from 'react-native-document-picker';
+import RestoreFile from './RestoreWithPin'
+import RNFS from "react-native-fs"
+import CryptoJS from "crypto-js"
+import { sha256 } from "js-sha256";
+
 
 
 export default class CreateAccount extends Component {
@@ -12,7 +18,8 @@ export default class CreateAccount extends Component {
     super(props)
     this.state = {
       step: 1,
-      seed: null
+      seed: null,
+      file: null
     }
   }
 
@@ -63,7 +70,6 @@ export default class CreateAccount extends Component {
       return
     }
 
-
     for (let index = 0; index <= values.length; index++) {
       if (values[index] !== this.props.phrases[index]) {
         androidToast(this.props.screenProps.t("Initial:error3"))
@@ -81,6 +87,43 @@ export default class CreateAccount extends Component {
     this.props.createNewAccount({
       pin: pin,
       seed: this.props.stringPhrases
+    })
+  }
+
+  closePin = (pin) => {
+    this.setState({ file: null })
+  }
+
+  getFile = async () => {
+    // this.props.close()
+    try {
+      const res = await DocumentPicker.pick({
+        type: [DocumentPicker.types.allFiles],
+      });
+
+      this.setState({ file: res.uri })
+
+    } catch (err) {
+      if (DocumentPicker.isCancel(err)) {
+        // User cancelled the picker, exit any dialogs or menus and move on
+      } else {
+        throw err;
+      }
+    }
+
+
+  }
+
+
+  restoreAccountWithFile = (pin) => {
+    RNFS.readFile(this.state.file).then((res) => {
+      var bytes = CryptoJS.AES.decrypt(res, sha256(pin));
+      var decryptedData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+
+      this.setState({ file: null })
+      this.props.restoreWithFile(pin, decryptedData)
+    }).catch(err => {
+      console.log(err)
     })
   }
 
@@ -103,8 +146,7 @@ export default class CreateAccount extends Component {
     const action = this.props.restore ? this.restoreAccount : this.createAccount
     const values = (this.state.step !== 1 && this.state.step !== 4) ? this.state.seed : phrases
     const rule = this.state.step === 1 || this.state.step === 4 ? true : false
-
-    console.log("hellllo", this.state.step)
+    const restoreWithFile = this.state.file ? true : false
     return (
       <Formik
         enableReinitialize
@@ -122,6 +164,10 @@ export default class CreateAccount extends Component {
                 }}
               >
                 <View style={styles.container}>
+                  <RestoreFile open={restoreWithFile} close={this.closePin} config={true}
+                    action={this.restoreAccountWithFile}
+                    text={screenProps.t("Initial:textBackup")}
+                  />
                   {this.state.step === 1 &&
                     <View>
                       <Text style={{ textAlign: "center", padding: 10, fontSize: 23 }}>
@@ -186,7 +232,24 @@ export default class CreateAccount extends Component {
                         </View>
                       );
                     })}
+
+
                   </View>
+
+                  {this.state.step === 4 && <View style={{
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginBottom: 40,
+                    marginTop: 20
+                  }}>
+                    <Button success onPress={this.getFile} style={{
+                      justifyContent: "center",
+                      minWidth: 150,
+                      marginHorizontal: 10
+                    }}>
+                      <Text>{`Restore with file`.toLocaleUpperCase()}</Text>
+                    </Button>
+                  </View>}
                   {this.state.step === 3 && < View >
                     <PinView back={this.back} createAccount={action} values={values} />
                   </View>}

@@ -168,3 +168,17 @@ export const clearAll = () => dispatch => {
     type: ActionTypes.CLEAR_ALL
   })
 }
+
+
+export const restoreWithFile = (pin, data) => dispatch => {
+  dispatch(loading())
+  database.restoreWithFile(pin, data).then(async () => {
+    const STORAGE_KEY = "@APP:status";
+    await AsyncStorage.setItem(STORAGE_KEY, 'created')
+    ws = new Socket(store, database);
+    dispatch({
+      type: ActionTypes.INITIAL_STATE,
+      payload: data.user
+    })
+  })
+}

@@ -7,7 +7,7 @@ import {
   Image
 } from "react-native";
 import { Button, Text } from "native-base";
-import { setInitialUser, createNewAccount, restoreWithPhrase } from "../../store/aplication/aplicationAction";
+import { setInitialUser, createNewAccount, restoreWithPhrase, restoreWithFile } from "../../store/aplication/aplicationAction";
 import { connect } from "react-redux";
 import crypto from "crypto";
 import Mnemonic from "bitcore-mnemonic";
@@ -63,6 +63,7 @@ class InitialStep extends Component {
             restore={this.state.restore}
             restoreWithPhrase={this.props.restoreWithPhrase}
             screenProps={screenProps}
+            restoreWithFile={this.props.restoreWithFile}
           />
         )}
         <>
@@ -132,7 +133,7 @@ class InitialStep extends Component {
   }
 }
 
-export default connect(null, { setInitialUser, createNewAccount, restoreWithPhrase })(InitialStep);
+export default connect(null, { setInitialUser, createNewAccount, restoreWithPhrase, restoreWithFile })(InitialStep);
 
 const styles = StyleSheet.create({
   container: {

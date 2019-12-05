@@ -11,6 +11,7 @@ import com.reactnativecommunity.slider.ReactSliderPackage;
 import com.zmxv.RNSound.RNSoundPackage;
 import com.rnim.rn.audio.ReactNativeAudioPackage;
 import com.ocetnik.timer.BackgroundTimerPackage;
+import io.github.elyx0.reactnativedocumentpicker.DocumentPickerPackage; // Import package
 import com.dieam.reactnativepushnotification.ReactNativePushNotificationPackage;
 import com.bitgo.randombytes.RandomBytesPackage;
 import com.horcrux.svg.SvgPackage;
@@ -60,7 +61,8 @@ public class MainApplication extends Application implements ReactApplication {
             new PickerPackage(),
             new CameraRollPackage(),
             new RNGestureHandlerPackage(),
-            new VectorIconsPackage()
+            new VectorIconsPackage(),
+            new DocumentPickerPackage() 
       );
     }
 

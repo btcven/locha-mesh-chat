@@ -71,8 +71,6 @@ class Config extends Component {
         filename: "Backup"
       })
 
-
-
       // RNFS.writeFile(path, ciphertext, "utf8").then(() => {
       //   console.log("dataaaaa", path)
 
