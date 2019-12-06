@@ -63,7 +63,7 @@ class DualComponent extends Component {
   componentDidMount = async () => {
     const lng = await this.getDefaultLanguage()
     if (lng) {
-      i18n.changeLanguage(lng);
+      i18n.changeLanguage(lng.substr(0, 2));
     }
   };
 
@@ -86,7 +86,7 @@ class DualComponent extends Component {
           <RestoreWithPing
             open={open}
             screenProps={this.props.screenProps}
-           
+
           />
         </View>
       </View>

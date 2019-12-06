@@ -62,7 +62,6 @@ class Config extends Component {
       const data = await database.getAllData()
       const ciphertext = CryptoJS.AES.encrypt(JSON.stringify(data), sha256(pin)).toString()
       let base64 = new Buffer(ciphertext).toString('base64')
-      const path = `${FileDirectory}/emuladorPhotojh.jpg`
       base64 = `data:text/plain;base64,${base64}`
 
       console.log(ciphertext)
@@ -70,15 +69,8 @@ class Config extends Component {
         url: base64,
         filename: "Backup"
       })
-
-      // RNFS.writeFile(path, ciphertext, "utf8").then(() => {
-      //   console.log("dataaaaa", path)
-
-      // }).catch(err => {
-      //   console.warn(err)
-      // })
     }).catch(err => {
-      console.log(err)
+      androidToast("Pin inconrrecto")
     })
   }
 
@@ -302,9 +294,48 @@ class Config extends Component {
           </Right>
 
         </View>
-        <Button onPress={() => this.setState({ pin: true })}>
-          <Text> CLICK ME</Text>
-        </Button>
+        <TouchableOpacity onPress={() => this.setState({ pin: true })}>
+          <View style={styles.infoContainerAddress}>
+            <Left>
+              <Icon type="FontAwesome5" style={{ color: "#fbc233" }} name="file-export" />
+            </Left>
+            <View
+              style={{
+                width: "70%",
+                alignContent: "flex-start",
+                paddingLeft: 10
+              }}
+            >
+              <Text style={styles.textInfo}>
+                Create backup file
+              </Text>
+            </View>
+            <Right
+              style={{
+                top: 5
+              }}
+            >
+              <TouchableOpacity
+                style={styles.touchable}
+                underlayColor="#eeeeee"
+                onPress={() => {
+                  this.setState({ language: true });
+                }}
+              >
+                <Icon
+                  style={{
+                    color: "#bdbdbd",
+                    fontSize: 25,
+                    paddingVertical: 10,
+                    paddingHorizontal: 10
+                  }}
+                  name="arrow-dropright"
+                />
+              </TouchableOpacity>
+            </Right>
+
+          </View>
+        </TouchableOpacity>
       </Container>
     );
   }

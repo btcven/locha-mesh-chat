@@ -123,7 +123,7 @@ export default class CreateAccount extends Component {
       this.setState({ file: null })
       this.props.restoreWithFile(pin, decryptedData)
     }).catch(err => {
-      console.log(err)
+      androidToast(this.props.screenProps.t("Initial:error1"))
     })
   }
 
@@ -247,7 +247,7 @@ export default class CreateAccount extends Component {
                       minWidth: 150,
                       marginHorizontal: 10
                     }}>
-                      <Text>{`Restore with file`.toLocaleUpperCase()}</Text>
+                      <Text>{`${screenProps.t("Initial:buttonFile")}`.toUpperCase()}</Text>
                     </Button>
                   </View>}
                   {this.state.step === 3 && < View >

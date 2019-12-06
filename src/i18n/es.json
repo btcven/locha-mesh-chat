@@ -38,7 +38,9 @@
     "uidCody": "uid copiado",
     "language": "Idioma",
     "qrText": "Escanee el código QR para agregarlo como contacto",
-    "textBackup": "Ingrese su codigo pin para continuar"
+    "buttonFile": "Restaurar con archivo",
+    "textBackup": "Ingrese su codigo pin para continuar",
+    "erroPin": "pin incorrecto"
   },
   "Contacts": {
     "addContact": "Agregar contacto",
