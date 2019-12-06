@@ -2079,7 +2079,6 @@
 					"$(SRCROOT)..\node_modules@react-native-communitysliderios",
 					"$(SRCROOT)..\node_modules\neact-native-locale-detectorRNI18n",
 					"$(SRCROOT)/../node_modules/react-native-document-picker/ios/RNDocumentPicker",
-					"$(SRCROOT)/../node_modules/@react-native-community/google-signin/ios/RNGoogleSignin",
 					"$(SRCROOT)/../node_modules/react-native-share/ios",
 				);
 				INFOPLIST_FILE = LochaMeshChatTests/Info.plist;
@@ -2128,7 +2127,6 @@
 					"$(SRCROOT)..\node_modules@react-native-communitysliderios",
 					"$(SRCROOT)..\node_modules\neact-native-locale-detectorRNI18n",
 					"$(SRCROOT)/../node_modules/react-native-document-picker/ios/RNDocumentPicker",
-					"$(SRCROOT)/../node_modules/@react-native-community/google-signin/ios/RNGoogleSignin",
 					"$(SRCROOT)/../node_modules/react-native-share/ios",
 				);
 				INFOPLIST_FILE = LochaMeshChatTests/Info.plist;
@@ -2178,7 +2176,6 @@
 					"$(SRCROOT)..\node_modules@react-native-communitysliderios",
 					"$(SRCROOT)..\node_modules\neact-native-locale-detectorRNI18n",
 					"$(SRCROOT)/../node_modules/react-native-document-picker/ios/RNDocumentPicker",
-					"$(SRCROOT)/../node_modules/@react-native-community/google-signin/ios/RNGoogleSignin",
 					"$(SRCROOT)/../node_modules/react-native-share/ios",
 				);
 				INFOPLIST_FILE = LochaMeshChat/Info.plist;
@@ -2224,7 +2221,6 @@
 					"$(SRCROOT)..\node_modules@react-native-communitysliderios",
 					"$(SRCROOT)..\node_modules\neact-native-locale-detectorRNI18n",
 					"$(SRCROOT)/../node_modules/react-native-document-picker/ios/RNDocumentPicker",
-					"$(SRCROOT)/../node_modules/@react-native-community/google-signin/ios/RNGoogleSignin",
 					"$(SRCROOT)/../node_modules/react-native-share/ios",
 				);
 				INFOPLIST_FILE = LochaMeshChat/Info.plist;
@@ -2277,7 +2273,6 @@
 					"$(SRCROOT)..\node_modules@react-native-communitysliderios",
 					"$(SRCROOT)..\node_modules\neact-native-locale-detectorRNI18n",
 					"$(SRCROOT)/../node_modules/react-native-document-picker/ios/RNDocumentPicker",
-					"$(SRCROOT)/../node_modules/@react-native-community/google-signin/ios/RNGoogleSignin",
 					"$(SRCROOT)/../node_modules/react-native-share/ios",
 				);
 				INFOPLIST_FILE = "LochaMeshChat-tvOS/Info.plist";
@@ -2334,7 +2329,6 @@
 					"$(SRCROOT)..\node_modules@react-native-communitysliderios",
 					"$(SRCROOT)..\node_modules\neact-native-locale-detectorRNI18n",
 					"$(SRCROOT)/../node_modules/react-native-document-picker/ios/RNDocumentPicker",
-					"$(SRCROOT)/../node_modules/@react-native-community/google-signin/ios/RNGoogleSignin",
 					"$(SRCROOT)/../node_modules/react-native-share/ios",
 				);
 				INFOPLIST_FILE = "LochaMeshChat-tvOS/Info.plist";
@@ -2390,7 +2384,6 @@
 					"$(SRCROOT)..\node_modules@react-native-communitysliderios",
 					"$(SRCROOT)..\node_modules\neact-native-locale-detectorRNI18n",
 					"$(SRCROOT)/../node_modules/react-native-document-picker/ios/RNDocumentPicker",
-					"$(SRCROOT)/../node_modules/@react-native-community/google-signin/ios/RNGoogleSignin",
 					"$(SRCROOT)/../node_modules/react-native-share/ios",
 				);
 				INFOPLIST_FILE = "LochaMeshChat-tvOSTests/Info.plist";
@@ -2446,7 +2439,6 @@
 					"$(SRCROOT)..\node_modules@react-native-communitysliderios",
 					"$(SRCROOT)..\node_modules\neact-native-locale-detectorRNI18n",
 					"$(SRCROOT)/../node_modules/react-native-document-picker/ios/RNDocumentPicker",
-					"$(SRCROOT)/../node_modules/@react-native-community/google-signin/ios/RNGoogleSignin",
 					"$(SRCROOT)/../node_modules/react-native-share/ios",
 				);
 				INFOPLIST_FILE = "LochaMeshChat-tvOSTests/Info.plist";
