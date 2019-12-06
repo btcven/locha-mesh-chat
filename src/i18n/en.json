@@ -23,6 +23,7 @@
     "error2": "It is mandatory to fill in all fields",
     "error3": "the words don't match check them I've tried again",
     "titleRestore": "Restore Account",
+    "buttonFile":"Restore with file",
     "subtitleRestore": "restore account with words, it is very important that you enter the words correctly, otherwise your account will not be restored with the same uid"
   },
   "Drawer": {
@@ -39,7 +40,10 @@
     "camera": "Camera",
     "uidCody": "copied uid",
     "language": "Language",
-    "qrText" : "Scan the QR code to add as a contact"
+    "qrText": "Scan the QR code to add as a contact",
+    "textBackup": "Enter your pin code to continue",
+    "erroPin": "Wrong pin"
+
   },
   "Contacts": {
     "addContact": "Add contact",

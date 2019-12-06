@@ -20,7 +20,8 @@
     "error2": "Es obligatorio completar todos los campos.",
     "error3": "las palabras no coinciden, compruébalo, lo he intentado de nuevo",
     "titleRestore": "Restaurar cuenta",
-    "subtitleRestore": "es muy importante que ingrese las palabras correctamente, de lo contrario su cuenta no se restaurará con el mismo uid"
+    "subtitleRestore": "es muy importante que ingrese las palabras correctamente, de lo contrario su cuenta no se restaurará con el mismo uid",
+    "textBackup": "Ingrese la contraseña para desbloquear el archivo de respaldo"
   },
   "Drawer": {
     "contacts": "Contactos",
@@ -36,7 +37,10 @@
     "camera": "Camara",
     "uidCody": "uid copiado",
     "language": "Idioma",
-    "qrText": "Escanee el código QR para agregarlo como contacto"
+    "qrText": "Escanee el código QR para agregarlo como contacto",
+    "buttonFile": "Restaurar con archivo",
+    "textBackup": "Ingrese su codigo pin para continuar",
+    "erroPin": "pin incorrecto"
   },
   "Contacts": {
     "addContact": "Agregar contacto",

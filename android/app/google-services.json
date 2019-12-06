@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "216238507269-16ci7jnpv990jhvodo0kllv8r55k1qdi.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.lochameshchat",
+            "certificate_hash": "f365e434242494d0ca08a97d204550ba4ce3e5a4"
+          }
+        },
+        {
           "client_id": "216238507269-88fk8t7tmbkjr9ts83ollp3dhlln3tod.apps.googleusercontent.com",
           "client_type": 3
         }

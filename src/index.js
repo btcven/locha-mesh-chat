@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { route } from "./store/aplication/aplicationAction";
-import { StyleSheet, View, Alert, Text, AppState } from "react-native";
+import { StyleSheet, View, Alert, Text, AppState, Share } from "react-native";
 import Home from "./views/home";
 import LoadWallet from "./views/LoadWallet";
 import RestoreWithPing from './views/LoadWallet/RestoreWithPin'
@@ -12,7 +12,6 @@ import { AsyncStorage } from "react-native";
 import i18n from "./i18n/index";
 import moment from 'moment'
 import locale from "react-native-locale-detector";
-
 
 /**
  *
@@ -43,8 +42,6 @@ class DualComponent extends Component {
     if (this.state.appState === "background" && !this.state.timeBackgroud) {
       this.setState({ timeBackgroud: new Date().getTime() })
     }
-
-
     if (this.state.appState !== "background" && this.state.timeBackgroud) {
       const timeCreated = moment(this.state.timeBackgroud);
       if (moment().diff(timeCreated, "m" > 14)) {
@@ -60,14 +57,13 @@ class DualComponent extends Component {
   getDefaultLanguage = async () => {
     const savedDataJSON = await AsyncStorage.getItem("@APP:languageCode");
     const lng = savedDataJSON ? savedDataJSON : locale;
-
     return lng;
   };
 
   componentDidMount = async () => {
     const lng = await this.getDefaultLanguage()
     if (lng) {
-      i18n.changeLanguage(lng);
+      i18n.changeLanguage(lng.substr(0, 2));
     }
   };
 
@@ -87,7 +83,11 @@ class DualComponent extends Component {
             <LoadWallet screenProps={this.props.screenProps} />
           )}
 
-          <RestoreWithPing open={open} screenProps={this.props.screenProps} />
+          <RestoreWithPing
+            open={open}
+            screenProps={this.props.screenProps}
+
+          />
         </View>
       </View>
     );
