@@ -47,7 +47,6 @@ export default class Lenguajes extends Component {
   };
 
   async onChangeLang(lang) {
-    console.log("holaaaaaaaaaa", lang);
     i18n.changeLanguage(lang);
     try {
       await AsyncStorage.setItem("@APP:languageCode", lang);
