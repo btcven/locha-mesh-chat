@@ -28,6 +28,8 @@ export const messageSquema = {
     msg: "string",
     file: "File?",
     timestamp: "int",
+    viewed: "int?",
+    status: "string?",
     type: "string"
   }
 };
@@ -48,7 +50,9 @@ export const chatSquema = {
   properties: {
     fromUID: "string",
     toUID: "string",
-    messages: { type: "list", objectType: "Message" }
+    messages: { type: "list", objectType: "Message" },
+    timestamp: "int?",
+    queue: "string[]"
   }
 };
 
@@ -63,3 +67,14 @@ export const userSchema = {
     chats: { type: "list", objectType: "Chat" }
   }
 };
+
+
+
+export const seed = {
+  name: "Seed",
+  primaryKey: "seed",
+  properties: {
+    id: 'string',
+    seed: 'string',
+  }
+}

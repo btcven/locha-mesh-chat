@@ -8,6 +8,8 @@ export const ActionTypes = {
   LOADING_OFF: "@@aplication/LOADING_OFF",
   OPEN_MENU: "@@aplication/OPEN_MENU",
   CLOSE_MENU: "@@aplication/CLOSE_MENU",
+  APP_STATUS: "@@aplication/VERYFY_STATUS",
+  CLEAR_ALL: "@@aplication/CLEAR_ALL",
 
   //CONFIGURATION
   GET_PHOTO_USER: "@@configuration/GET_PHOTO",
@@ -26,5 +28,10 @@ export const ActionTypes = {
   SELECTED_CHAT: "@@chat/SELETED_CHAT",
   NEW_MESSAGE: "@@chat/NEW_MESSAGE",
   DELETE_MESSAGE: "@@chat/DELETE_MESSAGE",
-  DELETE_ALL_MESSAGE: "@@chat/DELETE_ALL_MESSAGE"
+  DELETE_ALL_MESSAGE: "@@chat/DELETE_ALL_MESSAGE",
+  DELETE_SELECTED_MESSAGE: "@@chat/DELETE_SELECTED_MESSAGE",
+  UNREAD_MESSAGES: "@@chat/UNREAD_MESSAGES",
+  SET_STATUS_MESSAGE: "@@chat/SET_STATUS_MESSAGE",
+  SEND_AGAIN: "@@chat/SEND_AGAIN",
+  UPDATE_STATE: "@@chat/UPDATE_STATE"
 };

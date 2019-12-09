@@ -1,0 +1,424 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>JSDoc: views/home/Chat.js</title>
+
+    <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="./build/entry.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link href="https://fonts.googleapis.com/css?family=Muli:100,400,700|Oswald:300|Inconsolata,700" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+    <link type="text/css" rel="stylesheet" href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/tomorrow-night.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/app.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/iframe.css">
+</head>
+
+<body>
+    <div id="stickyNavbarOverlay"></div>
+    <div class="top-navbar">
+        <div class="container">
+            <nav class="navbar" role="navigation" aria-label="main navigation">
+                <div class="navbar-brand">
+                    
+                    
+                        <h1 class="navbar-item">Documentation</h1>
+                    
+                    <a id="hamburger" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+                        <span aria-hidden="true"></span>
+                        <span aria-hidden="true"></span>
+                        <span aria-hidden="true"></span>
+                    </a>
+                </div>
+                
+            </nav>
+        </div>
+    </div>
+    <div class="container">
+        <div class="columns">
+            <div class="column is-3" id="sidebarNav">
+                <div class="sidebar">
+                    <nav>
+                        <h2><a href="index.html">Home</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-AplicationAction.html">AplicationAction</a></li><li><a href="module-ChatAction.html">ChatAction</a></li><li><a href="module-ConfigurationAction.html">ConfigurationAction</a></li><li><a href="module-ContactAction.html">ContactAction</a></li><li><a href="module-navigationService.html">navigationService</a></li><li><a href="module-Utils.html">Utils</a></li></ul><h3>Classes</h3><ul><li><a href="AddContact.html">AddContact</a></li><li><a href="Bitcoin.html">Bitcoin</a></li><li><a href="Chat.html">Chat</a></li><li><a href="ChatBody.html">ChatBody</a></li><li><a href="ChatForm.html">ChatForm</a></li><li><a href="Config.html">Config</a></li><li><a href="Contacts.html">Contacts</a></li><li><a href="DualComponent.html">DualComponent</a></li><li><a href="EditName.html">EditName</a></li><li><a href="EditPhoto.html">EditPhoto</a></li><li><a href="FloatButtons.html">FloatButtons</a></li><li><a href="HeaderComponent.html">HeaderComponent</a></li><li><a href="index_.html">index</a></li><li><a href="InitialStep.html">InitialStep</a></li><li><a href="MenuComponent.html">MenuComponent</a></li><li><a href="NotifService.html">NotifService</a></li><li><a href="Socket.html">Socket</a></li></ul><h3>Global</h3><ul><li><a href="global.html#componentName">componentName</a></li></ul></div>
+                    </nav>
+                </div>
+            </div>
+            <div class="column is-9-desktop">
+                <div class="content" id="main-content-wrapper">
+                    <header class="page-title">
+                        <p>Source</p>
+                        <h1>views/home/Chat.js</h1>
+                    </header>
+                    
+                    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { Component } from "react";
+import { Container } from "native-base";
+import Header from "../../components/Header";
+import ChatBody from "./ChatBody";
+import ChatForm from "./ChatForm";
+import { androidToast } from "../../utils/utils";
+import {
+  initialChat,
+  cleanAllChat,
+  sendMessageWithFile,
+  sendMessagesWithSound
+} from "../../store/chats";
+import { setView } from "../../store/aplication";
+import { connect } from "react-redux";
+import { Alert, Clipboard, Dimensions } from "react-native";
+import { sha256 } from "js-sha256";
+import ImagesView from "./imagesView";
+
+/**
+ * main message component
+ */
+
+class Chat extends Component {
+  /**
+   *Creates an instance of Chat.
+   * @param {Object} props optional
+   * @memberof Chat
+   */
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      selected: [],
+      imagesView: [],
+      fileModal: false,
+      menu: [
+        {
+          label: "Limpiar chat",
+          action: () => this.cleanAllMessages(),
+          broadcast: true
+        }
+      ]
+    };
+  }
+
+  componentDidMount = () => {
+    this.props.setView(this.props.chat[this.props.chatSelected.index].toUID);
+  };
+
+  /**
+   *
+   * static variable of the React Navigation
+   * @static
+   * @memberof Chat
+   */
+  static navigationOptions = {
+    header: null
+  };
+
+  /**
+   * function belonging to the menu its function is to delete all messages from the selected chat
+   * @function
+   * @memberof Chat
+   */
+  cleanAllMessages = () => {
+    const chat = this.props.chat[this.props.chatSelected.index];
+    Alert.alert(
+      "Eliminar chat",
+      "¿Esta seguro de eliminar todos los mensajes?",
+      [
+        {
+          text: "Cancel",
+          onPress: () => {},
+          style: "cancel"
+        },
+        {
+          text: "OK",
+          onPress: () => this.props.cleanAllChat(chat.toUID)
+        }
+      ],
+      { cancelable: false }
+    );
+  };
+
+  /**
+   * @typedef {Object} Message
+   * @property {string} item.fromUID uid of who sends the message
+   * @property {string} item.id message id
+   * @property {string} item.msg  message text
+   * @property {string | null}  item.name name of who send the message
+   * @property {number} item.timestamp message timestamp
+   * @property {string | null} item.toUID  uid of who receive the message
+   * @property {string} item.type type message
+   * @property {object} item.file path where the file is saved and file type
+   */
+
+  /**
+   * function executes when pressing a message
+   * @param {Message} item
+   * @param {string} item.fromUID uid of who sends the message
+   * @param {string} item.id message id
+   * @param {string} item.msg  message text
+   * @param {string | null}  item.name name of who send the message
+   * @param {number} item.timestamp message timestamp
+   * @param {string | null} item.toUID  uid of who receive the message
+   * @param {string} item.type type message
+   * @param {{fileType: string, file: string}} item.file path where the file is saved and file type
+   * @function
+   * @public
+   * @memberof Chat
+   */
+
+  onClick = item => {
+   
+    if (this.state.selected.length > 0) {
+      const result = this.state.selected.filter(selected => {
+        return item.id !== selected.id;
+      });
+
+      if (result &amp;&amp; result.length !== this.state.selected.length) {
+        this.setState({
+          selected: result
+        });
+      } else {
+        this.setState({ selected: this.state.selected.concat(item) });
+      }
+    } else if (item.file &amp;&amp; item.file.fileType !== "audio") {
+      this.setState({
+        imagesView: [
+          {
+            url: item.file.file,
+            width: Dimensions.get("window").width
+          }
+        ]
+      });
+    }
+  };
+
+  /**
+   * function used to select messages
+   * @param {Object} item
+   * @param {string} item.fromUID uid of who sends the message
+   * @param {string} item.id message id
+   * @param {string} item.msg  message text
+   * @param {string | null}  item.name name of who send the message
+   * @param {number} item.timestamp message timestamp
+   * @param {string | null} item.toUID  uid of who receive the message
+   * @param {string} item.type type message
+   * @param {{fileType: string, file: string}} item.file path where the file is saved and file type
+   * @function
+   * @public
+   * @memberof Chat
+   */
+  onSelected = item => {
+    this.setState({
+      selected: this.state.selected.concat(item)
+    });
+  };
+
+  // ----------------- Actions headers  -----------
+
+  back = () => {
+    this.setState({ selected: [] });
+  };
+
+  copy = () => {
+    const selected = this.state.selected;
+
+    Clipboard.setString(selected[this.state.selected.length - 1].msg);
+    androidToast("Mensaje copiado");
+  };
+
+  delete = () => {
+    alert("no disponible");
+  };
+
+  // -----------------------------------------
+
+  /**
+   * open the file selection modal
+   * @function
+   * @memberof Chat
+   */
+
+  openFileModal = () => {
+    this.setState({ fileModal: true });
+  };
+
+  /**
+   * open the file selection modal
+   * @function
+   * @memberof Chat
+   */
+
+  closeFileModal = () => {
+    this.setState({ fileModal: false });
+  };
+
+  /**
+   * Prepare the message structure before being sent
+   * @param { obj } data
+   * @param {array&lt;obj>} data.images contains the list of images
+   * @param {number} data.position array position where the comment will be written
+   * @param {string} data.message text to send
+   * @function
+   * @memberof Chat
+   */
+
+  sendFileWithImage = (data, callback) => {
+    const { userData, navigation, setChat, previousChat } = this.props;
+    const toUID = navigation.state.params
+      ? navigation.state.params.hashUID
+      : null;
+    const sendObject = {
+      fromUID: sha256(userData.uid),
+      toUID: toUID,
+      msg: {
+        text: ""
+      },
+      timestamp: new Date().getTime(),
+      type: "msg"
+    };
+    data.images.map((image, key) => {
+      const id = sha256(
+        `${sha256(userData.uid)} + ${toUID}  +  ${sendObject.msg.text +
+          sendObject.msg.file}  + ${new Date().getTime()}`
+      );
+      if (data.position === key) {
+        const sendData = Object.assign({}, sendObject);
+
+        sendData.msg = {
+          text: data.message,
+          typeFile: "image"
+        };
+
+        this.props.sendMessageWithFile(
+          { ...sendData, msgID: id },
+          image.url,
+          image.base64
+        );
+      } else {
+        const sendData = Object.assign({}, sendObject);
+        sendData.msg.text = "";
+        sendData.msg.file = image.base64;
+        sendData.msg.typeFile = "image";
+        this.props.sendMessageWithFile(
+          { ...sendData, msgID: id },
+          image.url,
+          image.base64
+        );
+      }
+
+      if (data.images.length === key + 1) {
+        callback();
+        this.closeFileModal();
+      }
+    });
+  };
+
+  closeView = () => {
+    this.setState({ imagesView: [] });
+  };
+
+  render() {
+    const { navigation } = this.props;
+    let viewImages = this.state.imagesView.length === 0 ? false : true;
+    const chatSelected = this.props.chat[this.props.chatSelected.index];
+
+    const messages = Object.values(chatSelected.messages).length
+      ? Object.values(chatSelected.messages).sort((a, b) => {
+          return new Date(b.timestamp) - new Date(a.timestamp);
+        })
+      : [];
+    return (
+      &lt;Container>
+        {viewImages &amp;&amp; (
+          &lt;ImagesView
+            open={viewImages}
+            images={this.state.imagesView}
+            close={this.closeView}
+          />
+        )}
+        &lt;Header
+          {...this.props}
+          menu={this.state.menu}
+          selected={this.state.selected}
+          back={this.back}
+          copy={this.copy}
+          delete={this.delete}
+          setView={this.props.setView}
+        />
+        &lt;ChatBody
+          chats={messages}
+          user={this.props.userData}
+          contacts={this.props.contact}
+          onClick={this.onClick}
+          onSelected={this.onSelected}
+          selected={this.state.selected}
+          close={this.closeFileModal}
+          open={this.state.fileModal}
+          sendFileWithImage={this.sendFileWithImage}
+        />
+        &lt;ChatForm
+          user={this.props.userData}
+          navigation={navigation.state}
+          setChat={this.props.initialChat}
+          previousChat={this.props.chatSelected}
+          openFileModal={this.openFileModal}
+          sendMessagesWithSound={this.props.sendMessageWithFile}
+        />
+      &lt;/Container>
+    );
+  }
+}
+
+const mapStateToProps = state => ({
+  userData: state.config,
+  chat: state.chats.chat,
+  chatSelected: state.chats.seletedChat,
+  contact: Object.values(state.contacts.contacts)
+});
+
+export default connect(
+  mapStateToProps,
+  {
+    initialChat,
+    setView,
+    cleanAllChat,
+    sendMessageWithFile,
+    sendMessagesWithSound
+  }
+)(Chat);
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+<footer class="footer">
+    <div class="content has-text-centered">
+        <p>Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a> on Fri Oct 25 2019 14:50:01 GMT-0400 (GMT-04:00)</p>
+        <p class="sidebar-created-by">
+            <a href="https://github.com/SoftwareBrothers/better-docs" target="_blank">BetterDocs theme</a> provided with <i class="fas fa-heart"></i> by 
+            <a href="http://softwarebrothers.co" target="_blank">SoftwareBrothers - JavaScript Development Agency</a>
+        </p>
+    </div>
+</footer>
+
+<script src="scripts/app.min.js"></script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

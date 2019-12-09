@@ -1,18 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
   StyleSheet,
-  TextInput,
-  FlatList,
   TouchableNativeFeedback,
   Image
 } from "react-native";
 import Moment from "moment";
 import { Thumbnail, Icon } from "native-base";
-import { sha256 } from "js-sha256";
 import { getIcon, hashGenerateColort } from "../../utils/utils";
 import Player from "../../components/Player ";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 export const ReceiveMessage = ({
   onClick,
@@ -53,7 +51,9 @@ export const ReceiveMessage = ({
               marginTop: 5
             }}
             source={{
-              uri: `${userInfo.picture}`
+              uri: `${
+                userInfo.picture ? userInfo.picture : getIcon(item.fromUID)
+              }`
             }}
           />
         )}
@@ -102,7 +102,28 @@ export const ReceiveMessage = ({
   );
 };
 
-export const SenderMessage = ({ onClick, onSelected, item, selected }) => {
+export const SenderMessage = ({
+  onClick,
+  onSelected,
+  item,
+  selected,
+  retry
+}) => {
+  const timeCreated = Moment(item.timestamp);
+  const cancelled =
+    (Moment().diff(timeCreated, "s") > 30 && item.status === "pending") ||
+    item.status === "not sent"
+      ? true
+      : false;
+
+  const styleBody =
+    item.msg.length < 20 ? styles.styleBody1 : styles.styleBody2;
+
+  const textStyle =
+    item.msg.length < 20 ? styles.textStyle1 : styles.textStyle2;
+
+  const iconName = item.toUID ? "checkmark" : "user-check";
+  const IconType = iconName === "checkmark" ? "Ionicons" : "FontAwesome5";
   return (
     <TouchableNativeFeedback
       useForeground
@@ -129,18 +150,44 @@ export const SenderMessage = ({ onClick, onSelected, item, selected }) => {
               />
             </View>
           )}
-          <Text style={{ fontSize: 15 }}>{item.msg}</Text>
-          <Text
-            style={{
-              paddingTop: 7,
-              paddingLeft: 5,
-              paddingBottom: 6,
-              fontSize: 12,
-              textAlign: "right"
-            }}
-          >
-            {Moment(Number(item.timestamp)).format("LT")}
-          </Text>
+          <View style={styleBody}>
+            <View>
+              <Text style={{ fontSize: 15 }}>{item.msg}</Text>
+            </View>
+            <View style={textStyle}>
+              <View style={{ flexDirection: "row" }}>
+                <Text>{Moment(Number(item.timestamp)).format("LT")}</Text>
+                {item.status === "pending" && !cancelled && (
+                  <Icon
+                    style={{ color: "gray", fontSize: 15, marginLeft: 10 }}
+                    name="time"
+                  />
+                )}
+                {item.status === "delivered" && (
+                  <Icon
+                    style={{ color: "gray", fontSize: 15, marginLeft: 10 }}
+                    type={IconType}
+                    name={iconName}
+                  />
+                )}
+                {item.status === "read" && (
+                  <Icon
+                    style={{ color: "gray", fontSize: 15, marginLeft: 10 }}
+                    name="done-all"
+                  />
+                )}
+                {cancelled && (
+                  <TouchableOpacity onPress={() => retry(item)}>
+                    <Icon
+                      type="MaterialIcons"
+                      style={{ color: "gray", fontSize: 16, marginLeft: 10 }}
+                      name="error"
+                    />
+                  </TouchableOpacity>
+                )}
+              </View>
+            </View>
+          </View>
         </View>
       </View>
     </TouchableNativeFeedback>
@@ -191,7 +238,9 @@ export const SoundMessage = ({
                 marginTop: 5
               }}
               source={{
-                uri: `${userInfo.picture}`
+                uri: userInfo.picture
+                  ? `${userInfo.picture}`
+                  : `${getIcon(item.fromUID)}`
               }}
             />
           )}
@@ -304,5 +353,27 @@ const styles = StyleSheet.create({
     borderRadius: 7,
     flexDirection: "column",
     backgroundColor: "#bbdefb"
+  },
+  styleBody1: {
+    flexDirection: "row",
+    flex: 1
+  },
+  styleBody2: {
+    flexDirection: "column"
+  },
+
+  textStyle1: {
+    paddingTop: 7,
+    paddingLeft: 10,
+    paddingBottom: 6,
+    fontSize: 12,
+    alignItems: "flex-end"
+  },
+
+  textStyle2: {
+    paddingTop: 5,
+    paddingBottom: 6,
+    flex: 1,
+    alignItems: "flex-end"
   }
 });

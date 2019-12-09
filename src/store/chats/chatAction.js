@@ -1,17 +1,15 @@
 import { ActionTypes } from "../constants";
 import { generateName } from "../../utils/utils";
-import {
-  setMessage,
-  addTemporalInfo,
-  verifyContact,
-  getTemporalContact,
-  deleteChatss,
-  cleanChat
-} from "../../database/realmDatabase";
+import { database } from '../../../App'
 import { notification, FileDirectory } from "../../utils/utils";
 import { sendSocket } from "../../utils/socket";
 import { sha256 } from "js-sha256";
 import RNFS from "react-native-fs";
+
+/**
+ *here are all the actions of sending and receiving messages
+ *@module ChatAction
+ */
 
 /**
  * @function
@@ -25,17 +23,19 @@ import RNFS from "react-native-fs";
  * @returns {object}
  */
 
-export const initialChat = data => dispatch => {
+export const initialChat = (data, status) => dispatch => {
   let uidChat = data.toUID ? data.toUID : "broadcast";
-  setMessage(uidChat, { ...data }).then(() => {
+  database.setMessage(uidChat, { ...data }, status).then(res => {
     sendSocket.send(JSON.stringify(data));
     dispatch({
       type: ActionTypes.NEW_MESSAGE,
       payload: {
         name: undefined,
         ...data,
+        time: res.time,
         msg: data.msg.text,
-        id: data.msgID
+        id: data.msgID,
+        status
       }
     });
   });
@@ -59,11 +59,11 @@ export const broadcastRandomData = async (parse, id) =>
     const store = require("../../store");
     const userData = id ? id : store.default.getState().config.uid;
     if (sha256(userData) !== parse.fromUID) {
-      verifyContact(parse.fromUID).then(res => {
+      database.verifyContact(parse.fromUID).then(res => {
         if (res) {
           resolve(res);
         } else {
-          getTemporalContact(parse.fromUID).then(temporal => {
+          database.getTemporalContact(parse.fromUID).then(temporal => {
             if (temporal) {
               resolve(temporal);
             } else {
@@ -73,7 +73,7 @@ export const broadcastRandomData = async (parse, id) =>
                 name: randomName,
                 timestamp: parse.timestamp
               };
-              addTemporalInfo(obj).then(data => {
+              database.addTemporalInfo(obj).then(data => {
                 resolve(data);
               });
             }
@@ -99,33 +99,40 @@ export const broadcastRandomData = async (parse, id) =>
 
 export const getChat = data => async dispatch => {
   const parse = JSON.parse(data);
-  let math = undefined;
-
   let infoMensagge = undefined;
-  if (!parse.toUID) {
-    infoMensagge = await broadcastRandomData(parse);
-  }
+  if (parse.type !== "status") {
+    sendStatus(parse);
+    if (!parse.toUID) {
+      infoMensagge = await broadcastRandomData(parse);
+    }
 
-  if (parse.msg.file) {
-    parse.msg.file = await saveFile(parse.msg);
-  }
+    if (parse.msg.file) {
+      parse.msg.file = await saveFile(parse.msg);
+    }
 
-  let uidChat = parse.toUID ? parse.fromUID : "broadcast";
-
-  let name = infoMensagge ? infoMensagge.name : undefined;
-  setMessage(uidChat, { ...parse, name: name }).then(file => {
-    console.log("acaaa", file);
-    dispatch({
-      type: ActionTypes.NEW_MESSAGE,
-      payload: {
-        name: name,
-        ...parse,
-        msg: parse.msg.text,
-        id: parse.msgID,
-        file: file
-      }
+    let uidChat = parse.toUID ? parse.fromUID : "broadcast";
+    let name = infoMensagge ? infoMensagge.name : undefined;
+    database.setMessage(uidChat, { ...parse, name: name }, "delivered").then(res => {
+      dispatch({
+        type: ActionTypes.NEW_MESSAGE,
+        payload: {
+          name: name,
+          ...parse,
+          msg: parse.msg.text,
+          id: parse.msgID,
+          file: res.file,
+          time: res.time
+        }
+      });
     });
-  });
+  } else {
+    database.addStatusOnly(parse).then(() => {
+      dispatch({
+        type: ActionTypes.SET_STATUS_MESSAGE,
+        payload: parse
+      });
+    });
+  }
 };
 
 /**
@@ -194,7 +201,7 @@ export const realoadBroadcastChat = data => {
  */
 
 export const deleteChat = (obj, callback) => dispatch => {
-  deleteChatss(obj).then(() => {
+  database.deleteChatss(obj).then(() => {
     dispatch({
       type: ActionTypes.DELETE_MESSAGE,
       payload: obj
@@ -210,7 +217,7 @@ export const deleteChat = (obj, callback) => dispatch => {
  */
 
 export const cleanAllChat = id => dispatch => {
-  cleanChat(id).then(() => {
+  database.cleanChat(id).then(() => {
     dispatch({
       type: ActionTypes.DELETE_ALL_MESSAGE,
       payload: id
@@ -231,7 +238,7 @@ export const sendMessageWithFile = (data, path, base64) => dispatch => {
   let uidChat = data.toUID ? data.toUID : "broadcast";
   const saveDatabase = Object.assign({}, data);
   saveDatabase.msg.file = path;
-  setMessage(uidChat, { ...saveDatabase }).then(file => {
+  database.setMessage(uidChat, { ...saveDatabase }, "pending").then(res => {
     saveDatabase.msg.file = base64;
     sendSocket.send(JSON.stringify(saveDatabase));
     dispatch({
@@ -241,28 +248,133 @@ export const sendMessageWithFile = (data, path, base64) => dispatch => {
         ...data,
         msg: data.msg.text,
         id: data.msgID,
-        file: file
+        file: res.file,
+        time: res.time,
+        status: "pending"
       }
     });
   });
 };
 
-export const sendMessagesWithSound = (data, path, base64) => dispatch => {
-  // let uidChat = data.toUID ? data.toUID : "broadcast";
-  // const saveDatabase = Object.assign({}, data);
-  // saveDatabase.msg.file = path;
-  // setMessage(uidChat, { ...saveDatabase }).then(file => {
-  //   saveDatabase.msg.file = base64;
-  //   sendSocket.send(JSON.stringify(saveDatabase));
-  //   dispatch({
-  //     type: ActionTypes.NEW_MESSAGE,
-  //     payload: {
-  //       name: undefined,
-  //       ...data,
-  //       msg: data.msg.text,
-  //       id: data.msgID,
-  //       file: file
-  //     }
-  //   });
-  // });
+export const deleteMessages = (id, data, callback) => dispatch => {
+  database.deleteMessage(id, data).then(res => {
+    dispatch({
+      type: ActionTypes.DELETE_SELECTED_MESSAGE,
+      id: id,
+      payload: data
+    });
+    callback();
+  });
+};
+
+export const messageQueue = (index, id, view) => dispatch => {
+  database.unreadMessages(view, id).then(time => {
+    dispatch({
+      type: ActionTypes.UNREAD_MESSAGES,
+      index,
+      payload: id,
+      time: time
+    });
+  });
+};
+
+export const sendStatus = data => {
+  const store = require("../../store");
+  const state = store.default.getState();
+  const sendStatus = {
+    fromUID: state.config.uid,
+    timestamp: new Date().getTime(),
+    data: {
+      status: "delivered",
+      msgID: data.msgID
+    },
+    type: "status"
+  };
+
+  if (!data.toUID) {
+    sendStatus.toUID = null;
+    sendSocket.send(JSON.stringify(sendStatus));
+  } else {
+    try {
+      const contacts = Object.values(state.contacts.contacts);
+
+      contacts.map(contact => {
+        if (data.fromUID === contact.hashUID) {
+          sendStatus.toUID = contact.hashUID;
+
+          sendSocket.send(JSON.stringify(sendStatus));
+        }
+      });
+    } catch (err) {
+      console.log("entro en el catch", err);
+    }
+  }
+};
+
+/**
+ * @function
+ * @description Identify if we have an open chat so that notifications do not arrive
+ * @param {string} idChat
+ * @returns {object}
+ */
+
+export const setView = idChat => dispatch => {
+  database.cancelUnreadMessages(idChat).then(res => {
+    const store = require("../../store");
+    const state = store.default.getState();
+
+    if (idChat && res.length > 0) {
+      const chat = Object.values(state.chats.chat).find(chat => {
+        return chat.toUID === idChat;
+      });
+
+      const sendStatus = {
+        fromUID: state.config.uid,
+        toUID: chat.toUID,
+        timestamp: new Date().getTime(),
+        data: {
+          status: "read",
+          msgID: res
+        },
+        type: "status"
+      };
+      sendSocket.send(JSON.stringify(sendStatus));
+    }
+
+    dispatch({
+      type: ActionTypes.IN_VIEW,
+      payload: idChat
+    });
+  });
+};
+
+export const sendReadMessageStatus = data => dispatch => {
+  sendSocket.send(JSON.stringify(data));
+};
+
+export const sendAgain = message => dispatch => {
+  database.updateMessage(message).then(() => {
+    const sendObject = {
+      fromUID: message.fromUID,
+      toUID: message.toUID,
+      msg: {
+        text: message.msg
+      },
+      timestamp: message.timestamp,
+      type: "msg",
+      msgID: message.id
+    };
+
+    sendSocket.send(JSON.stringify(sendObject));
+    dispatch({
+      type: ActionTypes.SEND_AGAIN,
+      payload: message
+    });
+  });
+};
+
+export const updateState = () => {
+  return {
+    type: ActionTypes.UPDATE_STATE
+  };
 };

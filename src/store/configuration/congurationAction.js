@@ -3,7 +3,13 @@ import AsyncStorage from "@react-native-community/async-storage";
 import RNFS from "react-native-fs";
 import { ActionTypes } from "../constants";
 import { createFolder } from "../../utils/utils";
+import { database } from '../../../App'
 import { writteUser, getUserData } from "../../database/realmDatabase";
+
+/**
+ * in this module are the configuration actions
+ * @module ConfigurationAction
+ */
 
 /**
  * @function
@@ -23,7 +29,7 @@ export const getPhotosFromUser = (id, callback) => async dispatch => {
     const newPath = `file:///${directory}/${name}`;
     RNFS.moveFile(images.path, newPath).then(async res => {
       await deletePhotoFromPhone();
-      writteUser({ uid: id, picture: newPath }).then(async res => {
+      database.writteUser({ uid: id, picture: newPath }).then(async res => {
         callback();
         dispatch({
           type: ActionTypes.GET_PHOTO_USER,
@@ -35,7 +41,7 @@ export const getPhotosFromUser = (id, callback) => async dispatch => {
 };
 
 /**
- * @function function to get the names of the images
+ * @function
  * @description function to get the photo of the gallery cut and move to the app folder
  * @param {object} id information of the photograph obtained
  * @returns {string}
@@ -53,7 +59,7 @@ const getName = data => {
  */
 
 const deletePhotoFromPhone = async () => {
-  getUserData("user").then(async res => {
+  database.getUserData("user").then(async res => {
     const parse = JSON.parse(JSON.stringify(res));
     if (parse.picture) {
       await RNFS.exists(parse.picture).then(async res => {
@@ -72,7 +78,7 @@ const deletePhotoFromPhone = async () => {
  */
 
 export const openCamera = (id, callback) => async dispatch => {
-  const directory = await createFolder();
+  const directory = await createFolder()
   ImagePicker.openCamera({
     width: 500,
     height: 500,
@@ -82,7 +88,7 @@ export const openCamera = (id, callback) => async dispatch => {
     const newPath = `file:///${directory}/${name}`;
     RNFS.moveFile(images.path, newPath).then(async () => {
       await deletePhotoFromPhone();
-      writteUser({
+      database.writteUser({
         uid: id,
         picture: newPath
       }).then(async res => {
@@ -95,6 +101,7 @@ export const openCamera = (id, callback) => async dispatch => {
     });
   });
 };
+
 /**
  *
  * @description save the name of the user in the database
@@ -106,8 +113,7 @@ export const openCamera = (id, callback) => async dispatch => {
  */
 
 export const editName = (obj, callback) => async dispatch => {
-
-  writteUser({ ...obj, id: obj.uid }).then(res => {
+  database.writteUser({ ...obj, id: obj.uid }).then(res => {
     callback();
     dispatch({
       type: ActionTypes.EDIT_NAME,
@@ -115,3 +121,5 @@ export const editName = (obj, callback) => async dispatch => {
     });
   });
 };
+
+

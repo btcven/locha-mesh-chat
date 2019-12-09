@@ -7,7 +7,9 @@ import {
   ScrollView,
   TouchableOpacity,
   Platform,
-  Text
+  Text,
+  Animated,
+  PanResponder
 } from "react-native";
 import RNFS from "react-native-fs";
 import { FileDirectory } from "../../utils/utils";
@@ -15,6 +17,7 @@ import { sha256 } from "js-sha256";
 import { AudioRecorder, AudioUtils } from "react-native-audio";
 import * as Animatable from "react-native-animatable";
 import moment from "moment";
+import Draggable from "../../components/Draggable";
 
 /**
  *
@@ -32,8 +35,10 @@ export default class ChatForm extends Component {
       height: 20,
       currentTime: 0.0,
       recording: false,
+      moveText: new Animated.ValueXY(),
       paused: false,
       stoppedRecording: false,
+      cancelRecoding: false,
       finished: false,
       audioPath:
         AudioUtils.DocumentDirectoryPath + `/AUDIO_${new Date().getTime()}.aac`,
@@ -41,93 +46,96 @@ export default class ChatForm extends Component {
     };
   }
 
-  handleViewRef = ref => (this.view = ref);
+  componentDidMount = async () => {
+    this._val = { x: 0, y: 0 };
+    const recoderPermision = await AudioRecorder.checkAuthorizationStatus();
+    this.setState({ hasPermission: recoderPermision });
+  };
 
-  componentDidMount = () => {
+  prepareRecordingPath = audioPath => {
+    try {
+      AudioRecorder.prepareRecordingAtPath(audioPath, {
+        SampleRate: 22050,
+        Channels: 1,
+        AudioQuality: "Low",
+        AudioEncoding: "aac",
+        AudioEncodingBitRate: 32000,
+        IncludeBase64: true
+      });
+    } catch (err) {
+      console.log("error", err);
+    }
+  };
+
+  _record = async () => {
     const { user, navigation, setChat, previousChat } = this.props;
     const toUID = navigation.params ? navigation.params.hashUID : null;
-    AudioRecorder.requestAuthorization().then(isAuthorised => {
-      this.setState({ hasPermission: isAuthorised });
 
-      if (!isAuthorised) return;
-
+    if (this.state.hasPermission) {
       this.prepareRecordingPath(this.state.audioPath);
 
       AudioRecorder.onProgress = data => {
         this.setState({ currentTime: Math.floor(data.currentTime) });
       };
 
-      AudioRecorder.onFinished = data => {
-        const newPath = `${FileDirectory}/Audios/AUDIO_${new Date().getTime()}.aac`;
-        RNFS.exists(this.state.audioPath).then(() => {
-          RNFS.moveFile(this.state.audioPath, newPath).then(() => {
-            const sendObject = {
-              fromUID: sha256(user.uid),
-              toUID: toUID,
-              msg: {
-                text: "",
-                typeFile: "audio"
-              },
-              timestamp: new Date().getTime(),
-              type: "msg"
-            };
-
-            const id = sha256(
-              `${sha256(user.uid)} + ${toUID}  +  ${
-                sendObject.msg.text
-              }  + ${new Date().getTime()}`
-            );
-
-            this.props.sendMessagesWithSound(
-              { ...sendObject, msgID: id },
-              newPath,
-              data.base64
-            );
-          });
+      try {
+        this.setState({
+          recording: true,
+          paused: false,
+          cancelRecoding: false
         });
+
+        const filePath = await AudioRecorder.startRecording();
+      } catch (error) {
+        this.setState({ recording: false });
+      }
+      AudioRecorder.onFinished = data => {
+        if (this.state.currentTime !== 0 && !this.state.cancelRecoding) {
+          const newPath = `${FileDirectory}/Audios/AUDIO_${new Date().getTime()}.aac`;
+          RNFS.exists(this.state.audioPath).then(() => {
+            RNFS.moveFile(this.state.audioPath, newPath).then(() => {
+              const sendObject = {
+                fromUID: sha256(user.uid),
+                toUID: toUID,
+                msg: {
+                  text: "",
+                  typeFile: "audio"
+                },
+                timestamp: new Date().getTime(),
+                type: "msg"
+              };
+
+              const id = sha256(
+                `${sha256(user.uid)} + ${toUID}  +  ${
+                  sendObject.msg.text
+                }  + ${new Date().getTime()}`
+              );
+
+              this.props.sendMessagesWithSound(
+                { ...sendObject, msgID: id },
+                newPath,
+                data.base64
+              );
+            });
+          });
+        }
       };
-    });
-  };
-
-  prepareRecordingPath = audioPath => {
-    AudioRecorder.prepareRecordingAtPath(audioPath, {
-      SampleRate: 22050,
-      Channels: 1,
-      AudioQuality: "Low",
-      AudioEncoding: "aac",
-      AudioEncodingBitRate: 32000,
-      IncludeBase64: true
-    });
-  };
-
-  _record = async () => {
-    this.setState({ recording: true });
-    if (this.state.recording) {
-      console.warn("Already recording!");
-      return;
-    }
-    if (!this.state.hasPermission) {
-      console.warn("Can't record, no permission granted!");
-      return;
-    }
-    if (this.state.stoppedRecording) {
-      this.prepareRecordingPath(this.state.audioPath);
-    }
-    this.setState({ recording: true, paused: false });
-    try {
-      const filePath = await AudioRecorder.startRecording();
-    } catch (error) {
-      console.error(error);
+    } else {
+      AudioRecorder.requestAuthorization().then(async isAuthorised => {
+        this.setState({ recording: false, hasPermission: isAuthorised });
+      });
     }
   };
 
   _stop = async () => {
-    // this.setState({ recording: false });
     if (!this.state.recording) {
-      console.warn("Can't stop, not recording!");
       return;
     }
-    this.setState({ stoppedRecording: true, recording: false, paused: false });
+    this.setState({
+      stoppedRecording: true,
+      recording: false,
+      paused: false
+    });
     try {
       const filePath = await AudioRecorder.stopRecording();
       if (Platform.OS === "android") {
@@ -135,7 +143,7 @@ export default class ChatForm extends Component {
       }
       return filePath;
     } catch (error) {
-      console.error(error);
+      console.log(error);
     }
   };
 
@@ -157,16 +165,24 @@ export default class ChatForm extends Component {
     };
 
     const id = sha256(
-      `${sha256(user.uid)} + ${toUID}  +  ${
+      `${user.uid} + ${toUID}  +  ${
         sendObject.msg.text
       }  + ${new Date().getTime()}`
     );
 
-    setChat({ ...sendObject, msgID: id });
+    setChat({ ...sendObject, msgID: id }, "pending");
     this.setState({ message: "" });
   };
 
+  moveText = value => {
+    if (value.__getValue().x < -30 && !this.state.cancelRecoding) {
+      this.setState({ cancelRecoding: true });
+    }
+    this.state.moveText.setValue(value.__getValue());
+  };
+
   render() {
+    const { screenProps } = this.props;
     return (
       <View
         style={{ minHeight: 50, height: this.state.height, maxHeight: 120 }}
@@ -194,7 +210,7 @@ export default class ChatForm extends Component {
                     height: event.nativeEvent.contentSize.height
                   });
                 }}
-                placeholder="Mensaje"
+                placeholder={screenProps.t("Chats:message")}
                 style={{
                   flex: 1
                 }}
@@ -226,41 +242,46 @@ export default class ChatForm extends Component {
                         .utc(this.state.currentTime * 1000)
                         .format("mm:ss")}
                     </Text>
-                    <View
-                      style={{
-                        marginHorizontal: 10,
-                        flexDirection: "row",
-                        justifyContent: "center",
-                        alignItems: "center"
-                      }}
+                    <Animated.View
+                      style={[
+                        this.state.moveText.getLayout(),
+                        {
+                          marginHorizontal: 10,
+                          flexDirection: "row",
+                          justifyContent: "center",
+                          alignItems: "center"
+                        }
+                      ]}
                     >
                       <Icon
                         name="arrow-dropleft"
                         style={{ marginHorizontal: 10, color: "#9e9e9e" }}
                       />
-                      <Text>Desliza para Cancelar</Text>
-                    </View>
+                      <Text>{screenProps.t("Chats:cancelAudio")}</Text>
+                    </Animated.View>
                   </View>
                 </Animatable.View>
               </View>
             )}
 
             {this.state.message.length === 0 && (
-              <TouchableOpacity
-                activeOpacity={1}
+              <Draggable
+                moveText={this.moveText}
                 onPressIn={() => this._record()}
                 onPressOut={() => this._stop()}
               >
-                <Icon
-                  style={
-                    this.state.recording
-                      ? styles.buttonTouch
-                      : styles.iconChatStyle
-                  }
-                  type="MaterialIcons"
-                  name="mic"
-                />
-              </TouchableOpacity>
+                <TouchableOpacity activeOpacity={1}>
+                  <Icon
+                    style={
+                      this.state.recording
+                        ? styles.buttonTouch
+                        : styles.iconChatStyle
+                    }
+                    type="MaterialIcons"
+                    name="mic"
+                  />
+                </TouchableOpacity>
+              </Draggable>
             )}
           </View>
           {this.state.message.length !== 0 && (

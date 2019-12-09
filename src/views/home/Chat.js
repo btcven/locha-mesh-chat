@@ -8,23 +8,28 @@ import {
   initialChat,
   cleanAllChat,
   sendMessageWithFile,
-  sendMessagesWithSound
+  deleteMessages,
+  setView,
+  sendReadMessageStatus,
+  sendAgain
 } from "../../store/chats";
-import { setView } from "../../store/aplication";
+import {} from "../../store/aplication";
 import { connect } from "react-redux";
 import { Alert, Clipboard, Dimensions } from "react-native";
 import { sha256 } from "js-sha256";
 import ImagesView from "./imagesView";
 
 /**
- *
- *
- * @class Chat
- * @description main message component
- * @extends {Component}
+ * main message component
  */
 
 class Chat extends Component {
+  /**
+   *Creates an instance of Chat.
+   * @param {Object} props optional
+   * @memberof Chat
+   */
+
   constructor(props) {
     super(props);
     this.state = {
@@ -33,7 +38,7 @@ class Chat extends Component {
       fileModal: false,
       menu: [
         {
-          label: "Limpiar chat",
+          label: `${this.props.screenProps.t("Chats:clean")}`,
           action: () => this.cleanAllMessages(),
           broadcast: true
         }
@@ -45,15 +50,27 @@ class Chat extends Component {
     this.props.setView(this.props.chat[this.props.chatSelected.index].toUID);
   };
 
+  /**
+   *
+   * static variable of the React Navigation
+   * @static
+   * @memberof Chat
+   */
   static navigationOptions = {
     header: null
   };
 
+  /**
+   * function belonging to the menu its function is to delete all messages from the selected chat
+   * @function
+   * @memberof Chat
+   */
   cleanAllMessages = () => {
+    const { screenProps } = this.props;
     const chat = this.props.chat[this.props.chatSelected.index];
     Alert.alert(
-      "Eliminar chat",
-      "¿Esta seguro de eliminar todos los mensajes?",
+      `${screenProps.t("Chats:titleDelete")}`,
+      `${screenProps.t("Chats:deleteBody")}`,
       [
         {
           text: "Cancel",
@@ -68,6 +85,34 @@ class Chat extends Component {
       { cancelable: false }
     );
   };
+
+  /**
+   * @typedef {Object} Message
+   * @property {string} item.fromUID uid of who sends the message
+   * @property {string} item.id message id
+   * @property {string} item.msg  message text
+   * @property {string | null}  item.name name of who send the message
+   * @property {number} item.timestamp message timestamp
+   * @property {string | null} item.toUID  uid of who receive the message
+   * @property {string} item.type type message
+   * @property {object} item.file path where the file is saved and file type
+   */
+
+  /**
+   * function executes when pressing a message
+   * @param {Message} item
+   * @param {string} item.fromUID uid of who sends the message
+   * @param {string} item.id message id
+   * @param {string} item.msg  message text
+   * @param {string | null}  item.name name of who send the message
+   * @param {number} item.timestamp message timestamp
+   * @param {string | null} item.toUID  uid of who receive the message
+   * @param {string} item.type type message
+   * @param {{fileType: string, file: string}} item.file path where the file is saved and file type
+   * @function
+   * @public
+   * @memberof Chat
+   */
 
   onClick = item => {
     if (this.state.selected.length > 0) {
@@ -94,11 +139,28 @@ class Chat extends Component {
     }
   };
 
+  /**
+   * function used to select messages
+   * @param {Object} item
+   * @param {string} item.fromUID uid of who sends the message
+   * @param {string} item.id message id
+   * @param {string} item.msg  message text
+   * @param {string | null}  item.name name of who send the message
+   * @param {number} item.timestamp message timestamp
+   * @param {string | null} item.toUID  uid of who receive the message
+   * @param {string} item.type type message
+   * @param {{fileType: string, file: string}} item.file path where the file is saved and file type
+   * @function
+   * @public
+   * @memberof Chat
+   */
   onSelected = item => {
     this.setState({
       selected: this.state.selected.concat(item)
     });
   };
+
+  // ----------------- Actions headers  -----------
 
   back = () => {
     this.setState({ selected: [] });
@@ -112,12 +174,29 @@ class Chat extends Component {
   };
 
   delete = () => {
-    alert("no disponible");
+    const chatSelected = this.props.chat[this.props.chatSelected.index];
+    this.props.deleteMessages(chatSelected.toUID, this.state.selected, () => {
+      this.setState({ selected: [] });
+    });
   };
+
+  // -----------------------------------------
+
+  /**
+   * open the file selection modal
+   * @function
+   * @memberof Chat
+   */
 
   openFileModal = () => {
     this.setState({ fileModal: true });
   };
+
+  /**
+   * open the file selection modal
+   * @function
+   * @memberof Chat
+   */
 
   closeFileModal = () => {
     this.setState({ fileModal: false });
@@ -128,9 +207,14 @@ class Chat extends Component {
    * @param { obj } data
    * @param {array<obj>} data.images contains the list of images
    * @param {number} data.position array position where the comment will be written
-   * @param {string} data.message
-   * @memberof Chat text to send
+   * @param {string} data.message text to send
+   * @function
+   * @memberof Chat
    */
+
+  componentWillUnmount = () => {
+    this.props.setView(undefined);
+  };
 
   sendFileWithImage = (data, callback) => {
     const { userData, navigation, setChat, previousChat } = this.props;
@@ -188,7 +272,7 @@ class Chat extends Component {
   };
 
   render() {
-    const { navigation } = this.props;
+    const { navigation, screenProps } = this.props;
     let viewImages = this.state.imagesView.length === 0 ? false : true;
     const chatSelected = this.props.chat[this.props.chatSelected.index];
 
@@ -204,6 +288,7 @@ class Chat extends Component {
             open={viewImages}
             images={this.state.imagesView}
             close={this.closeView}
+            screenProps={screenProps}
           />
         )}
         <Header
@@ -213,7 +298,6 @@ class Chat extends Component {
           back={this.back}
           copy={this.copy}
           delete={this.delete}
-          setView={this.props.setView}
         />
         <ChatBody
           chats={messages}
@@ -225,6 +309,9 @@ class Chat extends Component {
           close={this.closeFileModal}
           open={this.state.fileModal}
           sendFileWithImage={this.sendFileWithImage}
+          sendReadMessageStatus={this.props.sendReadMessageStatus}
+          sendAgain={this.props.sendAgain}
+          screenProps={screenProps}
         />
         <ChatForm
           user={this.props.userData}
@@ -233,6 +320,7 @@ class Chat extends Component {
           previousChat={this.props.chatSelected}
           openFileModal={this.openFileModal}
           sendMessagesWithSound={this.props.sendMessageWithFile}
+          screenProps={screenProps}
         />
       </Container>
     );
@@ -246,13 +334,12 @@ const mapStateToProps = state => ({
   contact: Object.values(state.contacts.contacts)
 });
 
-export default connect(
-  mapStateToProps,
-  {
-    initialChat,
-    setView,
-    cleanAllChat,
-    sendMessageWithFile,
-    sendMessagesWithSound
-  }
-)(Chat);
+export default connect(mapStateToProps, {
+  initialChat,
+  setView,
+  cleanAllChat,
+  sendMessageWithFile,
+  deleteMessages,
+  sendReadMessageStatus,
+  sendAgain
+})(Chat);

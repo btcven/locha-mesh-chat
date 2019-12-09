@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { chats, images } from "../../utils/constans";
 import Header from "../../components/Header";
 import AddContact from "./AddContact";
 import FloatButton from "../../components/FloatButton";
@@ -14,7 +13,7 @@ import {
   Icon
 } from "native-base";
 import { selectedChat } from "../../store/chats";
-import { getSelectedColor, unSelect } from "../../utils/utils";
+import { getSelectedColor, unSelect, getIcon } from "../../utils/utils";
 import { Image, StyleSheet, Alert } from "react-native";
 import {
   saveContact,
@@ -22,7 +21,9 @@ import {
   deleteContactAction,
   editContats
 } from "../../store/contacts";
+
 import { connect } from "react-redux";
+
 /**
  *
  * @class Contacts
@@ -30,6 +31,7 @@ import { connect } from "react-redux";
  * @extends {Component}
  *
  */
+
 class Contacts extends Component {
   constructor(props) {
     super(props);
@@ -125,7 +127,9 @@ class Contacts extends Component {
   render() {
     const result = this.state.search
       ? this.props.contacts.filter(contact => {
-          return contact.name.toLowerCase().includes(this.state.search);
+          return contact.name
+            .toLowerCase()
+            .includes(this.state.search.toLowerCase());
         })
       : this.props.contacts;
     return (
@@ -181,7 +185,9 @@ class Contacts extends Component {
                     {!contact.picture && (
                       <Image
                         style={styles.imageStyles}
-                        source={images.noPhoto.url}
+                        source={{
+                          uri: `${getIcon(contact.hashUID)}`
+                        }}
                       />
                     )}
                   </Right>

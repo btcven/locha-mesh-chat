@@ -1,9 +1,9 @@
 import { getChat } from "../store/chats";
 import { reestarConnection, loading, loaded } from "../store/aplication";
-import { getUserData } from "../database/realmDatabase";
 import { sha256 } from "js-sha256";
 
 export let sendSocket = undefined;
+
 /**
  *
  * websocket client management class
@@ -12,8 +12,9 @@ export let sendSocket = undefined;
  */
 
 export default class Socket {
-  constructor(store) {
+  constructor(store, database) {
     this.socket = new WebSocket("wss://lochat.coinlab.info");
+    this.database = database
     //this.socket = new WebSocket("wss://192.168.1.1");
     this.openSocketConnection();
     this.onMenssage();
@@ -35,7 +36,9 @@ export default class Socket {
   checkingSocketStatus = store => {
     this.idInterval = setInterval(() => {
       if (this.socket.readyState !== 1 && this.socket.readyState !== 3) {
-        this.store.dispatch(loading());
+        if (!store.getState().aplication.loading) {
+          this.store.dispatch(loading());
+        }
       } else if (this.socket.readyState === 3) {
         this.closeTimmer();
       } else {
@@ -63,7 +66,7 @@ export default class Socket {
    */
 
   getUserObject = callback => {
-    getUserData().then(res => {
+    this.database.getUserData().then(res => {
       const object = {
         hashUID: sha256(res[0].uid),
         timestamp: new Date().getTime(),

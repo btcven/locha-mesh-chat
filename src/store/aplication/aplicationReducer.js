@@ -6,13 +6,22 @@ const AplicationState = {
   loading: false,
   tab: 1,
   menu: false,
-  view: undefined
+  view: undefined,
+  appStatus: undefined
 };
 
 export const AplicationReducer = (state = AplicationState, action) => {
   switch (action.type) {
     case ActionTypes.INITIAL_STATE: {
       return { ...state };
+    }
+
+    case ActionTypes.CLEAR_ALL: {
+      return { ...AplicationState, appStatus: "created" }
+    }
+
+    case ActionTypes.APP_STATUS: {
+      return { ...state, appStatus: action.payload }
     }
 
     case ActionTypes.IN_VIEW: {

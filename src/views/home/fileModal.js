@@ -6,6 +6,7 @@ import { Thumbnail } from "native-base";
 import ImagePicker from "react-native-image-crop-picker";
 import ImagesView from "./imagesView";
 import RNFS from "react-native-fs";
+import { FileDirectory } from "../../utils/utils";
 
 /**
  *
@@ -60,9 +61,7 @@ export default class FileModal extends Component {
       cropping: true,
       includeBase64: true
     }).then(image => {
-      const newPath = `file:///${
-        RNFS.ExternalStorageDirectoryPath
-      }//Pictures/LochaMesh/IMG_${new Date().getTime()} `;
+      const newPath = `file:///${FileDirectory}/Pictures/IMG_${new Date().getTime()} `;
 
       RNFS.moveFile(image.path, newPath).then(() => {
         this.setState({
@@ -83,7 +82,7 @@ export default class FileModal extends Component {
   };
 
   render() {
-    const { open, close } = this.props;
+    const { open, close, screenProps } = this.props;
     let { imagesView } = this.state;
     let viewImages = imagesView.length === 0 ? false : true;
     return (
@@ -94,6 +93,7 @@ export default class FileModal extends Component {
             open={viewImages}
             images={imagesView}
             close={this.closeView}
+            screenProps={screenProps}
           />
         )}
         <Modal
@@ -125,7 +125,7 @@ export default class FileModal extends Component {
               }}
             >
               <Thumbnail source={images.file.url} />
-              <Text>Galeria</Text>
+              <Text>{screenProps.t("Settings:gallery")}</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={{ alignItems: "center" }}
@@ -134,7 +134,7 @@ export default class FileModal extends Component {
               }}
             >
               <Thumbnail source={images.camera.url} />
-              <Text>Camara</Text>
+              <Text>{screenProps.t("Settings:camera")}</Text>
             </TouchableOpacity>
           </View>
         </Modal>

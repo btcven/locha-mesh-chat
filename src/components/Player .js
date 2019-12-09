@@ -20,7 +20,7 @@ class Player extends Component {
   componentDidMount = () => {
     this.sound = new Sound(this.props.path, "", error => {
       if (error) {
-        console.log("failed to load the sound", error);
+
       } else {
         this.setState({
           duration: this.sound.getDuration()

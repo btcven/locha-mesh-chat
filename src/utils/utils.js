@@ -1,14 +1,26 @@
 import RNFS from "react-native-fs";
+import React from "react";
 import { ToastAndroid } from "react-native";
 import { PermissionsAndroid } from "react-native";
 import Identicon from "identicon.js";
-import { getMessageByTime } from "../database/realmDatabase";
+import { database } from '../../App'
 import BackgroundTimer from "react-native-background-timer";
-import { realoadBroadcastChat, selectedChat } from "../store/chats";
+import {
+  realoadBroadcastChat,
+  selectedChat,
+  messageQueue,
+  updateState
+} from "../store/chats";
 import NotifService from "./notificationService";
 import NavigationService from "./navigationService";
 import store from "../store";
 import { sha256 } from "js-sha256";
+import Moment from "moment";
+
+/**
+ * global functions used in multiple places in the app
+ * @module Utils
+ */
 
 export const notification = new NotifService();
 /**
@@ -26,6 +38,14 @@ async function requestStoragePermission() {
     console.warn(err);
   }
 }
+
+export const pendingObservable = () => {
+  BackgroundTimer.runBackgroundTimer(() => {
+    database.cancelMessages().then(res => {
+      store.dispatch(updateState());
+    });
+  }, 3000);
+};
 
 export const FileDirectory = RNFS.ExternalStorageDirectoryPath + "/LochaMesh";
 
@@ -76,6 +96,7 @@ export const onNotification = res => {
   let state = store.getState();
   const view = res.toUID ? res.fromUID : "broadcast";
   const rule = state.aplication.view !== view;
+  this.unreadMessages(rule, state, view, res);
   if (sha256(state.config.uid) !== res.fromUID && rule) {
     let id = parseInt(sha256(view), 16);
 
@@ -84,8 +105,17 @@ export const onNotification = res => {
       result.toUID === "broadcast"
         ? { ...res, name: result.toUID }
         : { ...res, name: result.name };
-
     notification.localNotif(allData, String(id).substr(2, 10));
+  }
+};
+
+unreadMessages = (rule, state, view, data) => {
+  const index = state.chats.chat.findIndex(chat => {
+    return chat.toUID === view;
+  });
+
+  if (rule) {
+    store.dispatch(messageQueue(index, data.id, view));
   }
 };
 
@@ -111,6 +141,12 @@ export const unSelect = (selected, unSelected) => {
 };
 
 /**
+ * get file information for the message at home
+ * @param {String} typeFile  type of file
+ * @function
+ */
+
+/**
  *
  * function used to change the background color of a selected list
  * @param {array} selected
@@ -129,13 +165,6 @@ export const getSelectedColor = (selected, id) => {
 
   return result ? "#f5f5f5" : "#fff";
 };
-
-/**
- *
- * This function is used to return the chat and contact information
- * @param {string} id
- * @returns {object}
- */
 
 const getInfoMessage = id => {
   let state = store.getState();
@@ -214,7 +243,6 @@ export const hashGenerateColort = str => {
  *
  * function to generate an icon with a hash
  * @param {string} data string received to generate the icon
- * @returns
  */
 
 export const getIcon = data => {

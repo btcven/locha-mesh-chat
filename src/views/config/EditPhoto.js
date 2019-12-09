@@ -4,24 +4,25 @@ import { images } from "../../utils/constans";
 import { View, Text, TouchableOpacity } from "react-native";
 import { Thumbnail } from "native-base";
 
-/**
- *
- *
- * @export
- * @class EditPhoto
- * @description 
- * @extends {Component}
- */
+/** 
+ Reusable component to display the modal with the gallery and camera buttons
+*/
 
-export default class EditPhoto extends Component {
+class EditPhoto extends Component {
+  /**
+   *Creates an instance of EditPhoto.
+   * @param {Object} props
+   * @memberof EditPhoto
+   */
+
   constructor(props) {
     super(props);
     this.state = {};
   }
 
   getPhotosFromGallery = () => {
-    this.props.getPhotosFromUser(this.props.config.uid,() => {
-      this.props.close();
+    this.props.getPhotosFromUser(this.props.config.uid, () => {
+      this.props.close("openModalPhoto");
     });
   };
 
@@ -32,7 +33,7 @@ export default class EditPhoto extends Component {
   };
 
   render() {
-    const { open, close } = this.props;
+    const { open, close, screenProps } = this.props;
     return (
       <View>
         <Modal
@@ -41,8 +42,10 @@ export default class EditPhoto extends Component {
             margin: 0
           }}
           isVisible={open}
+          animationIn="slideInUp"
+          animationOut="slideOutDown"
+          animationOutTiming={800}
           onBackdropPress={() => close("openModalPhoto")}
-          swipeDirection={["up", "left", "right", "down"]}
         >
           <View
             style={{
@@ -61,7 +64,7 @@ export default class EditPhoto extends Component {
               }}
             >
               <Thumbnail source={images.file.url} />
-              <Text>Galeria</Text>
+              <Text>{screenProps.t("Settings:gallery")}</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={{ alignItems: "center" }}
@@ -70,7 +73,7 @@ export default class EditPhoto extends Component {
               }}
             >
               <Thumbnail source={images.camera.url} />
-              <Text>Camara</Text>
+              <Text>{screenProps.t("Settings:camera")}</Text>
             </TouchableOpacity>
           </View>
         </Modal>
@@ -78,3 +81,5 @@ export default class EditPhoto extends Component {
     );
   }
 }
+
+export default EditPhoto;

@@ -3,6 +3,8 @@ import { View, StyleSheet, FlatList } from "react-native";
 import { sha256 } from "js-sha256";
 import FileModal from "./fileModal";
 import { ReceiveMessage, SenderMessage, SoundMessage } from "./Messages";
+import Sound from "react-native-sound";
+import { songs } from "../../utils/constans";
 
 /**
  *
@@ -20,6 +22,45 @@ export default class ChatBody extends Component {
       selected: []
     };
   }
+
+  componentDidMount = () => {
+    this.sound = new Sound(songs.song3.url, error => {
+      if (error) {
+        console.warn("failed to load the sound", error);
+      } else {
+      }
+    });
+  };
+
+  componentDidUpdate = prevProps => {
+    if (this.props.chats.length > 0) {
+      const rule1 = prevProps
+        ? this.props.chats.length !== prevProps.chats.length
+        : false;
+
+      lastMessage = this.props.chats[0];
+      if (rule1) {
+        if (sha256(this.props.user.uid) !== lastMessage.fromUID) {
+          this.sound.setVolume(0.1).play();
+
+          const sendStatus = {
+            fromUID: this.props.user.uid,
+            toUID: lastMessage.fromUID,
+            timestamp: new Date().getTime(),
+            data: {
+              status: "read",
+              msgID: lastMessage.id
+            },
+            type: "status"
+          };
+
+          if (lastMessage.toUID) {
+            this.props.sendReadMessageStatus(sendStatus);
+          }
+        }
+      }
+    }
+  };
 
   getContactInfo = item => {
     const result = this.props.contacts.find(contact => {
@@ -45,8 +86,14 @@ export default class ChatBody extends Component {
     }
   };
 
+  retry = item => {
+    item.timestamp = new Date().getTime();
+
+    this.props.sendAgain(item);
+  };
+
   render() {
-    
+    const { screenProps } = this.props;
     return (
       <View style={{ flex: 1 }}>
         {this.props.open && (
@@ -54,12 +101,12 @@ export default class ChatBody extends Component {
             open={this.props.open}
             close={this.props.close}
             sendFileWithImage={this.props.sendFileWithImage}
+            screenProps={screenProps}
           />
         )}
 
         <FlatList
           inverted
-          // extraData={this.props.selected}
           contentContainerStyle={styles.container}
           data={this.props.chats}
           keyExtractor={(item, index) => index.toString()}
@@ -91,6 +138,7 @@ export default class ChatBody extends Component {
                   item={item}
                   selected={selected}
                   index={index}
+                  retry={this.retry}
                 />
               );
             } else {
@@ -103,7 +151,6 @@ export default class ChatBody extends Component {
                   userInfo={userInfo}
                   selected={selected}
                   index={index}
-                 
                 />
               );
             }

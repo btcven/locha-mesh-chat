@@ -6,6 +6,11 @@ const AplicationState = {
 
 export const contactsReducer = (state = AplicationState, action) => {
   switch (action.type) {
+
+    case ActionTypes.CLEAR_ALL: {
+      return { ...AplicationState }
+    }
+    
     case ActionTypes.INITIAL_STATE: {
       return {
         contacts: action.payload.contacts

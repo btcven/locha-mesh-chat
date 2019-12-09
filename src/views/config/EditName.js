@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import Modal from "react-native-modal";
-import { View, Text, StyleSheet } from "react-native";
-import { Item, Input, Form, Button, Right } from "native-base";
+import { View, StyleSheet } from "react-native";
+import { Item, Input, Form, Button, Right, Text } from "native-base";
 /**
  *
  *
@@ -28,7 +28,7 @@ export default class EditName extends Component {
   };
 
   render() {
-    const { open, close } = this.props;
+    const { open, close, screenProps } = this.props;
     const disabled = this.state.name.length > 1 ? false : true;
     return (
       <View>
@@ -39,19 +39,28 @@ export default class EditName extends Component {
           }}
           avoidKeyboard={true}
           isVisible={open}
+          animationIn="slideInUp"
+          animationOut="slideOutDown"
+          animationOutTiming={800}
           onBackdropPress={() => close("openModalName")}
         >
           <View
             style={{
-              backgroundColor: "#fff",
-              width: "100%"
+              backgroundColor: "white", borderRadius: 5,
+              marginHorizontal: 5
             }}
           >
-            <Text style={styles.titleModal}>Editar Nombre </Text>
+            <Text style={styles.titleModal}>
+              {screenProps.t("Settings:editName")}
+            </Text>
             <Form>
+              <Text style={{ position: "absolute", top: "40%", right: "5%" }}>
+                {12 - this.state.name.length}
+              </Text>
               <Item stackedLabel>
                 <Input
-                  placeholder="Ingrese Nombre"
+                  maxLength={12}
+                  placeholder={screenProps.t("Settings:enterName")}
                   value={this.state.name}
                   onChangeText={event => this.setState({ name: event })}
                 />
@@ -66,19 +75,22 @@ export default class EditName extends Component {
             >
               <Button
                 onPress={() => close("openModalName")}
-                danger
+                transparent
                 style={{
                   marginHorizontal: 10
                 }}
               >
-                <Text style={styles.styleTextButton}>Cancelar</Text>
+                <Text style={styles.styleTextButton}>
+                  {screenProps.t("Settings:cancelButton")}
+                </Text>
               </Button>
               <Button
+                transparent
                 disabled={disabled}
                 onPress={() => this.saveName()}
                 style={styles.styleTextButton}
               >
-                <Text>Guardar</Text>
+                <Text>{screenProps.t("Settings:saveButton")}</Text>
               </Button>
             </View>
           </View>
