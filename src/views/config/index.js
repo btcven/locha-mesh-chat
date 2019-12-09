@@ -55,7 +55,6 @@ class Config extends Component {
   };
 
 
-
   createBackupFile = async (pin) => {
     this.close("pin")
     database.verifyPin(pin).then(async () => {
@@ -64,7 +63,6 @@ class Config extends Component {
       let base64 = new Buffer(ciphertext).toString('base64')
       base64 = `data:text/plain;base64,${base64}`
 
-      console.log(ciphertext)
       await Share.open({
         url: base64,
         filename: "Backup"
@@ -307,7 +305,7 @@ class Config extends Component {
               }}
             >
               <Text style={styles.textInfo}>
-                Create backup file
+                {screenProps.t("Settings:createBackup")}
               </Text>
             </View>
             <Right
@@ -318,9 +316,6 @@ class Config extends Component {
               <TouchableOpacity
                 style={styles.touchable}
                 underlayColor="#eeeeee"
-                onPress={() => {
-                  this.setState({ language: true });
-                }}
               >
                 <Icon
                   style={{

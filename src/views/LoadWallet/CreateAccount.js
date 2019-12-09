@@ -76,10 +76,7 @@ export default class CreateAccount extends Component {
         return
       }
     }
-
-
     this.setState({ step: 3 })
-
   }
 
 
@@ -110,21 +107,24 @@ export default class CreateAccount extends Component {
         throw err;
       }
     }
-
-
   }
 
 
   restoreAccountWithFile = (pin) => {
-    RNFS.readFile(this.state.file).then((res) => {
-      var bytes = CryptoJS.AES.decrypt(res, sha256(pin));
-      var decryptedData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
-
-      this.setState({ file: null })
-      this.props.restoreWithFile(pin, decryptedData)
-    }).catch(err => {
-      androidToast(this.props.screenProps.t("Initial:error1"))
-    })
+   try {
+     RNFS.readFile(this.state.file).then((res) => {
+        var bytes = CryptoJS.AES.decrypt(res, sha256(pin));
+        var decryptedData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+  
+        this.setState({ file: null })
+        this.props.restoreWithFile(pin, decryptedData)
+      }).catch(err => {
+        androidToast(this.props.screenProps.t("Initial:error1"))
+      })
+     
+   } catch (error) {
+     console.log("data",error)
+   } 
   }
 
   restoreAccount = (pin, values) => {
@@ -139,6 +139,11 @@ export default class CreateAccount extends Component {
 
     }
     this.props.restoreWithPhrase(pin, phrases)
+  }
+
+  componentWillUnmount = () =>{
+    this.closePin()
+    this.props.close()
   }
 
   render() {
@@ -220,6 +225,7 @@ export default class CreateAccount extends Component {
                         >
                           <TextInput
                             value={phrase}
+                            autoCapitalize="none"
                             onChangeText={(text) => {
                               setFieldValue(`${key}`, text)
                             }}

@@ -86,7 +86,6 @@ class DualComponent extends Component {
           <RestoreWithPing
             open={open}
             screenProps={this.props.screenProps}
-
           />
         </View>
       </View>

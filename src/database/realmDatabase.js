@@ -118,7 +118,6 @@ export default class CoreDatabase {
               file: obj.msg.file
             }
             : null;
-
           chat.messages.push({
             ...obj,
             id: obj.msgID,
@@ -152,11 +151,10 @@ export default class CoreDatabase {
         return data.hashUID === hashUID;
       });
       resolve(contact);
-
     });
 
   getTemporalContact = id =>
-    this.db.open(databaseOptions).then(realm => {
+    new Promise(resolve => {
       temporal = this.db.objectForPrimaryKey("temporalContacts", id);
       if (temporal) {
         resolve(JSON.parse(JSON.stringify(temporal)));
@@ -236,7 +234,7 @@ export default class CoreDatabase {
     });
   })
 
-  listener = (chats, changes) => {
+  listenerr = (chats, changes) => {
     changes.insertions.forEach(index => {
       let changeChat = chats[index];
       onNotification(JSON.parse(JSON.stringify(changeChat)));
@@ -244,8 +242,9 @@ export default class CoreDatabase {
   };
 
   realmObservable = () => {
-    let chats = this.db.objects("Message");
-    chats.addListener(listener);
+    let chats = this.listener.objects("Message");
+    
+    chats.addListener(this.listenerr);
   };
 
   deleteChatss = obj =>

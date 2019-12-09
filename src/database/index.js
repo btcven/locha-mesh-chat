@@ -57,7 +57,7 @@ export default class Database extends CoreDatabase {
         try {
             this.seed = new Realm(options)
             this.db = new Realm(optionsDatabase)
-
+            this.listener = new Realm(optionsDatabase)
             resolve(this.db)
         } catch (err) {
             console.log(err)
@@ -70,9 +70,9 @@ export default class Database extends CoreDatabase {
         try {
             this.seed = new Realm(options)
             const result = this.seed.objects('Seed')
-
             optionsDatabase.encryptionKey = this.toByteArray(result[0].id)
             this.db = new Realm(optionsDatabase)
+            this.listener = new Realm(optionsDatabase)
             const userData = await this.getUserData()
             resolve(userData);
         } catch (err) {

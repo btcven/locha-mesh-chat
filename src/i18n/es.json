@@ -40,7 +40,8 @@
     "qrText": "Escanee el código QR para agregarlo como contacto",
     "buttonFile": "Restaurar con archivo",
     "textBackup": "Ingrese su codigo pin para continuar",
-    "erroPin": "pin incorrecto"
+    "erroPin": "pin incorrecto",
+    "createBackup": "Crear archivo de respaldo"
   },
   "Contacts": {
     "addContact": "Agregar contacto",

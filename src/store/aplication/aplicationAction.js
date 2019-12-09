@@ -175,6 +175,7 @@ export const restoreWithFile = (pin, data) => dispatch => {
   database.restoreWithFile(pin, data).then(async () => {
     const STORAGE_KEY = "@APP:status";
     await AsyncStorage.setItem(STORAGE_KEY, 'created')
+    await createFolder()
     ws = new Socket(store, database);
     dispatch({
       type: ActionTypes.INITIAL_STATE,

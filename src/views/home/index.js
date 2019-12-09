@@ -25,6 +25,8 @@ import {
 } from "../../utils/utils";
 import Moment from "moment";
 import FloatButton from "../../components/FloatButton";
+import {database} from '../../../App'
+
 
 /**
  *
@@ -47,6 +49,7 @@ class index extends Component {
 
   componentDidMount = () => {
     pendingObservable();
+    database.realmObservable()
   };
 
   selectedChat = (info, obj) => {

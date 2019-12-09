@@ -7,7 +7,9 @@ import { restoreAccountWithPin } from '../../store/aplication/aplicationAction'
 import { connect } from "react-redux"
 
 class RestoreWithPin extends Component {
-
+    state = {
+        close: false
+    }
     restoreAccount = (pin) => {
         this.props.restoreAccountWithPin(pin, (res) => {
             androidToast(this.props.screenProps.t("Initial:error1"))
@@ -15,15 +17,19 @@ class RestoreWithPin extends Component {
     }
 
 
+    componentWillUnmount = () => {
+        this.setState({ close: true })
+    }
 
     render() {
-        const { screenProps, text, action, config, close } = this.props
+        const { screenProps, text, action, config, close, open } = this.props
 
         const actionCreate = config ? action : this.restoreAccount
+        const openModal = this.state.close ? false : open
         return (
             <View>
                 <Modal
-                    isVisible={this.props.open}
+                    isVisible={openModal}
                     animationIn="slideInUp"
                     animationOut="slideOutDown"
                     animationOutTiming={800}

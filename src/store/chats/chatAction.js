@@ -26,9 +26,6 @@ import RNFS from "react-native-fs";
 export const initialChat = (data, status) => dispatch => {
   let uidChat = data.toUID ? data.toUID : "broadcast";
   database.setMessage(uidChat, { ...data }, status).then(res => {
-    console.log(sendSocket);
-
-
     sendSocket.send(JSON.stringify(data));
     dispatch({
       type: ActionTypes.NEW_MESSAGE,
@@ -66,7 +63,7 @@ export const broadcastRandomData = async (parse, id) =>
         if (res) {
           resolve(res);
         } else {
-          getTemporalContact(parse.fromUID).then(temporal => {
+          database.getTemporalContact(parse.fromUID).then(temporal => {
             if (temporal) {
               resolve(temporal);
             } else {
@@ -76,7 +73,7 @@ export const broadcastRandomData = async (parse, id) =>
                 name: randomName,
                 timestamp: parse.timestamp
               };
-              addTemporalInfo(obj).then(data => {
+              database.addTemporalInfo(obj).then(data => {
                 resolve(data);
               });
             }
@@ -104,7 +101,7 @@ export const getChat = data => async dispatch => {
   const parse = JSON.parse(data);
   let infoMensagge = undefined;
   if (parse.type !== "status") {
-    database.sendStatus(parse);
+    sendStatus(parse);
     if (!parse.toUID) {
       infoMensagge = await broadcastRandomData(parse);
     }
@@ -129,7 +126,7 @@ export const getChat = data => async dispatch => {
       });
     });
   } else {
-    addStatusOnly(parse).then(() => {
+    database.addStatusOnly(parse).then(() => {
       dispatch({
         type: ActionTypes.SET_STATUS_MESSAGE,
         payload: parse

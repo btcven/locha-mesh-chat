@@ -69,7 +69,6 @@ export default class NotifService {
   }
 
   cancelNotif(id) {
-    console.log("aca", id);
     PushNotification.cancelLocalNotifications({ id: id });
   }
 

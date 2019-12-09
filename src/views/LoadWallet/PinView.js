@@ -7,7 +7,7 @@ export default class PinView extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            pin: ['', '', '', ''],
+            pin: ['', '', '', '', '', ''],
             buttons: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'],
             values: props.values
         }
@@ -26,13 +26,14 @@ export default class PinView extends Component {
 
     componentDidUpdate = () => {
         let pin = ""
-        if (this.state.pin[3] !== "") {
+        if (this.state.pin[5] !== "") {
             this.state.pin.map(arr => {
                 pin += arr
             })
-            this.setState({ pin: ['', '', '', ''] })
             this.props.createAccount(pin, this.state.values)
+            this.setState({ pin: ['', '', '', '', '', ''] })
         }
+
     }
 
     setPin = (character) => {
@@ -86,52 +87,52 @@ export default class PinView extends Component {
 
     }
 
-    render() {
-        return (
-            <>
-                <View style={styles.numberContainer}>
-                    {this.state.pin.map((pin, key) => {
-                        return <View
-                            key={key}
+render() {
+    return (
+        <>
+            <View style={styles.numberContainer}>
+                {this.state.pin.map((pin, key) => {
+                    return <View
+                        key={key}
+                        style={{
+                            width: "15%",
+                            margin: 0,
+                            flexDirection: "row",
+                            justifyContent: 'center',
+                            marginBottom: 30,
+                        }}
+                    >
+                        <TextInput
+                            value={pin === "" ? pin : "*"}
+                            editable={false}
                             style={{
-                                width: "15%",
-                                margin: 0,
-                                flexDirection: "row",
-                                justifyContent: 'center',
-                                marginBottom: 30,
+                                color: "black",
+                                borderBottomWidth: 0.5,
+                                minWidth: 40,
+                                height: 50,
+                                fontSize: 20,
+                                textAlign: "center"
                             }}
-                        >
-                            <TextInput
-                                value={pin === "" ? pin : "*"}
-                                editable={false}
-                                style={{
-                                    color: "black",
-                                    borderBottomWidth: 0.5,
-                                    minWidth: 40,
-                                    height: 50,
-                                    fontSize: 20,
-                                    textAlign: "center"
-                                }}
-                            />
+                        />
+                    </View>
+                })}
+            </View>
+            <View style={styles.container}>
+                {this.state.buttons.map((button, key) => {
+                    return (
+                        <View key={key} style={styles.buttonContainer}>
+                            <Button style={{ width: "50%", justifyContent: 'center' }} transparent onPress={() => this.setPin(button)}>
+                                {button !== 'delete' && <Text style={styles.text}> {button} </Text>}
+                                {button === 'delete' && <Icon name="backspace" style={{ color: '#fbc233' }} />}
+                            </Button>
                         </View>
-                    })}
-                </View>
-                <View style={styles.container}>
-                    {this.state.buttons.map((button, key) => {
-                        return (
-                            <View key={key} style={styles.buttonContainer}>
-                                <Button style={{ width: "50%", justifyContent: 'center' }} transparent onPress={() => this.setPin(button)}>
-                                    {button !== 'delete' && <Text style={styles.text}> {button} </Text>}
-                                    {button === 'delete' && <Icon name="backspace" style={{ color: '#fbc233' }} />}
-                                </Button>
-                            </View>
-                        )
-                    })
-                    }
-                </View>
-            </>
-        );
-    }
+                    )
+                })
+                }
+            </View>
+        </>
+    );
+}
 }
 
 const styles = StyleSheet.create({

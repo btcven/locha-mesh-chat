@@ -42,7 +42,8 @@
     "language": "Language",
     "qrText": "Scan the QR code to add as a contact",
     "textBackup": "Enter your pin code to continue",
-    "erroPin": "Wrong pin"
+    "erroPin": "Wrong pin",
+    "createBackup": "Create backup file"
 
   },
   "Contacts": {
