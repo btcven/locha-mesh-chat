@@ -1,3 +1,5 @@
+<img src="files/logo.png" width="20%">
+
 ## Using macOS to compile Locha Mesh Chat for iOS devices
 Before to proceed you need to install some tools, the easiest way is installing [**Xcode** via the Mac App Store](https://itunes.apple.com/us/app/xcode/id497799835?mt=12), this also will install the iOS simulator and other stuffs. If you have already installed **Xcode** on your computer, make sure it's version 9.4 or greater.
 
@@ -22,3 +24,19 @@ react-native run-ios
 ```
 
 That's all :wink:
+
+___
+Copyright (c) 2019 Bitcoin Venezuela and Locha Mesh developers.
+
+Licensed under the **Apache License, Version 2.0**
+
+**A text quote is shown below**
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+___
+Read the full text:
+[Locha Mesh Apache License 2.0](https://github.com/btcven/LochaMesh-Chat/blob/master/LICENSE)

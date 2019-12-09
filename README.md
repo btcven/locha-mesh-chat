@@ -1,3 +1,5 @@
+<img src="documents/configuration/files/logo.png" width="20%">
+
 # Locha Mesh Chat
 
 The first mobile application for the Locha Mesh. The aim is to build an app for communication using text messages, images, documents or voice notes, and also for broadcasting offline signed Bitcoin transactions.
@@ -42,7 +44,7 @@ You need to configure your equipment to run this app, the process is different d
   
   * [macOS](documents/configuration/macOS.md)
   * Windows :construction_worker:
-  * Linux :construction_worker:
+  * [Linux](documents/configuration/Linux.md)
 
 In this link are the steps to follow the official [Documentation](https://facebook.github.io/react-native/docs/0.59/getting-started)
 
