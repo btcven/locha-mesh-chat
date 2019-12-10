@@ -58,7 +58,7 @@ export default class CoreDatabase {
     new Promise((resolve, reject) => {
       this.db.write(() => {
         const messages = this.db.objects("Message").filter(data => {
-          const timeCreated = moment(data.timestamp);
+          const timeCreated = moment(data.shippingTime);
           return (
             moment().diff(timeCreated, "s") > 60 && data.status === "pending"
           );
@@ -123,9 +123,10 @@ export default class CoreDatabase {
             id: obj.msgID,
             msg: obj.msg.text,
             file: file,
+            shippingTime: new Date().getTime(),
             status
           });
-          chat.timestamp = new Date().getTime();
+          chat.timestamp = time
           resolve({ file, time });
         } catch (err) {
           console.log("function setMessage", err);
@@ -243,7 +244,7 @@ export default class CoreDatabase {
 
   realmObservable = () => {
     let chats = this.listener.objects("Message");
-    
+
     chats.addListener(this.listenerr);
   };
 
@@ -353,7 +354,9 @@ export default class CoreDatabase {
             true
           );
 
-          resolve();
+          const msg = this.db.objectForPrimaryKey("Message", message.id)
+
+          resolve(msg);
         } catch (err) {
           console.log("in the cath", err);
         }

@@ -33,6 +33,7 @@ export const initialChat = (data, status) => dispatch => {
         name: undefined,
         ...data,
         time: res.time,
+        shippingTime: res.time,
         msg: data.msg.text,
         id: data.msgID,
         status
@@ -249,7 +250,7 @@ export const sendMessageWithFile = (data, path, base64) => dispatch => {
         msg: data.msg.text,
         id: data.msgID,
         file: res.file,
-        time: res.time,
+        shippingTime: res.time,
         status: "pending"
       }
     });
@@ -353,16 +354,17 @@ export const sendReadMessageStatus = data => dispatch => {
 };
 
 export const sendAgain = message => dispatch => {
-  database.updateMessage(message).then(() => {
+  database.updateMessage(message).then((res) => {
     const sendObject = {
-      fromUID: message.fromUID,
-      toUID: message.toUID,
+      fromUID: res.fromUID,
+      toUID: res.toUID,
       msg: {
-        text: message.msg
+        text: res.msg
       },
-      timestamp: message.timestamp,
-      type: "msg",
-      msgID: message.id
+      timestamp: res.timestamp,
+      type: res.type,
+      msgID: res.id,
+      shippingTime:res.shippingTime
     };
 
     sendSocket.send(JSON.stringify(sendObject));

@@ -109,7 +109,7 @@ export const SenderMessage = ({
   selected,
   retry
 }) => {
-  const timeCreated = Moment(item.timestamp);
+  const timeCreated = Moment(item.shippingTime);
   const cancelled =
     (Moment().diff(timeCreated, "s") > 30 && item.status === "pending") ||
     item.status === "not sent"

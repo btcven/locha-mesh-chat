@@ -87,7 +87,7 @@ export default class ChatBody extends Component {
   };
 
   retry = item => {
-    item.timestamp = new Date().getTime();
+    item.shippingTime = new Date().getTime();
 
     this.props.sendAgain(item);
   };

@@ -43,7 +43,6 @@ export const chatReducer = (state = AplicationState, action) => {
         return chat.toUID === chatUID || chat.toUID === chatFromUID;
       });
 
-      chat[result].timestamp = action.payload.time;
       const messages = Object.values(chat[result].messages);
 
       chat[result].messages = messages.length
