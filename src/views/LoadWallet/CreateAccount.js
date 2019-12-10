@@ -111,20 +111,20 @@ export default class CreateAccount extends Component {
 
 
   restoreAccountWithFile = (pin) => {
-   try {
-     RNFS.readFile(this.state.file).then((res) => {
+    try {
+      RNFS.readFile(this.state.file).then((res) => {
         var bytes = CryptoJS.AES.decrypt(res, sha256(pin));
         var decryptedData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
-  
+
         this.setState({ file: null })
         this.props.restoreWithFile(pin, decryptedData)
       }).catch(err => {
         androidToast(this.props.screenProps.t("Initial:error1"))
       })
-     
-   } catch (error) {
-     console.log("data",error)
-   } 
+
+    } catch (error) {
+      console.log("data", error)
+    }
   }
 
   restoreAccount = (pin, values) => {
@@ -141,7 +141,7 @@ export default class CreateAccount extends Component {
     this.props.restoreWithPhrase(pin, phrases)
   }
 
-  componentWillUnmount = () =>{
+  componentWillUnmount = () => {
     this.closePin()
     this.props.close()
   }
@@ -164,6 +164,7 @@ export default class CreateAccount extends Component {
                 isVisible={open}
                 onBackdropPress={() => close("openModalPhoto")}
                 swipeDirection={["up", "left", "right", "down"]}
+                avoidKeyboard={true}
                 style={{
                   margin: 0, justifyContent: "flex-end",
                 }}

@@ -1,7 +1,7 @@
 import RNFS from "react-native-fs";
 import React from "react";
 import { ToastAndroid } from "react-native";
-import { PermissionsAndroid } from "react-native";
+import { PermissionsAndroid, Platform } from "react-native";
 import Identicon from "identicon.js";
 import { database } from '../../App'
 import BackgroundTimer from "react-native-background-timer";
@@ -11,18 +11,17 @@ import {
   messageQueue,
   updateState
 } from "../store/chats";
-import NotifService from "./notificationService";
+// import NotifService from "./notificationService";
 import NavigationService from "./navigationService";
 import store from "../store";
 import { sha256 } from "js-sha256";
-import Moment from "moment";
 
 /**
  * global functions used in multiple places in the app
  * @module Utils
  */
 
-export const notification = new NotifService();
+// export const notification = new NotifService();
 /**
  * function to request store permissions
  * @function
@@ -58,7 +57,9 @@ export const FileDirectory = RNFS.ExternalStorageDirectoryPath + "/LochaMesh";
  */
 
 export const createFolder = async () => {
-  await requestStoragePermission();
+  // Platform.OS === 'android' ?
+  //   await requestStoragePermission() : console.log("IOS Permision")
+
   const pictureDirectory =
     RNFS.ExternalStorageDirectoryPath + "/LochaMesh/Pictures";
   const audioDirectory =
