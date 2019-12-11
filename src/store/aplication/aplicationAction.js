@@ -79,7 +79,7 @@ export const createNewAccount = (obj) => async dispatch => {
 
 
 export const restoreWithPhrase = (pin, phrase) => dispatch => {
-  database.restoreWithPhrase(pin, phrase).then(async () => {
+  database.restoreWithPhrase(pin, phrase).then(async () => { 
     await createFolder()
     const result = await bitcoin.generateAddress(phrase);
     database.writteUser({
@@ -137,10 +137,10 @@ export const changeTab = tab => {
  * @returns {object}
  */
 
-export const loading = () => {
-  return {
+export const loading = () =>  dispatch =>{
+  dispatch( {
     type: ActionTypes.LOADING_ON
-  };
+  })
 };
 
 /**

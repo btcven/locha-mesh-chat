@@ -173,7 +173,7 @@ const saveFile = obj =>
  */
 
 export const selectedChat = obj => dispatch => {
-  notification.cancelAll();
+  // notification.cancelAll();
   dispatch({
     type: ActionTypes.SELECTED_CHAT,
     payload: obj

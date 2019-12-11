@@ -17,7 +17,7 @@ export default class CreateAccount extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      step: 1,
+      step: 3,
       seed: null,
       file: null
     }

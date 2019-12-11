@@ -57,17 +57,20 @@ export const FileDirectory = RNFS.ExternalStorageDirectoryPath + "/LochaMesh";
  */
 
 export const createFolder = async () => {
-  // Platform.OS === 'android' ?
-  //   await requestStoragePermission() : console.log("IOS Permision")
+  let MkdirOptions = false
+  if (Platform.OS === 'android') {
+    await requestStoragePermission()
+    const pictureDirectory =
+      RNFS.ExternalStorageDirectoryPath + "/LochaMesh/Pictures";
+    const audioDirectory =
+      RNFS.ExternalStorageDirectoryPath + "/LochaMesh/Audios";
+    await RNFS.mkdir(FileDirectory.toString());
+    await RNFS.mkdir(pictureDirectory.toString());
+    await RNFS.mkdir(audioDirectory.toString());
+    return pictureDirectory;
+  }
 
-  const pictureDirectory =
-    RNFS.ExternalStorageDirectoryPath + "/LochaMesh/Pictures";
-  const audioDirectory =
-    RNFS.ExternalStorageDirectoryPath + "/LochaMesh/Audios";
-  await RNFS.mkdir(FileDirectory.toString());
-  await RNFS.mkdir(pictureDirectory.toString());
-  await RNFS.mkdir(audioDirectory.toString());
-  return pictureDirectory;
+  return
 };
 
 /**

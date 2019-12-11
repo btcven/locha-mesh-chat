@@ -9,7 +9,6 @@ import {
   Platform,
   Text,
   Animated,
-  PanResponder
 } from "react-native";
 import RNFS from "react-native-fs";
 import { FileDirectory } from "../../utils/utils";

@@ -38,7 +38,7 @@ class InitialStep extends Component {
   };
 
   handleSubmit = () => {
-    const code = new Mnemonic();
+    const code = new Mnemonic("major absent grab solid orchard trim build machine blush twice cook foil");
     this.setState({ phrases: code.toString().split(" "), open: true, stringPhrases: code.toString() });
   };
 
