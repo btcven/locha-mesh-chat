@@ -54,6 +54,7 @@
     "react-native-image-crop-picker": "^0.24.1",
     "react-native-image-view": "^2.1.6",
     "react-native-image-zoom-viewer": "^2.2.26",
+    "react-native-language-detector": "https://github.com/xkevin190/react-native-language-detector.git#master",
     "react-native-level-fs": "^3.0.0",
     "react-native-locale-detector": "^1.0.1",
     "react-native-material-menu": "^1.0.0",

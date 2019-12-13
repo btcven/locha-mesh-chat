@@ -7,14 +7,21 @@ import {
   Left,
   Right,
   Button,
-  Icon
+  Icon,
+  Thumbnail,
 } from "native-base";
-import { View, Text, StyleSheet, Image } from "react-native";
+import { View, Text, StyleSheet, Image, Platform, NativeModules } from "react-native";
 import { connect } from "react-redux";
 import { closeMenu } from "../store/aplication/aplicationAction";
 import { images } from "../utils/constans";
 import NavigationService from "../utils/navigationService";
-import Menu from "./Menu";
+
+
+
+console.log(
+  NativeModules.RNDeviceInfo
+)
+
 
 class DrawerComponent extends Component {
   constructor(props) {
@@ -32,12 +39,6 @@ class DrawerComponent extends Component {
   render() {
     const { screenProps } = this.props;
 
-    const menu = [
-      {
-        label: "Ingles",
-        action: () => console.log("click")
-      }
-    ];
     return (
       <Container>
         <View style={styles.headerDrawer}>
@@ -47,7 +48,7 @@ class DrawerComponent extends Component {
           />
 
           {this.props.user.image && (
-            <Image
+            <Thumbnail
               source={{
                 uri: this.props.user.image + "?" + new Date().getDate(),
                 cache: "force-cache"
@@ -57,7 +58,7 @@ class DrawerComponent extends Component {
           )}
 
           {!this.props.user.image && (
-            <Image source={images.noPhoto.url} style={styles.imageStyle} />
+            <Thumbnail source={images.noPhoto.url} style={styles.imageStyle} />
           )}
 
           <Text style={styles.textTitle}>{this.props.user.name}</Text>
@@ -78,7 +79,7 @@ class DrawerComponent extends Component {
             </Body>
           </ListItem>
 
-          <ListItem icon button onPress={() => this.handleChange("config")}>
+          <ListItem icon button onPress={() => NativeModules.RNDeviceInfo.machineName()}>
             <Left>
               <Button style={{ backgroundColor: "#ef6c00" }}>
                 <Icon active name="settings" />
@@ -89,7 +90,7 @@ class DrawerComponent extends Component {
             </Body>
           </ListItem>
 
-         
+
         </View>
       </Container>
     );
@@ -111,9 +112,9 @@ const styles = StyleSheet.create({
     alignItems: "center"
   },
   imageStyle: {
-    height: 90,
-    width: 90,
-    borderRadius: 100,
+    height: 60,
+    width: 60,
+    // borderRadius: 100,
     position: "absolute",
     right: 10,
     top: 15

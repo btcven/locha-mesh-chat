@@ -5,6 +5,7 @@
 	};
 	objectVersion = 46;
 	objects = {
+
 /* Begin PBXBuildFile section */
 		00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
 		00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302BA1ABCB90400DB3ED1 /* libRCTGeolocation.a */; };
@@ -47,6 +48,8 @@
 		30BDAE2E83764A3A9225D191 /* libRNCAsyncStorage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A0003F2AAE24580970CA543 /* libRNCAsyncStorage.a */; };
 		32E63DC273F64D6590F4FAAF /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8631282F79164898A454A186 /* Octicons.ttf */; };
 		3432D667517A40788BCF206E /* libRNVectorIcons-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F59037CBEE9E4124AAA7FFF8 /* libRNVectorIcons-tvOS.a */; };
+		3441BC6723A406710077C049 /* RNDeviceInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 3441BC6623A406710077C049 /* RNDeviceInfo.m */; };
+		3441BC6923A406890077C049 /* RNDeviceInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3441BC6823A406890077C049 /* RNDeviceInfo.swift */; };
 		3590F3C01EB848409609B586 /* libRNOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DB8CD02CA2BB49EA98AA0650 /* libRNOS.a */; };
 		37A38B1D3EFD44088293418B /* libRNDocumentPicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EBD1E01AE427491BAB09DD75 /* libRNDocumentPicker.a */; };
 		3FDE5BBDBE7848F48B9BBD59 /* libRNAudio.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 362022D49D0744D78CDF899C /* libRNAudio.a */; };
@@ -592,6 +595,9 @@
 		2F25745436E246C4A76FDD90 /* Zocial.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Zocial.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Zocial.ttf"; sourceTree = "<group>"; };
 		2FF9410E8B3D44AC906AFC05 /* libRNSVG.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNSVG.a; sourceTree = "<group>"; };
 		3045DB3BC30E401E90B85CD9 /* libRNRandomBytes-tvOS.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = "libRNRandomBytes-tvOS.a"; sourceTree = "<group>"; };
+		3441BC6323A3EFF20077C049 /* LochaMeshChat-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "LochaMeshChat-Bridging-Header.h"; sourceTree = "<group>"; };
+		3441BC6623A406710077C049 /* RNDeviceInfo.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RNDeviceInfo.m; sourceTree = "<group>"; };
+		3441BC6823A406890077C049 /* RNDeviceInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RNDeviceInfo.swift; sourceTree = "<group>"; };
 		362022D49D0744D78CDF899C /* libRNAudio.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNAudio.a; sourceTree = "<group>"; };
 		386B7D1E00DD4263AA5F761D /* libimageCropPicker.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libimageCropPicker.a; sourceTree = "<group>"; };
 		38D6229650D84C40BDBA61FA /* MaterialIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf"; sourceTree = "<group>"; };
@@ -693,7 +699,6 @@
 				B09A6C0C95404368A910C394 /* libRNCSlider.a in Frameworks */,
 				37A38B1D3EFD44088293418B /* libRNDocumentPicker.a in Frameworks */,
 				0AD7C66C7A9449B799DFCC77 /* libRNShare.a in Frameworks */,
-				3BB14649BA7640CB8BA168EF /* RNI18nTests.xctest in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -817,6 +822,9 @@
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				13B07FB11A68108700A75B9A /* LaunchScreen.xib */,
 				13B07FB71A68108700A75B9A /* main.m */,
+				3441BC6323A3EFF20077C049 /* LochaMeshChat-Bridging-Header.h */,
+				3441BC6623A406710077C049 /* RNDeviceInfo.m */,
+				3441BC6823A406890077C049 /* RNDeviceInfo.swift */,
 			);
 			name = LochaMeshChat;
 			sourceTree = "<group>";
@@ -887,7 +895,6 @@
 				2FF9410E8B3D44AC906AFC05 /* libRNSVG.a */,
 				1AE5ED17D8224370913E75EC /* libRNRandomBytes.a */,
 				AB9D132EEB8E40DDA889E49C /* libRNBackgroundTimer.a */,
-				407A655D8BED4FF9AE456B19 /* libRNFetchBlob.a */,
 				DB8CD02CA2BB49EA98AA0650 /* libRNOS.a */,
 				726DE6149FEA4716A5D68FB3 /* libTcpSockets.a */,
 				EC88A8A86AC5456C9529681C /* libUdpSockets.a */,
@@ -901,8 +908,6 @@
 				3045DB3BC30E401E90B85CD9 /* libRNRandomBytes-tvOS.a */,
 				EBD1E01AE427491BAB09DD75 /* libRNDocumentPicker.a */,
 				6625817FCC574FC9A02807B6 /* libRNShare.a */,
-				007157A3652A4A559306A033 /* libRNI18n.a */,
-				C89428BDCBC947FF9AD53CA3 /* RNI18nTests.xctest */,
 			);
 			name = "Recovered References";
 			sourceTree = "<group>";
@@ -1278,6 +1283,9 @@
 					00E356ED1AD99517003FC87E = {
 						CreatedOnToolsVersion = 6.2;
 						TestTargetID = 13B07F861A680F5B00A75B9A;
+					};
+					13B07F861A680F5B00A75B9A = {
+						LastSwiftMigration = 1120;
 					};
 					2D02E47A1E0B4A5D006451C7 = {
 						CreatedOnToolsVersion = 8.2.1;
@@ -1992,6 +2000,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
+				3441BC6923A406890077C049 /* RNDeviceInfo.swift in Sources */,
+				3441BC6723A406710077C049 /* RNDeviceInfo.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2044,6 +2054,7 @@
 		00E356F61AD99517003FC87E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -2078,9 +2089,7 @@
 				INFOPLIST_FILE = LochaMeshChatTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",
@@ -2094,6 +2103,7 @@
 		00E356F71AD99517003FC87E /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
 				HEADER_SEARCH_PATHS = (
@@ -2125,9 +2135,7 @@
 				INFOPLIST_FILE = LochaMeshChatTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",
@@ -2142,6 +2150,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
 				HEADER_SEARCH_PATHS = (
@@ -2179,6 +2188,9 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = LochaMeshChat;
+				SWIFT_OBJC_BRIDGING_HEADER = "LochaMeshChat-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -2187,6 +2199,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2223,6 +2236,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = LochaMeshChat;
+				SWIFT_OBJC_BRIDGING_HEADER = "LochaMeshChat-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
@@ -2267,9 +2282,7 @@
 				);
 				INFOPLIST_FILE = "LochaMeshChat-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",
@@ -2322,9 +2335,7 @@
 				);
 				INFOPLIST_FILE = "LochaMeshChat-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",
@@ -2376,9 +2387,7 @@
 				);
 				INFOPLIST_FILE = "LochaMeshChat-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",
@@ -2430,9 +2439,7 @@
 				);
 				INFOPLIST_FILE = "LochaMeshChat-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",

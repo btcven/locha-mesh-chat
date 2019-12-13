@@ -2,6 +2,7 @@ package com.lochameshchat;
 
 import android.app.Application;
 import com.facebook.react.ReactApplication;
+import com.reactlibrary.LanguageDetectorPackage;
 import cl.json.RNSharePackage;
 import com.wenkesj.voice.VoicePackage;
 import com.tradle.react.UdpSocketsModule;
@@ -41,6 +42,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
             new MainReactPackage(),
+            new LanguageDetectorPackage(),
             new RNSharePackage(),
             new VoicePackage(),
             new UdpSocketsModule(),
