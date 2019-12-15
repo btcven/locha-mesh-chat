@@ -9,4 +9,4 @@
 #liberapay: # Replace with a single Liberapay username
 #issuehunt: # Replace with a single IssueHunt username
 #otechie: # Replace with a single Otechie username
-custom: ['https://checkout.opennode.com/p/ad468614-7111-420d-826f-b3178096e7ba', 'https://checkout.opennode.com/p/7e374ff4-2f5b-4f2e-b1c4-3b3291cd1761', 'https://locha.io'] # Replace with up to 4 custom sponsorship URLs e.g., ['link1', 'link2']
+custom: ['https://locha.io/donate', 'https://locha.io/buy'] # Replace with up to 4 custom sponsorship URLs e.g., ['link1', 'link2']
