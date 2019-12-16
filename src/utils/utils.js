@@ -1,7 +1,7 @@
 import RNFS from "react-native-fs";
 import React from "react";
-import { ToastAndroid } from "react-native";
-import { PermissionsAndroid, Platform } from "react-native";
+import { ToastAndroid, PermissionsAndroid, Platform } from "react-native";
+import { Toast } from "native-base"
 import Identicon from "identicon.js";
 import { database } from '../../App'
 import BackgroundTimer from "react-native-background-timer";
@@ -213,7 +213,7 @@ export const backgroundTimer = () => {
  * function to display a message on the phone works only for android
  * @param {string} message
  */
-export const androidToast = message => {
+const androidToast = message => {
   ToastAndroid.showWithGravityAndOffset(
     message,
     1,
@@ -222,6 +222,22 @@ export const androidToast = message => {
     60
   );
 };
+
+
+const iOSToast = (message) => {
+  Toast.show({
+    text: message
+  })
+}
+
+
+export const toast = (message) => {
+  if (Platform.OS === "android") {
+    androidToast(message)
+  } else {
+    iOSToast(message)
+  }
+}
 
 /**
  *

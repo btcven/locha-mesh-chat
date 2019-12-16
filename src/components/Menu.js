@@ -41,7 +41,7 @@ export default class MenuComponent extends Component {
               <MenuItem
                 key={key}
                 onPress={() => {
-                  menu.action(), this.hideMenu();
+                  menu.action(this.hideMenu)
                 }}
               >
                 {menu.label}

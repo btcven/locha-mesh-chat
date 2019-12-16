@@ -15,13 +15,7 @@ import { connect } from "react-redux";
 import { closeMenu } from "../store/aplication/aplicationAction";
 import { images } from "../utils/constans";
 import NavigationService from "../utils/navigationService";
-
-
-
-console.log(
-  NativeModules.RNDeviceInfo
-)
-
+import { deviceModel } from '../utils/constans'
 
 class DrawerComponent extends Component {
   constructor(props) {
@@ -38,11 +32,10 @@ class DrawerComponent extends Component {
 
   render() {
     const { screenProps } = this.props;
-
     return (
       <Container>
         <View style={styles.headerDrawer}>
-          <Image
+          <Thumbnail
             style={{ width: "100%", height: "100%" }}
             source={images.logo.url}
           />
@@ -79,7 +72,7 @@ class DrawerComponent extends Component {
             </Body>
           </ListItem>
 
-          <ListItem icon button onPress={() => NativeModules.RNDeviceInfo.machineName()}>
+          <ListItem icon button onPress={() => this.handleChange("config")}>
             <Left>
               <Button style={{ backgroundColor: "#ef6c00" }}>
                 <Icon active name="settings" />
@@ -116,8 +109,9 @@ const styles = StyleSheet.create({
     width: 60,
     // borderRadius: 100,
     position: "absolute",
-    right: 10,
-    top: 15
+    backgroundColor: "red",
+    right: "10%",
+    top: "20%"
   },
   textTitle: {
     position: "absolute",

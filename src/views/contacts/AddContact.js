@@ -9,13 +9,13 @@ import {
   Image
 } from "react-native";
 import { images } from "../../utils/constans";
-import { androidToast } from "../../utils/utils";
+import { toast } from "../../utils/utils";
 import { Icon, Form, Item, Input, Label, Spinner } from "native-base";
 import EditPhoto from "../config/EditPhoto";
 import ImagePicker from "react-native-image-crop-picker";
 import QRCodeScanner from "react-native-qrcode-scanner";
 import { sha256 } from "js-sha256";
-/**
+/**ƒ
  *
  *
  * @export
@@ -90,7 +90,7 @@ export default class AddContact extends Component {
           obj,
           this.props.contacts,
           () => {
-            androidToast(
+            toast(
               this.props.screenProps.t("Contacts:contactSuccessfully")
             );
             this.props.close();
@@ -98,7 +98,7 @@ export default class AddContact extends Component {
         );
       } else {
         this.props.editContats(obj, () => {
-          androidToast(
+          toast(
             this.props.screenProps.t("Contacts:contactSuccessfully")
           );
           this.props.close();
@@ -120,10 +120,10 @@ export default class AddContact extends Component {
           });
         }, 50);
       } else {
-        androidToast(this.props.screenProps.t("Contacts:invalidFormat"));
+        toast(this.props.screenProps.t("Contacts:invalidFormat"));
       }
     } catch (err) {
-      androidToast(this.props.screenProps.t("Contacts:invalidFormat"));
+      toast(this.props.screenProps.t("Contacts:invalidFormat"));
     }
   };
 
@@ -134,7 +134,7 @@ export default class AddContact extends Component {
       });
 
       if (uidExist) {
-        androidToast(this.props.screenProps.t("Contacts:existContact"));
+        toast(this.props.screenProps.t("Contacts:existContact"));
         return false;
       }
 
@@ -143,7 +143,7 @@ export default class AddContact extends Component {
       });
 
       if (nameExist) {
-        androidToast(this.props.screenProps.t("Contacts:existName"));
+        toast(this.props.screenProps.t("Contacts:existName"));
         return false;
       }
     }

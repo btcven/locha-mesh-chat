@@ -4,7 +4,7 @@ import { Text, View, TextInput, StyleSheet, Clipboard } from "react-native";
 import Modal from "react-native-modal";
 import { Formik } from 'formik'
 import PinView from "./PinView";
-import { androidToast } from "../../utils/utils"
+import { toast } from "../../utils/utils"
 import DocumentPicker from 'react-native-document-picker';
 import RestoreFile from './RestoreWithPin'
 import RNFS from "react-native-fs"
@@ -56,7 +56,7 @@ export default class CreateAccount extends Component {
 
       for (let index = 0; index < values.length; index++) {
         if (values[index] === "") {
-          androidToast(this.props.screenProps.t("Initial:error2"))
+          toast(this.props.screenProps.t("Initial:error2"))
           return
         }
       }
@@ -72,7 +72,7 @@ export default class CreateAccount extends Component {
 
     for (let index = 0; index <= values.length; index++) {
       if (values[index] !== this.props.phrases[index]) {
-        androidToast(this.props.screenProps.t("Initial:error3"))
+        toast(this.props.screenProps.t("Initial:error3"))
         return
       }
     }
@@ -119,7 +119,7 @@ export default class CreateAccount extends Component {
         this.setState({ file: null })
         this.props.restoreWithFile(pin, decryptedData)
       }).catch(err => {
-        androidToast(this.props.screenProps.t("Initial:error1"))
+        toast(this.props.screenProps.t("Initial:error1"))
       })
 
     } catch (error) {

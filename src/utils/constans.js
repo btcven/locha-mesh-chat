@@ -1,11 +1,18 @@
-export const chats = [
-  {
-    idChat: "1",
-    name: "broadcast",
-    lastMessage: "welcome to locha mesh",
-    picture: require("./img/fotoperfil.jpg"),
-    date: new Date()
-  }
+import { NativeModules, Platform } from 'react-native'
+
+export const deviceModel = Platform.select({
+  ios: () => NativeModules.RNDeviceInfo.deviceInfo.id.replace("iPhone", "").trim(),
+  android: () => "Android",
+})();
+
+
+export const chats = [{
+  idChat: "1",
+  name: "broadcast",
+  lastMessage: "welcome to locha mesh",
+  picture: require("./img/fotoperfil.jpg"),
+  date: new Date()
+}
 ];
 
 export const STORAGE_KEY = "@APP:status";

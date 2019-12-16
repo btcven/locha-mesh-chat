@@ -5,6 +5,7 @@ import store from "./src/store";
 import { verifyAplicationState, loading } from "./src/store/aplication";
 import NativationService from "./src/utils/navigationService";
 import { translate } from "react-i18next";
+import { Root } from "native-base";
 import i18n from "./src/i18n/index";
 import Bitcoin from "./src/utils/Bitcoin";
 import Database from './src/database'
@@ -34,7 +35,9 @@ export default class App extends Component {
     // store.dispatch(loading());
     return (
       <Provider store={store}>
-        <ReloadAppOnLanguageChange />
+        <Root>
+          <ReloadAppOnLanguageChange />
+        </Root>
       </Provider>
     );
   }

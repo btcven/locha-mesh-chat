@@ -1,24 +1,21 @@
 import React, { Component } from "react";
-import { Container, Icon, Left, Right, Button } from "native-base";
+import { Container, Icon, Left, Right, Button, Thumbnail } from "native-base";
 import { images } from "../../utils/constans";
 import Header from "../../components/Header";
-import { Text, View, Image, StyleSheet, TouchableHighlight, TouchableOpacity, Clipboard } from "react-native";
+import { Text, View, Image, StyleSheet, TouchableHighlight, TouchableOpacity, Clipboard, } from "react-native";
 import { getPhotosFromUser, openCamera, editName, } from "../../store/configuration/congurationAction";
 import { connect } from "react-redux";
 import EditName from "./EditName";
 import EditPhoto from "./EditPhoto";
 import ViewQR from "./ViewQR";
 import Languajes from "./Language";
-import { androidToast, FileDirectory } from "../../utils/utils";
+import { toast, FileDirectory } from "../../utils/utils";
 import i18n from "../../i18n";
 import CryptoJS from "crypto-js"
 import { database } from '../../../App'
 import AddPin from "../LoadWallet/RestoreWithPin"
 import { sha256 } from "js-sha256";
-import RNFS from "react-native-fs"
-import moment from "moment"
 import Share from 'react-native-share';
-
 
 /**
  * @class Config
@@ -51,7 +48,7 @@ class Config extends Component {
 
   _setContent = async data => {
     Clipboard.setString(data);
-    androidToast(this.props.screenProps.t("Settings:uidCody"));
+    toast(this.props.screenProps.t("Settings:uidCody"));
   };
 
 
@@ -68,7 +65,7 @@ class Config extends Component {
         filename: "Backup"
       })
     }).catch(err => {
-      androidToast("Pin inconrrecto")
+      toast("Pin inconrrecto")
     })
   }
 
@@ -114,7 +111,7 @@ class Config extends Component {
                 style={styles.touchable}
                 underlayColor="#eeeeee"
               >
-                <Image
+                <Thumbnail
                   source={{
                     uri: this.props.config.image + "?" + new Date().getDate(),
                     cache: "force-cache"
@@ -132,7 +129,7 @@ class Config extends Component {
                   this.setState({ openModalPhoto: true });
                 }}
               >
-                <Image source={images.noPhoto.url} style={styles.imageStyle} />
+                <Thumbnail source={images.noPhoto.url} style={styles.imageStyle} />
               </TouchableHighlight>
             )}
             <View style={styles.actionButtonContainer}>
@@ -388,7 +385,7 @@ const styles = StyleSheet.create({
   imageStyle: {
     height: 130,
     width: 130,
-    borderRadius: 100
+
   },
   sectionContainer: {
     width: "100%",
