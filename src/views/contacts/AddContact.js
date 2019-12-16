@@ -6,11 +6,10 @@ import {
   StyleSheet,
   TouchableOpacity,
   TouchableHighlight,
-  Image
 } from "react-native";
 import { images } from "../../utils/constans";
 import { toast } from "../../utils/utils";
-import { Icon, Form, Item, Input, Label, Spinner } from "native-base";
+import { Icon, Form, Item, Input, Label, Spinner, Thumbnail, Container, Header } from "native-base";
 import EditPhoto from "../config/EditPhoto";
 import ImagePicker from "react-native-image-crop-picker";
 import QRCodeScanner from "react-native-qrcode-scanner";
@@ -168,7 +167,7 @@ export default class AddContact extends Component {
             this.props.close();
           }}
         >
-          <View style={styles.HeaderModal}>
+          <Header style={styles.HeaderModal} androidStatusBarColor="white">
             {this.state.openModalPhoto && (
               <EditPhoto
                 screenProps={screenProps}
@@ -217,7 +216,7 @@ export default class AddContact extends Component {
                 />
               </TouchableOpacity>
             }
-          </View>
+          </Header>
 
           {!this.state.openQrCode && (
             <View>
@@ -288,7 +287,7 @@ export default class AddContact extends Component {
                         console.log("click");
                       }}
                     >
-                      <Image
+                      <Thumbnail
                         source={images.noPhoto.url}
                         style={styles.imageStyle}
                       />
@@ -303,7 +302,7 @@ export default class AddContact extends Component {
                         console.log("click");
                       }}
                     >
-                      <Image
+                      <Thumbnail
                         source={{
                           uri: this.state.image + "?" + new Date().getDate(),
                           cache: "force-cache"
@@ -375,7 +374,8 @@ const styles = StyleSheet.create({
     height: 50,
     justifyContent: "space-between",
     alignItems: "center",
-    paddingHorizontal: 15
+    paddingHorizontal: 15,
+    backgroundColor: "white"
   },
 
   iconStyle: {
@@ -389,7 +389,7 @@ const styles = StyleSheet.create({
     color: "black"
   },
   touchable: {
-    borderRadius: 100
+
   },
 
   inputStyle: {
@@ -402,7 +402,7 @@ const styles = StyleSheet.create({
   imageStyle: {
     height: 130,
     width: 130,
-    borderRadius: 100
+
   },
 
   imageContainer: {
@@ -414,14 +414,16 @@ const styles = StyleSheet.create({
     color: "white",
     textAlign: "center",
     justifyContent: "center",
+    borderRadius: 100,
     fontSize: 18
   },
 
   actionButtonContainer: {
     backgroundColor: "#fbc233",
+    borderRadius: 100,
     height: 45,
     width: 45,
-    borderRadius: 100,
+
     position: "absolute",
     top: "80%",
     left: "36%",

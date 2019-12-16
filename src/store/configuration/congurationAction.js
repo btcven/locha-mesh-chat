@@ -1,10 +1,8 @@
 import ImagePicker from "react-native-image-crop-picker";
-import AsyncStorage from "@react-native-community/async-storage";
 import RNFS from "react-native-fs";
 import { ActionTypes } from "../constants";
-import { createFolder } from "../../utils/utils";
+import { FileDirectory } from "../../utils/utils";
 import { database } from '../../../App'
-import { writteUser, getUserData } from "../../database/realmDatabase";
 
 /**
  * in this module are the configuration actions
@@ -19,14 +17,13 @@ import { writteUser, getUserData } from "../../database/realmDatabase";
  */
 
 export const getPhotosFromUser = (id, callback) => async dispatch => {
-  const directory = await createFolder();
   ImagePicker.openPicker({
     cropping: true,
     width: 500,
     height: 500
   }).then(async images => {
     const name = await getName(images);
-    const newPath = `file:///${directory}/${name}`;
+    const newPath = `${FileDirectory}/${name}`;
     RNFS.moveFile(images.path, newPath).then(async res => {
       await deletePhotoFromPhone();
       database.writteUser({ uid: id, picture: newPath }).then(async res => {

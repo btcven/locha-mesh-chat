@@ -106,7 +106,7 @@ export default class ChatForm extends Component {
 
               const id = sha256(
                 `${sha256(user.uid)} + ${toUID}  +  ${
-                  sendObject.msg.text
+                sendObject.msg.text
                 }  + ${new Date().getTime()}`
               );
 
@@ -165,7 +165,7 @@ export default class ChatForm extends Component {
 
     const id = sha256(
       `${user.uid} + ${toUID}  +  ${
-        sendObject.msg.text
+      sendObject.msg.text
       }  + ${new Date().getTime()}`
     );
 
@@ -210,9 +210,7 @@ export default class ChatForm extends Component {
                   });
                 }}
                 placeholder={screenProps.t("Chats:message")}
-                style={{
-                  flex: 1
-                }}
+                style={styles.inputStyle}
               />
             </>
           )}
@@ -320,5 +318,12 @@ const styles = StyleSheet.create({
     fontSize: 40,
     paddingHorizontal: 5,
     paddingBottom: 7
+  },
+  inputStyle: {
+    flex: 1,
+    ...Platform.select({
+      ios: { marginVertical: 15 }
+    })
   }
+
 });

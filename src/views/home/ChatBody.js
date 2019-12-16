@@ -95,7 +95,7 @@ export default class ChatBody extends Component {
   render() {
     const { screenProps } = this.props;
     return (
-      <View style={{ flex: 1 }}>
+      <View style={{ flex:1 }}>
         {this.props.open && (
           <FileModal
             open={this.props.open}

@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Button } from "native-base";
-import { Text, View, TextInput, StyleSheet, Clipboard } from "react-native";
+import { Text, View, TextInput, StyleSheet, Clipboard, Platform } from "react-native";
 import Modal from "react-native-modal";
 import { Formik } from 'formik'
 import PinView from "./PinView";
@@ -230,11 +230,7 @@ export default class CreateAccount extends Component {
                             onChangeText={(text) => {
                               setFieldValue(`${key}`, text)
                             }}
-                            style={{
-                              borderBottomWidth: 0.5,
-                              minWidth: 60,
-                              textAlign: "center"
-                            }}
+                            style={styles.inputStyles}
                           />
                         </View>
                       );
@@ -331,5 +327,17 @@ const styles = StyleSheet.create({
     marginTop: "5%",
     alignItems: "flex-end",
     justifyContent: "space-between"
+  },
+
+  inputStyles: {
+    borderBottomWidth: 0.5,
+    minWidth: 60,
+    textAlign: "center",
+    ...Platform.select({
+      ios: {
+        marginVertical: 15
+      },
+    }),
   }
+
 });

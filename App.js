@@ -9,7 +9,10 @@ import { Root } from "native-base";
 import i18n from "./src/i18n/index";
 import Bitcoin from "./src/utils/Bitcoin";
 import Database from './src/database'
+import {FileDirectory} from "./src/utils/utils"
 
+
+console.log(FileDirectory)
 
 const WrappedStack = ({ t }) => {
   return (

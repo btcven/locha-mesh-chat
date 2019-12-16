@@ -13,11 +13,17 @@ import {
   sendReadMessageStatus,
   sendAgain
 } from "../../store/chats";
-import { } from "../../store/aplication";
+
 import { connect } from "react-redux";
-import { Alert, Clipboard, Dimensions } from "react-native";
+import { Alert, Clipboard, Dimensions, KeyboardAvoidingView, Platform, View } from "react-native";
 import { sha256 } from "js-sha256";
 import ImagesView from "./imagesView";
+
+
+const ChatContainer = Platform.select({
+  ios: () => KeyboardAvoidingView,
+  android: () => View
+})()
 
 /**
  * main message component
@@ -300,29 +306,31 @@ class Chat extends Component {
           copy={this.copy}
           delete={this.delete}
         />
-        <ChatBody
-          chats={messages}
-          user={this.props.userData}
-          contacts={this.props.contact}
-          onClick={this.onClick}
-          onSelected={this.onSelected}
-          selected={this.state.selected}
-          close={this.closeFileModal}
-          open={this.state.fileModal}
-          sendFileWithImage={this.sendFileWithImage}
-          sendReadMessageStatus={this.props.sendReadMessageStatus}
-          sendAgain={this.props.sendAgain}
-          screenProps={screenProps}
-        />
-        <ChatForm
-          user={this.props.userData}
-          navigation={navigation.state}
-          setChat={this.props.initialChat}
-          previousChat={this.props.chatSelected}
-          openFileModal={this.openFileModal}
-          sendMessagesWithSound={this.props.sendMessageWithFile}
-          screenProps={screenProps}
-        />
+        <ChatContainer behavior="padding" style={{ flex: 1 }}>
+          <ChatBody
+            chats={messages}
+            user={this.props.userData}
+            contacts={this.props.contact}
+            onClick={this.onClick}
+            onSelected={this.onSelected}
+            selected={this.state.selected}
+            close={this.closeFileModal}
+            open={this.state.fileModal}
+            sendFileWithImage={this.sendFileWithImage}
+            sendReadMessageStatus={this.props.sendReadMessageStatus}
+            sendAgain={this.props.sendAgain}
+            screenProps={screenProps}
+          />
+          <ChatForm
+            user={this.props.userData}
+            navigation={navigation.state}
+            setChat={this.props.initialChat}
+            previousChat={this.props.chatSelected}
+            openFileModal={this.openFileModal}
+            sendMessagesWithSound={this.props.sendMessageWithFile}
+            screenProps={screenProps}
+          />
+        </ChatContainer>
       </Container>
     );
   }

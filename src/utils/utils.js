@@ -1,5 +1,4 @@
 import RNFS from "react-native-fs";
-import React from "react";
 import { ToastAndroid, PermissionsAndroid, Platform } from "react-native";
 import { Toast } from "native-base"
 import Identicon from "identicon.js";
@@ -46,7 +45,14 @@ export const pendingObservable = () => {
   }, 3000);
 };
 
-export const FileDirectory = RNFS.ExternalStorageDirectoryPath + "/LochaMesh";
+export const FileDirectory = Platform.select({
+  ios: () => RNFS.DocumentDirectoryPath + "/LochaMesh",
+  android: () => RNFS.ExternalStorageDirectoryPath + "/LochaMesh"
+})()
+
+
+
+
 
 /**
  *
@@ -57,20 +63,14 @@ export const FileDirectory = RNFS.ExternalStorageDirectoryPath + "/LochaMesh";
  */
 
 export const createFolder = async () => {
-  let MkdirOptions = false
   if (Platform.OS === 'android') {
     await requestStoragePermission()
-    const pictureDirectory =
-      RNFS.ExternalStorageDirectoryPath + "/LochaMesh/Pictures";
-    const audioDirectory =
-      RNFS.ExternalStorageDirectoryPath + "/LochaMesh/Audios";
-    await RNFS.mkdir(FileDirectory.toString());
-    await RNFS.mkdir(pictureDirectory.toString());
-    await RNFS.mkdir(audioDirectory.toString());
-    return pictureDirectory;
   }
-
-  return
+  const pictureDirectory = FileDirectory + "/Pictures";
+  const audioDirectory = FileDirectory + "/Audios"
+  await RNFS.mkdir(FileDirectory.toString());
+  await RNFS.mkdir(pictureDirectory.toString());
+  await RNFS.mkdir(audioDirectory.toString());
 };
 
 /**
