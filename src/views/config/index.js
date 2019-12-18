@@ -71,6 +71,7 @@ class Config extends Component {
 
   render() {
     const { screenProps } = this.props;
+    console.log(this.props.config.image)
     return (
       <Container>
         <Header {...this.props} />
@@ -113,7 +114,7 @@ class Config extends Component {
               >
                 <Thumbnail
                   source={{
-                    uri: this.props.config.image + "?" + new Date().getDate(),
+                    uri: this.props.config.image,
                     cache: "force-cache"
                   }}
                   style={styles.imageStyle}

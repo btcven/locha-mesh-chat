@@ -3,6 +3,7 @@ import RNFS from "react-native-fs";
 import { ActionTypes } from "../constants";
 import { FileDirectory } from "../../utils/utils";
 import { database } from '../../../App'
+import { Platform } from 'react-native'
 
 /**
  * in this module are the configuration actions
@@ -18,19 +19,18 @@ import { database } from '../../../App'
 
 export const getPhotosFromUser = (id, callback) => async dispatch => {
   ImagePicker.openPicker({
-    cropping: true,
     width: 500,
     height: 500
   }).then(async images => {
     const name = await getName(images);
-    const newPath = `${FileDirectory}/${name}`;
+    const newPath = `file:///${FileDirectory}/${name}`;
     RNFS.moveFile(images.path, newPath).then(async res => {
       await deletePhotoFromPhone();
       database.writteUser({ uid: id, picture: newPath }).then(async res => {
         callback();
         dispatch({
           type: ActionTypes.GET_PHOTO_USER,
-          payload: res.picture
+          payload: newPath
         });
       });
     });
@@ -46,7 +46,12 @@ export const getPhotosFromUser = (id, callback) => async dispatch => {
 
 const getName = data => {
   const result = data.path.split("/");
-  return result[7];
+  console.log("diossss", result)
+  if (Platform.OS == "android") {
+    return result[9];
+  }
+
+  return result[15]
 };
 
 /**
@@ -75,7 +80,7 @@ const deletePhotoFromPhone = async () => {
  */
 
 export const openCamera = (id, callback) => async dispatch => {
-  const directory = await createFolder()
+
   ImagePicker.openCamera({
     width: 500,
     height: 500,

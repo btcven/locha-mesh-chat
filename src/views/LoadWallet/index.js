@@ -6,7 +6,7 @@ import {
   AsyncStorage,
   Image
 } from "react-native";
-import { Button, Text } from "native-base";
+import { Button, Text, Thumbnail } from "native-base";
 import { setInitialUser, createNewAccount, restoreWithPhrase, restoreWithFile } from "../../store/aplication/aplicationAction";
 import { connect } from "react-redux";
 import crypto from "crypto";
@@ -67,12 +67,11 @@ class InitialStep extends Component {
           />
         )}
         <>
-          <Image
+          <Thumbnail
             source={images.logo2.url}
             style={{
               height: 150,
               width: 150,
-              borderRadius: 100,
               marginBottom: "10%"
             }}
           />
