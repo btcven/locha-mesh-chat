@@ -32,7 +32,8 @@ class Config extends Component {
       openModalName: false,
       viewQR: false,
       language: false,
-      pin: false
+      pin: false,
+      forceDialog: false
     };
   }
 
@@ -53,7 +54,6 @@ class Config extends Component {
 
 
   createBackupFile = async (pin) => {
-    this.close("pin")
     database.verifyPin(pin).then(async () => {
       const data = await database.getAllData()
       const ciphertext = CryptoJS.AES.encrypt(JSON.stringify(data), sha256(pin)).toString()
@@ -63,15 +63,19 @@ class Config extends Component {
       await Share.open({
         url: base64,
         filename: "Backup"
+      }).catch(shareError => {
+        if (shareError.toString() === "Error: User did not share") {
+          this.close("pin")
+        }
       })
     }).catch(err => {
-      toast("Pin inconrrecto")
+      // const error = JSON.parse()
+
     })
   }
 
   render() {
     const { screenProps } = this.props;
-    console.log(this.props.config.image)
     return (
       <Container>
         <Header {...this.props} />
@@ -97,13 +101,13 @@ class Config extends Component {
 
         <ViewQR {...this.props} open={this.state.viewQR} close={this.close} />
 
-        <AddPin
+        {!this.state.forceDialog && <AddPin
           {...this.props}
           open={this.state.pin}
           text={screenProps.t("Settings:textBackup")}
           action={this.createBackupFile}
           close={this.close}
-          config={true} />
+          config={true} />}
 
         <View style={styles.sectionContainer}>
           <View style={styles.imageContainer}>
