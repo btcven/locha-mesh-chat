@@ -304,7 +304,7 @@ export default class AddContact extends Component {
                     >
                       <Thumbnail
                         source={{
-                          uri: this.state.image + "?" + new Date().getDate(),
+                          uri: this.state.image,
                           cache: "force-cache"
                         }}
                         style={styles.imageStyle}

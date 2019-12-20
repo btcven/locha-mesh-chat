@@ -46,7 +46,7 @@ export const verifyAplicationState = () => async dispatch => {
 export const restoreAccountWithPin = (pin, callback) => dispatch => {
   database.restoreWithPin(sha256(pin)).then(res => {
     dispatch(writeAction(JSON.parse(JSON.stringify(res[0]))));
-    // ws = new Socket(store, database);
+    ws = new Socket(store, database);
   }).catch(err => {
     callback()
   })

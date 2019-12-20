@@ -24,6 +24,7 @@ export default class MenuComponent extends Component {
   showMenu = () => {
     this._menu.show();
   };
+  
   render() {
     return (
       <View>
