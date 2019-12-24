@@ -12,8 +12,6 @@ import Database from './src/database'
 import {FileDirectory} from "./src/utils/utils"
 
 
-console.log(FileDirectory)
-
 const WrappedStack = ({ t }) => {
   return (
     <RouteContainer

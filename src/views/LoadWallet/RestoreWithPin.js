@@ -12,7 +12,6 @@ class RestoreWithPin extends Component {
     }
     restoreAccount = (pin) => {
         this.props.restoreAccountWithPin(pin, (res) => {
-            console.log("entro aqui ")
             toast(this.props.screenProps.t("Initial:error1"))
         })
     }

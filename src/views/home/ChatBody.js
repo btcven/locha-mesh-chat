@@ -108,8 +108,6 @@ export default class ChatBody extends Component {
     const { screenProps } = this.props;
     let { imagesView } = this.state;
     let viewImages = imagesView.length === 0 ? false : true;
-
-    console.log("el weboooo", imagesView)
     return (
       <View style={{ flex: 1 }}>
         {this.props.open && (

@@ -222,7 +222,6 @@ const androidToast = message => {
 
 
 const iOSToast = (message) => {
-  console.log(message)
   Toast.show({
     text: message,
     style: { zIndex: 99999999999999 }

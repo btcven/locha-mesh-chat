@@ -55,7 +55,7 @@ export default class Database extends CoreDatabase {
     getRealm = (key, key2) => new Promise((resolve, reject) => {
         options.encryptionKey = this.toByteArray(key)
         optionsDatabase.encryptionKey = this.toByteArray(key2)
-        console.log(Realm.copyBundledRealmFiles()) 
+    
         try {
             this.seed = new Realm(options)
             this.db = new Realm(optionsDatabase)
