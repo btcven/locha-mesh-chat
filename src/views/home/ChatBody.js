@@ -5,6 +5,7 @@ import FileModal from "./fileModal";
 import { ReceiveMessage, SenderMessage, SoundMessage } from "./Messages";
 import Sound from "react-native-sound";
 import { songs } from "../../utils/constans";
+import ImagesView from './imagesView'
 
 /**
  *
@@ -19,7 +20,8 @@ export default class ChatBody extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      selected: []
+      selected: [],
+      imagesView: []
     };
   }
 
@@ -92,18 +94,41 @@ export default class ChatBody extends Component {
     this.props.sendAgain(item);
   };
 
+  setImageView = (imageArray) => {
+    setTimeout(() => {
+      this.setState({ imagesView: imageArray });
+    }, 200)
+  }
+
+  closeView = () => {
+    this.setState({ imagesView: [] });
+  };
+
   render() {
     const { screenProps } = this.props;
+    let { imagesView } = this.state;
+    let viewImages = imagesView.length === 0 ? false : true;
+
+    console.log("el weboooo", imagesView)
     return (
-      <View style={{ flex:1 }}>
+      <View style={{ flex: 1 }}>
         {this.props.open && (
           <FileModal
             open={this.props.open}
             close={this.props.close}
             sendFileWithImage={this.props.sendFileWithImage}
             screenProps={screenProps}
+            setImageView={this.setImageView}
           />
         )}
+
+        <ImagesView
+          sendFileWithImage={this.props.sendFileWithImage}
+          open={viewImages}
+          images={imagesView}
+          close={this.closeView}
+          screenProps={screenProps}
+        />
 
         <FlatList
           inverted

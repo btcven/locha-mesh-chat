@@ -76,8 +76,10 @@ export default class App extends React.Component {
             style={{
               backgroundColor: "black",
               minHeight: 50,
+              paddingHorizontal: 10,
+              paddingBottom: "3%",
               alignItems: "flex-end",
-              flexDirection: "row"
+              flexDirection: "row",
             }}
           >
             <TextInput

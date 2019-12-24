@@ -86,7 +86,7 @@ export default class ChatForm extends Component {
           cancelRecoding: false
         });
 
-        const filePath = await AudioRecorder.startRecording();
+        await AudioRecorder.startRecording();
       } catch (error) {
         this.setState({ recording: false });
       }

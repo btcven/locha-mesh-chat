@@ -147,7 +147,7 @@ export default class CreateAccount extends Component {
   }
 
   render() {
-    const { open, close, phrases, stringPhrases, screenProps } = this.props;
+    const { open, close, phrases, screenProps } = this.props;
     const action = this.props.restore ? this.restoreAccount : this.createAccount
     const values = (this.state.step !== 1 && this.state.step !== 4) ? this.state.seed : phrases
     const rule = this.state.step === 1 || this.state.step === 4 ? true : false
