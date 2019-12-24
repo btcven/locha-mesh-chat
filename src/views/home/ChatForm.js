@@ -26,6 +26,7 @@ import Draggable from "../../components/Draggable";
  * @description component where is the form to write the message send notes from you and files
  * @extends {Component}
  */
+
 export default class ChatForm extends Component {
   constructor(props) {
     super(props);
@@ -59,7 +60,8 @@ export default class ChatForm extends Component {
         AudioQuality: "Low",
         AudioEncoding: "aac",
         AudioEncodingBitRate: 32000,
-        IncludeBase64: true
+        IncludeBase64: true,
+        OutputFormat: Platform === "android" ? undefined : 'aac_adts',
       });
     } catch (err) {
       console.log("error", err);

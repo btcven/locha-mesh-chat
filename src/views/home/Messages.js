@@ -83,7 +83,7 @@ export const ReceiveMessage = ({
                     style={{ width: "100%", height: 150 }}
                     source={{
                       resizeMode: "contain",
-                      uri: item.file.file + "?" + new Date().getDate(),
+                      uri: item.file.file,
                       cache: "force-cache"
                     }}
                   />
@@ -151,7 +151,7 @@ export const SenderMessage = ({
                 style={{ width: "100%", height: 150 }}
                 source={{
                   resizeMode: "contain",
-                  uri: item.file.file + "?" + new Date().getDate(),
+                  uri: item.file.file,
                   cache: "force-cache"
                 }}
               />
@@ -216,7 +216,7 @@ export const SoundMessage = ({
     return (
       <TouchableList
         key={index}
-        
+        underlayColor="#DDD"
         onLongPress={() => onSelected(item)}
         onPress={() => onClick(item)}
         style={{
@@ -286,6 +286,7 @@ export const SoundMessage = ({
       return (
         <TouchableList
           key={index}
+          underlayColor="#DDD"
           useForeground
           style={{
             marginVertical: 5,

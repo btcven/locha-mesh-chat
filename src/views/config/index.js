@@ -2,14 +2,14 @@ import React, { Component } from "react";
 import { Container, Icon, Left, Right, Button, Thumbnail } from "native-base";
 import { images } from "../../utils/constans";
 import Header from "../../components/Header";
-import { Text, View, Image, StyleSheet, TouchableHighlight, TouchableOpacity, Clipboard, } from "react-native";
+import { Text, View, StyleSheet, TouchableHighlight, TouchableOpacity, Clipboard, } from "react-native";
 import { getPhotosFromUser, openCamera, editName, } from "../../store/configuration/congurationAction";
 import { connect } from "react-redux";
 import EditName from "./EditName";
 import EditPhoto from "./EditPhoto";
 import ViewQR from "./ViewQR";
 import Languajes from "./Language";
-import { toast, FileDirectory } from "../../utils/utils";
+import { toast } from "../../utils/utils";
 import i18n from "../../i18n";
 import CryptoJS from "crypto-js"
 import { database } from '../../../App'
@@ -63,6 +63,8 @@ class Config extends Component {
       await Share.open({
         url: base64,
         filename: "Backup"
+      }).then(() => {
+        this.close("pin")
       }).catch(shareError => {
         if (shareError.toString() === "Error: User did not share") {
           this.close("pin")
@@ -70,7 +72,6 @@ class Config extends Component {
       })
     }).catch(err => {
       // const error = JSON.parse()
-
     })
   }
 

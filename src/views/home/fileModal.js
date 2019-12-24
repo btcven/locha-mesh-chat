@@ -33,6 +33,7 @@ export default class FileModal extends Component {
 
   getPhotosFromGallery = () => {
     imageArray = [];
+    this.props.close()
     ImagePicker.openPicker({
       multiple: true,
       includeBase64: true
@@ -55,14 +56,14 @@ export default class FileModal extends Component {
    */
 
   GetphotoFromCamera = () => {
+    this.props.close()
     ImagePicker.openCamera({
       width: 500,
       height: 500,
       cropping: true,
       includeBase64: true
     }).then(image => {
-      const newPath = `file:///${FileDirectory}/Pictures/IMG_${new Date().getTime()} `;
-
+      const newPath = `${FileDirectory}/Pictures/IMG_${new Date().getTime()} `;
       RNFS.moveFile(image.path, newPath).then(() => {
         this.setState({
           imagesView: [

@@ -62,7 +62,6 @@ export default class App extends React.Component {
                 >
                   <Icon
                     style={{ color: "white" }}
-                    type="MaterialIcons"
                     name="arrow-back"
                   />
                 </TouchableHighlight>

@@ -51,9 +51,6 @@ export const FileDirectory = Platform.select({
 })()
 
 
-
-
-
 /**
  *
  * function to create the application folder
