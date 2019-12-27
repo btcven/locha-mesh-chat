@@ -3,7 +3,7 @@ import { Container } from "native-base";
 import Header from "../../components/Header";
 import ChatBody from "./ChatBody";
 import ChatForm from "./ChatForm";
-import { androidToast } from "../../utils/utils";
+import { toast } from "../../utils/utils";
 import {
   initialChat,
   cleanAllChat,
@@ -13,11 +13,17 @@ import {
   sendReadMessageStatus,
   sendAgain
 } from "../../store/chats";
-import {} from "../../store/aplication";
+
 import { connect } from "react-redux";
-import { Alert, Clipboard, Dimensions } from "react-native";
+import { Alert, Clipboard, Dimensions, KeyboardAvoidingView, Platform, View } from "react-native";
 import { sha256 } from "js-sha256";
 import ImagesView from "./imagesView";
+
+
+const ChatContainer = Platform.select({
+  ios: () => KeyboardAvoidingView,
+  android: () => View
+})()
 
 /**
  * main message component
@@ -39,7 +45,7 @@ class Chat extends Component {
       menu: [
         {
           label: `${this.props.screenProps.t("Chats:clean")}`,
-          action: () => this.cleanAllMessages(),
+          action: (data) => this.cleanAllMessages(data),
           broadcast: true
         }
       ]
@@ -65,7 +71,8 @@ class Chat extends Component {
    * @function
    * @memberof Chat
    */
-  cleanAllMessages = () => {
+  cleanAllMessages = (close) => {
+    console.log("dataaaa", close)
     const { screenProps } = this.props;
     const chat = this.props.chat[this.props.chatSelected.index];
     Alert.alert(
@@ -74,7 +81,7 @@ class Chat extends Component {
       [
         {
           text: "Cancel",
-          onPress: () => {},
+          onPress: () => { close() },
           style: "cancel"
         },
         {
@@ -170,7 +177,7 @@ class Chat extends Component {
     const selected = this.state.selected;
 
     Clipboard.setString(selected[this.state.selected.length - 1].msg);
-    androidToast("Mensaje copiado");
+    toast("Mensaje copiado");
   };
 
   delete = () => {
@@ -233,7 +240,7 @@ class Chat extends Component {
     data.images.map((image, key) => {
       const id = sha256(
         `${sha256(userData.uid)} + ${toUID}  +  ${sendObject.msg.text +
-          sendObject.msg.file}  + ${new Date().getTime()}`
+        sendObject.msg.file}  + ${new Date().getTime()}`
       );
       if (data.position === key) {
         const sendData = Object.assign({}, sendObject);
@@ -278,8 +285,8 @@ class Chat extends Component {
 
     const messages = Object.values(chatSelected.messages).length
       ? Object.values(chatSelected.messages).sort((a, b) => {
-          return new Date(b.timestamp) - new Date(a.timestamp);
-        })
+        return new Date(b.timestamp) - new Date(a.timestamp);
+      })
       : [];
     return (
       <Container>
@@ -299,29 +306,31 @@ class Chat extends Component {
           copy={this.copy}
           delete={this.delete}
         />
-        <ChatBody
-          chats={messages}
-          user={this.props.userData}
-          contacts={this.props.contact}
-          onClick={this.onClick}
-          onSelected={this.onSelected}
-          selected={this.state.selected}
-          close={this.closeFileModal}
-          open={this.state.fileModal}
-          sendFileWithImage={this.sendFileWithImage}
-          sendReadMessageStatus={this.props.sendReadMessageStatus}
-          sendAgain={this.props.sendAgain}
-          screenProps={screenProps}
-        />
-        <ChatForm
-          user={this.props.userData}
-          navigation={navigation.state}
-          setChat={this.props.initialChat}
-          previousChat={this.props.chatSelected}
-          openFileModal={this.openFileModal}
-          sendMessagesWithSound={this.props.sendMessageWithFile}
-          screenProps={screenProps}
-        />
+        <ChatContainer behavior="padding" style={{ flex: 1 }}>
+          <ChatBody
+            chats={messages}
+            user={this.props.userData}
+            contacts={this.props.contact}
+            onClick={this.onClick}
+            onSelected={this.onSelected}
+            selected={this.state.selected}
+            close={this.closeFileModal}
+            open={this.state.fileModal}
+            sendFileWithImage={this.sendFileWithImage}
+            sendReadMessageStatus={this.props.sendReadMessageStatus}
+            sendAgain={this.props.sendAgain}
+            screenProps={screenProps}
+          />
+          <ChatForm
+            user={this.props.userData}
+            navigation={navigation.state}
+            setChat={this.props.initialChat}
+            previousChat={this.props.chatSelected}
+            openFileModal={this.openFileModal}
+            sendMessagesWithSound={this.props.sendMessageWithFile}
+            screenProps={screenProps}
+          />
+        </ChatContainer>
       </Container>
     );
   }

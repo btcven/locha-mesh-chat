@@ -10,7 +10,8 @@ import {
   Left,
   Right,
   Text,
-  Icon
+  Icon,
+  Thumbnail
 } from "native-base";
 import { selectedChat } from "../../store/chats";
 import { getSelectedColor, unSelect, getIcon } from "../../utils/utils";
@@ -127,10 +128,10 @@ class Contacts extends Component {
   render() {
     const result = this.state.search
       ? this.props.contacts.filter(contact => {
-          return contact.name
-            .toLowerCase()
-            .includes(this.state.search.toLowerCase());
-        })
+        return contact.name
+          .toLowerCase()
+          .includes(this.state.search.toLowerCase());
+      })
       : this.props.contacts;
     return (
       <Container>
@@ -174,7 +175,7 @@ class Contacts extends Component {
                   </Left>
                   <Right>
                     {contact.picture && (
-                      <Image
+                      <Thumbnail
                         style={styles.imageStyles}
                         source={{
                           uri: contact.picture,
@@ -183,7 +184,7 @@ class Contacts extends Component {
                       />
                     )}
                     {!contact.picture && (
-                      <Image
+                      <Thumbnail
                         style={styles.imageStyles}
                         source={{
                           uri: `${getIcon(contact.hashUID)}`
@@ -234,7 +235,6 @@ const styles = StyleSheet.create({
   imageStyles: {
     width: 60,
     height: 60,
-    borderRadius: 100
   },
   textContainer: {
     flexWrap: "wrap"

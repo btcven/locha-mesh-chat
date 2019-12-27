@@ -33,6 +33,7 @@ export default class FileModal extends Component {
 
   getPhotosFromGallery = () => {
     imageArray = [];
+    // this.props.close()
     ImagePicker.openPicker({
       multiple: true,
       includeBase64: true
@@ -44,7 +45,8 @@ export default class FileModal extends Component {
           width: Dimensions.get("window").width
         });
       });
-      this.setState({ imagesView: imageArray });
+      this.props.setImageView(imageArray)
+      this.props.close()
     });
   };
 
@@ -55,31 +57,31 @@ export default class FileModal extends Component {
    */
 
   GetphotoFromCamera = () => {
+    this.props.close()
     ImagePicker.openCamera({
       width: 500,
       height: 500,
       cropping: true,
       includeBase64: true
     }).then(image => {
-      const newPath = `file:///${FileDirectory}/Pictures/IMG_${new Date().getTime()} `;
-
+      const newPath = `${FileDirectory}/Pictures/IMG_${new Date().getTime()} `;
       RNFS.moveFile(image.path, newPath).then(() => {
-        this.setState({
-          imagesView: [
-            {
-              url: newPath,
-              base64: image.data,
-              width: Dimensions.get("window").width
-            }
-          ]
-        });
+        setTimeout(() => {
+          this.setState({
+            imagesView: [
+              {
+                url: newPath,
+                base64: image.data,
+                width: Dimensions.get("window").width
+              }
+            ]
+          });
+        }, 200)
       });
     });
   };
 
-  closeView = () => {
-    this.setState({ imagesView: [] });
-  };
+  
 
   render() {
     const { open, close, screenProps } = this.props;
@@ -87,15 +89,6 @@ export default class FileModal extends Component {
     let viewImages = imagesView.length === 0 ? false : true;
     return (
       <View>
-        {viewImages && (
-          <ImagesView
-            sendFileWithImage={this.props.sendFileWithImage}
-            open={viewImages}
-            images={imagesView}
-            close={this.closeView}
-            screenProps={screenProps}
-          />
-        )}
         <Modal
           style={{
             justifyContent: "flex-end",

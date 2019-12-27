@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import PinView from './PinView'
 import Modal from 'react-native-modal'
-import { androidToast } from '../../utils/utils'
+import { toast } from '../../utils/utils'
 import { restoreAccountWithPin } from '../../store/aplication/aplicationAction'
 import { connect } from "react-redux"
 
@@ -12,7 +12,7 @@ class RestoreWithPin extends Component {
     }
     restoreAccount = (pin) => {
         this.props.restoreAccountWithPin(pin, (res) => {
-            androidToast(this.props.screenProps.t("Initial:error1"))
+            toast(this.props.screenProps.t("Initial:error1"))
         })
     }
 

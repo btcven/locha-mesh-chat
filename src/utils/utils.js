@@ -1,7 +1,6 @@
 import RNFS from "react-native-fs";
-import React from "react";
-import { ToastAndroid } from "react-native";
-import { PermissionsAndroid } from "react-native";
+import { ToastAndroid, PermissionsAndroid, Platform } from "react-native";
+import { Toast } from "native-base"
 import Identicon from "identicon.js";
 import { database } from '../../App'
 import BackgroundTimer from "react-native-background-timer";
@@ -11,18 +10,17 @@ import {
   messageQueue,
   updateState
 } from "../store/chats";
-import NotifService from "./notificationService";
+// import NotifService from "./notificationService";
 import NavigationService from "./navigationService";
 import store from "../store";
 import { sha256 } from "js-sha256";
-import Moment from "moment";
 
 /**
  * global functions used in multiple places in the app
  * @module Utils
  */
 
-export const notification = new NotifService();
+// export const notification = new NotifService();
 /**
  * function to request store permissions
  * @function
@@ -47,7 +45,11 @@ export const pendingObservable = () => {
   }, 3000);
 };
 
-export const FileDirectory = RNFS.ExternalStorageDirectoryPath + "/LochaMesh";
+export const FileDirectory = Platform.select({
+  ios: () => RNFS.DocumentDirectoryPath + "/LochaMesh",
+  android: () => RNFS.ExternalStorageDirectoryPath + "/LochaMesh"
+})()
+
 
 /**
  *
@@ -58,15 +60,14 @@ export const FileDirectory = RNFS.ExternalStorageDirectoryPath + "/LochaMesh";
  */
 
 export const createFolder = async () => {
-  await requestStoragePermission();
-  const pictureDirectory =
-    RNFS.ExternalStorageDirectoryPath + "/LochaMesh/Pictures";
-  const audioDirectory =
-    RNFS.ExternalStorageDirectoryPath + "/LochaMesh/Audios";
+  if (Platform.OS === 'android') {
+    await requestStoragePermission()
+  }
+  const pictureDirectory = FileDirectory + "/Pictures";
+  const audioDirectory = FileDirectory + "/Audios"
   await RNFS.mkdir(FileDirectory.toString());
   await RNFS.mkdir(pictureDirectory.toString());
   await RNFS.mkdir(audioDirectory.toString());
-  return pictureDirectory;
 };
 
 /**
@@ -209,7 +210,7 @@ export const backgroundTimer = () => {
  * function to display a message on the phone works only for android
  * @param {string} message
  */
-export const androidToast = message => {
+const androidToast = message => {
   ToastAndroid.showWithGravityAndOffset(
     message,
     1,
@@ -218,6 +219,23 @@ export const androidToast = message => {
     60
   );
 };
+
+
+const iOSToast = (message) => {
+  Toast.show({
+    text: message,
+    style: { zIndex: 99999999999999 }
+  })
+}
+
+
+export const toast = (message) => {
+  if (Platform.OS === "android") {
+    androidToast(message)
+  } else {
+    iOSToast(message)
+  }
+}
 
 /**
  *

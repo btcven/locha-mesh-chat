@@ -61,10 +61,10 @@ class DualComponent extends Component {
   };
 
   componentDidMount = async () => {
-    const lng = await this.getDefaultLanguage()
-    if (lng) {
-      i18n.changeLanguage(lng.substr(0, 2));
-    }
+    // const lng = await this.getDefaultLanguage()
+    // if (lng) {
+    //   i18n.changeLanguage(lng.substr(0, 2));
+    // }
   };
 
   render() {

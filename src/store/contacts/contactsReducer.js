@@ -22,7 +22,6 @@ export const contactsReducer = (state = AplicationState, action) => {
 
     case ActionTypes.DELETE_CONTACT: {
       const contacts = Object.values(state.contacts);
-      console.log("acaa", " dioss");
       let result = contacts.filter(data => {
         const payload = action.payload.find(contact => {
           return contact.uid === data.uid;
