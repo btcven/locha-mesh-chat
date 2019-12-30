@@ -10,7 +10,7 @@ import {
   messageQueue,
   updateState
 } from "../store/chats";
-// import NotifService from "./notificationService";
+import NotifService from "./notificationService";
 import NavigationService from "./navigationService";
 import store from "../store";
 import { sha256 } from "js-sha256";
@@ -20,7 +20,7 @@ import { sha256 } from "js-sha256";
  * @module Utils
  */
 
-// export const notification = new NotifService();
+export const notification = new NotifService();
 /**
  * function to request store permissions
  * @function
@@ -77,14 +77,19 @@ export const createFolder = async () => {
  */
 
 export const notifyRedirect = data => {
+
+
   const result = getInfoMessage(data.id);
+
+  console.log("dios meo", result)
   store.dispatch(selectedChat({ toUID: result.toUID }));
-  NavigationService.navigate("chat", {
+  const contact = result.toUID === "broadcast" ? undefined : {
     hashUID: result.hashUID,
     name: result.name,
     picture: result.picture,
     uid: result.uid
-  });
+  }
+  NavigationService.navigate("chat", contact);
 };
 
 /**
@@ -169,7 +174,7 @@ export const getSelectedColor = (selected, id) => {
 
 const getInfoMessage = id => {
   let state = store.getState();
-  const result = state.chats.chat.find(data => {
+  const result = Object.values(state.chats.chat).find(data => {
     const sub = String(parseInt(sha256(data.toUID), 16)).substr(2, 10);
     return sub === id;
   });

@@ -166,12 +166,6 @@ dependencies {
     implementation project(':react-native-svg')
     implementation project(':realm')
     implementation 'com.android.support:multidex:1.0.3'
-    compile "com.google.android.gms:play-services-gcm:16.1.0"
-    compile "com.google.firebase:firebase-messaging:17.6.0"
-    compile (project(':react-native-push-notification')) {
-    exclude group: "com.google.android.gms", module: "play-services-gcm"
-    exclude group: "com.google.firebase", module: "firebase-messaging"
-    }
     implementation project(':react-native-camera')
     implementation project(':react-native-fs')
     implementation project(':@react-native-community_async-storage')
