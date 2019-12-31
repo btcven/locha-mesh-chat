@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { route } from "./store/aplication/aplicationAction";
-import { StyleSheet, View, Alert, Text, AppState, Share } from "react-native";
+import { StyleSheet, View, Alert, Text, AppState, Share, NativeModules } from "react-native";
 import Home from "./views/home";
 import LoadWallet from "./views/LoadWallet";
 import RestoreWithPing from './views/LoadWallet/RestoreWithPin'

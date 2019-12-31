@@ -1,8 +1,11 @@
 package com.lochameshchat;
 
+
 import android.app.Application;
 import com.facebook.react.ReactApplication;
 import com.reactlibrary.LanguageDetectorPackage;
+
+import LocalNotification.LocalNotificationPackage;
 import cl.json.RNSharePackage;
 import com.wenkesj.voice.VoicePackage;
 import com.tradle.react.UdpSocketsModule;
@@ -12,7 +15,6 @@ import com.zmxv.RNSound.RNSoundPackage;
 import com.rnim.rn.audio.ReactNativeAudioPackage;
 import com.ocetnik.timer.BackgroundTimerPackage;
 import io.github.elyx0.reactnativedocumentpicker.DocumentPickerPackage; // Import package
-import com.dieam.reactnativepushnotification.ReactNativePushNotificationPackage;
 import com.bitgo.randombytes.RandomBytesPackage;
 import com.horcrux.svg.SvgPackage;
 import io.realm.react.RealmReactPackage;
@@ -42,6 +44,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
             new MainReactPackage(),
+            new LocalNotificationPackage(),
             new LanguageDetectorPackage(),
             new RNSharePackage(),
             new VoicePackage(),
@@ -51,7 +54,6 @@ public class MainApplication extends Application implements ReactApplication {
             new RNSoundPackage(),
             new ReactNativeAudioPackage(),
             new BackgroundTimerPackage(),
-            new ReactNativePushNotificationPackage(),
             new RandomBytesPackage(),
             new SvgPackage(),
             new RealmReactPackage(),
