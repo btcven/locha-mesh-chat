@@ -11,12 +11,13 @@ import UserNotifications
 
 
 @objc(LocalNotification)
-class LocalNoticication: NSObject {
+class LocalNoticication: RCTEventEmitter, UNUserNotificationCenterDelegate {
   
   @objc
   func requestPermission() {
     if #available(iOS 10.0, *) {
-
+        
+        UNUserNotificationCenter.current().delegate = self
         UNUserNotificationCenter.current().requestAuthorization(options:[.badge, .alert, .sound]) { (granted, error) in
 
             if granted {
@@ -26,24 +27,63 @@ class LocalNoticication: NSObject {
         }
 
     } else {
-      print("not foundÏ")
+      print("not found")
     }
+  }
+  
+  override func supportedEvents() -> [String]! {
+    return ["NoticationReceiver"]
+  }
+  
+  @available(iOS 10.0, *)
+  func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+    completionHandler([.alert, .sound])
+  }
+  
+  @available(iOS 10.0, *)
+  func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+    
+    print(response.notification.request.content.title)
+    sendEvent(withName: "NoticationReceiver", body: ["count":2] )
+    completionHandler()
   }
     
   
-  @objc
-  func createNotification() {
-    print("hello word")
+  @objc func createNotification(_ details:NSDictionary) {
+    if #available(iOS 10.0, *) {
+      print("entro aqui")
+      let content = UNMutableNotificationContent()
+      content.title = details["title"] as! String
+      content.body = details["message"] as! String
+      content.sound = UNNotificationSound.default
+      let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1 , repeats: false)
+      
+      
+//      let uuidString = UUID().uuidString
+      let request = UNNotificationRequest(identifier: details["id"] as! String,
+                  content: content, trigger: trigger)
+
+      // Schedule the request with the system.
+      let notificationCenter = UNUserNotificationCenter.current()
+      notificationCenter.add(request) { (error) in
+         if error != nil {
+          print("hay un error Ï")
+         }
+      }
+    } else {
+      // Fallback on earlier versions
+    }
   }
   
-  @objc
-  func clearNotificationID() {
-    print("hello word")
+  @available(iOS 10.0, *)
+  @objc func clearNotificationID(id:NSNumber) {
+    let identificator:String = id.stringValue
+    UNUserNotificationCenter.current().removeDeliveredNotifications(withIdentifiers: [identificator] )
   }
 
-  @objc
-  func clearNotificationAll() {
-    print("hello word")
+  @available(iOS 10.0, *)
+  @objc func clearNotificationAll() {
+    UNUserNotificationCenter.current().removeAllDeliveredNotifications()
   }
 
   

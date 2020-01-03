@@ -11,27 +11,30 @@ import { notifyRedirect } from "./utils";
 export default class NotifService {
     constructor() {
         this.LocalNotification = NativeModules.LocalNotification;
-        // this.onNotification()
+        this.onNotification()
 
         NativeModules.LocalNotification.requestPermission()
 
 
     }
 
-    // onNotification = () => {
-    //     const eventEmitter = new NativeEventEmitter(this.LocalNotification);
-    //     eventEmitter.addListener('NoticationReceiver', (event) => {
-    //         const notification = JSON.parse(event.dataJSON)
-    //         notifyRedirect(notification);
-    //     })
-    // }
+    onNotification = () => {
+        const eventEmitter = new NativeEventEmitter(this.LocalNotification);
+        eventEmitter.addListener('NoticationReceiver', (event) => {
+            // const notification = JSON.parse(event)
+            console.log("acaaaaa", event)
+            // notifyRedirect(notification);
+        })
+    }
 
     localNotif = (data, id) => {
-        this.LocalNotification.createNotification({
-            id: id.toString(),
-            title: data.name,
-            message: data.msg
-        })
+        this.LocalNotification.createNotification(
+            {
+                id: id.toString(),
+                title: data.name,
+                message: data.msg
+            }
+        )
     }
 
 

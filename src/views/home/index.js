@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { chats } from "../../utils/constans";
-// import {} from 'utils'
+import { notification } from '../../utils/utils'
 import {
   Container,
   Content,
@@ -74,7 +74,7 @@ class index extends Component {
 
   deleteChat = async () => {
     const { screenProps } = this.props;
-     Alert.alert(
+    Alert.alert(
       `${screenProps.t("Chats:titleDelete")}`,
       `${screenProps.t("Chats:deleteBody")}`,
       [
@@ -292,7 +292,7 @@ class index extends Component {
           })}
         </Content>
         <FloatButton
-          add={() => this.props.navigation.push("contacts")}
+          add={() => notification.localNotif()}
           icon={
             <Icon
               type="MaterialIcons"
