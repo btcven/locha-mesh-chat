@@ -1,4 +1,4 @@
-import { NativeModules, NativeEventEmitter } from "react-native"
+import { NativeModules, NativeEventEmitter, Platform } from "react-native"
 import { notifyRedirect } from "./utils";
 
 /**
@@ -12,8 +12,7 @@ export default class NotifService {
     constructor() {
         this.LocalNotification = NativeModules.LocalNotification;
         this.onNotification()
-
-        NativeModules.LocalNotification.requestPermission()
+        Platform.OS !== "android" ? NativeModules.LocalNotification.requestPermission() : null
 
 
     }
@@ -21,9 +20,11 @@ export default class NotifService {
     onNotification = () => {
         const eventEmitter = new NativeEventEmitter(this.LocalNotification);
         eventEmitter.addListener('NoticationReceiver', (event) => {
-            // const notification = JSON.parse(event)
-            console.log("acaaaaa", event)
-            // notifyRedirect(notification);
+            let notification = Platform.OS === "android" ? JSON.parse(event.dataJSON) : event
+
+
+            console.log("notification", notification ,Platform.os)
+            notifyRedirect(notification);
         })
     }
 

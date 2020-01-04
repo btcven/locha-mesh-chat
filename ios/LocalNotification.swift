@@ -43,8 +43,13 @@ class LocalNoticication: RCTEventEmitter, UNUserNotificationCenterDelegate {
   @available(iOS 10.0, *)
   func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
     
-    print(response.notification.request.content.title)
-    sendEvent(withName: "NoticationReceiver", body: ["count":2] )
+    
+    var res = [
+      "id" : response.notification.request.identifier,
+      "title": response.notification.request.content.title,
+      "message":response.notification.request.content.body
+    ]
+    sendEvent(withName: "NoticationReceiver", body: res )
     completionHandler()
   }
     
@@ -85,9 +90,5 @@ class LocalNoticication: RCTEventEmitter, UNUserNotificationCenterDelegate {
   @objc func clearNotificationAll() {
     UNUserNotificationCenter.current().removeAllDeliveredNotifications()
   }
-
-  
-  
-  
   
 }
