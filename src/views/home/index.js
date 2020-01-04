@@ -292,7 +292,7 @@ class index extends Component {
           })}
         </Content>
         <FloatButton
-          add={() => notification.localNotif()}
+          add={() => this.props.navigation.push("contacts")}
           icon={
             <Icon
               type="MaterialIcons"
