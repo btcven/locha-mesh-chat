@@ -16,6 +16,7 @@ class RNDeviceInfo: NSObject {
     return ["deviceInfo": machineName()]
   }
   
+  
   @objc
   func machineName() -> NSDictionary {
     var systemInfo = utsname()

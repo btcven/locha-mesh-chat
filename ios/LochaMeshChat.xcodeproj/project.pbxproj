@@ -48,6 +48,8 @@
 		30BDAE2E83764A3A9225D191 /* libRNCAsyncStorage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A0003F2AAE24580970CA543 /* libRNCAsyncStorage.a */; };
 		32E63DC273F64D6590F4FAAF /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8631282F79164898A454A186 /* Octicons.ttf */; };
 		3432D667517A40788BCF206E /* libRNVectorIcons-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F59037CBEE9E4124AAA7FFF8 /* libRNVectorIcons-tvOS.a */; };
+		343DB58823BE2CE400365B26 /* LocalNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 343DB58723BE2CE400365B26 /* LocalNotification.swift */; };
+		343DB5CA23BE2D0500365B26 /* LocalNotification.m in Sources */ = {isa = PBXBuildFile; fileRef = 343DB5C923BE2D0500365B26 /* LocalNotification.m */; };
 		3441BC6723A406710077C049 /* RNDeviceInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 3441BC6623A406710077C049 /* RNDeviceInfo.m */; };
 		3441BC6923A406890077C049 /* RNDeviceInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3441BC6823A406890077C049 /* RNDeviceInfo.swift */; };
 		3590F3C01EB848409609B586 /* libRNOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DB8CD02CA2BB49EA98AA0650 /* libRNOS.a */; };
@@ -595,6 +597,8 @@
 		2F25745436E246C4A76FDD90 /* Zocial.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Zocial.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Zocial.ttf"; sourceTree = "<group>"; };
 		2FF9410E8B3D44AC906AFC05 /* libRNSVG.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNSVG.a; sourceTree = "<group>"; };
 		3045DB3BC30E401E90B85CD9 /* libRNRandomBytes-tvOS.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = "libRNRandomBytes-tvOS.a"; sourceTree = "<group>"; };
+		343DB58723BE2CE400365B26 /* LocalNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalNotification.swift; sourceTree = "<group>"; };
+		343DB5C923BE2D0500365B26 /* LocalNotification.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LocalNotification.m; sourceTree = "<group>"; };
 		3441BC6323A3EFF20077C049 /* LochaMeshChat-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "LochaMeshChat-Bridging-Header.h"; sourceTree = "<group>"; };
 		3441BC6623A406710077C049 /* RNDeviceInfo.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RNDeviceInfo.m; sourceTree = "<group>"; };
 		3441BC6823A406890077C049 /* RNDeviceInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RNDeviceInfo.swift; sourceTree = "<group>"; };
@@ -825,6 +829,8 @@
 				3441BC6323A3EFF20077C049 /* LochaMeshChat-Bridging-Header.h */,
 				3441BC6623A406710077C049 /* RNDeviceInfo.m */,
 				3441BC6823A406890077C049 /* RNDeviceInfo.swift */,
+				343DB58723BE2CE400365B26 /* LocalNotification.swift */,
+				343DB5C923BE2D0500365B26 /* LocalNotification.m */,
 			);
 			name = LochaMeshChat;
 			sourceTree = "<group>";
@@ -2002,6 +2008,8 @@
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				3441BC6923A406890077C049 /* RNDeviceInfo.swift in Sources */,
 				3441BC6723A406710077C049 /* RNDeviceInfo.m in Sources */,
+				343DB58823BE2CE400365B26 /* LocalNotification.swift in Sources */,
+				343DB5CA23BE2D0500365B26 /* LocalNotification.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
