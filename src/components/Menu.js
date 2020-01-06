@@ -24,6 +24,7 @@ export default class MenuComponent extends Component {
   showMenu = () => {
     this._menu.show();
   };
+  
   render() {
     return (
       <View>
@@ -41,7 +42,7 @@ export default class MenuComponent extends Component {
               <MenuItem
                 key={key}
                 onPress={() => {
-                  menu.action(), this.hideMenu();
+                  menu.action(this.hideMenu)
                 }}
               >
                 {menu.label}

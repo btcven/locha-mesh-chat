@@ -5,6 +5,7 @@ import { notification, FileDirectory } from "../../utils/utils";
 import { sendSocket } from "../../utils/socket";
 import { sha256 } from "js-sha256";
 import RNFS from "react-native-fs";
+import { Platform } from "react-native";
 
 /**
  *here are all the actions of sending and receiving messages
@@ -33,6 +34,7 @@ export const initialChat = (data, status) => dispatch => {
         name: undefined,
         ...data,
         time: res.time,
+        shippingTime: res.time,
         msg: data.msg.text,
         id: data.msgID,
         status
@@ -142,19 +144,23 @@ export const getChat = data => async dispatch => {
  */
 const saveFile = obj =>
   new Promise(resolve => {
+    const connectiveAddress = Platform.OS === "android" ? 'file:///' : ""
     if (obj.typeFile === "image") {
       const base64File = obj.file;
       const name = `IMG_${new Date().getTime()}`;
-      const directory = `file:///${FileDirectory}/Pictures/${name}.jpg`;
+
+      const directory = `${connectiveAddress}${FileDirectory}/Pictures/${name}.jpg`.trim()
       RNFS.writeFile(directory, base64File, "base64").then(res => {
         resolve(directory);
-      });
+      }).catch(err => {
+        console.log(err)
+      })
     } else {
       const base64File = obj.file;
       const name = `AUDIO_${new Date().getTime()}`;
-      const directory = `${FileDirectory}/Audios/${name}.aac`;
-      RNFS.writeFile(`file:///${directory}`, base64File, "base64").then(res => {
-        resolve(directory);
+      const directory = `${FileDirectory}/${name}.aac`;
+      RNFS.writeFile(`${connectiveAddress}${directory}`, base64File, 'base64').then(res => {
+        resolve(`${connectiveAddress}${directory}`);
       });
     }
   });
@@ -249,7 +255,7 @@ export const sendMessageWithFile = (data, path, base64) => dispatch => {
         msg: data.msg.text,
         id: data.msgID,
         file: res.file,
-        time: res.time,
+        shippingTime: res.time,
         status: "pending"
       }
     });
@@ -353,16 +359,17 @@ export const sendReadMessageStatus = data => dispatch => {
 };
 
 export const sendAgain = message => dispatch => {
-  database.updateMessage(message).then(() => {
+  database.updateMessage(message).then((res) => {
     const sendObject = {
-      fromUID: message.fromUID,
-      toUID: message.toUID,
+      fromUID: res.fromUID,
+      toUID: res.toUID,
       msg: {
-        text: message.msg
+        text: res.msg
       },
-      timestamp: message.timestamp,
-      type: "msg",
-      msgID: message.id
+      timestamp: res.timestamp,
+      type: res.type,
+      msgID: res.id,
+      shippingTime: res.shippingTime
     };
 
     sendSocket.send(JSON.stringify(sendObject));

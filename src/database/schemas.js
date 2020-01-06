@@ -28,6 +28,7 @@ export const messageSquema = {
     msg: "string",
     file: "File?",
     timestamp: "int",
+    shippingTime:"int",
     viewed: "int?",
     status: "string?",
     type: "string"

@@ -4,13 +4,20 @@ import {
   Text,
   StyleSheet,
   TouchableNativeFeedback,
-  Image
+  TouchableHighlight,
+  Image, 
+  Platform
 } from "react-native";
 import Moment from "moment";
 import { Thumbnail, Icon } from "native-base";
 import { getIcon, hashGenerateColort } from "../../utils/utils";
 import Player from "../../components/Player ";
 import { TouchableOpacity } from "react-native-gesture-handler";
+
+const TouchableList = Platform.select({
+  ios: () => TouchableHighlight,
+  android: () => TouchableNativeFeedback,
+})();
 
 export const ReceiveMessage = ({
   onClick,
@@ -21,7 +28,7 @@ export const ReceiveMessage = ({
   selected
 }) => {
   return (
-    <TouchableNativeFeedback
+    <TouchableList
       onLongPress={() => onSelected(item)}
       onPress={() => onClick(item)}
       style={{
@@ -53,7 +60,7 @@ export const ReceiveMessage = ({
             source={{
               uri: `${
                 userInfo.picture ? userInfo.picture : getIcon(item.fromUID)
-              }`
+                }`
             }}
           />
         )}
@@ -76,7 +83,7 @@ export const ReceiveMessage = ({
                     style={{ width: "100%", height: 150 }}
                     source={{
                       resizeMode: "contain",
-                      uri: item.file.file + "?" + new Date().getDate(),
+                      uri: item.file.file,
                       cache: "force-cache"
                     }}
                   />
@@ -98,7 +105,7 @@ export const ReceiveMessage = ({
           </View>
         </View>
       </View>
-    </TouchableNativeFeedback>
+    </TouchableList>
   );
 };
 
@@ -109,10 +116,10 @@ export const SenderMessage = ({
   selected,
   retry
 }) => {
-  const timeCreated = Moment(item.timestamp);
+  const timeCreated = Moment(item.shippingTime);
   const cancelled =
     (Moment().diff(timeCreated, "s") > 30 && item.status === "pending") ||
-    item.status === "not sent"
+      item.status === "not sent"
       ? true
       : false;
 
@@ -125,8 +132,8 @@ export const SenderMessage = ({
   const iconName = item.toUID ? "checkmark" : "user-check";
   const IconType = iconName === "checkmark" ? "Ionicons" : "FontAwesome5";
   return (
-    <TouchableNativeFeedback
-      useForeground
+    <TouchableList
+      underlayColor="#DDD"
       style={{
         marginVertical: 5,
         width: "100%",
@@ -144,7 +151,7 @@ export const SenderMessage = ({
                 style={{ width: "100%", height: 150 }}
                 source={{
                   resizeMode: "contain",
-                  uri: item.file.file + "?" + new Date().getDate(),
+                  uri: item.file.file,
                   cache: "force-cache"
                 }}
               />
@@ -190,7 +197,7 @@ export const SenderMessage = ({
           </View>
         </View>
       </View>
-    </TouchableNativeFeedback>
+    </TouchableList>
   );
 };
 
@@ -207,8 +214,9 @@ export const SoundMessage = ({
 }) => {
   if (!rule) {
     return (
-      <TouchableNativeFeedback
+      <TouchableList
         key={index}
+        underlayColor="#DDD"
         onLongPress={() => onSelected(item)}
         onPress={() => onClick(item)}
         style={{
@@ -271,13 +279,14 @@ export const SoundMessage = ({
             </View>
           </View>
         </View>
-      </TouchableNativeFeedback>
+      </TouchableList>
     );
   } else {
     if (item.file.file === chats[index].file.file) {
       return (
-        <TouchableNativeFeedback
+        <TouchableList
           key={index}
+          underlayColor="#DDD"
           useForeground
           style={{
             marginVertical: 5,
@@ -304,7 +313,7 @@ export const SoundMessage = ({
               </Text>
             </View>
           </View>
-        </TouchableNativeFeedback>
+        </TouchableList>
       );
     }
   }
@@ -320,7 +329,7 @@ const styles = StyleSheet.create({
     width: "100%",
     flexDirection: "row",
     justifyContent: "flex-end",
-    marginBottom: 10
+    paddingBottom: 10
   },
 
   selected: {

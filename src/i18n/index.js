@@ -1,6 +1,6 @@
 import i18n from "i18next";
 import { reactI18nextModule } from "react-i18next";
-import locale from "react-native-locale-detector";
+// import locale from "react-native-language-detector";
 import { AsyncStorage } from "react-native";
 
 import en from "./en.json";
@@ -14,7 +14,7 @@ const languageDetector = {
   async: true, // flags below detection to be async
   detect: async callback => {
     const savedDataJSON = await AsyncStorage.getItem(STORAGE_KEY);
-    const lng = savedDataJSON ? savedDataJSON : locale;
+    const lng = savedDataJSON ? savedDataJSON : "en";
     callback(lng);
   },
   cacheUserLanguage: () => {}

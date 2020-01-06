@@ -9,7 +9,6 @@ import {
   Platform,
   Text,
   Animated,
-  PanResponder
 } from "react-native";
 import RNFS from "react-native-fs";
 import { FileDirectory } from "../../utils/utils";
@@ -27,6 +26,7 @@ import Draggable from "../../components/Draggable";
  * @description component where is the form to write the message send notes from you and files
  * @extends {Component}
  */
+
 export default class ChatForm extends Component {
   constructor(props) {
     super(props);
@@ -60,7 +60,8 @@ export default class ChatForm extends Component {
         AudioQuality: "Low",
         AudioEncoding: "aac",
         AudioEncodingBitRate: 32000,
-        IncludeBase64: true
+        IncludeBase64: true,
+        OutputFormat: Platform === "android" ? undefined : 'aac_adts',
       });
     } catch (err) {
       console.log("error", err);
@@ -85,7 +86,7 @@ export default class ChatForm extends Component {
           cancelRecoding: false
         });
 
-        const filePath = await AudioRecorder.startRecording();
+        await AudioRecorder.startRecording();
       } catch (error) {
         this.setState({ recording: false });
       }
@@ -107,7 +108,7 @@ export default class ChatForm extends Component {
 
               const id = sha256(
                 `${sha256(user.uid)} + ${toUID}  +  ${
-                  sendObject.msg.text
+                sendObject.msg.text
                 }  + ${new Date().getTime()}`
               );
 
@@ -166,7 +167,7 @@ export default class ChatForm extends Component {
 
     const id = sha256(
       `${user.uid} + ${toUID}  +  ${
-        sendObject.msg.text
+      sendObject.msg.text
       }  + ${new Date().getTime()}`
     );
 
@@ -211,9 +212,7 @@ export default class ChatForm extends Component {
                   });
                 }}
                 placeholder={screenProps.t("Chats:message")}
-                style={{
-                  flex: 1
-                }}
+                style={styles.inputStyle}
               />
             </>
           )}
@@ -321,5 +320,12 @@ const styles = StyleSheet.create({
     fontSize: 40,
     paddingHorizontal: 5,
     paddingBottom: 7
+  },
+  inputStyle: {
+    flex: 1,
+    ...Platform.select({
+      ios: { marginVertical: 15 }
+    })
   }
+
 });

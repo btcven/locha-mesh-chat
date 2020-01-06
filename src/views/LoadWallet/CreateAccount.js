@@ -1,10 +1,10 @@
 import React, { Component } from "react";
 import { Button } from "native-base";
-import { Text, View, TextInput, StyleSheet, Clipboard } from "react-native";
+import { Text, View, TextInput, StyleSheet, Clipboard, Platform } from "react-native";
 import Modal from "react-native-modal";
 import { Formik } from 'formik'
 import PinView from "./PinView";
-import { androidToast } from "../../utils/utils"
+import { toast } from "../../utils/utils"
 import DocumentPicker from 'react-native-document-picker';
 import RestoreFile from './RestoreWithPin'
 import RNFS from "react-native-fs"
@@ -56,7 +56,7 @@ export default class CreateAccount extends Component {
 
       for (let index = 0; index < values.length; index++) {
         if (values[index] === "") {
-          androidToast(this.props.screenProps.t("Initial:error2"))
+          toast(this.props.screenProps.t("Initial:error2"))
           return
         }
       }
@@ -72,7 +72,7 @@ export default class CreateAccount extends Component {
 
     for (let index = 0; index <= values.length; index++) {
       if (values[index] !== this.props.phrases[index]) {
-        androidToast(this.props.screenProps.t("Initial:error3"))
+        toast(this.props.screenProps.t("Initial:error3"))
         return
       }
     }
@@ -111,20 +111,20 @@ export default class CreateAccount extends Component {
 
 
   restoreAccountWithFile = (pin) => {
-   try {
-     RNFS.readFile(this.state.file).then((res) => {
+    try {
+      RNFS.readFile(this.state.file).then((res) => {
         var bytes = CryptoJS.AES.decrypt(res, sha256(pin));
         var decryptedData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
-  
+
         this.setState({ file: null })
         this.props.restoreWithFile(pin, decryptedData)
       }).catch(err => {
-        androidToast(this.props.screenProps.t("Initial:error1"))
+        toast(this.props.screenProps.t("Initial:error1"))
       })
-     
-   } catch (error) {
-     console.log("data",error)
-   } 
+
+    } catch (error) {
+      console.log("data", error)
+    }
   }
 
   restoreAccount = (pin, values) => {
@@ -141,13 +141,13 @@ export default class CreateAccount extends Component {
     this.props.restoreWithPhrase(pin, phrases)
   }
 
-  componentWillUnmount = () =>{
+  componentWillUnmount = () => {
     this.closePin()
     this.props.close()
   }
 
   render() {
-    const { open, close, phrases, stringPhrases, screenProps } = this.props;
+    const { open, close, phrases, screenProps } = this.props;
     const action = this.props.restore ? this.restoreAccount : this.createAccount
     const values = (this.state.step !== 1 && this.state.step !== 4) ? this.state.seed : phrases
     const rule = this.state.step === 1 || this.state.step === 4 ? true : false
@@ -164,6 +164,7 @@ export default class CreateAccount extends Component {
                 isVisible={open}
                 onBackdropPress={() => close("openModalPhoto")}
                 swipeDirection={["up", "left", "right", "down"]}
+                avoidKeyboard={true}
                 style={{
                   margin: 0, justifyContent: "flex-end",
                 }}
@@ -229,11 +230,7 @@ export default class CreateAccount extends Component {
                             onChangeText={(text) => {
                               setFieldValue(`${key}`, text)
                             }}
-                            style={{
-                              borderBottomWidth: 0.5,
-                              minWidth: 60,
-                              textAlign: "center"
-                            }}
+                            style={styles.inputStyles}
                           />
                         </View>
                       );
@@ -330,5 +327,17 @@ const styles = StyleSheet.create({
     marginTop: "5%",
     alignItems: "flex-end",
     justifyContent: "space-between"
+  },
+
+  inputStyles: {
+    borderBottomWidth: 0.5,
+    minWidth: 60,
+    textAlign: "center",
+    ...Platform.select({
+      ios: {
+        marginVertical: 15
+      },
+    }),
   }
+
 });

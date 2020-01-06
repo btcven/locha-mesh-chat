@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { chats } from "../../utils/constans";
-// import {} from 'utils'
+import { notification } from '../../utils/utils'
 import {
   Container,
   Content,
@@ -15,7 +15,7 @@ import {
 } from "native-base";
 import Header from "../../components/Header";
 import { connect } from "react-redux";
-import { Alert, Image, View } from "react-native";
+import { Alert, Image, View, Platform } from "react-native";
 import { selectedChat, deleteChat } from "../../store/chats";
 import {
   getSelectedColor,
@@ -25,7 +25,7 @@ import {
 } from "../../utils/utils";
 import Moment from "moment";
 import FloatButton from "../../components/FloatButton";
-import {database} from '../../../App'
+import { database } from '../../../App'
 
 
 /**
@@ -72,7 +72,7 @@ class index extends Component {
     }
   };
 
-  deleteChat = () => {
+  deleteChat = async () => {
     const { screenProps } = this.props;
     Alert.alert(
       `${screenProps.t("Chats:titleDelete")}`,

@@ -66,14 +66,19 @@ export default class Socket {
    */
 
   getUserObject = callback => {
-    this.database.getUserData().then(res => {
-      const object = {
-        hashUID: sha256(res[0].uid),
-        timestamp: new Date().getTime(),
-        type: "handshake"
-      };
-      callback(object);
-    });
+    try {
+      this.database.getUserData().then(res => {
+        const object = {
+          hashUID: sha256(res[0].uid),
+          timestamp: new Date().getTime(),
+          type: "handshake"
+        };
+        callback(object);
+      });
+
+    } catch (error) {
+      console.log(error)
+    }
   };
 
   /**
@@ -89,7 +94,7 @@ export default class Socket {
         console.log("conecto");
         this.socket.send(JSON.stringify(res));
       };
-    });
+    })
   };
 
   /**

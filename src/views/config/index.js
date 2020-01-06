@@ -1,24 +1,21 @@
 import React, { Component } from "react";
-import { Container, Icon, Left, Right, Button } from "native-base";
+import { Container, Icon, Left, Right, Button, Thumbnail } from "native-base";
 import { images } from "../../utils/constans";
 import Header from "../../components/Header";
-import { Text, View, Image, StyleSheet, TouchableHighlight, TouchableOpacity, Clipboard } from "react-native";
+import { Text, View, StyleSheet, TouchableHighlight, TouchableOpacity, Clipboard, } from "react-native";
 import { getPhotosFromUser, openCamera, editName, } from "../../store/configuration/congurationAction";
 import { connect } from "react-redux";
 import EditName from "./EditName";
 import EditPhoto from "./EditPhoto";
 import ViewQR from "./ViewQR";
 import Languajes from "./Language";
-import { androidToast, FileDirectory } from "../../utils/utils";
+import { toast } from "../../utils/utils";
 import i18n from "../../i18n";
 import CryptoJS from "crypto-js"
 import { database } from '../../../App'
 import AddPin from "../LoadWallet/RestoreWithPin"
 import { sha256 } from "js-sha256";
-import RNFS from "react-native-fs"
-import moment from "moment"
 import Share from 'react-native-share';
-
 
 /**
  * @class Config
@@ -35,7 +32,8 @@ class Config extends Component {
       openModalName: false,
       viewQR: false,
       language: false,
-      pin: false
+      pin: false,
+      forceDialog: false
     };
   }
 
@@ -51,12 +49,11 @@ class Config extends Component {
 
   _setContent = async data => {
     Clipboard.setString(data);
-    androidToast(this.props.screenProps.t("Settings:uidCody"));
+    toast(this.props.screenProps.t("Settings:uidCody"));
   };
 
 
   createBackupFile = async (pin) => {
-    this.close("pin")
     database.verifyPin(pin).then(async () => {
       const data = await database.getAllData()
       const ciphertext = CryptoJS.AES.encrypt(JSON.stringify(data), sha256(pin)).toString()
@@ -66,9 +63,15 @@ class Config extends Component {
       await Share.open({
         url: base64,
         filename: "Backup"
+      }).then(() => {
+        this.close("pin")
+      }).catch(shareError => {
+        if (shareError.toString() === "Error: User did not share") {
+          this.close("pin")
+        }
       })
     }).catch(err => {
-      androidToast("Pin inconrrecto")
+      // const error = JSON.parse()
     })
   }
 
@@ -99,13 +102,13 @@ class Config extends Component {
 
         <ViewQR {...this.props} open={this.state.viewQR} close={this.close} />
 
-        <AddPin
+        {!this.state.forceDialog && <AddPin
           {...this.props}
           open={this.state.pin}
           text={screenProps.t("Settings:textBackup")}
           action={this.createBackupFile}
           close={this.close}
-          config={true} />
+          config={true} />}
 
         <View style={styles.sectionContainer}>
           <View style={styles.imageContainer}>
@@ -114,9 +117,9 @@ class Config extends Component {
                 style={styles.touchable}
                 underlayColor="#eeeeee"
               >
-                <Image
+                <Thumbnail
                   source={{
-                    uri: this.props.config.image + "?" + new Date().getDate(),
+                    uri: this.props.config.image,
                     cache: "force-cache"
                   }}
                   style={styles.imageStyle}
@@ -132,7 +135,7 @@ class Config extends Component {
                   this.setState({ openModalPhoto: true });
                 }}
               >
-                <Image source={images.noPhoto.url} style={styles.imageStyle} />
+                <Thumbnail source={images.noPhoto.url} style={styles.imageStyle} />
               </TouchableHighlight>
             )}
             <View style={styles.actionButtonContainer}>
@@ -388,7 +391,7 @@ const styles = StyleSheet.create({
   imageStyle: {
     height: 130,
     width: 130,
-    borderRadius: 100
+
   },
   sectionContainer: {
     width: "100%",

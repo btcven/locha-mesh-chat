@@ -24,6 +24,7 @@ const options =
 }
 
 const optionsDatabase = {
+    path: 'default.realm',
     schema: [
         userSchema,
         contactSchema,
@@ -32,7 +33,7 @@ const optionsDatabase = {
         BroadCasContacts,
         fileSchema
     ],
-    schemaVersion: 16
+    schemaVersion: 18
 }
 
 
@@ -54,6 +55,7 @@ export default class Database extends CoreDatabase {
     getRealm = (key, key2) => new Promise((resolve, reject) => {
         options.encryptionKey = this.toByteArray(key)
         optionsDatabase.encryptionKey = this.toByteArray(key2)
+    
         try {
             this.seed = new Realm(options)
             this.db = new Realm(optionsDatabase)

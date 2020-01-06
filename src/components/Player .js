@@ -5,6 +5,7 @@ import Slider from "@react-native-community/slider";
 import Sound from "react-native-sound";
 import moment from "moment";
 import { connect } from "react-redux";
+import RNFS from 'react-native-fs'
 
 class Player extends Component {
   constructor(props) {
@@ -18,15 +19,17 @@ class Player extends Component {
   }
 
   componentDidMount = () => {
-    this.sound = new Sound(this.props.path, "", error => {
-      if (error) {
+    RNFS.exists(this.props.path).then(res => {
+      this.sound = new Sound(this.props.path, "", error => {
+        if (error) {
 
-      } else {
-        this.setState({
-          duration: this.sound.getDuration()
-        });
-      }
-    });
+        } else {
+          this.setState({
+            duration: this.sound.getDuration()
+          });
+        }
+      });
+    })
   };
 
   componentWillReceiveProps = props => {

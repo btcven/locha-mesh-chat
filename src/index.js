@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { route } from "./store/aplication/aplicationAction";
-import { StyleSheet, View, Alert, Text, AppState, Share } from "react-native";
+import { StyleSheet, View, Alert, Text, AppState, Share, NativeModules } from "react-native";
 import Home from "./views/home";
 import LoadWallet from "./views/LoadWallet";
 import RestoreWithPing from './views/LoadWallet/RestoreWithPin'
@@ -11,7 +11,7 @@ import { selectedChat } from "./store/chats";
 import { AsyncStorage } from "react-native";
 import i18n from "./i18n/index";
 import moment from 'moment'
-import locale from "react-native-locale-detector";
+// import locale from "react-native-locale-detector";
 
 /**
  *
@@ -61,10 +61,10 @@ class DualComponent extends Component {
   };
 
   componentDidMount = async () => {
-    const lng = await this.getDefaultLanguage()
-    if (lng) {
-      i18n.changeLanguage(lng.substr(0, 2));
-    }
+    // const lng = await this.getDefaultLanguage()
+    // if (lng) {
+    //   i18n.changeLanguage(lng.substr(0, 2));
+    // }
   };
 
   render() {
