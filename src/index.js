@@ -11,7 +11,7 @@ import { selectedChat } from "./store/chats";
 import { AsyncStorage } from "react-native";
 import i18n from "./i18n/index";
 import moment from 'moment'
-import locale from "react-native-locale-detector";
+// import locale from "react-native-locale-detector";
 
 /**
  *
