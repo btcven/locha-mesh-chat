@@ -1,8 +1,33 @@
-<img src="documents/configuration/files/logo.png" width="20%">
+<p align="center">
+  <a href="https://locha.io/">
+    <img src="documents/configuration/files/logo.png" width="20%">
+  </a>
+  <br>
+</p>
 
-# Locha Mesh Chat
+<h1 align="center">Locha Mesh Chat</h1>
+ 
 
 The first mobile application for the Locha Mesh. The aim is to build an app for communication using text messages, images, documents or voice notes, and also for broadcasting offline signed Bitcoin transactions.
+
+
+## What's Locha Mesh
+
+The Locha Mesh network is a secure radio network for text messaging and bitcoin
+transactions. The main objetive is a long range network for everyone and
+everywhere, for this reason, we are working not only in a protocol, also the
+firmware for affordable devices like our "Turpial".
+
+If you want to learn more about Locha Mesh feel free to read
+[this repository](https://github.com/btcven/locha) or take a look at our website
+[locha.io](https://www.locha.io).
+
+## Development workflow
+
+The development code is located on the `dev` branch, all the development
+happens there and all of the Pull-Request should be pointed to that branch.
+Make sure your Pull-Request follows the CONTRIBUITING.md guidelines.
+
 
 ## Requirements
 Before you start, make sure you have the following requirements
