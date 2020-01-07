@@ -52,11 +52,11 @@ For each Pull Request you are going to do you have to do the following.
 ### Start a new change
 Before you start making modifications, run these commands to create a new branch that is synchronized with dev:
 
-     git fetch --all # download the branches in the repository.
-     git checkout dev # changes you to the dev branch if you are not in it.
-     git pull origin dev # to synchronize the dev branch locally.
-     git checkout -b featureNameYouWantToDo # creates a new branch synchronized with dev.
-     git push pr featureNameYouWantToDo # fan your change to GitHub
+    git fetch --all # Download the branches in the repository.
+    git checkout dev # it changes you to the dev branch in case you are not in it
+    git pull origin dev # to synchronize the dev branch locally.
+    git checkout -b featureNameYouWantToDo # create a new branch synchronized with dev.
+    git push pr featureNameYouWantToDo # upload your change to github
 
 make some changes
 
