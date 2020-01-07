@@ -26,7 +26,8 @@ If you want to learn more about Locha Mesh feel free to read
 
 The development code is located on the `dev` branch, all the development
 happens there and all of the Pull-Request should be pointed to that branch.
-Make sure your Pull-Request follows the CONTRIBUITING.md guidelines.
+Make sure your Pull-Request follows the [CONTRIBUTING.md](CONTRIBUTING.md)
+ guidelines.
 
 
 ## Requirements
