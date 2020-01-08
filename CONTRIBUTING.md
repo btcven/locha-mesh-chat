@@ -25,7 +25,7 @@ We would love to accept your patches and contributions to this project. There ar
 
 ### I have a question
 For any question or doubt you can write to us via Twitter @Locha_io
-through the form you will find on our website ** locha.io **
+through the form you will find on our website **locha.io**
 
 ### Suggestions for improvements
 ToDo
@@ -79,11 +79,11 @@ Push your commit to your repository fork:
 Go to the GitHub page, if you go to your repository fork, click on the Branch button and select the branch in which you made the name changes of the nature you want to do. Then press the Pull request button.
 
 
-# Guia de estilos para el codigo fuente
+# Style guide for the source code
 
 This project currently uses the eslint style guide for ECMAScript 6
 
-## Objetivos de la guia de estilos
+## Objectives of the style guide
 
 The objectives of the style guide as we see them today are based on optimizing for the reader and not for the writer; Our code base (and most of the individual components) is expected to continue for quite some time
 
@@ -98,7 +98,7 @@ A message of commitment should be short, clear and with a description of the pro
 
 If the commitment includes changes in several files or sections, we must include an extended message with a description of the proposed changes one by one.
 
-## declaration of variables
+## Declaration of variables
 
 do not use the prefix `var` to declare variables always use `const` or `let`
 
@@ -111,10 +111,10 @@ do not use the prefix `var` to declare variables always use `const` or `let`
      var x = "y";
      var CONFIG = {};
   ```
-## Reglas de nomenclatura
+## Nomenclature Rules
 
 - Use a descriptive name that is consistent with the style when writing code.
-- All names must be written in ** English **.
+- All names must be written in **English**.
 - use **lowerCamelCase** for variable names
 
 ```js
@@ -124,7 +124,7 @@ do not use the prefix `var` to declare variables always use `const` or `let`
   // Instead of:
     let VariableName = "y"    
  ```
-## functions or methods
+## Functions or methods
 
 - Use descriptive verbs and their names starting with lowercase letters, if the name is composed, continue with capital letters.
 - Arrow Function since they allow us to write a shorter function syntax
@@ -233,7 +233,7 @@ const car = new Car()
 
 ```
 
-## callbacks 
+## Callbacks 
 A callback function is a function that is passed to another function as an argument, which is then invoked within the external function to complete some type of routine or action, note that callbacks are often used to continue code execution after a synchronous operation has been completed.
 
 - Use ES6 callbacks as they are much easier to understand.
@@ -279,3 +279,36 @@ A callback function is a function that is passed to another function as an argum
   value != undefined
 
 ```
+
+
+## Imports 
+- no duplicate imporst 
+```js
+ // Use this:
+   import { merge, find } from 'module';
+   import something from 'another-module';
+
+  
+ // Instead of:
+   import { merge } from 'module';
+   import something from 'another-module';
+   import { find } from 'module';
+
+
+```
+
+## Indentation
+
+- Use 2 spaces as default identation
+
+```js
+// Use this:
+  const hello = ( name ) => {
+    console.log('hi', name)
+  }
+
+```
+
+
+
+
