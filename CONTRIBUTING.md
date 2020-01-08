@@ -79,6 +79,203 @@ Push your commit to your repository fork:
 Go to the GitHub page, if you go to your repository fork, click on the Branch button and select the branch in which you made the name changes of the nature you want to do. Then press the Pull request button.
 
 
+# Guia de estilos para el codigo fuente
+
+This project currently uses the eslint style guide for ECMAScript 6
+
+## Objetivos de la guia de estilos
+
+The objectives of the style guide as we see them today are based on optimizing for the reader and not for the writer; Our code base (and most of the individual components) is expected to continue for quite some time
+
+- Optimize for the reader, not for the writer
+Our code base (and most of the individual components sent to it) is expected to continue for quite some time. As a result, more time will be spent reading most of our code than writing it. We explicitly choose to optimize the experience of our average software engineer by reading, maintaining and debugging code in our code base instead of facilitating the writing of that code. "Leaving a trail for the reader" is a particularly common subpoint of this principle: when something surprising or unusual is happening in a code snippet (for example, transfer of ownership of the pointer), leaving textual clues for the reader at the point of Use is valuable (std :: unique_ptr demonstrates the transfer of ownership unambiguously at the site of the call).
+
+- Be consistent with existing code
+Using a style consistently through our code base allows us to focus on other (more important) problems. Consistency also allows automation: the tools that format your code or adjust your #include only work correctly when your code is consistent with the expectations of the tools. In many cases, the rules attributed to "Be consistent" are reduced to "Simply choose one and stop worrying about it"; The potential value of allowing flexibility at these points is offset by the cost of having people discuss them.
+
+## Commit messages
+A message of commitment should be short, clear and with a description of the proposed changes or improvements.
+
+If the commitment includes changes in several files or sections, we must include an extended message with a description of the proposed changes one by one.
+
+## declaration of variables
+
+do not use the prefix `var` to declare variables always use `const` or `let`
+
+```js
+  // Use this:
+    let x = "y";
+    const CONFIG = {};
+
+  // Instead of:
+     var x = "y";
+     var CONFIG = {};
+  ```
+## Reglas de nomenclatura
+
+- Use a descriptive name that is consistent with the style when writing code.
+- All names must be written in ** English **.
+- use **lowerCamelCase** for variable names
+
+```js
+  // Use this:
+    let variableName = "y";
+    
+  // Instead of:
+    let VariableName = "y"    
+ ```
+## functions or methods
+
+- Use descriptive verbs and their names starting with lowercase letters, if the name is composed, continue with capital letters.
+- Arrow Function since they allow us to write a shorter function syntax
+
+```js
+  // Use this:
+  const  hello = () => {
+     return "Hello World!";
+   }
+   
+  // or
+  const hello = () => "Hello World!";
+ 
+  // Instead of:
+  const hello = function() {
+    return "Hello World!";
+  }
+ ```
+ 
+- Try to limit the number of parameters in the functions whenever possible, one or two would be ideal. 
+
+```js
+  // Use this:
+    const crearMenu = ({ title, contex, textButton, cancel }) => {
+      // ...
+    }
+    
+  // Instead of:
+    const crearMenu = ( title, contex, textButton, cancel ) {
+      // ...
+    }
+    
+ ```
+ ## Class 
+ 
+The javascript classes, introduced in ECMAScript2015(ES6) provide a much clearer and simpler syntax for creating objects and dealing with inheritance.
 
 
+```js
+  // Use this:
+    class Car {
+  constructor() {
+    this.make = 'Honda';
+    this.model = 'Accord';
+    this.color = 'white';
+  }
 
+  setMake(make) {
+    this.make = make;
+    // NOTE: Returning this for chaining
+    return this;
+  }
+
+  setModel(model) {
+    this.model = model;
+    // NOTE: Returning this for chaining
+    return this;
+  }
+
+  setColor(color) {
+    this.color = color;
+    // NOTE: Returning this for chaining
+    return this;
+  }
+
+  save() {
+    console.log(this.make, this.model, this.color);
+    // NOTE: Returning this for chaining
+    return this;
+  }
+}
+
+const car = new Car()
+  .setColor('pink')
+  .setMake('Ford')
+  .setModel('F-150')
+  .save();
+    
+    
+ ```
+## if / if-else
+- avoid using if / else if you are going to return something
+
+```js
+
+// Use this:
+ if (a > b) {  
+  return a
+ }
+ return b
+
+// Instead of:
+ if (a > b) {  
+  return a
+ } else{
+  return b
+ }
+
+```
+
+- You can also use the ternary conditional operator included in ECMAScript2015(ES6)
+
+```js
+// Use this:
+ const result  = age > 18 ? true : false 
+
+```
+
+## callbacks 
+A callback function is a function that is passed to another function as an argument, which is then invoked within the external function to complete some type of routine or action, note that callbacks are often used to continue code execution after a synchronous operation has been completed.
+
+- Use ES6 callbacks as they are much easier to understand.
+ 
+```js 
+
+// Use this:
+   const  doHomework = (subject, callback) => {
+      alert(`Starting my ${subject} homework.`);
+      callback();
+    }
+
+    doHomework('math', ()=> {
+      alert('Finished my homework');
+    });
+  
+// Instead of:
+   const doHomework = (subject, callback) => {
+    alert(`Starting my ${subject} homework.`);
+    callback();
+  }
+  
+  doHomework('math', function alertFinished(){
+    alert('Finished my homework');
+  });
+
+```
+- avoid using multiple callback (hell callback) if you need to execute multiple functions asynchronously we recommend using **promises**
+
+
+## Comparison Operators
+- It is required to use comparison operators such as *===* and *!==* This rule is aimed at eliminating insecure type equality operators.
+
+
+```js
+
+// Use this:
+  value === undefined
+  value !== undefined
+  
+// Instead of:
+  value == undefined
+  value != undefined
+
+```
