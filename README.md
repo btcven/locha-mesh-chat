@@ -6,7 +6,6 @@
 </p>
 <p align="center">
   <a href="https://locha.io/">Project Website</a> |
-  <a href="https://btcven.github.io/turpial-firmware/">Code Documentation</a> |
   <a href="https://locha.io/donate">Donate</a> |
   <a href="https://github.com/sponsors/rdymac">Sponsor</a> |
   <a href="https://locha.io/buy">Buy</a>
