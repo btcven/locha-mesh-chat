@@ -1,10 +1,16 @@
 <p align="center">
   <a href="https://locha.io/">
-    <img src="documents/configuration/files/logo.png" width="20%">
+    <img height="200px" src="documents/configuration/files/logo.png">
   </a>
   <br>
 </p>
-
+<p align="center">
+  <a href="https://locha.io/">Project Website</a> |
+  <a href="https://btcven.github.io/turpial-firmware/">Code Documentation</a> |
+  <a href="https://locha.io/donate">Donate</a> |
+  <a href="https://github.com/sponsors/rdymac">Sponsor</a> |
+  <a href="https://locha.io/buy">Buy</a>
+</p>
 <h1 align="center">Locha Mesh Chat</h1>
  
 
@@ -21,6 +27,17 @@ firmware for affordable devices like our "Turpial".
 If you want to learn more about Locha Mesh feel free to read
 [this repository](https://github.com/btcven/locha) or take a look at our website
 [locha.io](https://www.locha.io).
+
+## Sponsor.
+
+If you want to support this project you can make a donation to the Locha Mesh
+effort to build a private censorship-resistant mesh network devices for Bitcoin and Lightning Network payments without Internet.
+
+Here are some places if you want to support us:
+
+- Donate: https://locha.io/donate
+- Buy Turpial devices: https://locha.io/buy
+
 
 ## Development workflow
 
