@@ -6,16 +6,27 @@ The following is a set of guidelines to contribute to [Locha Mesh Chat]()
 
 #### Table of Contents
 
-- [Contributing to Locha Mesh Chat](#contributing-to-turpial-firmware)
- - [Table of Contents](#table-of-Contents)
+- [Contributing to Locha Mesh Chat](#contributing-to-locha-mesh-chat)
+      - [Table of Contents](#table-of-contents)
   - [Before starting](#before-starting)
   - [How can I contribute?](#how-can-i-contribute)
-    - [I have a question](#i-have-a-question)
-    - [Suggestions for improvements](#suggestions-for-improvements)
+    - [I have a question.](#i-have-a-question)
     - [Reporting a bug](#reporting-a-bug)
-  - [How to make a Pull Request](#how-to-make-a-Pull-Request)
+    - [How to make a Pull Request](#how-to-make-a-pull-request)
     - [Start a new change](#start-a-new-change)
     - [Upload your changes and make Pull Request](#upload-your-changes-and-make-pull-request)
+  - [Style guide for the source code](#style-guide-for-the-source-code)
+    - [Objectives of the style guide](#objectives-of-the-style-guide)
+    - [Commit messages](#commit-messages)
+    - [Declaration of variables](#declaration-of-variables)
+    - [Nomenclature Rules](#nomenclature-rules)
+    - [Functions or methods](#functions-or-methods)
+    - [Class](#class)
+    - [if / if-else](#if--if-else)
+    - [Callbacks](#callbacks)
+    - [Comparison Operators](#comparison-operators)
+    - [Imports](#imports)
+    - [Indentation](#indentation)
 
 ## Before starting 
 Please read our [code of conduct](CODE_OF_CONDUCT.md)
@@ -23,14 +34,17 @@ Please read our [code of conduct](CODE_OF_CONDUCT.md)
 ## How can I contribute?
 We would love to accept your patches and contributions to this project. There are only a few small guidelines that you should follow.
 
-### I have a question
-For any question or doubt you can write to us via Twitter @Locha_io
-through the form you will find on our website **locha.io**
+### I have a question.
 
-### Suggestions for improvements
-ToDo
+If you have a question you can write to use using Twitter at
+[@Locha_io](https://twitter.com/Locha_io), or through our website
+[locha.io](https://locha.io).
+
 
 ### Reporting a bug
+You can use our issue tracker to share your idea, it will be discussed by the
+Locha Mesh team members. If we all agree and makes sense to implement this
+feature, it will be kept opened.
 
 You can open a new issue or bug from a specific line or lines of code in a file or pull request.
 
@@ -44,8 +58,10 @@ To do this you just have to follow these steps:
 4. When you finish selecting the code you want to reference, click on any line number, which will make a three-point menu visible, then we select to reference in a new issue
 5. We assign a title to the issue and submit the issue.
 
+please provide detailed information about the issues you're expecting.
 
-## How to make a Pull Request
+
+### How to make a Pull Request
 
 For each Pull Request you are going to do you have to do the following.
 
@@ -79,11 +95,11 @@ Push your commit to your repository fork:
 Go to the GitHub page, if you go to your repository fork, click on the Branch button and select the branch in which you made the name changes of the nature you want to do. Then press the Pull request button.
 
 
-# Style guide for the source code
+## Style guide for the source code
 
 This project currently uses the eslint style guide for ECMAScript 6
 
-## Objectives of the style guide
+### Objectives of the style guide
 
 The objectives of the style guide as we see them today are based on optimizing for the reader and not for the writer; Our code base (and most of the individual components) is expected to continue for quite some time
 
@@ -93,12 +109,12 @@ Our code base (and most of the individual components sent to it) is expected to 
 - Be consistent with existing code
 Using a style consistently through our code base allows us to focus on other (more important) problems. Consistency also allows automation: the tools that format your code or adjust your #include only work correctly when your code is consistent with the expectations of the tools. In many cases, the rules attributed to "Be consistent" are reduced to "Simply choose one and stop worrying about it"; The potential value of allowing flexibility at these points is offset by the cost of having people discuss them.
 
-## Commit messages
+### Commit messages
 A message of commitment should be short, clear and with a description of the proposed changes or improvements.
 
 If the commitment includes changes in several files or sections, we must include an extended message with a description of the proposed changes one by one.
 
-## Declaration of variables
+### Declaration of variables
 
 do not use the prefix `var` to declare variables always use `const` or `let`
 
@@ -111,7 +127,7 @@ do not use the prefix `var` to declare variables always use `const` or `let`
      var x = "y";
      var CONFIG = {};
   ```
-## Nomenclature Rules
+### Nomenclature Rules
 
 - Use a descriptive name that is consistent with the style when writing code.
 - All names must be written in **English**.
@@ -124,7 +140,7 @@ do not use the prefix `var` to declare variables always use `const` or `let`
   // Instead of:
     let VariableName = "y"    
  ```
-## Functions or methods
+### Functions or methods
 
 - Use descriptive verbs and their names starting with lowercase letters, if the name is composed, continue with capital letters.
 - Arrow Function since they allow us to write a shorter function syntax
@@ -158,7 +174,7 @@ do not use the prefix `var` to declare variables always use `const` or `let`
     }
     
  ```
- ## Class 
+ ### Class 
  
 The javascript classes, introduced in ECMAScript2015(ES6) provide a much clearer and simpler syntax for creating objects and dealing with inheritance.
 
@@ -205,7 +221,7 @@ const car = new Car()
     
     
  ```
-## if / if-else
+### if / if-else
 - avoid using if / else if you are going to return something
 
 ```js
@@ -233,7 +249,7 @@ const car = new Car()
 
 ```
 
-## Callbacks 
+### Callbacks 
 A callback function is a function that is passed to another function as an argument, which is then invoked within the external function to complete some type of routine or action, note that callbacks are often used to continue code execution after a synchronous operation has been completed.
 
 - Use ES6 callbacks as they are much easier to understand.
@@ -264,7 +280,7 @@ A callback function is a function that is passed to another function as an argum
 - avoid using multiple callback (hell callback) if you need to execute multiple functions asynchronously we recommend using **promises**
 
 
-## Comparison Operators
+### Comparison Operators
 - It is required to use comparison operators such as *===* and *!==* This rule is aimed at eliminating insecure type equality operators.
 
 
@@ -281,7 +297,7 @@ A callback function is a function that is passed to another function as an argum
 ```
 
 
-## Imports 
+### Imports 
 - no duplicate imporst 
 ```js
  // Use this:
@@ -297,7 +313,7 @@ A callback function is a function that is passed to another function as an argum
 
 ```
 
-## Indentation
+### Indentation
 
 - Use 2 spaces as default identation
 
