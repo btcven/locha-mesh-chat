@@ -44,9 +44,7 @@ Here are some places if you want to support us:
 The development code is located on the `dev` branch, all the development
 happens there and all of the Pull-Request should be pointed to that branch.
 Make sure your Pull-Request follows the [CONTRIBUTING.md](CONTRIBUTING.md)
- guidelines.
-
-Screenshot_20200110_135149_com.lochameshchat.jpg
+guidelines.
 
 
 ## Screens
@@ -54,12 +52,12 @@ Screenshot_20200110_135149_com.lochameshchat.jpg
 <div align="center">
 
  <img height="400px" width="24%" src="documents/configuration/files/Screenshot_20200110_140312_com.lochameshchat.jpg">
+ <img height="400Ppx" width="24%" src="documents/configuration/files/Screenshot_20200109_173508_com.lochameshchat.jpg">
  <img height="400Ppx" width="24%" src="documents/configuration/files/Screenshot_20200110_140007_com.lochameshchat.jpg">
  <img height="400Ppx" width="24%" src="documents/configuration/files/Screenshot_20200109_173557_com.lochameshchat.jpg">
- <img height="400Ppx" width="24%" src="documents/configuration/files/Screenshot_20200110_135127_com.lochameshchat.jpg">
+ 
 </div >
 
-</br>
 <div align="center">
 
  <img height="400px" width="24%" src="documents/configuration/files/Screenshot_20200109_173543_com.lochameshchat.jpg">
@@ -76,7 +74,6 @@ Screenshot_20200110_135149_com.lochameshchat.jpg
  <img height="400Ppx" width="24%" src="documents/configuration/files/Screenshot_20200110_140347_com.lochameshchat.jpg">
  <img height="400Ppx" width="24%" src="documents/configuration/files/Screenshot_20200110_135047_com.lochameshchat.jpg">
 </div >
-
  
 
 ## Technologies
