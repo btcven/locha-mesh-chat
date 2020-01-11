@@ -13,28 +13,20 @@
 <h1 align="center">Locha Mesh Chat</h1>
  
 
-The first mobile application for the Locha Mesh. The aim is to build an app for communication using text messages, images, documents or voice notes, and also for broadcasting offline signed Bitcoin transactions.
+The first mobile application for the Locha Mesh. The aim is to build an app for communication using text messages, images, documents or voice notes, and also for broadcasting offline signed cryptocurrency transactions.
 
 
-## What's Locha Mesh
+## About Locha Mesh
 
-The Locha Mesh network is a secure radio network for text messaging and bitcoin
-transactions. The main objetive is a long range network for everyone and
-everywhere, for this reason, we are working not only in a protocol, also the
-firmware for affordable devices like our "Turpial".
+The Locha Mesh is a radio network for off-grid messaging and cryptocurrency transactions without access to the internet. The main objective is a long range network for everyone, everywhere. For this reason we are working not only in a protocol, but also the firmware for affordable devices like the Turpial, Harpia, or their DIY equivalents. We adhere to open source ethos at every step and aim to make this tool as decentralized as possible so users can transmit with freedom.
 
-If you want to learn more about Locha Mesh feel free to read
-[this repository](https://github.com/btcven/locha) or take a look at our website
-[locha.io](https://www.locha.io).
+If you want to learn more about Locha Mesh feel free to read the Locha Mesh main repository or take a look at our website locha.io.
 
 
-## short summary
-
-
-## Sponsor.
+## Sponsor
 
 If you want to support this project you can make a donation to the Locha Mesh
-effort to build a private censorship-resistant mesh network devices for Bitcoin and Lightning Network payments without Internet.
+effort to build private censorship-resistant mesh network devices for cryptocurrency payments without Internet.
 
 Here are some places if you want to support us:
 
@@ -42,12 +34,11 @@ Here are some places if you want to support us:
 - Buy Turpial devices: https://locha.io/buy
 
 
-## Development workflow
+## Development Workflow
 
-The development code is located on the `dev` branch, all the development
-happens there and all of the Pull-Request should be pointed to that branch.
-Make sure your Pull-Request follows the [CONTRIBUTING.md](CONTRIBUTING.md)
- guidelines.
+The development code is located on the `dev` branch. All the development
+happens there and all Pull-Requests should be pointed to that branch.
+Make sure your Pull-Request follows the [CONTRIBUTING.md](CONTRIBUTING.md) guidelines.
 
 
 
@@ -57,9 +48,7 @@ Make sure your Pull-Request follows the [CONTRIBUTING.md](CONTRIBUTING.md)
 ### [React-Native](https://facebook.github.io/react-native/)
 *React Native enables you to build world-class application experiences on native platforms using a consistent developer experience based on JavaScript and React.*
 
-What more can I say?  It's a fantastic leap forward in providing the ability to write native applications with Javascript that target both iOS and Android.
-
-This application provides one code base that works on both platforms.  It demonstrates Form interactions,  Navigation, and use of many other components.
+It's a fantastic leap forward in providing the ability to write native applications with Javascript that target both iOS and Android. This application provides one code base that works on both platforms.  It demonstrates Form interactions,  Navigation, and use of many other components.
 
 ### [Redux](http://redux.js.org/)
 *Redux is a predictable state container for JavaScript apps. It helps you write applications that behave consistently, run in different environments (client, server, and native), and are easy to test.*
@@ -74,10 +63,8 @@ Realm Database is an alternative to SQLite and Core Data. Thanks to its zero-cop
 ### [Native Base](http://nativebase.io/)
 NativeBase is a sleek, ingenious and dynamic front-end framework created by passionate React Loving team at Geekyants to build cross platform Android & iOS mobile apps using ready to use generic components of React Native.
 
-
 ### [React Navigation](reactnavigation.org)
 React Navigation is born from the React Native community's need for an extensible yet easy-to-use navigation solution written entirely in JavaScript (so you can read and understand all of the source), on top of powerful native primitives.
-
 
 ## Requirements
 Before you start, make sure you have the following requirements
@@ -89,18 +76,18 @@ Before you start, make sure you have the following requirements
     
 Check to have a dependency manager installed like [**npm**](https://) _(bundled with node)_ or [**yarn**](https://github.com/yarnpkg/yarn) _(recommended)_
 
-## short Summary
+## Short Summary
 
-1. The application runs on **both iOS and Android** with a **single code** base
-1. A user can  **Create* or **restore** account, modify their profile, add contacts and use chat with public channels and added contacts 
-1. The user can send text, audio and images in the chat
-1. Random names on public channels
-1. Supports multiple languages using I18n
-1. **All state changes*** are actions to the Redux store.
-1. **Every action** performed by the UI interfaces with the **Redux actions** and subsequently to the Redux Store.  This **reduces the complexity** of the JSX Components.
+- The application runs on **both iOS and Android** with a **single code** base
+- A user can  **Create* or **restore** account, modify their profile, add contacts and use chat with public channels and added contacts 
+- The user can send text, audio and images in the chat
+- Random names on public channels
+- Supports multiple languages using I18n
+- **All state changes*** are actions to the Redux store.
+- **Every action** performed by the UI interfaces with the **Redux actions** and subsequently to the Redux Store.  This **reduces the complexity** of the JSX Components.
 
 
-## 2. Clone and Install
+## Clone and Install
 
 ### Clone this repository 
 ```bash
@@ -141,7 +128,7 @@ In this link are the steps to follow the official [Documentation](https://facebo
 
 ```
 
-#### 2. Open RNS in your iOS simulator
+#### Open RNS in your iOS simulator
 
 Run this command to start the development server and to start your app on iOS simulator:
 
@@ -155,7 +142,7 @@ Or, if you prefer Android:
 ```
  react-native run-android
 ```
-for android verify that you have a device or emulator connected
+For android verify that you have a device or emulator connected.
 
 ## License
 
