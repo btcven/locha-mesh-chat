@@ -20,7 +20,7 @@ The first mobile application for the Locha Mesh. The aim is to build an app for 
 
 The Locha Mesh is a radio network for off-grid messaging and cryptocurrency transactions without access to the internet. The main objective is a long range network for everyone, everywhere. For this reason we are working not only in a protocol, but also the firmware for affordable devices like the Turpial, Harpia, or their DIY equivalents. We adhere to open source ethos at every step and aim to make this tool as decentralized as possible so users can transmit with freedom.
 
-If you want to learn more about Locha Mesh feel free to read the Locha Mesh main repository or take a look at our website locha.io.
+If you want to learn more about Locha Mesh feel free to read the Locha Mesh [main repository](https://github.com/btcven/locha) or take a look at our website [locha.io](https://locha.io).
 
 
 ## Sponsor
