@@ -12,10 +12,10 @@ export let sendSocket = undefined;
  */
 
 export default class Socket {
-  constructor(store, database) {
-    this.socket = new WebSocket("wss://lochat.coinlab.info");
+  constructor(store, database, url) {
+    this.url = url ? url : "wss://lochat.coinlab.info"
+    this.socket = new WebSocket(this.url);
     this.database = database
-    //this.socket = new WebSocket("wss://192.168.1.1");
     this.openSocketConnection();
     this.onMenssage();
     this.store = store;

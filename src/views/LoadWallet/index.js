@@ -2,9 +2,6 @@ import React, { Component } from "react";
 import {
   View,
   StyleSheet,
-  TouchableOpacity,
-  AsyncStorage,
-  Image
 } from "react-native";
 import { Button, Text, Thumbnail } from "native-base";
 import { setInitialUser, createNewAccount, restoreWithPhrase, restoreWithFile } from "../../store/aplication/aplicationAction";
@@ -134,7 +131,7 @@ class InitialStep extends Component {
   }
 }
 
-export default connect(null, { setInitialUser, createNewAccount, restoreWithPhrase, restoreWithFile })(InitialStep);
+export default connect(null, { setInitialUser, createNewAccount, restoreWithPhrase, restoreWithFile  })(InitialStep);
 
 const styles = StyleSheet.create({
   container: {

@@ -7,7 +7,8 @@ const AplicationState = {
   tab: 1,
   menu: false,
   view: undefined,
-  appStatus: undefined
+  appStatus: undefined,
+  wsUrl: undefined
 };
 
 export const AplicationReducer = (state = AplicationState, action) => {
@@ -49,6 +50,10 @@ export const AplicationReducer = (state = AplicationState, action) => {
 
     case ActionTypes.CLOSE_MENU: {
       return { ...state, menu: false };
+    }
+
+    case ActionTypes.URL_CONNECTION: {
+      return { ...state, wsUrl: action.payload }
     }
     default: {
       return state;

@@ -10,6 +10,7 @@ export const ActionTypes = {
   CLOSE_MENU: "@@aplication/CLOSE_MENU",
   APP_STATUS: "@@aplication/VERYFY_STATUS",
   CLEAR_ALL: "@@aplication/CLEAR_ALL",
+  URL_CONNECTION: "@@aplication/URL_CONNECTION",
 
   //CONFIGURATION
   GET_PHOTO_USER: "@@configuration/GET_PHOTO",

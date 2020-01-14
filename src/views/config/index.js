@@ -4,6 +4,7 @@ import { images } from "../../utils/constans";
 import Header from "../../components/Header";
 import { Text, View, StyleSheet, TouchableHighlight, TouchableOpacity, Clipboard, } from "react-native";
 import { getPhotosFromUser, openCamera, editName, } from "../../store/configuration/congurationAction";
+import {changeNetworkEndPoint} from "../../store/aplication/aplicationAction"
 import { connect } from "react-redux";
 import EditName from "./EditName";
 import EditPhoto from "./EditPhoto";
@@ -16,6 +17,7 @@ import { database } from '../../../App'
 import AddPin from "../LoadWallet/RestoreWithPin"
 import { sha256 } from "js-sha256";
 import Share from 'react-native-share';
+import NetWorkSettings from "./NetWorkSettings";
 
 /**
  * @class Config
@@ -33,7 +35,8 @@ class Config extends Component {
       viewQR: false,
       language: false,
       pin: false,
-      forceDialog: false
+      forceDialog: false,
+      network:false
     };
   }
 
@@ -100,7 +103,11 @@ class Config extends Component {
           close={this.close}
         />
 
-        <ViewQR {...this.props} open={this.state.viewQR} close={this.close} />
+        <NetWorkSettings 
+          {...this.props} open={this.state.network} close={this.close}
+        />
+
+        <ViewQR {...this.props} open={this.state.n} close={this.close} />
 
         {!this.state.forceDialog && <AddPin
           {...this.props}
@@ -334,19 +341,57 @@ class Config extends Component {
 
           </View>
         </TouchableOpacity>
+
+
+        <TouchableOpacity onPress={() => this.setState({ network: true })}>
+          <View style={styles.infoContainerAddress}>
+            <Left>
+              <Icon type="FontAwesome5" style={{ color: "#fbc233" }} name="server" />
+            </Left>
+            <View
+              style={{
+                width: "70%",
+                alignContent: "flex-start",
+                paddingLeft: 10
+              }}
+            >
+              <Text style={styles.textInfo}>
+                  Network settings
+              </Text>
+            </View>
+            <Right
+              style={{
+                top: 5
+              }}
+            >
+              <Icon
+                style={{
+                  color: "#bdbdbd",
+                  fontSize: 25,
+                  paddingVertical: 10,
+                  paddingHorizontal: 10
+                }}
+                name="arrow-dropright"
+              />
+            </Right>
+
+          </View>
+        </TouchableOpacity>
       </Container>
     );
   }
 }
 
 const mapStateToProps = state => ({
-  config: state.config
+  config: state.config,
+  aplication: state.aplication
 });
 
 export default connect(mapStateToProps, {
   getPhotosFromUser,
   openCamera,
   editName,
+  changeNetworkEndPoint
 })(Config);
 
 const styles = StyleSheet.create({
