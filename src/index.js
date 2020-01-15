@@ -69,10 +69,9 @@ class DualComponent extends Component {
 
   render() {
     const open = !this.props.user && this.props.status ? true : false
-
     return (
       <View style={styles.container}>
-        {this.props.loading && <Spinner />}
+        {this.props.loading && (this.props.retryConnection !== 4) && <Spinner />}
         {this.props.user && (
           <View style={styles.container}>
             {this.props.tabPosition === 1 && <Home {...this.props} />}
@@ -100,7 +99,8 @@ const mapStateToProps = state => ({
   chat: state.chats.chat,
   loading: state.aplication.loading,
   view: state.aplication.view,
-  status: state.aplication.appStatus
+  status: state.aplication.appStatus,
+  retryConnection: state.aplication.retryConnection
 });
 
 export default connect(mapStateToProps, { route, selectedChat, clearAll })(DualComponent);

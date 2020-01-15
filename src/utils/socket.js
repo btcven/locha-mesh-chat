@@ -42,6 +42,7 @@ export default class Socket {
       } else if (this.socket.readyState === 3) {
         this.closeTimmer();
       } else {
+        console.log("acaaa", this.socket.readyState)
         store.getState().aplication.loading === false
           ? null
           : this.store.dispatch(loaded());
@@ -103,6 +104,13 @@ export default class Socket {
    * @description contains the onMessage, onError and onClose of the webscket
    * @memberof Socket
    */
+
+  connectionRetry = () => {
+    setTimeout(() => {
+      reestarConnection(this.store)
+    }, 10000)
+  }
+
   onMenssage = () => {
     this.socket.onmessage = e => {
       // a message was received
@@ -116,7 +124,9 @@ export default class Socket {
 
     this.socket.onclose = e => {
       console.log("close", e);
-      this.store.dispatch(reestarConnection);
+      this.connectionRetry()
     };
   };
 }
+
+

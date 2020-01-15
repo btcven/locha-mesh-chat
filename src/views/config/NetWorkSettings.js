@@ -12,8 +12,16 @@ export default class NetWorkSettings extends Component {
         }
     }
 
+    changeNetworkEndPoint = () => {
+        this.props.close("network")
+        this.props.changeNetworkEndPoint(this.state.name)
+    }
+
+
+
     render() {
         const { open, close, screenProps, aplication, changeNetworkEndPoint } = this.props;
+        const disabled = (this.state.name === undefined) ? true : false
         return (
             <View>
                 <Modal
@@ -74,8 +82,8 @@ export default class NetWorkSettings extends Component {
                             </Button>
                             <Button
                                 transparent
-                                // disabled={disabled}
-                                onPress={() => changeNetworkEndPoint(this.state.name)}
+                                disabled={disabled}
+                                onPress={() => this.changeNetworkEndPoint(this.state.name)}
                                 style={styles.styleTextButton}
                             >
                                 <Text>{screenProps.t("Settings:saveButton")}</Text>
