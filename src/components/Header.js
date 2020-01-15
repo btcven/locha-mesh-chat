@@ -1,11 +1,11 @@
 import React, { Component } from "react";
 import { Header, Left, Body, Right, Title, Icon, Thumbnail } from "native-base";
-import { StyleSheet, TouchableHighlight, TextInput, View } from "react-native";
+import { StyleSheet, TouchableHighlight, TextInput, View, Text, TouchableOpacity } from "react-native";
 import { connect } from "react-redux";
 import * as Animatable from "react-native-animatable";
 import Menu from "./Menu";
 import { getIcon } from "../utils/utils";
-import { openMenu } from "../store/aplication";
+import { openMenu, manualConnection } from "../store/aplication";
 import { sha256 } from "js-sha256";
 
 /**
@@ -47,7 +47,8 @@ class HeaderComponent extends Component {
   };
 
   render() {
-    const { screenProps } = this.props;
+    const { screenProps, retryConnection } = this.props;
+    console.log("header", this.props)
     const router = this.getNameContact(this.props.navigation);
     const selected = this.props.selected
       ? this.props.selected.length < 1
@@ -57,13 +58,30 @@ class HeaderComponent extends Component {
 
     if (selected) {
       return (
-        <Header
-          style={styles.container}
-          androidStatusBarColor={this.props.modal ? "white" : "#af7d00"}
-        >
-          {this.props.navigation &&
-            this.props.navigation.state.routeName !== "initial" &&
-            !this.state.search && (
+        <>
+          <Header
+            style={styles.container}
+            androidStatusBarColor={this.props.modal ? "white" : "#af7d00"}
+          >
+            {this.props.navigation &&
+              this.props.navigation.state.routeName !== "initial" &&
+              !this.state.search && (
+                <Left>
+                  <TouchableHighlight
+                    underlayColor="#eeeeee"
+                    style={{
+                      paddingHorizontal: 10,
+                      paddingVertical: 6,
+                      borderRadius: 100
+                    }}
+                    onPress={() => this.back()}
+                  >
+                    <Icon style={styles.iconStyle} name="arrow-back" />
+                  </TouchableHighlight>
+                </Left>
+              )}
+
+            {router.routeName === "initial" && (
               <Left>
                 <TouchableHighlight
                   underlayColor="#eeeeee"
@@ -72,123 +90,116 @@ class HeaderComponent extends Component {
                     paddingVertical: 6,
                     borderRadius: 100
                   }}
-                  onPress={() => this.back()}
+                  onPress={() => {
+                    this.props.navigation.openDrawer();
+                  }}
                 >
-                  <Icon style={styles.iconStyle} name="arrow-back" />
+                  <Icon style={styles.iconStyle} name="menu" />
                 </TouchableHighlight>
               </Left>
             )}
+            {!this.state.search && (
+              <Body>
+                {router.routeName === "initial" && (
+                  <Title style={{ color: "#fff" }}>Locha Mesh</Title>
+                )}
 
-          {router.routeName === "initial" && (
-            <Left>
-              <TouchableHighlight
-                underlayColor="#eeeeee"
-                style={{
-                  paddingHorizontal: 10,
-                  paddingVertical: 6,
-                  borderRadius: 100
-                }}
-                onPress={() => {
-                  this.props.navigation.openDrawer();
-                }}
-              >
-                <Icon style={styles.iconStyle} name="menu" />
-              </TouchableHighlight>
-            </Left>
-          )}
-          {!this.state.search && (
-            <Body>
-              {router.routeName === "initial" && (
-                <Title style={{ color: "#fff" }}>Locha Mesh</Title>
-              )}
-
-              {router.routeName === "contacts" && (
-                <Title style={{ color: "#fff" }}>
-                  {screenProps.t("Header:contacts")}
-                </Title>
-              )}
-
-              {router.routeName === "config" && (
-                <Title style={{ color: "#fff" }}>
-                  {screenProps.t("Header:settings")}
-                </Title>
-              )}
-
-              {router.routeName === "chat" && (
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  {router.params && !router.params.picture && (
-                    <Thumbnail
-                      style={{ marginRight: 10, width: 45, height: 40 }}
-                      source={{
-                        uri: `${getIcon(sha256(router.params.uid))}`
-                      }}
-                    />
-                  )}
-
-                  {router.params && router.params.picture && (
-                    <Thumbnail
-                      style={{ marginRight: 10, width: 45, height: 40 }}
-                      source={{
-                        uri: `${router.params.picture}`
-                      }}
-                    />
-                  )}
-                  <Title>
-                    {router.params ? router.params.name : "broadcast"}
+                {router.routeName === "contacts" && (
+                  <Title style={{ color: "#fff" }}>
+                    {screenProps.t("Header:contacts")}
                   </Title>
-                </View>
-              )}
-            </Body>
-          )}
-          <Right>
-            {this.props.menu && <Menu menu={this.props.menu} />}
-            {!this.state.search && this.props.search && (
-              <TouchableHighlight
-                underlayColor="#eeeeee"
-                style={{
-                  paddingHorizontal: 10,
-                  paddingVertical: 6,
-                  borderRadius: 100
-                }}
-                onPress={() => this.onChange()}
-              >
-                <Icon name="search" style={{ fontSize: 24, color: "white" }} />
-              </TouchableHighlight>
-            )}
-          </Right>
+                )}
 
-          {this.state.search && (
-            <Animatable.View
-              animation="slideInRight"
-              duration={500}
-              style={styles.search}
-            >
-              <Animatable.View
-                animation={
-                  this.state.searchBarFocused ? "fadeInLeft" : "fadeInRight"
-                }
-                duration={400}
-              >
-                <Icon
-                  type="MaterialIcons"
-                  name={"arrow-back"}
-                  style={{ fontSize: 24 }}
+                {router.routeName === "config" && (
+                  <Title style={{ color: "#fff" }}>
+                    {screenProps.t("Header:settings")}
+                  </Title>
+                )}
+
+                {router.routeName === "chat" && (
+                  <View style={{ flexDirection: "row", alignItems: "center" }}>
+                    {router.params && !router.params.picture && (
+                      <Thumbnail
+                        style={{ marginRight: 10, width: 45, height: 40 }}
+                        source={{
+                          uri: `${getIcon(sha256(router.params.uid))}`
+                        }}
+                      />
+                    )}
+
+                    {router.params && router.params.picture && (
+                      <Thumbnail
+                        style={{ marginRight: 10, width: 45, height: 40 }}
+                        source={{
+                          uri: `${router.params.picture}`
+                        }}
+                      />
+                    )}
+                    <Title>
+                      {router.params ? router.params.name : "broadcast"}
+                    </Title>
+                  </View>
+                )}
+              </Body>
+            )}
+            <Right>
+              {this.props.menu && <Menu menu={this.props.menu} />}
+              {!this.state.search && this.props.search && (
+                <TouchableHighlight
+                  underlayColor="#eeeeee"
+                  style={{
+                    paddingHorizontal: 10,
+                    paddingVertical: 6,
+                    borderRadius: 100
+                  }}
                   onPress={() => this.onChange()}
+                >
+                  <Icon name="search" style={{ fontSize: 24, color: "white" }} />
+                </TouchableHighlight>
+              )}
+            </Right>
+
+            {this.state.search && (
+              <Animatable.View
+                animation="slideInRight"
+                duration={500}
+                style={styles.search}
+              >
+                <Animatable.View
+                  animation={
+                    this.state.searchBarFocused ? "fadeInLeft" : "fadeInRight"
+                  }
+                  duration={400}
+                >
+                  <Icon
+                    type="MaterialIcons"
+                    name={"arrow-back"}
+                    style={{ fontSize: 24 }}
+                    onPress={() => this.onChange()}
+                  />
+                </Animatable.View>
+                <TextInput
+                  placeholder="Search"
+                  style={{
+                    fontSize: 17,
+                    marginTop: 5,
+                    marginLeft: 10,
+                    width: 100
+                  }}
+                  onChangeText={text => this.props.search(text)}
                 />
               </Animatable.View>
-              <TextInput
-                placeholder="Search"
-                style={{
-                  fontSize: 17,
-                  marginTop: 5,
-                  marginLeft: 10,
-                  width: 100
-                }}
-                onChangeText={text => this.props.search(text)}
-              />
-            </Animatable.View>
-          )}
-        </Header>
+            )}
+          </Header>
+          {retryConnection === 4 &&
+            <View style={styles.notConnectedContainer}>
+              <Text>not connected</Text>
+              <TouchableOpacity onPress={this.props.manualConnection} >
+                <Text style={{ textDecorationLine: "underline" }}>RETRY</Text>
+              </TouchableOpacity>
+            </View>
+          }
+        </>
       );
     } else {
       return (
@@ -213,8 +224,8 @@ class HeaderComponent extends Component {
             {this.props.selected.length === 1 ? (
               <Title>{this.props.selected[0].name}</Title>
             ) : (
-              <Title>{this.props.selected.length}</Title>
-            )}
+                <Title>{this.props.selected.length}</Title>
+              )}
           </Body>
           <Right>
             {this.props.copy && (
@@ -262,6 +273,7 @@ class HeaderComponent extends Component {
               </TouchableHighlight>
             )}
           </Right>
+
         </Header>
       );
     }
@@ -273,7 +285,7 @@ const mapStateToProps = state => ({
   other: state.nav
 });
 
-export default connect(mapStateToProps, { openMenu })(HeaderComponent);
+export default connect(mapStateToProps, { openMenu, manualConnection })(HeaderComponent);
 
 const styles = StyleSheet.create({
   container: {
@@ -294,5 +306,14 @@ const styles = StyleSheet.create({
   iconStyle: {
     fontSize: 24,
     color: "white"
+  },
+
+  notConnectedContainer: {
+    backgroundColor: "red",
+    height: 30,
+    alignItems: "center",
+    justifyContent: "space-between",
+    flexDirection: "row",
+    paddingHorizontal: 10
   }
 });

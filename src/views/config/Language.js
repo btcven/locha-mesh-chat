@@ -7,13 +7,8 @@ import {
   AsyncStorage
 } from "react-native";
 import {
-  Button,
   Text,
-  Header,
   Left,
-  Body,
-  Title,
-  Icon,
   Right,
   Radio,
   List,

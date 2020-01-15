@@ -44,9 +44,11 @@ export const verifyAplicationState = () => async dispatch => {
 
 
 export const restoreAccountWithPin = (pin, callback) => dispatch => {
-  database.restoreWithPin(sha256(pin)).then(res => {
+  database.restoreWithPin(sha256(pin)).then(async res => {
     dispatch(writeAction(JSON.parse(JSON.stringify(res[0]))));
-    ws = new Socket(store, database);
+    const url = await AsyncStorage.getItem("@APP:URL_KEY")
+    ws = new Socket(store, database, url)
+    dispatch({ type: ActionTypes.URL_CONNECTION, payload: ws.url })
   }).catch(err => {
     callback()
   })
@@ -74,12 +76,13 @@ export const createNewAccount = (obj) => async dispatch => {
     const STORAGE_KEY = "@APP:status";
     await AsyncStorage.setItem(STORAGE_KEY, 'created')
     ws = new Socket(store, database);
+    dispatch({ type: ActionTypes.URL_CONNECTION, payload: ws.url })
   });
 }
 
 
 export const restoreWithPhrase = (pin, phrase) => dispatch => {
-  database.restoreWithPhrase(pin, phrase).then(async () => { 
+  database.restoreWithPhrase(pin, phrase).then(async () => {
     await createFolder()
     const result = await bitcoin.generateAddress(phrase);
     database.writteUser({
@@ -99,6 +102,7 @@ export const restoreWithPhrase = (pin, phrase) => dispatch => {
       const STORAGE_KEY = "@APP:status";
       await AsyncStorage.setItem(STORAGE_KEY, 'created')
       ws = new Socket(store, database);
+      dispatch({ type: ActionTypes.URL_CONNECTION, payload: ws.url })
     });
   })
 }
@@ -137,8 +141,8 @@ export const changeTab = tab => {
  * @returns {object}
  */
 
-export const loading = () =>  dispatch =>{
-  dispatch( {
+export const loading = () => dispatch => {
+  dispatch({
     type: ActionTypes.LOADING_ON
   })
 };
@@ -159,8 +163,18 @@ export const loaded = () => {
  * @description open the connection to the socket again
  */
 
-export const reestarConnection = () => {
-  ws = new Socket(store);
+export const reestarConnection = async ({ dispatch, getState }) => {
+  const applicationState = getState().aplication
+  const url = await AsyncStorage.getItem("@APP:URL_KEY")
+  console.log("url!!!!!!", url)
+  if (applicationState.retryConnection < 3) {
+    ws = new Socket(store, database, url);
+  } else {
+    dispatch(loaded)
+  }
+  dispatch({
+    type: ActionTypes.CONNECTION_ATTEMPT,
+  })
 };
 
 export const clearAll = () => dispatch => {
@@ -169,6 +183,14 @@ export const clearAll = () => dispatch => {
   })
 }
 
+
+/**
+ * @function
+ * @description restore account with a file
+ * @param {String}  pin file unlock pin
+ * @param {obj} data database data
+ * @return {obj}
+ */
 
 export const restoreWithFile = (pin, data) => dispatch => {
   dispatch(loading())
@@ -182,4 +204,24 @@ export const restoreWithFile = (pin, data) => dispatch => {
       payload: data.user
     })
   })
+}
+
+
+/**
+ * @function
+ * @description change socket connection address
+ * @param {String}  url  connection url
+ * @return {obj}
+ */
+
+
+export const changeNetworkEndPoint = (url) => async dispatch => {
+  await AsyncStorage.setItem("@APP:URL_KEY", url)
+  ws.socket.close()
+}
+
+export const manualConnection = () => async dispatch => {
+  dispatch({ type: ActionTypes.MANUAL_CONNECTION })
+  const url = await AsyncStorage.getItem("@APP:URL_KEY")
+  ws = new Socket(store, database, url)
 }
