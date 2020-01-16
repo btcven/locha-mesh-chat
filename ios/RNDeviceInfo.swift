@@ -13,9 +13,18 @@ class RNDeviceInfo: NSObject {
   
   @objc
   func constantsToExport () -> [AnyHashable: Any]! {
-    return ["deviceInfo": machineName()]
+    return [
+              "deviceInfo": machineName(),
+              "VersionInfo":getVersionInfo()
+           ]
   }
   
+  func getVersionInfo() -> String {
+    let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
+    
+    return appVersion!
+  }
+
   
   @objc
   func machineName() -> NSDictionary {
@@ -33,6 +42,7 @@ class RNDeviceInfo: NSObject {
     }
     return ["name":new, "id":identifier]
   }
+  
   
   func mapToDevice(identifier: String) -> String {
     switch identifier {

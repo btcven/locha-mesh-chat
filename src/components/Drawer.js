@@ -10,12 +10,13 @@ import {
   Icon,
   Thumbnail,
 } from "native-base";
-import { View, Text, StyleSheet, Image, Platform, NativeModules } from "react-native";
+import { View, Text, StyleSheet,  NativeModules } from "react-native";
 import { connect } from "react-redux";
 import { closeMenu } from "../store/aplication/aplicationAction";
 import { images } from "../utils/constans";
 import NavigationService from "../utils/navigationService";
-import { deviceModel } from '../utils/constans'
+
+
 
 class DrawerComponent extends Component {
   constructor(props) {
@@ -57,7 +58,7 @@ class DrawerComponent extends Component {
           <Text style={styles.textTitle}>{this.props.user.name}</Text>
         </View>
 
-        <View>
+        <View style={{ flex:1 }}>
           <ListItem itemDivider>
             <Text>Locha Mesh</Text>
           </ListItem>
@@ -83,7 +84,9 @@ class DrawerComponent extends Component {
             </Body>
           </ListItem>
 
-
+        </View>
+        <View style={{height:60 , alignItems:"center", justifyContent:"center"}}>
+          <Text>Version {NativeModules.RNDeviceInfo.VersionInfo} </Text>
         </View>
       </Container>
     );
