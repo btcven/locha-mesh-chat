@@ -41,8 +41,6 @@ export const verifyAplicationState = () => async dispatch => {
  * @param {string} obj.name The name of the user.
  */
 
-
-
 export const restoreAccountWithPin = (pin, callback) => dispatch => {
   database.restoreWithPin(sha256(pin)).then(async res => {
     dispatch(writeAction(JSON.parse(JSON.stringify(res[0]))));
@@ -61,7 +59,7 @@ export const createNewAccount = (obj) => async dispatch => {
   const result = await bitcoin.generateAddress(obj.seed);
   database.writteUser({
     uid: result.publicKey.toString(),
-    name: 'undefined',
+    name: obj.name,
     image: null,
     contacts: [],
     chats: [
@@ -81,13 +79,13 @@ export const createNewAccount = (obj) => async dispatch => {
 }
 
 
-export const restoreWithPhrase = (pin, phrase) => dispatch => {
+export const restoreWithPhrase = (pin, phrase, name) => dispatch => {
   database.restoreWithPhrase(pin, phrase).then(async () => {
     await createFolder()
     const result = await bitcoin.generateAddress(phrase);
     database.writteUser({
       uid: result.publicKey.toString(),
-      name: 'undefined',
+      name: name,
       image: null,
       contacts: [],
       chats: [

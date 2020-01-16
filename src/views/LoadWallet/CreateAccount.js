@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Button } from "native-base";
-import { Text, View, TextInput, StyleSheet, Clipboard, Platform } from "react-native";
+import { View, Text, TextInput, StyleSheet, Clipboard, Platform } from "react-native";
 import Modal from "react-native-modal";
 import { Formik } from 'formik'
 import PinView from "./PinView";
@@ -10,6 +10,7 @@ import RestoreFile from './RestoreWithPin'
 import RNFS from "react-native-fs"
 import CryptoJS from "crypto-js"
 import { sha256 } from "js-sha256";
+import AddName from "./AddName";
 
 
 
@@ -19,7 +20,8 @@ export default class CreateAccount extends Component {
     this.state = {
       step: 1,
       seed: null,
-      file: null
+      file: null,
+      name: ""
     }
   }
 
@@ -49,11 +51,12 @@ export default class CreateAccount extends Component {
         const k = Math.floor(Math.random() * (seed.length - 1));
         seed[k] = '';
       }
-
-      this.setState({ seed, step: 2 })
+      if (this.state.step === 3) {
+        this.setState({ step: 5 })
+      } else {
+        this.setState({ seed, step: 2 })
+      }
     } else {
-
-
       for (let index = 0; index < values.length; index++) {
         if (values[index] === "") {
           toast(this.props.screenProps.t("Initial:error2"))
@@ -79,11 +82,11 @@ export default class CreateAccount extends Component {
     this.setState({ step: 3 })
   }
 
-
   createAccount = (pin) => {
     this.props.createNewAccount({
       pin: pin,
-      seed: this.props.stringPhrases
+      seed: this.props.stringPhrases,
+      name: this.state.name
     })
   }
 
@@ -108,7 +111,6 @@ export default class CreateAccount extends Component {
       }
     }
   }
-
 
   restoreAccountWithFile = (pin) => {
     try {
@@ -138,20 +140,25 @@ export default class CreateAccount extends Component {
       }
 
     }
-    this.props.restoreWithPhrase(pin, phrases)
+    this.props.restoreWithPhrase(pin, phrases, this.state.name)
+  }
+
+  setName = (name) => {
+    this.setState({ name })
   }
 
   componentWillUnmount = () => {
     this.closePin()
     this.props.close()
   }
-
   render() {
     const { open, close, phrases, screenProps } = this.props;
     const action = this.props.restore ? this.restoreAccount : this.createAccount
     const values = (this.state.step !== 1 && this.state.step !== 4) ? this.state.seed : phrases
-    const rule = this.state.step === 1 || this.state.step === 4 ? true : false
+    const rule = this.state.step === 1 || this.state.step === 4 || this.state.step === 3 ? true : false
     const restoreWithFile = this.state.file ? true : false
+    const minHeight = this.state.step === 3 ? styles.NameHeight : styles.otherHeight;
+    const disabled = this.state.step === 3 && this.state.name.length < 4 ? true : false
     return (
       <Formik
         enableReinitialize
@@ -169,11 +176,14 @@ export default class CreateAccount extends Component {
                   margin: 0, justifyContent: "flex-end",
                 }}
               >
-                <View style={styles.container}>
+                <View style={[styles.container, minHeight]}>
                   <RestoreFile open={restoreWithFile} close={this.closePin} config={true}
                     action={this.restoreAccountWithFile}
                     text={screenProps.t("Initial:textBackup")}
                   />
+
+                  {/* ---------------------   Component header --------------------- */}
+
                   {this.state.step === 1 &&
                     <View>
                       <Text style={{ textAlign: "center", padding: 10, fontSize: 23 }}>
@@ -194,13 +204,23 @@ export default class CreateAccount extends Component {
                       </Text>
                     </View>}
 
-                  {this.state.step === 3 &&
+                  {this.state.step === 5 &&
                     <View>
                       <Text style={{ textAlign: "center", padding: 10, fontSize: 23 }}>
                         {screenProps.t("Initial:titlePin")}
                       </Text>
                       <Text style={{ paddingHorizontal: 10 }}>
                         {screenProps.t("Initial:subtitlePin")}
+                      </Text>
+                    </View>}
+
+                  {this.state.step === 3 &&
+                    <View>
+                      <Text style={{ textAlign: "center", padding: 10, fontSize: 23 }}>
+                        {screenProps.t("Initial:titleUsername")}
+                      </Text>
+                      <Text style={{ paddingHorizontal: 10 }}>
+                        {screenProps.t("Initial:textUsername")}
                       </Text>
                     </View>}
 
@@ -213,8 +233,12 @@ export default class CreateAccount extends Component {
                         {screenProps.t("Initial:subtitleRestore")}
                       </Text>
                     </View>}
+
+                  {/* --------------------- End header --------------------- */}
+
+                  {/* ----------------------- Component body ------------------  */}
                   <View style={styles.phrasesContainer}>
-                    {this.state.step !== 3 && values.map((phrase, key) => {
+                    {this.state.step !== 3 && this.state.step !== 5 && values.map((phrase, key) => {
                       return (
                         <View
                           key={key}
@@ -236,9 +260,7 @@ export default class CreateAccount extends Component {
                       );
                     })}
 
-
                   </View>
-
                   {this.state.step === 4 && <View style={{
                     alignItems: "center",
                     justifyContent: "center",
@@ -253,12 +275,19 @@ export default class CreateAccount extends Component {
                       <Text>{`${screenProps.t("Initial:buttonFile")}`.toUpperCase()}</Text>
                     </Button>
                   </View>}
+
                   {this.state.step === 3 && < View >
+                    <AddName screenProps={screenProps} setName={this.setName} name={this.state.name} />
+                  </View>}
+
+                  {this.state.step === 5 && < View >
                     <PinView back={this.back} createAccount={action} values={values} />
                   </View>}
 
+                  {/* ----------------------- End body ------------------  */}
+
                   <View style={styles.buttonContainer}>
-                    {this.state.step !== 3 && <Button
+                    {this.state.step !== 5 && <Button
                       light
                       onPress={this.back}
                       style={{
@@ -270,6 +299,7 @@ export default class CreateAccount extends Component {
                       <Text>{`${screenProps.t("Initial:back")}`.toUpperCase()}</Text>
                     </Button>}
                     {rule && <Button
+                      disabled={disabled}
                       onPress={() => this.continue(values)}
                       style={{
                         marginHorizontal: 10,
@@ -306,11 +336,17 @@ export default class CreateAccount extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "white",
-    minHeight: 330,
-
     borderRadius: 5,
-    marginHorizontal: 5
+    marginHorizontal: 5,
+    backgroundColor: "white"
+  },
+
+  NameHeight: {
+    minHeight: 270,
+  },
+
+  otherHeight: {
+    minHeight: 330,
   },
 
   phrasesContainer: {
