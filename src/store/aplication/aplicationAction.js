@@ -55,13 +55,14 @@ export const restoreAccountWithPin = (pin, callback) => dispatch => {
 }
 
 export const createNewAccount = (obj) => async dispatch => {
+  console.log("!!!!!!!!!!!!",obj)
   await database.getRealm(sha256(obj.pin), sha256(obj.seed))
   await database.setDataSeed(obj.seed);
   await createFolder()
   const result = await bitcoin.generateAddress(obj.seed);
   database.writteUser({
     uid: result.publicKey.toString(),
-    name: 'undefined',
+    name: obj.name,
     image: null,
     contacts: [],
     chats: [
@@ -81,13 +82,13 @@ export const createNewAccount = (obj) => async dispatch => {
 }
 
 
-export const restoreWithPhrase = (pin, phrase) => dispatch => {
+export const restoreWithPhrase = (pin, phrase, name) => dispatch => {
   database.restoreWithPhrase(pin, phrase).then(async () => {
     await createFolder()
     const result = await bitcoin.generateAddress(phrase);
     database.writteUser({
       uid: result.publicKey.toString(),
-      name: 'undefined',
+      name: name,
       image: null,
       contacts: [],
       chats: [

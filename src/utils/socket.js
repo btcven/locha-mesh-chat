@@ -42,7 +42,6 @@ export default class Socket {
       } else if (this.socket.readyState === 3) {
         this.closeTimmer();
       } else {
-        console.log("acaaa", this.socket.readyState)
         store.getState().aplication.loading === false
           ? null
           : this.store.dispatch(loaded());
