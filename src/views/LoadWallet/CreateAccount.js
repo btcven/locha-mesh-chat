@@ -57,8 +57,6 @@ export default class CreateAccount extends Component {
         this.setState({ seed, step: 2 })
       }
     } else {
-
-
       for (let index = 0; index < values.length; index++) {
         if (values[index] === "") {
           toast(this.props.screenProps.t("Initial:error2"))
@@ -83,7 +81,6 @@ export default class CreateAccount extends Component {
     }
     this.setState({ step: 3 })
   }
-
 
   createAccount = (pin) => {
     this.props.createNewAccount({
@@ -114,7 +111,6 @@ export default class CreateAccount extends Component {
       }
     }
   }
-
 
   restoreAccountWithFile = (pin) => {
     try {
@@ -147,7 +143,6 @@ export default class CreateAccount extends Component {
     this.props.restoreWithPhrase(pin, phrases, this.state.name)
   }
 
-
   setName = (name) => {
     this.setState({ name })
   }
@@ -156,7 +151,6 @@ export default class CreateAccount extends Component {
     this.closePin()
     this.props.close()
   }
-
   render() {
     const { open, close, phrases, screenProps } = this.props;
     const action = this.props.restore ? this.restoreAccount : this.createAccount
@@ -240,9 +234,7 @@ export default class CreateAccount extends Component {
                       </Text>
                     </View>}
 
-
                   {/* --------------------- End header --------------------- */}
-
 
                   {/* ----------------------- Component body ------------------  */}
                   <View style={styles.phrasesContainer}>
@@ -268,7 +260,6 @@ export default class CreateAccount extends Component {
                       );
                     })}
 
-
                   </View>
                   {this.state.step === 4 && <View style={{
                     alignItems: "center",
@@ -285,9 +276,7 @@ export default class CreateAccount extends Component {
                     </Button>
                   </View>}
 
-
                   {this.state.step === 3 && < View >
-
                     <AddName screenProps={screenProps} setName={this.setName} name={this.state.name} />
                   </View>}
 
@@ -295,11 +284,7 @@ export default class CreateAccount extends Component {
                     <PinView back={this.back} createAccount={action} values={values} />
                   </View>}
 
-
-
-
                   {/* ----------------------- End body ------------------  */}
-
 
                   <View style={styles.buttonContainer}>
                     {this.state.step !== 5 && <Button

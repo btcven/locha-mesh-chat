@@ -41,8 +41,6 @@ export const verifyAplicationState = () => async dispatch => {
  * @param {string} obj.name The name of the user.
  */
 
-
-
 export const restoreAccountWithPin = (pin, callback) => dispatch => {
   database.restoreWithPin(sha256(pin)).then(async res => {
     dispatch(writeAction(JSON.parse(JSON.stringify(res[0]))));
@@ -55,7 +53,6 @@ export const restoreAccountWithPin = (pin, callback) => dispatch => {
 }
 
 export const createNewAccount = (obj) => async dispatch => {
-  console.log("!!!!!!!!!!!!",obj)
   await database.getRealm(sha256(obj.pin), sha256(obj.seed))
   await database.setDataSeed(obj.seed);
   await createFolder()
