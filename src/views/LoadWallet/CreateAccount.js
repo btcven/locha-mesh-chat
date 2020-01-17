@@ -13,8 +13,9 @@ import { sha256 } from "js-sha256";
 import AddName from "./AddName";
 import Phrases from "./Phrases"
 
-
-
+/**
+ * visual component to create or restore account
+ */
 export default class CreateAccount extends Component {
   constructor(props) {
     super(props)
@@ -96,7 +97,6 @@ export default class CreateAccount extends Component {
   }
 
   getFile = async () => {
-    // this.props.close()
     try {
       const res = await DocumentPicker.pick({
         type: [DocumentPicker.types.allFiles],
@@ -118,13 +118,11 @@ export default class CreateAccount extends Component {
       RNFS.readFile(this.state.file).then((res) => {
         var bytes = CryptoJS.AES.decrypt(res, sha256(pin));
         var decryptedData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
-
         this.setState({ file: null })
         this.props.restoreWithFile(pin, decryptedData)
       }).catch(err => {
         toast(this.props.screenProps.t("Initial:error1"))
       })
-
     } catch (error) {
       console.log("data", error)
     }
@@ -139,7 +137,6 @@ export default class CreateAccount extends Component {
 
         phrases = phrases + " " + values[index]
       }
-
     }
     this.props.restoreWithPhrase(pin, phrases, this.state.name)
   }
@@ -242,8 +239,7 @@ export default class CreateAccount extends Component {
                   {this.state.step !== 3 && this.state.step !== 5 && (
                     <Phrases values={values} setFieldValue={setFieldValue} />
                   )}
-
-
+                  
                   {this.state.step === 4 && <View style={{
                     alignItems: "center",
                     justifyContent: "center",
@@ -314,7 +310,7 @@ export default class CreateAccount extends Component {
         }
       />
     );
-  }
+  } 
 }
 
 const styles = StyleSheet.create({
@@ -323,15 +319,12 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
     backgroundColor: "white"
   },
-
   NameHeight: {
     minHeight: 270,
   },
-
   otherHeight: {
     minHeight: 330,
   },
-
   phrasesContainer: {
     marginTop: 20,
     flexDirection: "row",
@@ -347,7 +340,6 @@ const styles = StyleSheet.create({
     alignItems: "flex-end",
     justifyContent: "space-between"
   },
-
   inputStyles: {
     borderBottomWidth: 0.5,
     minWidth: 60,

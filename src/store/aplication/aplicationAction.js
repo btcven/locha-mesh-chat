@@ -6,7 +6,7 @@ import { bitcoin, database } from "../../../App";
 import Socket from "../../utils/socket";
 import store from "../../store";
 import { sha256 } from "js-sha256";
-
+import RNSF from "react-native-fs"
 
 
 /**
@@ -77,7 +77,6 @@ export const createNewAccount = (obj) => async dispatch => {
     dispatch({ type: ActionTypes.URL_CONNECTION, payload: ws.url })
   });
 }
-
 
 export const restoreWithPhrase = (pin, phrase, name) => dispatch => {
   database.restoreWithPhrase(pin, phrase).then(async () => {
@@ -164,7 +163,6 @@ export const loaded = () => {
 export const reestarConnection = async ({ dispatch, getState }) => {
   const applicationState = getState().aplication
   const url = await AsyncStorage.getItem("@APP:URL_KEY")
-  console.log("url!!!!!!", url)
   if (applicationState.retryConnection < 3) {
     ws = new Socket(store, database, url);
   } else {
@@ -180,7 +178,6 @@ export const clearAll = () => dispatch => {
     type: ActionTypes.CLEAR_ALL
   })
 }
-
 
 /**
  * @function
@@ -204,22 +201,42 @@ export const restoreWithFile = (pin, data) => dispatch => {
   })
 }
 
-
 /**
  * @function
  * @description change socket connection address
  * @param {String}  url  connection url
- * @return {obj}
  */
-
 
 export const changeNetworkEndPoint = (url) => async dispatch => {
   await AsyncStorage.setItem("@APP:URL_KEY", url)
   ws.socket.close()
 }
 
+/**
+ * @function
+ * @description function to reconnect manually
+ */
 export const manualConnection = () => async dispatch => {
   dispatch({ type: ActionTypes.MANUAL_CONNECTION })
   const url = await AsyncStorage.getItem("@APP:URL_KEY")
   ws = new Socket(store, database, url)
+}
+
+/**
+ * @function
+ * @description function to add a new pin
+ * @param {Object} obj  
+ * @param {String} obj.path database address
+ * @param {String} obj.pin  New pin
+ * @param {String} obj.phrases account phrases
+ */
+export const newPin = (obj) => dispatch => {
+  RNSF.unlink(obj.path).then(res => {
+    database.newPin(obj.pin, obj.phrases).then(async userData => {
+      dispatch(writeAction(JSON.parse(JSON.stringify(userData[0]))));
+      const url = await AsyncStorage.getItem("@APP:URL_KEY")
+      ws = new Socket(store, database, url)
+      dispatch({ type: ActionTypes.URL_CONNECTION, payload: ws.url })
+    })
+  })
 }
