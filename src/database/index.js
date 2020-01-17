@@ -36,8 +36,6 @@ const optionsDatabase = {
   schemaVersion: 18
 }
 
-
-
 export default class Database extends CoreDatabase {
   constructor() {
     super()
