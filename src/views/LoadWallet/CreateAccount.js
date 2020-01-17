@@ -11,6 +11,7 @@ import RNFS from "react-native-fs"
 import CryptoJS from "crypto-js"
 import { sha256 } from "js-sha256";
 import AddName from "./AddName";
+import Phrases from "./Phrases"
 
 
 
@@ -237,30 +238,12 @@ export default class CreateAccount extends Component {
                   {/* --------------------- End header --------------------- */}
 
                   {/* ----------------------- Component body ------------------  */}
-                  <View style={styles.phrasesContainer}>
-                    {this.state.step !== 3 && this.state.step !== 5 && values.map((phrase, key) => {
-                      return (
-                        <View
-                          key={key}
-                          style={{
-                            width: "20%",
-                            margin: 0,
-                            flexDirection: "row"
-                          }}
-                        >
-                          <TextInput
-                            value={phrase}
-                            autoCapitalize="none"
-                            onChangeText={(text) => {
-                              setFieldValue(`${key}`, text)
-                            }}
-                            style={styles.inputStyles}
-                          />
-                        </View>
-                      );
-                    })}
 
-                  </View>
+                  {this.state.step !== 3 && this.state.step !== 5 && (
+                    <Phrases values={values} setFieldValue={setFieldValue} />
+                  )}
+
+
                   {this.state.step === 4 && <View style={{
                     alignItems: "center",
                     justifyContent: "center",
