@@ -11,6 +11,10 @@ import java.util.List;
 
 import LocalNotification.LocalNotificationModule;
 
+
+/**
+ *  class used to register the native module and export it as a packet
+ */
 public class DeviceInfoPackage implements ReactPackage {
     @Override
     public List<ViewManager> createViewManagers(ReactApplicationContext reactContext) {

@@ -3,15 +3,15 @@ package DeviceInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.widget.Toast;
-
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
-
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.annotation.Nonnull;
 
+/**
+ *  class used to obtain device information
+ */
 public class DeviceInfoModule  extends ReactContextBaseJavaModule {
 
     private final ReactApplicationContext reactContext;
@@ -21,6 +21,9 @@ public class DeviceInfoModule  extends ReactContextBaseJavaModule {
         this.reactContext = reactContext;
     }
 
+    /**
+     * method of the ReactContextBaseJavaModule class used to name the module
+     */
     @Nonnull
     @Override
     public String getName() {
@@ -28,6 +31,10 @@ public class DeviceInfoModule  extends ReactContextBaseJavaModule {
     }
 
 
+    /**
+     * /// method used to obtain the constants
+     * @return constants
+     */
     @Override
     public Map<String, Object> getConstants() {
         final Map<String, Object> constants = new HashMap<>();
@@ -36,7 +43,10 @@ public class DeviceInfoModule  extends ReactContextBaseJavaModule {
     }
 
 
-
+    /**
+     * method used to get the build version
+     * @return Version
+     */
     public  String getVersionInfo () {
         PackageInfo pInfo = null;
         try {
