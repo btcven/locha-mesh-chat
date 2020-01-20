@@ -5,6 +5,7 @@ import android.app.Application;
 import com.facebook.react.ReactApplication;
 import com.reactlibrary.LanguageDetectorPackage;
 
+import DeviceInfo.DeviceInfoPackage;
 import LocalNotification.LocalNotificationPackage;
 import cl.json.RNSharePackage;
 import com.wenkesj.voice.VoicePackage;
@@ -64,7 +65,8 @@ public class MainApplication extends Application implements ReactApplication {
             new CameraRollPackage(),
             new RNGestureHandlerPackage(),
             new VectorIconsPackage(),
-            new DocumentPickerPackage() 
+            new DocumentPickerPackage(),
+            new DeviceInfoPackage()
       );
     }
 

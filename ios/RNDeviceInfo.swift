@@ -11,14 +11,25 @@ import Foundation
 @objc(RNDeviceInfo)
 class RNDeviceInfo: NSObject {
   
-  @objc
-  func constantsToExport () -> [AnyHashable: Any]! {
-    return ["deviceInfo": machineName()]
+  /// method used to obtain the constants
+  /// - Returns: constants
+  @objc func constantsToExport () -> [AnyHashable: Any]! {
+    return [
+              "deviceInfo": machineName(),
+              "VersionInfo":getVersionInfo()
+           ]
   }
   
-  
-  @objc
-  func machineName() -> NSDictionary {
+  /// method used to obtain the compilation version of the app
+  /// - Returns: current build version
+  func getVersionInfo() -> String {
+    let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
+    
+    return appVersion!
+  }
+
+  /// method used to obtain the phone code used to know the name of the device
+  @objc func machineName() -> NSDictionary {
     var systemInfo = utsname()
     uname(&systemInfo)
     let machineMirror = Mirror(reflecting: systemInfo.machine)
@@ -34,6 +45,9 @@ class RNDeviceInfo: NSObject {
     return ["name":new, "id":identifier]
   }
   
+  /// method used to return the exact phone name
+  /// - Parameter identifier: phone identifier
+  /// - Returns: phone name
   func mapToDevice(identifier: String) -> String {
     switch identifier {
       case "iPhone3,1", "iPhone3,2", "iPhone3,3":     return "iPhone 4"

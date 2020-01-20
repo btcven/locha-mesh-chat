@@ -10,13 +10,18 @@ import {
   Icon,
   Thumbnail,
 } from "native-base";
-import { View, Text, StyleSheet, Image, Platform, NativeModules } from "react-native";
+import { View, Text, StyleSheet,  NativeModules } from "react-native";
 import { connect } from "react-redux";
 import { closeMenu } from "../store/aplication/aplicationAction";
 import { images } from "../utils/constans";
 import NavigationService from "../utils/navigationService";
-import { deviceModel } from '../utils/constans'
 
+/**
+ * view of the menu drawer
+ * @class HeaderComponent
+ * @extends {Component}
+ *
+ */
 class DrawerComponent extends Component {
   constructor(props) {
     super(props);
@@ -24,10 +29,6 @@ class DrawerComponent extends Component {
 
   handleChange = view => {
     NavigationService.navigate(view);
-  };
-
-  viewItem = () => {
-    return <Text>Hello word</Text>;
   };
 
   render() {
@@ -49,15 +50,12 @@ class DrawerComponent extends Component {
               style={styles.imageStyle}
             />
           )}
-
           {!this.props.user.image && (
             <Thumbnail source={images.noPhoto.url} style={styles.imageStyle} />
           )}
-
           <Text style={styles.textTitle}>{this.props.user.name}</Text>
         </View>
-
-        <View>
+        <View style={{ flex:1 }}>
           <ListItem itemDivider>
             <Text>Locha Mesh</Text>
           </ListItem>
@@ -82,8 +80,9 @@ class DrawerComponent extends Component {
               <Text>{screenProps.t("Drawer:setting")}</Text>
             </Body>
           </ListItem>
-
-
+        </View>
+        <View style={{height:60 , alignItems:"center", justifyContent:"center"}}>
+          <Text>Version {NativeModules.RNDeviceInfo.VersionInfo} </Text>
         </View>
       </Container>
     );
