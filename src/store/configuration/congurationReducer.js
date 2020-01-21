@@ -1,9 +1,10 @@
-import { ActionTypes } from "../constants";
+/* eslint-disable import/prefer-default-export */
+import { ActionTypes } from '../constants';
 
 const AplicationState = {
   uid: null,
   image: null,
-  name: ""
+  name: ''
 };
 
 export const configurationReducer = (state = AplicationState, action) => {
@@ -17,7 +18,7 @@ export const configurationReducer = (state = AplicationState, action) => {
     }
 
     case ActionTypes.CLEAR_ALL: {
-      return { ...AplicationState }
+      return { ...AplicationState };
     }
     case ActionTypes.GET_PHOTO_USER: {
       return { ...state, image: action.payload };

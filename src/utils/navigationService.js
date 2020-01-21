@@ -1,10 +1,11 @@
-import { NavigationActions } from "react-navigation";
+import { NavigationActions } from 'react-navigation';
 
 /**
  * service to redirect out of react-navigation.
  * @module navigationService
  */
 
+// eslint-disable-next-line no-underscore-dangle
 let _navigator;
 
 /**

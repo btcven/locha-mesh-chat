@@ -1,4 +1,5 @@
-import { ActionTypes } from "../constants";
+/* eslint-disable import/prefer-default-export */
+import { ActionTypes } from '../constants';
 
 const AplicationState = {
   contacts: []
@@ -6,11 +7,10 @@ const AplicationState = {
 
 export const contactsReducer = (state = AplicationState, action) => {
   switch (action.type) {
-
     case ActionTypes.CLEAR_ALL: {
-      return { ...AplicationState }
+      return { ...AplicationState };
     }
-    
+
     case ActionTypes.INITIAL_STATE: {
       return {
         contacts: action.payload.contacts
@@ -22,10 +22,8 @@ export const contactsReducer = (state = AplicationState, action) => {
 
     case ActionTypes.DELETE_CONTACT: {
       const contacts = Object.values(state.contacts);
-      let result = contacts.filter(data => {
-        const payload = action.payload.find(contact => {
-          return contact.uid === data.uid;
-        });
+      const result = contacts.filter((data) => {
+        const payload = action.payload.find((contact) => contact.uid === data.uid);
 
         return !payload;
       });
@@ -35,9 +33,7 @@ export const contactsReducer = (state = AplicationState, action) => {
 
     case ActionTypes.EDIT_CONTACT: {
       const contacts = Object.values(state.contacts);
-      let result = contacts.findIndex(data => {
-        return data.uid === action.payload.uid;
-      });
+      const result = contacts.findIndex((data) => data.uid === action.payload.uid);
 
       contacts[result] = action.payload;
 

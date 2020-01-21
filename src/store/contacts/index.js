@@ -1,2 +1,2 @@
-export * from './contactsActions'
-export * from './contactsReducer'
+export * from './contactsActions';
+export * from './contactsReducer';

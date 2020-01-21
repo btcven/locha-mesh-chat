@@ -1,5 +1,7 @@
-import React, { Component } from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import React, { Component } from 'react';
+import {
+  Text, TouchableOpacity, StyleSheet
+} from 'react-native';
 /**
  *
  *
@@ -31,14 +33,14 @@ const styles = StyleSheet.create({
   floatButton: {
     width: 50,
     height: 50,
-    position: "absolute",
-    backgroundColor: "#fbc233",
+    position: 'absolute',
+    backgroundColor: '#fbc233',
     right: 20,
     bottom: 15,
     borderRadius: 100,
-    alignItems: "center",
-    justifyContent: "center",
-    shadowColor: "black",
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: 'black',
     shadowOffset: {
       width: 0,
       height: 10
@@ -51,7 +53,7 @@ const styles = StyleSheet.create({
 
   textButton: {
     fontSize: 23,
-    color: "black",
+    color: 'black',
     marginRight: 6
   }
 });

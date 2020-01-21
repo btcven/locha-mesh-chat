@@ -1,8 +1,8 @@
-import AsyncStorage from "@react-native-community/async-storage";
-import RNFS from "react-native-fs";
-import { ActionTypes } from "../constants";
-import { createFolder, FileDirectory } from "../../utils/utils";
-import { database } from '../../../App'
+import AsyncStorage from '@react-native-community/async-storage';
+import RNFS from 'react-native-fs';
+import { ActionTypes } from '../constants';
+import { FileDirectory } from '../../utils/utils';
+import { database } from '../../../App';
 
 /**
  * here are all the actions references to contacts
@@ -27,7 +27,7 @@ export const saveContact = (
   data,
   lastContact,
   callback
-) => async dispatch => {
+) => async (dispatch) => {
   const newPath = `file:///${FileDirectory}/${data.name}Photo.jpg`;
   if (data.picture) {
     await RNFS.moveFile(data.picture, newPath);
@@ -39,7 +39,7 @@ export const saveContact = (
     }
   ];
 
-  database.addContacts(id, obj).then(res => {
+  database.addContacts(id, obj).then((res) => {
     obj.push(...lastContact);
     dispatch({
       type: ActionTypes.ADD_CONTACTS,
@@ -56,9 +56,8 @@ export const saveContact = (
  * @returns {Object}
  */
 
-export const getContacts = () => async dispatch => {
-  const contacts = await AsyncStorage.getItem("contacts");
-  parse = JSON.parse(contacts);
+export const getContacts = () => async (dispatch) => {
+  const contacts = await AsyncStorage.getItem('contacts');
   dispatch({
     type: ActionTypes.ADD_CONTACTS,
     payload: contacts ? Object.values(JSON.parse(contacts)) : []
@@ -73,8 +72,8 @@ export const getContacts = () => async dispatch => {
  * @returns {{type:String  , payload: Object }}
  */
 
-export const deleteContactAction = (data, callback) => dispatch => {
-  database.deleteContact(data).then(res => {
+export const deleteContactAction = (data, callback) => (dispatch) => {
+  database.deleteContact(data).then(() => {
     dispatch({
       type: ActionTypes.DELETE_CONTACT,
       payload: data
@@ -91,8 +90,8 @@ export const deleteContactAction = (data, callback) => dispatch => {
  * @returns {{type:String  , payload: Object }}
  */
 
-export const editContats = (obj, callback) => dispatch => {
-  database.editContact(obj).then(res => {
+export const editContats = (obj, callback) => (dispatch) => {
+  database.editContact(obj).then((res) => {
     callback();
     dispatch({
       type: ActionTypes.EDIT_CONTACT,
