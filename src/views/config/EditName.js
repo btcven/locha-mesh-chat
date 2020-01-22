@@ -1,7 +1,9 @@
-import React, { Component } from "react";
-import Modal from "react-native-modal";
-import { View, StyleSheet } from "react-native";
-import { Item, Input, Form, Button, Right, Text } from "native-base";
+import React, { Component } from 'react';
+import Modal from 'react-native-modal';
+import { View, StyleSheet } from 'react-native';
+import {
+  Item, Input, Form, Button, Text
+} from 'native-base';
 /**
  *
  *
@@ -14,7 +16,7 @@ export default class EditName extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      name: ""
+      name: ''
     };
   }
 
@@ -22,66 +24,67 @@ export default class EditName extends Component {
     this.props.editName(
       { name: this.state.name, uid: this.props.config.uid },
       () => {
-        this.props.close("openModalName");
+        this.props.close('openModalName');
       }
     );
   };
 
   render() {
     const { open, close, screenProps } = this.props;
-    const disabled = this.state.name.length > 1 ? false : true;
+    const disabled = !(this.state.name.length > 1);
     return (
       <View>
         <Modal
           style={{
-            justifyContent: "flex-end",
+            justifyContent: 'flex-end',
             margin: 0
           }}
-          avoidKeyboard={true}
+          avoidKeyboard
           isVisible={open}
           animationIn="slideInUp"
           animationOut="slideOutDown"
           animationOutTiming={800}
-          onBackdropPress={() => close("openModalName")}
+          onBackdropPress={() => close('openModalName')}
         >
           <View
             style={{
-              backgroundColor: "white", borderRadius: 5,
+              backgroundColor: 'white',
+              borderRadius: 5,
               marginHorizontal: 5
             }}
           >
             <Text style={styles.titleModal}>
-              {screenProps.t("Settings:editName")}
+              {screenProps.t('Settings:editName')}
             </Text>
             <Form>
-              <Text style={{ position: "absolute", top: "40%", right: "5%" }}>
+              <Text style={{ position: 'absolute', top: '40%', right: '5%' }}>
                 {12 - this.state.name.length}
               </Text>
               <Item stackedLabel>
                 <Input
                   maxLength={12}
-                  placeholder={screenProps.t("Settings:enterName")}
+                  placeholder={screenProps.t('Settings:enterName')}
                   value={this.state.name}
-                  onChangeText={event => this.setState({ name: event })}
+                  onChangeText={(event) => this.setState({ name: event })}
                 />
               </Item>
             </Form>
             <View
               style={{
                 padding: 20,
-                flexDirection: "row",
-                justifyContent: "flex-end"
+                flexDirection: 'row',
+                justifyContent: 'flex-end'
               }}
             >
               <Button
-                onPress={() => close("openModalName")}
+                onPress={() => close('openModalName')}
                 transparent
                 style={{
                   marginHorizontal: 10
                 }}
               >
                 <Text style={styles.styleTextButton}>
-                  {screenProps.t("Settings:cancelButton")}
+                  {screenProps.t('Settings:cancelButton')}
                 </Text>
               </Button>
               <Button
@@ -90,7 +93,7 @@ export default class EditName extends Component {
                 onPress={() => this.saveName()}
                 style={styles.styleTextButton}
               >
-                <Text>{screenProps.t("Settings:saveButton")}</Text>
+                <Text>{screenProps.t('Settings:saveButton')}</Text>
               </Button>
             </View>
           </View>
@@ -109,6 +112,6 @@ const styles = StyleSheet.create({
     padding: 20,
     paddingBottom: 10,
     fontSize: 20,
-    fontWeight: "400"
+    fontWeight: '400'
   }
 });

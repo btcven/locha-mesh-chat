@@ -1,23 +1,27 @@
-import React, { Component } from "react";
-import { Container, Icon, Left, Right, Button, Thumbnail } from "native-base";
-import { images } from "../../utils/constans";
-import Header from "../../components/Header";
-import { Text, View, StyleSheet, TouchableHighlight, TouchableOpacity, Clipboard, } from "react-native";
-import { getPhotosFromUser, openCamera, editName, } from "../../store/configuration/congurationAction";
-import {changeNetworkEndPoint} from "../../store/aplication/aplicationAction"
-import { connect } from "react-redux";
-import EditName from "./EditName";
-import EditPhoto from "./EditPhoto";
-import ViewQR from "./ViewQR";
-import Languajes from "./Language";
-import { toast } from "../../utils/utils";
-import i18n from "../../i18n";
-import CryptoJS from "crypto-js"
-import { database } from '../../../App'
-import AddPin from "../LoadWallet/RestoreWithPin"
-import { sha256 } from "js-sha256";
+import React, { Component } from 'react';
+import {
+  Container, Icon, Left, Right, Thumbnail
+} from 'native-base';
+import {
+  Text, View, StyleSheet, TouchableHighlight, TouchableOpacity, Clipboard,
+} from 'react-native';
+import { connect } from 'react-redux';
+import CryptoJS from 'crypto-js';
+import { sha256 } from 'js-sha256';
 import Share from 'react-native-share';
-import NetWorkSettings from "./NetWorkSettings";
+import { images } from '../../utils/constans';
+import Header from '../../components/Header';
+import { getPhotosFromUser, openCamera, editName, } from '../../store/configuration/congurationAction';
+import { changeNetworkEndPoint } from '../../store/aplication/aplicationAction';
+import EditName from './EditName';
+import EditPhoto from './EditPhoto';
+import ViewQR from './ViewQR';
+import Languajes from './Language';
+import { toast } from '../../utils/utils';
+import i18n from '../../i18n';
+import { database } from '../../../App';
+import AddPin from '../LoadWallet/RestoreWithPin';
+import NetWorkSettings from './NetWorkSettings';
 
 /**
  * @class Config
@@ -36,46 +40,47 @@ class Config extends Component {
       language: false,
       pin: false,
       forceDialog: false,
-      network:false
+      network: false
     };
   }
 
-  close = name => {
+  close = (name) => {
     this.setState({
       [name]: false
     });
   };
 
+  // eslint-disable-next-line react/sort-comp
   static navigationOptions = {
     header: null
   };
 
-  _setContent = async data => {
+  setContent = async (data) => {
     Clipboard.setString(data);
-    toast(this.props.screenProps.t("Settings:uidCody"));
+    toast(this.props.screenProps.t('Settings:uidCody'));
   };
 
 
   createBackupFile = async (pin) => {
     database.verifyPin(pin).then(async () => {
-      const data = await database.getAllData()
-      const ciphertext = CryptoJS.AES.encrypt(JSON.stringify(data), sha256(pin)).toString()
-      let base64 = new Buffer(ciphertext).toString('base64')
-      base64 = `data:text/plain;base64,${base64}`
+      const data = await database.getAllData();
+      const ciphertext = CryptoJS.AES.encrypt(JSON.stringify(data), sha256(pin)).toString();
+      let base64 = Buffer.from(ciphertext).toString('base64');
+      base64 = `data:text/plain;base64,${base64}`;
 
       await Share.open({
         url: base64,
-        filename: "Backup"
+        filename: 'Backup'
       }).then(() => {
-        this.close("pin")
-      }).catch(shareError => {
-        if (shareError.toString() === "Error: User did not share") {
-          this.close("pin")
+        this.close('pin');
+      }).catch((shareError) => {
+        if (shareError.toString() === 'Error: User did not share') {
+          this.close('pin');
         }
-      })
-    }).catch(err => {
+      });
+    }).catch(() => {
       // const error = JSON.parse()
-    })
+    });
   }
 
   render() {
@@ -103,19 +108,24 @@ class Config extends Component {
           close={this.close}
         />
 
-        <NetWorkSettings 
-          {...this.props} open={this.state.network} close={this.close}
+        <NetWorkSettings
+          {...this.props}
+          open={this.state.network}
+          close={this.close}
         />
 
-        <ViewQR {...this.props} open={this.state.n} close={this.close} />
+        <ViewQR {...this.props} open={this.state.viewQR} close={this.close} />
 
-        {!this.state.forceDialog && <AddPin
+        {!this.state.forceDialog && (
+        <AddPin
           {...this.props}
           open={this.state.pin}
-          text={screenProps.t("Settings:textBackup")}
+          text={screenProps.t('Settings:textBackup')}
           action={this.createBackupFile}
           close={this.close}
-          config={true} />}
+          config
+        />
+        )}
 
         <View style={styles.sectionContainer}>
           <View style={styles.imageContainer}>
@@ -127,7 +137,7 @@ class Config extends Component {
                 <Thumbnail
                   source={{
                     uri: this.props.config.image,
-                    cache: "force-cache"
+                    cache: 'force-cache'
                   }}
                   style={styles.imageStyle}
                 />
@@ -148,11 +158,11 @@ class Config extends Component {
             <View style={styles.actionButtonContainer}>
               <TouchableOpacity
                 style={{
-                  height: "100%",
-                  width: "100%",
+                  height: '100%',
+                  width: '100%',
                   borderRadius: 100,
-                  justifyContent: "center",
-                  display: "flex"
+                  justifyContent: 'center',
+                  display: 'flex'
                 }}
                 underlayColor="#eeeeee"
                 onPress={() => {
@@ -172,20 +182,20 @@ class Config extends Component {
         <View style={styles.infoContainer}>
           <Left>
             <Icon
-              style={{ color: "#fbc233" }}
+              style={{ color: '#fbc233' }}
               type="MaterialIcons"
               name="person"
             />
           </Left>
           <View
             style={{
-              width: "70%",
-              alignContent: "flex-start",
+              width: '70%',
+              alignContent: 'flex-start',
               paddingLeft: 10
             }}
           >
             <Text style={styles.textLabel}>
-              {screenProps.t("Settings:name")}
+              {screenProps.t('Settings:name')}
             </Text>
             <Text style={styles.textInfo}>{this.props.config.name}</Text>
           </View>
@@ -203,7 +213,7 @@ class Config extends Component {
             >
               <Icon
                 style={{
-                  color: "#bdbdbd",
+                  color: '#bdbdbd',
                   fontSize: 25,
                   paddingVertical: 10,
                   paddingHorizontal: 10
@@ -218,25 +228,26 @@ class Config extends Component {
         <View style={styles.infoContainerAddress}>
           <View
             style={{
-              width: "90%",
-              justifyContent: "flex-end",
+              width: '90%',
+              justifyContent: 'flex-end',
               paddingLeft: 10,
               minHeight: 30
             }}
           >
             <TouchableOpacity
-              onPress={() => this._setContent(this.props.config.uid)}
+              onPress={() => this.setContent(this.props.config.uid)}
             >
               <Text style={styles.textInfo}>
-                {`${this.props.config.uid}`.substr(0, 25)}...
+                {`${this.props.config.uid}`.substr(0, 25)}
+...
               </Text>
             </TouchableOpacity>
           </View>
           <View
             style={{
-              flexDirection: "row",
+              flexDirection: 'row',
               flex: 1,
-              alignItems: "center"
+              alignItems: 'center'
             }}
           >
             <TouchableHighlight
@@ -248,7 +259,7 @@ class Config extends Component {
             >
               <Icon
                 style={{
-                  color: "#bdbdbd",
+                  color: '#bdbdbd',
                   fontSize: 25
                 }}
                 type="FontAwesome5"
@@ -260,20 +271,20 @@ class Config extends Component {
 
         <View style={styles.infoContainerAddress}>
           <Left>
-            <Icon style={{ color: "#fbc233" }} name="globe" />
+            <Icon style={{ color: '#fbc233' }} name="globe" />
           </Left>
           <View
             style={{
-              width: "70%",
-              alignContent: "flex-start",
+              width: '70%',
+              alignContent: 'flex-start',
               paddingLeft: 10
             }}
           >
             <Text style={styles.textLabel}>
-              {screenProps.t("Settings:language")}
+              {screenProps.t('Settings:language')}
             </Text>
             <Text style={styles.textInfo}>
-              {" "}
+              {' '}
               {screenProps.t(`Languages:${i18n.language}`)}
             </Text>
           </View>
@@ -291,7 +302,7 @@ class Config extends Component {
             >
               <Icon
                 style={{
-                  color: "#bdbdbd",
+                  color: '#bdbdbd',
                   fontSize: 25,
                   paddingVertical: 10,
                   paddingHorizontal: 10
@@ -305,17 +316,17 @@ class Config extends Component {
         <TouchableOpacity onPress={() => this.setState({ pin: true })}>
           <View style={styles.infoContainerAddress}>
             <Left>
-              <Icon type="FontAwesome5" style={{ color: "#fbc233" }} name="file-export" />
+              <Icon type="FontAwesome5" style={{ color: '#fbc233' }} name="file-export" />
             </Left>
             <View
               style={{
-                width: "70%",
-                alignContent: "flex-start",
+                width: '70%',
+                alignContent: 'flex-start',
                 paddingLeft: 10
               }}
             >
               <Text style={styles.textInfo}>
-                {screenProps.t("Settings:createBackup")}
+                {screenProps.t('Settings:createBackup')}
               </Text>
             </View>
             <Right
@@ -329,7 +340,7 @@ class Config extends Component {
               >
                 <Icon
                   style={{
-                    color: "#bdbdbd",
+                    color: '#bdbdbd',
                     fontSize: 25,
                     paddingVertical: 10,
                     paddingHorizontal: 10
@@ -346,12 +357,12 @@ class Config extends Component {
         <TouchableOpacity onPress={() => this.setState({ network: true })}>
           <View style={styles.infoContainerAddress}>
             <Left>
-              <Icon type="FontAwesome5" style={{ color: "#fbc233" }} name="server" />
+              <Icon type="FontAwesome5" style={{ color: '#fbc233' }} name="server" />
             </Left>
             <View
               style={{
-                width: "70%",
-                alignContent: "flex-start",
+                width: '70%',
+                alignContent: 'flex-start',
                 paddingLeft: 10
               }}
             >
@@ -366,7 +377,7 @@ class Config extends Component {
             >
               <Icon
                 style={{
-                  color: "#bdbdbd",
+                  color: '#bdbdbd',
                   fontSize: 25,
                   paddingVertical: 10,
                   paddingHorizontal: 10
@@ -382,7 +393,7 @@ class Config extends Component {
   }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   config: state.config,
   aplication: state.aplication
 });
@@ -396,28 +407,28 @@ export default connect(mapStateToProps, {
 
 const styles = StyleSheet.create({
   qrCodeContainer: {
-    alignItems: "center",
-    paddingTop: "5%"
+    alignItems: 'center',
+    paddingTop: '5%'
   },
 
   infoContainer: {
-    display: "flex",
-    flexDirection: "row",
+    display: 'flex',
+    flexDirection: 'row',
 
-    alignItems: "center",
+    alignItems: 'center',
     borderBottomWidth: 0.5,
-    borderBottomColor: "gray",
+    borderBottomColor: 'gray',
     marginLeft: 20,
     minHeight: 90,
     marginRight: 20
   },
 
   infoContainerAddress: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
     borderBottomWidth: 0.5,
-    borderBottomColor: "gray",
+    borderBottomColor: 'gray',
     marginLeft: 20,
     minHeight: 70,
     marginRight: 20
@@ -425,7 +436,7 @@ const styles = StyleSheet.create({
 
   textLabel: {
     paddingBottom: 3,
-    color: "#bdbdbd"
+    color: '#bdbdbd'
   },
   touchable: {
     borderRadius: 100
@@ -439,31 +450,31 @@ const styles = StyleSheet.create({
 
   },
   sectionContainer: {
-    width: "100%",
-    alignItems: "flex-end"
+    width: '100%',
+    alignItems: 'flex-end'
   },
   imageContainer: {
     width: 220,
-    alignItems: "center",
+    alignItems: 'center',
     paddingVertical: 20
   },
   actionButtonContainer: {
-    backgroundColor: "#fbc233",
+    backgroundColor: '#fbc233',
     height: 45,
     width: 45,
     borderRadius: 100,
-    position: "absolute",
-    top: "93%",
-    right: "40%",
+    position: 'absolute',
+    top: '93%',
+    right: '40%',
     borderWidth: 0,
-    justifyContent: "center"
+    justifyContent: 'center'
   },
 
   iconStyles: {
-    display: "flex",
-    color: "white",
-    textAlign: "center",
-    justifyContent: "center",
+    display: 'flex',
+    color: 'white',
+    textAlign: 'center',
+    justifyContent: 'center',
     fontSize: 18
   }
 });

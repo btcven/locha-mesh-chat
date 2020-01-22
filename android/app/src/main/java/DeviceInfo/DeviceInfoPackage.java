@@ -11,7 +11,6 @@ import java.util.List;
 
 import LocalNotification.LocalNotificationModule;
 
-
 /**
  *  class used to register the native module and export it as a packet
  */

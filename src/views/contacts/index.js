@@ -1,7 +1,4 @@
-import React, { Component } from "react";
-import Header from "../../components/Header";
-import AddContact from "./AddContact";
-import FloatButton from "../../components/FloatButton";
+import React, { Component } from 'react';
 import {
   Container,
   Content,
@@ -12,18 +9,21 @@ import {
   Text,
   Icon,
   Thumbnail
-} from "native-base";
-import { selectedChat } from "../../store/chats";
-import { getSelectedColor, unSelect, getIcon } from "../../utils/utils";
-import { Image, StyleSheet, Alert } from "react-native";
+} from 'native-base';
+import { StyleSheet, Alert } from 'react-native';
+import { connect } from 'react-redux';
+import Header from '../../components/Header';
+import AddContact from './AddContact';
+import FloatButton from '../../components/FloatButton';
+import { selectedChat } from '../../store/chats';
+import { getSelectedColor, unSelect, getIcon } from '../../utils/utils';
 import {
   saveContact,
   getContacts,
   deleteContactAction,
   editContats
-} from "../../store/contacts";
+} from '../../store/contacts';
 
-import { connect } from "react-redux";
 
 /**
  *
@@ -41,6 +41,8 @@ class Contacts extends Component {
       selected: []
     };
   }
+
+  // eslint-disable-next-line react/sort-comp
   static navigationOptions = {
     header: null
   };
@@ -56,7 +58,7 @@ class Contacts extends Component {
   onSelect = (contact, chat) => {
     if (this.state.selected.length === 0) {
       this.props.selectedChat(chat);
-      this.props.navigation.push("chat", {
+      this.props.navigation.push('chat', {
         ...contact
       });
       return;
@@ -73,34 +75,31 @@ class Contacts extends Component {
     }
   };
 
-  getContactChat = contact => {
-    const result = Object.values(this.props.chat).find(chat => {
-      return chat.toUID === contact.hashUID;
-    });
+  getContactChat = (contact) => {
+    const result = Object.values(this.props.chat).find((chat) => chat.toUID === contact.hashUID);
 
     return result;
   };
 
-  search = text => {
+  search = (text) => {
     this.setState({ search: text });
   };
 
   deleteContact = () => {
     Alert.alert(
-      "Eliminar Contactos",
-      "¿Esta seguro de eliminar este contacto?",
+      'Eliminar Contactos',
+      '¿Esta seguro de eliminar este contacto?',
       [
         {
-          text: "Cancel",
+          text: 'Cancel',
           onPress: () => this.setState({ selected: [] }),
-          style: "cancel"
+          style: 'cancel'
         },
         {
-          text: "OK",
-          onPress: () =>
-            this.props.deleteContact(this.state.selected, () => {
-              this.setState({ selected: [] });
-            })
+          text: 'OK',
+          onPress: () => this.props.deleteContact(this.state.selected, () => {
+            this.setState({ selected: [] });
+          })
         }
       ],
       { cancelable: false }
@@ -111,7 +110,7 @@ class Contacts extends Component {
     this.openModal();
   };
 
-  seleted = data => {
+  seleted = (data) => {
     const selected = unSelect(this.state.selected, data);
 
     if (!selected.found) {
@@ -127,11 +126,9 @@ class Contacts extends Component {
 
   render() {
     const result = this.state.search
-      ? this.props.contacts.filter(contact => {
-        return contact.name
-          .toLowerCase()
-          .includes(this.state.search.toLowerCase());
-      })
+      ? this.props.contacts.filter((contact) => contact.name
+        .toLowerCase()
+        .includes(this.state.search.toLowerCase()))
       : this.props.contacts;
     return (
       <Container>
@@ -149,14 +146,14 @@ class Contacts extends Component {
         )}
 
         <Content>
-          {result.map((contact, key) => {
+          {result.map((contact) => {
             const chatInfo = this.getContactChat(contact);
             const backgroundColor = getSelectedColor(
               this.state.selected,
               contact.uid
             );
             return (
-              <List key={key} style={{ backgroundColor: backgroundColor }}>
+              <List key={contact.uid} style={{ backgroundColor }}>
                 <ListItem
                   button
                   style={{ height: 80 }}
@@ -164,12 +161,12 @@ class Contacts extends Component {
                   onLongPress={() => this.seleted(contact)}
                 >
                   <Left style={styles.textContainer}>
-                    <Text style={{ width: "100%", paddingBottom: 5 }}>
+                    <Text style={{ width: '100%', paddingBottom: 5 }}>
                       {contact.name}
                     </Text>
                     <Text note>
                       {`${contact.uid}`.length > 25
-                        ? `${contact.uid}`.substr(0, 25) + `...`
+                        ? `${`${contact.uid}`.substr(0, 25)}...`
                         : contact.uid}
                     </Text>
                   </Left>
@@ -179,7 +176,7 @@ class Contacts extends Component {
                         style={styles.imageStyles}
                         source={{
                           uri: contact.picture,
-                          cache: "force-cache"
+                          cache: 'force-cache'
                         }}
                       />
                     )}
@@ -200,13 +197,13 @@ class Contacts extends Component {
         {this.state.selected.length < 1 && (
           <FloatButton
             add={this.openModal}
-            icon={
+            icon={(
               <Icon
                 type="MaterialIcons"
                 name="person-add"
-                style={{ fontSize: 24, color: "#f5f5f5" }}
+                style={{ fontSize: 24, color: '#f5f5f5' }}
               />
-            }
+            )}
           />
         )}
       </Container>
@@ -214,7 +211,7 @@ class Contacts extends Component {
   }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   contacts: Object.values(state.contacts.contacts),
   chat: state.chats.chat,
   userData: state.config
@@ -237,21 +234,21 @@ const styles = StyleSheet.create({
     height: 60,
   },
   textContainer: {
-    flexWrap: "wrap"
+    flexWrap: 'wrap'
   },
   centerText: {
     flex: 1,
     fontSize: 18,
     padding: 32,
-    color: "#777"
+    color: '#777'
   },
   textBold: {
-    fontWeight: "500",
-    color: "#000"
+    fontWeight: '500',
+    color: '#000'
   },
   buttonText: {
     fontSize: 21,
-    color: "rgb(0,122,255)"
+    color: 'rgb(0,122,255)'
   },
   buttonTouchable: {
     padding: 16

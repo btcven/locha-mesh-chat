@@ -1,2 +1,2 @@
-export * from './congurationAction'
-export * from './congurationReducer'
+export * from './congurationAction';
+export * from './congurationReducer';

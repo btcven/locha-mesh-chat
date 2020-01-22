@@ -1,11 +1,11 @@
-import React, { Component } from "react";
-import { View, Text, TouchableOpacity } from "react-native";
-import { Icon } from "native-base";
-import Slider from "@react-native-community/slider";
-import Sound from "react-native-sound";
-import moment from "moment";
-import { connect } from "react-redux";
-import RNFS from 'react-native-fs'
+import React, { Component } from 'react';
+import { View, Text, TouchableOpacity } from 'react-native';
+import { Icon } from 'native-base';
+import Slider from '@react-native-community/slider';
+import Sound from 'react-native-sound';
+import moment from 'moment';
+import { connect } from 'react-redux';
+import RNFS from 'react-native-fs';
 
 class Player extends Component {
   constructor(props) {
@@ -15,27 +15,27 @@ class Player extends Component {
       duration: 0,
       reproduced: 0
     };
+    // eslint-disable-next-line no-undef
     sound = undefined;
   }
 
   componentDidMount = () => {
-    RNFS.exists(this.props.path).then(res => {
-      this.sound = new Sound(this.props.path, "", error => {
-        if (error) {
-
-        } else {
+    RNFS.exists(this.props.path).then(() => {
+      this.sound = new Sound(this.props.path, '', (error) => {
+        if (!error) {
           this.setState({
             duration: this.sound.getDuration()
           });
         }
       });
-    })
+    });
   };
 
-  componentWillReceiveProps = props => {
-    this.sound = new Sound(props.path, "", error => {
+  componentWillReceiveProps = (props) => {
+    this.sound = new Sound(props.path, '', (error) => {
       if (error) {
-        console.log("failed to load the sound", error);
+        // eslint-disable-next-line no-console
+        console.log('failed to load the sound', error);
       } else {
         this.setState({
           duration: this.sound.getDuration()
@@ -46,22 +46,23 @@ class Player extends Component {
 
   componentDidUpdate = () => {
     if (this.state.play) {
-      this.sound.getCurrentTime((seconds, isPlaying) => {
+      this.sound.getCurrentTime((seconds) => {
         this.setState({ reproduced: seconds });
       });
     }
   };
 
-  _play = async () => {
+  play = async () => {
     this.setState({ play: true });
-    this.sound.play(success => {
+    this.sound.play((success) => {
       if (success) {
         this.setState({ play: false });
         setTimeout(() => {
           this.setState({ reproduced: 0 });
         }, 1);
       } else {
-        console.log("playback failed due to audio decoding errors");
+        // eslint-disable-next-line no-console
+        console.log('playback failed due to audio decoding errors');
       }
     });
   };
@@ -74,7 +75,7 @@ class Player extends Component {
     this.setState({ play: false });
   };
 
-  onSliderEditing = value => {
+  onSliderEditing = (value) => {
     if (this.sound) {
       this.sound.setCurrentTime(value);
       this.setState({ reproduced: value });
@@ -84,16 +85,16 @@ class Player extends Component {
   render() {
     return (
       <View
-        style={{ flexDirection: "row", alignItems: "center", marginTop: 15 }}
+        style={{ flexDirection: 'row', alignItems: 'center', marginTop: 15 }}
       >
-        <TouchableOpacity onPress={() => this._play()}>
+        <TouchableOpacity onPress={() => this.play()}>
           {!this.state.play && (
-            <Icon name="play" style={{ color: "#616161" }} />
+            <Icon name="play" style={{ color: '#616161' }} />
           )}
         </TouchableOpacity>
         <TouchableOpacity onPress={() => this.pause()}>
           {this.state.play && (
-            <Icon name="pause" style={{ color: "#616161" }} />
+            <Icon name="pause" style={{ color: '#616161' }} />
           )}
         </TouchableOpacity>
         <Slider
@@ -107,16 +108,16 @@ class Player extends Component {
         />
 
         {(this.state.play || this.state.reproduced > 0) && (
-          <Text style={{ position: "absolute", top: 33 }}>
+          <Text style={{ position: 'absolute', top: 33 }}>
             {moment
               .utc((this.state.duration - this.state.reproduced) * 1000)
-              .format("m:ss")}
+              .format('m:ss')}
           </Text>
         )}
 
         {!this.state.play && this.state.reproduced < 1 && (
-          <Text style={{ position: "absolute", top: 33 }}>
-            {moment.utc(this.state.duration * 1000).format("m:ss")}
+          <Text style={{ position: 'absolute', top: 33 }}>
+            {moment.utc(this.state.duration * 1000).format('m:ss')}
           </Text>
         )}
       </View>
@@ -124,7 +125,7 @@ class Player extends Component {
   }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   chat: state.chats.chat,
   chatSelected: state.chats.seletedChat
 });

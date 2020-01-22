@@ -1,9 +1,10 @@
-import crypto from "crypto";
-import Bitcore from "bitcore-lib";
-import Mnemonic from "bitcore-mnemonic";
+/* eslint-disable no-unused-vars */
+import crypto from 'crypto';
+import Bitcore from 'bitcore-lib';
+import Mnemonic from 'bitcore-mnemonic';
 
 const networkConfiguration = {
-  network_data: "mainnet",
+  network_data: 'mainnet',
   bip44_id: 0
 };
 /**
@@ -27,14 +28,14 @@ export default class Bitcoin {
    */
 
   generateAddress = async (seed) => {
-    code = new Mnemonic(seed);
+    const code = new Mnemonic(seed);
 
-    var hdPrivateKey = code.toHDPrivateKey(
+    const hdPrivateKey = code.toHDPrivateKey(
       '',
       networkConfiguration.network_data
     );
 
-    let derivationPath = hdPrivateKey
+    const derivationPath = hdPrivateKey
       .derive(44, true)
       .derive(networkConfiguration.bip44_id, true)
       .derive(0, true)

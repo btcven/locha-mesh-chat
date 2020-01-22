@@ -1,9 +1,14 @@
-import React, { Component } from "react";
-import { Container } from "native-base";
-import Header from "../../components/Header";
-import ChatBody from "./ChatBody";
-import ChatForm from "./ChatForm";
-import { toast } from "../../utils/utils";
+import React, { Component } from 'react';
+import { Container } from 'native-base';
+import { connect } from 'react-redux';
+import {
+  Alert, Clipboard, Dimensions, KeyboardAvoidingView, Platform, View
+} from 'react-native';
+import { sha256 } from 'js-sha256';
+import Header from '../../components/Header';
+import ChatBody from './ChatBody';
+import ChatForm from './ChatForm';
+import { toast } from '../../utils/utils';
 import {
   initialChat,
   cleanAllChat,
@@ -12,18 +17,15 @@ import {
   setView,
   sendReadMessageStatus,
   sendAgain
-} from "../../store/chats";
+} from '../../store/chats';
 
-import { connect } from "react-redux";
-import { Alert, Clipboard, Dimensions, KeyboardAvoidingView, Platform, View } from "react-native";
-import { sha256 } from "js-sha256";
-import ImagesView from "./imagesView";
+import ImagesView from './imagesView';
 
 
 const ChatContainer = Platform.select({
   ios: () => KeyboardAvoidingView,
   android: () => View
-})()
+})();
 
 /**
  * main message component
@@ -44,7 +46,7 @@ class Chat extends Component {
       fileModal: false,
       menu: [
         {
-          label: `${this.props.screenProps.t("Chats:clean")}`,
+          label: `${this.props.screenProps.t('Chats:clean')}`,
           action: (data) => this.cleanAllMessages(data),
           broadcast: true
         }
@@ -62,6 +64,7 @@ class Chat extends Component {
    * @static
    * @memberof Chat
    */
+  // eslint-disable-next-line react/sort-comp
   static navigationOptions = {
     header: null
   };
@@ -72,20 +75,19 @@ class Chat extends Component {
    * @memberof Chat
    */
   cleanAllMessages = (close) => {
-    console.log("dataaaa", close)
     const { screenProps } = this.props;
     const chat = this.props.chat[this.props.chatSelected.index];
     Alert.alert(
-      `${screenProps.t("Chats:titleDelete")}`,
-      `${screenProps.t("Chats:deleteBody")}`,
+      `${screenProps.t('Chats:titleDelete')}`,
+      `${screenProps.t('Chats:deleteBody')}`,
       [
         {
-          text: "Cancel",
-          onPress: () => { close() },
-          style: "cancel"
+          text: 'Cancel',
+          onPress: () => { close(); },
+          style: 'cancel'
         },
         {
-          text: "OK",
+          text: 'OK',
           onPress: () => this.props.cleanAllChat(chat.toUID)
         }
       ],
@@ -121,11 +123,9 @@ class Chat extends Component {
    * @memberof Chat
    */
 
-  onClick = item => {
+  onClick = (item) => {
     if (this.state.selected.length > 0) {
-      const result = this.state.selected.filter(selected => {
-        return item.id !== selected.id;
-      });
+      const result = this.state.selected.filter((selected) => item.id !== selected.id);
 
       if (result && result.length !== this.state.selected.length) {
         this.setState({
@@ -134,12 +134,12 @@ class Chat extends Component {
       } else {
         this.setState({ selected: this.state.selected.concat(item) });
       }
-    } else if (item.file && item.file.fileType !== "audio") {
+    } else if (item.file && item.file.fileType !== 'audio') {
       this.setState({
         imagesView: [
           {
             url: item.file.file,
-            width: Dimensions.get("window").width
+            width: Dimensions.get('window').width
           }
         ]
       });
@@ -161,7 +161,7 @@ class Chat extends Component {
    * @public
    * @memberof Chat
    */
-  onSelected = item => {
+  onSelected = (item) => {
     this.setState({
       selected: this.state.selected.concat(item)
     });
@@ -174,10 +174,10 @@ class Chat extends Component {
   };
 
   copy = () => {
-    const selected = this.state.selected;
+    const { selected } = this.state;
 
     Clipboard.setString(selected[this.state.selected.length - 1].msg);
-    toast("Mensaje copiado");
+    toast('Mensaje copiado');
   };
 
   delete = () => {
@@ -224,30 +224,30 @@ class Chat extends Component {
   };
 
   sendFileWithImage = (data, callback) => {
-    const { userData, navigation, setChat, previousChat } = this.props;
+    const { userData, navigation } = this.props;
     const toUID = navigation.state.params
       ? navigation.state.params.hashUID
       : null;
     const sendObject = {
       fromUID: sha256(userData.uid),
-      toUID: toUID,
+      toUID,
       msg: {
-        text: ""
+        text: ''
       },
       timestamp: new Date().getTime(),
-      type: "msg"
+      type: 'msg'
     };
-    data.images.map((image, key) => {
+    data.images.array.forEach((image, key) => {
       const id = sha256(
-        `${sha256(userData.uid)} + ${toUID}  +  ${sendObject.msg.text +
-        sendObject.msg.file}  + ${new Date().getTime()}`
+        `${sha256(userData.uid)} + ${toUID}  +  ${sendObject.msg.text
+        + sendObject.msg.file}  + ${new Date().getTime()}`
       );
       if (data.position === key) {
-        const sendData = Object.assign({}, sendObject);
+        const sendData = { ...sendObject };
 
         sendData.msg = {
           text: data.message,
-          typeFile: "image"
+          typeFile: 'image'
         };
 
         this.props.sendMessageWithFile(
@@ -256,10 +256,10 @@ class Chat extends Component {
           image.base64
         );
       } else {
-        const sendData = Object.assign({}, sendObject);
-        sendData.msg.text = "";
+        const sendData = { ...sendObject };
+        sendData.msg.text = '';
         sendData.msg.file = image.base64;
-        sendData.msg.typeFile = "image";
+        sendData.msg.typeFile = 'image';
         this.props.sendMessageWithFile(
           { ...sendData, msgID: id },
           image.url,
@@ -280,13 +280,13 @@ class Chat extends Component {
 
   render() {
     const { navigation, screenProps } = this.props;
-    let viewImages = this.state.imagesView.length === 0 ? false : true;
+    const viewImages = this.state.imagesView.length !== 0;
     const chatSelected = this.props.chat[this.props.chatSelected.index];
 
     const messages = Object.values(chatSelected.messages).length
-      ? Object.values(chatSelected.messages).sort((a, b) => {
-        return new Date(b.timestamp) - new Date(a.timestamp);
-      })
+      ? Object.values(chatSelected.messages).sort((
+        a, b
+      ) => new Date(b.timestamp) - new Date(a.timestamp))
       : [];
     return (
       <Container>
@@ -336,7 +336,7 @@ class Chat extends Component {
   }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   userData: state.config,
   chat: state.chats.chat,
   chatSelected: state.chats.seletedChat,

@@ -1,5 +1,5 @@
-import React from "react";
-import { View, ActivityIndicator, Modal } from "react-native";
+import React from 'react';
+import { View, ActivityIndicator, Modal } from 'react-native';
 
 /**
  *
@@ -10,11 +10,11 @@ import { View, ActivityIndicator, Modal } from "react-native";
 const componentName = () => (
   <Modal
     animationType="fade"
-    transparent={true}
-    visible={true}
+    transparent
+    visible
     onRequestClose={() => {}}
   >
-    <View style={{ flex: 1, justifyContent: "center" }}>
+    <View style={{ flex: 1, justifyContent: 'center' }}>
       <ActivityIndicator color="#FAB300" size="large" />
     </View>
   </Modal>

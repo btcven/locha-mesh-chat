@@ -2,12 +2,12 @@ import {
   createStackNavigator,
   createAppContainer,
   createDrawerNavigator
-} from "react-navigation";
-import DualComponent from "./index";
-import Contact from "./views/contacts";
-import Config from "./views/config";
-import Chat from "./views/home/Chat";
-import Drawer from "./components/Drawer";
+} from 'react-navigation';
+import DualComponent from './index';
+import Contact from './views/contacts';
+import Config from './views/config';
+import Chat from './views/home/Chat';
+import Drawer from './components/Drawer';
 
 // import Gallery from "./components/Gallery";
 
@@ -30,4 +30,5 @@ const MyDrawerNavigator = createDrawerNavigator(
   }
 );
 
+// eslint-disable-next-line no-undef
 export default RouteContainer = createAppContainer(MyDrawerNavigator);

@@ -1,2 +1,2 @@
-export * from './chatAction'
-export *  from './chatReducers'
+export * from './chatAction';
+export * from './chatReducers';

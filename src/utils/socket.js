@@ -1,8 +1,9 @@
-import { getChat } from "../store/chats";
-import { reestarConnection, loading, loaded } from "../store/aplication";
-import { sha256 } from "js-sha256";
+import { sha256 } from 'js-sha256';
+import { getChat } from '../store/chats';
+import { reestarConnection, loading, loaded } from '../store/aplication';
 
-export let sendSocket = undefined;
+// eslint-disable-next-line import/no-mutable-exports
+export let sendSocket;
 
 /**
  *
@@ -13,9 +14,10 @@ export let sendSocket = undefined;
 
 export default class Socket {
   constructor(store, database, url) {
-    this.url = url ? url : "wss://lochat.coinlab.info"
+    this.url = url || 'wss://lochat.coinlab.info';
+    // eslint-disable-next-line no-undef
     this.socket = new WebSocket(this.url);
-    this.database = database
+    this.database = database;
     this.openSocketConnection();
     this.onMenssage();
     this.store = store;
@@ -33,7 +35,7 @@ export default class Socket {
    * @description websocket client management class
    * @memberof Socket
    */
-  checkingSocketStatus = store => {
+  checkingSocketStatus = (store) => {
     this.idInterval = setInterval(() => {
       if (this.socket.readyState !== 1 && this.socket.readyState !== 3) {
         if (!store.getState().aplication.loading) {
@@ -42,6 +44,7 @@ export default class Socket {
       } else if (this.socket.readyState === 3) {
         this.closeTimmer();
       } else {
+        // eslint-disable-next-line no-unused-expressions
         store.getState().aplication.loading === false
           ? null
           : this.store.dispatch(loaded());
@@ -54,30 +57,31 @@ export default class Socket {
    * @description Sending messages
    * @memberof Socket
    */
-  sendMenssage = data => {
+  sendMenssage = (data) => {
     this.socket.send(data);
   };
 
   /**
    * @function
-   * @description makes a request to the database looking for user data to pass them to the initial connection
+   * @description makes a request to the database looking for user data to pass
+   * them to the initial connection
    * @param {callback} callback
    * @memberof Socket
    */
 
-  getUserObject = callback => {
+  getUserObject = (callback) => {
     try {
-      this.database.getUserData().then(res => {
+      this.database.getUserData().then((res) => {
         const object = {
           hashUID: sha256(res[0].uid),
           timestamp: new Date().getTime(),
-          type: "handshake"
+          type: 'handshake'
         };
         callback(object);
       });
-
     } catch (error) {
-      console.log(error)
+      // eslint-disable-next-line no-console
+      console.log(error);
     }
   };
 
@@ -88,13 +92,14 @@ export default class Socket {
    */
 
   openSocketConnection = async () => {
-    this.getUserObject(res => {
+    this.getUserObject((res) => {
       this.store.dispatch(loading());
       this.socket.onopen = () => {
-        console.log("conecto");
+        // eslint-disable-next-line no-console
+        console.log('conecto');
         this.socket.send(JSON.stringify(res));
       };
-    })
+    });
   };
 
   /**
@@ -106,26 +111,26 @@ export default class Socket {
 
   connectionRetry = () => {
     setTimeout(() => {
-      reestarConnection(this.store)
-    }, 10000)
+      reestarConnection(this.store);
+    }, 10000);
   }
 
   onMenssage = () => {
-    this.socket.onmessage = e => {
+    this.socket.onmessage = (e) => {
       // a message was received
       this.store.dispatch(getChat(e.data));
     };
 
-    this.socket.onerror = e => {
+    this.socket.onerror = (e) => {
       // a message was received
-      console.log("OnError", e);
+      // eslint-disable-next-line no-console
+      console.log('OnError', e);
     };
 
-    this.socket.onclose = e => {
-      console.log("close", e);
-      this.connectionRetry()
+    this.socket.onclose = (e) => {
+      // eslint-disable-next-line no-console
+      console.log('close', e);
+      this.connectionRetry();
     };
   };
 }
-
-
