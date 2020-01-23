@@ -1,9 +1,10 @@
 import AsyncStorage from '@react-native-community/async-storage';
 import RNFS from 'react-native-fs';
+import { sha256 } from 'js-sha256';
 import { ActionTypes } from '../constants';
 import { FileDirectory } from '../../utils/utils';
 import { database } from '../../../App';
-
+import { sendSocket } from '../../utils/socket';
 /**
  * here are all the actions references to contacts
  * @module ContactAction
@@ -98,4 +99,20 @@ export const editContats = (obj, callback) => (dispatch) => {
       payload: res
     });
   });
+};
+
+export const requestImage = (uidContact) => (dispatch, getState) => {
+  const state = getState();
+  const sendStatus = {
+    fromUID: sha256(state.config.uid),
+    timestamp: new Date().getTime(),
+    type: 'status',
+    data: {
+      status: 'RequestImage',
+    },
+    toUID: uidContact
+  };
+
+
+  sendSocket.send(JSON.stringify(sendStatus));
 };

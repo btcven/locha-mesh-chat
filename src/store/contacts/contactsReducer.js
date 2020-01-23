@@ -39,6 +39,13 @@ export const contactsReducer = (state = AplicationState, action) => {
 
       return { ...state, contacts: contacts.slice() };
     }
+
+    case ActionTypes.SAVE_PHOTO: {
+      const contacts = Object.values(state.contacts);
+      const index = contacts.findIndex((contact) => contact.hashUID === action.id);
+      contacts[index].picture = action.payload;
+      return { ...state, contacts: contacts.slice() };
+    }
     default: {
       return state;
     }

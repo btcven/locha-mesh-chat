@@ -21,7 +21,8 @@ import {
   saveContact,
   getContacts,
   deleteContactAction,
-  editContats
+  editContats,
+  requestImage
 } from '../../store/contacts';
 
 
@@ -224,7 +225,8 @@ export default connect(
     getContacts,
     selectedChat,
     deleteContact: deleteContactAction,
-    editContats
+    editContats,
+    requestImage
   }
 )(Contacts);
 

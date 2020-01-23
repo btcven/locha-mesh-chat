@@ -1,6 +1,6 @@
 import ImagePicker from 'react-native-image-crop-picker';
 import RNFS from 'react-native-fs';
-import { Platform } from 'react-native';
+import { sha256 } from 'js-sha256';
 import { ActionTypes } from '../constants';
 import { FileDirectory } from '../../utils/utils';
 import { database } from '../../../App';
@@ -23,14 +23,15 @@ export const getPhotosFromUser = (id, callback) => async (dispatch) => {
     height: 500
   }).then(async (images) => {
     const name = await getName(images);
-    const newPath = `file:///${FileDirectory}/${name}`;
+    const newPath = `file://${FileDirectory}/Pictures/${name}`;
     RNFS.moveFile(images.path, newPath).then(async () => {
       await deletePhotoFromPhone();
       database.writteUser({ uid: id, picture: newPath }).then(async () => {
         callback();
         dispatch({
           type: ActionTypes.GET_PHOTO_USER,
-          payload: newPath
+          payload: newPath,
+          imageHash: sha256(newPath)
         });
       });
     });
@@ -46,12 +47,7 @@ export const getPhotosFromUser = (id, callback) => async (dispatch) => {
 
 const getName = (data) => {
   const result = data.path.split('/');
-
-  if (Platform.OS === 'android') {
-    return result[9];
-  }
-
-  return result[15];
+  return result[result.length - 1];
 };
 
 /**
@@ -86,7 +82,7 @@ export const openCamera = (id, callback) => async (dispatch) => {
     cropping: true
   }).then(async (images) => {
     const name = await getName(images);
-    const newPath = `file:///${FileDirectory}/${name}`;
+    const newPath = `file://${FileDirectory}/Pictures/${name}`;
     RNFS.moveFile(images.path, newPath).then(async () => {
       await deletePhotoFromPhone();
       database.writteUser({
@@ -96,7 +92,8 @@ export const openCamera = (id, callback) => async (dispatch) => {
         callback();
         dispatch({
           type: ActionTypes.GET_PHOTO_USER,
-          payload: res.picture
+          payload: res.picture,
+          imageHash: sha256(newPath)
         });
       });
     });

@@ -5,6 +5,7 @@ export const contactSchema = {
     uid: 'string',
     name: 'string',
     picture: 'string?',
+    imageHash: 'string?',
     hashUID: 'string'
   }
 };
@@ -27,6 +28,7 @@ export const messageSquema = {
     toUID: 'string?',
     msg: 'string',
     file: 'File?',
+    imageHash: 'string?',
     timestamp: 'int',
     shippingTime: 'int',
     viewed: 'int?',

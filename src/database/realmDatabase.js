@@ -1,8 +1,8 @@
 /* eslint-disable consistent-return */
 
 import moment from 'moment';
+import { sha256 } from 'js-sha256';
 import { onNotification } from '../utils/utils';
-// import Store from "../store";
 
 
 export default class CoreDatabase {
@@ -24,7 +24,8 @@ export default class CoreDatabase {
             uid: obj.uid,
             name: obj.name,
             picture: obj.picture,
-            chats: obj.chats
+            chats: obj.chats,
+            imageHash: sha256(obj.picture)
           },
           true
         );
@@ -343,5 +344,21 @@ export default class CoreDatabase {
     } catch (err) {
       reject();
     }
+  })
+
+
+  savePhotoContact = (id, path) => new Promise((resolve) => {
+    this.db.write(() => {
+      const result = this.db.objects('Contact').find((contact) => id === contact.hashUID);
+      this.db.create(
+        'Contact',
+        {
+          ...result,
+          picture: path
+        },
+        true
+      );
+      resolve();
+    });
   })
 }

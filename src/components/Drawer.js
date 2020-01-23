@@ -79,8 +79,7 @@ class DrawerComponent extends Component {
         </View>
         <View style={{ height: 60, alignItems: 'center', justifyContent: 'center' }}>
           <Text>
-            Version
-            {NativeModules.RNDeviceInfo.VersionInfo}
+            { `Version ${NativeModules.RNDeviceInfo.VersionInfo}`}
           </Text>
         </View>
       </Container>

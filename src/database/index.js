@@ -30,7 +30,7 @@ const optionsDatabase = {
     BroadCasContacts,
     fileSchema
   ],
-  schemaVersion: 18
+  schemaVersion: 20
 };
 
 

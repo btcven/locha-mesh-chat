@@ -52,6 +52,11 @@ export const FileDirectory = Platform.select({
 })();
 
 
+export const getPhotoBase64 = async (path) => {
+  const photoBase64 = await RNFS.readFile(path, 'base64');
+  return photoBase64;
+};
+
 /**
  *
  * function to create the application folder
@@ -3138,7 +3143,7 @@ export const generateName = () => {
   ];
 
   const name = `${capFirst(name1[getRandomInt(0, name1.length + 1)])
-  } ${
+    } ${
     capFirst(name2[getRandomInt(0, name2.length + 1)])}`;
   return name;
 };

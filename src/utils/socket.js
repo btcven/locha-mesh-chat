@@ -1,5 +1,5 @@
 import { sha256 } from 'js-sha256';
-import { getChat } from '../store/chats';
+import { socketReceive } from '../store/chats';
 import { reestarConnection, loading, loaded } from '../store/aplication';
 
 // eslint-disable-next-line import/no-mutable-exports
@@ -118,7 +118,7 @@ export default class Socket {
   onMenssage = () => {
     this.socket.onmessage = (e) => {
       // a message was received
-      this.store.dispatch(getChat(e.data));
+      this.store.dispatch(socketReceive(e.data));
     };
 
     this.socket.onerror = (e) => {

@@ -2,9 +2,10 @@ import { sha256 } from 'js-sha256';
 import RNFS from 'react-native-fs';
 import { Platform } from 'react-native';
 import { ActionTypes } from '../constants';
-import { generateName, notification, FileDirectory } from '../../utils/utils';
+import {
+  generateName, notification, FileDirectory, getPhotoBase64
+} from '../../utils/utils';
 import { database } from '../../../App';
-
 import { sendSocket } from '../../utils/socket';
 
 /**
@@ -88,6 +89,20 @@ export const broadcastRandomData = async (parse, id) => new Promise((resolve) =>
   }
 });
 
+
+export const socketReceive = (data) => (dispatch, getState) => {
+  const parse = JSON.parse(data);
+  switch (parse.type) {
+    case 'status': setStatus(parse, { dispatch, getState });
+      break;
+    case 'msg': getChat(parse, { dispatch, getState });
+      break;
+    default:
+      break;
+  }
+};
+
+
 /**
  * @function
  * @description This function is executed every time a new message arrives
@@ -100,44 +115,79 @@ export const broadcastRandomData = async (parse, id) => new Promise((resolve) =>
  * @param  {string} data.type type message
  * @returns {object}
  */
-
-export const getChat = (data) => async (dispatch) => {
-  const parse = JSON.parse(data);
+export const getChat = async (parse, { dispatch }) => {
   let infoMensagge;
-  if (parse.type !== 'status') {
-    sendStatus(parse);
-    if (!parse.toUID) {
-      infoMensagge = await broadcastRandomData(parse);
-    }
+  sendStatus(parse);
+  if (!parse.toUID) {
+    infoMensagge = await broadcastRandomData(parse);
+  }
+  if (parse.msg.file) {
+    parse.msg.file = await saveFile(parse.msg);
+  }
+  const uidChat = parse.toUID ? parse.fromUID : 'broadcast';
+  const name = infoMensagge ? infoMensagge.name : undefined;
+  database.setMessage(uidChat, { ...parse, name }, 'delivered').then((res) => {
+    dispatch({
+      type: ActionTypes.NEW_MESSAGE,
+      payload: {
+        name,
+        ...parse,
+        msg: parse.msg.text,
+        id: parse.msgID,
+        file: res.file,
+        time: res.time
+      }
+    });
+  });
+};
 
-    if (parse.msg.file) {
-      parse.msg.file = await saveFile(parse.msg);
-    }
+const setStatus = async (statusData, { dispatch, getState }) => {
+  const state = getState();
 
-    const uidChat = parse.toUID ? parse.fromUID : 'broadcast';
-    const name = infoMensagge ? infoMensagge.name : undefined;
-    database.setMessage(uidChat, { ...parse, name }, 'delivered').then((res) => {
-      dispatch({
-        type: ActionTypes.NEW_MESSAGE,
-        payload: {
-          name,
-          ...parse,
-          msg: parse.msg.text,
-          id: parse.msgID,
-          file: res.file,
-          time: res.time
+  switch (statusData.data.status) {
+    case 'RequestImage': {
+      const base64Image = await getPhotoBase64(state.config.image);
+      const obj = {
+        fromUID: statusData.toUID,
+        toUID: statusData.fromUID,
+        timestamp: new Date().getTime(),
+        type: 'status',
+        data: {
+          status: 'sentImage',
+          image: base64Image
         }
+      };
+      sendSocket.send(JSON.stringify(obj));
+    }
+      break;
+    // eslint-disable-next-line no-lone-blocks
+    case 'sentImage': {
+      const connectiveAddress = Platform.OS === 'android' ? 'file:///' : '';
+      const name = `IMG_${new Date().getTime()}`;
+      const base64File = statusData.data.image;
+      const directory = `${connectiveAddress}${FileDirectory}/Pictures/${name}.jpg`.trim();
+      RNFS.writeFile(directory, base64File, 'base64').then(() => {
+        database.savePhotoContact(statusData.fromUID, directory).then(() => {
+          dispatch({
+            type: ActionTypes.SAVE_PHOTO,
+            payload: directory,
+            id: statusData.fromUID
+          });
+        });
       });
-    });
-  } else {
-    database.addStatusOnly(parse).then(() => {
-      dispatch({
-        type: ActionTypes.SET_STATUS_MESSAGE,
-        payload: parse
+    }
+      break;
+    default: {
+      database.addStatusOnly(statusData).then(() => {
+        dispatch({
+          type: ActionTypes.SET_STATUS_MESSAGE,
+          payload: statusData
+        });
       });
-    });
+    }
   }
 };
+
 
 /**
  * save the files in the phone memory
