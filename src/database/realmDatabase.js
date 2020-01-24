@@ -23,7 +23,8 @@ export default class CoreDatabase {
           name: obj.name,
           picture: obj.picture,
           chats: obj.chats,
-          imageHash: obj.picture ? sha256(obj.picture) : undefined
+          contacts: [],
+          imageHash: obj.picture ? sha256(obj.picture) : null
         };
         this.db.create(
           'user',
@@ -36,6 +37,25 @@ export default class CoreDatabase {
       reject(e);
     }
   });
+
+  saveUserPhoto = (obj) => new Promise((resolve, reject) => {
+    try {
+      this.db.write(() => {
+        this.db.create(
+          'user',
+          {
+            ...obj,
+            imageHash: obj.picture ? sha256(obj.picture) : null
+          },
+          true
+        );
+        resolve(obj);
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+
 
   cancelUnreadMessages = (id) => new Promise((resolve) => {
     this.db.write(() => {
@@ -342,11 +362,11 @@ export default class CoreDatabase {
     }
   })
 
-  savePhotoContact = (id, path) => new Promise((resolve) => {
+  savePhotoContact = (id, path, imageHash) => new Promise((resolve) => {
     this.db.write(() => {
       const result = this.db.objects('Contact').find((contact) => id === contact.hashUID);
       result.picture = path;
-      result.imageHash = sha256(path);
+      result.imageHash = imageHash;
       resolve();
     });
   })

@@ -26,7 +26,7 @@ export const getPhotosFromUser = (id, callback) => async (dispatch) => {
     const newPath = `file://${FileDirectory}/Pictures/${name}`;
     RNFS.moveFile(images.path, newPath).then(async () => {
       await deletePhotoFromPhone();
-      database.writteUser({ uid: id, picture: newPath }).then(async () => {
+      database.saveUserPhoto({ uid: id, picture: newPath }).then(async () => {
         callback();
         dispatch({
           type: ActionTypes.GET_PHOTO_USER,
@@ -85,7 +85,7 @@ export const openCamera = (id, callback) => async (dispatch) => {
     const newPath = `file://${FileDirectory}/Pictures/${name}`;
     RNFS.moveFile(images.path, newPath).then(async () => {
       await deletePhotoFromPhone();
-      database.writteUser({
+      database.saveUserPhoto({
         uid: id,
         picture: newPath
       }).then(async (res) => {

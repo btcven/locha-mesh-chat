@@ -3,7 +3,7 @@ import RNFS from 'react-native-fs';
 import { Platform } from 'react-native';
 import { ActionTypes } from '../constants';
 import {
-  generateName, notification, FileDirectory, getPhotoBase64, saveImageBase64
+  generateName, notification, FileDirectory,
 } from '../../utils/utils';
 import { database } from '../../../App';
 import { sendSocket } from '../../utils/socket';
@@ -89,20 +89,6 @@ export const broadcastRandomData = async (parse, id) => new Promise((resolve) =>
   }
 });
 
-
-export const socketReceive = (data) => (dispatch, getState) => {
-  const parse = JSON.parse(data);
-  switch (parse.type) {
-    case 'status': setStatus(parse, { dispatch, getState });
-      break;
-    case 'msg': getChat(parse, { dispatch, getState });
-      break;
-    default:
-      break;
-  }
-};
-
-
 /**
  * @function
  * @description This function is executed every time a new message arrives
@@ -115,7 +101,7 @@ export const socketReceive = (data) => (dispatch, getState) => {
  * @param  {string} data.type type message
  * @returns {object}
  */
-export const getChat = async (parse, { dispatch }) => {
+export const getChat = (parse) => async (dispatch) => {
   let infoMensagge;
   sendStatus(parse);
   if (!parse.toUID) {
@@ -141,61 +127,15 @@ export const getChat = async (parse, { dispatch }) => {
   });
 };
 
-const setStatus = async (statusData, { dispatch, getState }) => {
-  const state = getState();
-  switch (statusData.data.status) {
-    case 'RequestImage':
-      database.verifyContact(statusData.fromUID).then(async (verify) => {
-        if (verify) {
-          if (verify.imageHash !== statusData.data.imageHash) {
-            saveImageBase64(statusData.data.image).then((imagePath) => {
-              database.savePhotoContact(statusData.fromUID, imagePath).then(() => {
-                dispatch({
-                  type: ActionTypes.SAVE_PHOTO,
-                  payload: imagePath,
-                  id: statusData.fromUID
-                });
-              });
-            });
-          }
-          const base64Image = await getPhotoBase64(state.config.image);
-          const obj = {
-            fromUID: statusData.toUID,
-            toUID: statusData.fromUID,
-            timestamp: new Date().getTime(),
-            type: 'status',
-            data: {
-              status: 'sentImage',
-              image: base64Image
-            }
-          };
-          sendSocket.send(JSON.stringify(obj));
-        }
-      });
-      break;
-    case 'sentImage':
-      saveImageBase64(statusData.data.image).then((imagePath) => {
-        database.savePhotoContact(statusData.fromUID, imagePath).then(() => {
-          dispatch({
-            type: ActionTypes.SAVE_PHOTO,
-            payload: imagePath,
-            id: statusData.fromUID
-          });
-        });
-      });
 
-      break;
-    default: {
-      database.addStatusOnly(statusData).then(() => {
-        dispatch({
-          type: ActionTypes.SET_STATUS_MESSAGE,
-          payload: statusData
-        });
-      });
-    }
-  }
+export const setStatusMessage = (statusData) => (dispatch) => {
+  database.addStatusOnly(statusData).then(() => {
+    dispatch({
+      type: ActionTypes.SET_STATUS_MESSAGE,
+      payload: statusData
+    });
+  });
 };
-
 
 /**
  * save the files in the phone memory

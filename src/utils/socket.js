@@ -1,5 +1,6 @@
 import { sha256 } from 'js-sha256';
-import { socketReceive } from '../store/chats';
+import { getChat, setStatusMessage } from '../store/chats';
+import { requestImageStatus, sentImageStatus, verifyHashImageStatus } from '../store/contacts/contactsActions';
 import { reestarConnection, loading, loaded } from '../store/aplication';
 
 // eslint-disable-next-line import/no-mutable-exports
@@ -115,10 +116,34 @@ export default class Socket {
     }, 10000);
   }
 
+  setStatus = async (statusData) => {
+    const { dispatch } = this.store;
+    switch (statusData.data.status) {
+      case 'RequestImage': dispatch(requestImageStatus(statusData));
+        break;
+      case 'sentImage': dispatch(sentImageStatus(statusData));
+        break;
+      case 'verifyHashImage': dispatch(verifyHashImageStatus(statusData));
+        break;
+      default: dispatch(setStatusMessage(statusData));
+        break;
+    }
+  };
+
+
   onMenssage = () => {
     this.socket.onmessage = (e) => {
       // a message was received
-      this.store.dispatch(socketReceive(e.data));
+      const parse = JSON.parse(e.data);
+      const { dispatch } = this.store;
+      switch (parse.type) {
+        case 'status': this.setStatus(parse);
+          break;
+        case 'msg': dispatch(getChat(parse));
+          break;
+        default:
+          break;
+      }
     };
 
     this.socket.onerror = (e) => {

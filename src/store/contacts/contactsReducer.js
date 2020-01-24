@@ -44,6 +44,7 @@ export const contactsReducer = (state = AplicationState, action) => {
       const contacts = Object.values(state.contacts);
       const index = contacts.findIndex((contact) => contact.hashUID === action.id);
       contacts[index].picture = action.payload;
+      contacts[index].imageHash = action.imageHash;
       return { ...state, contacts: contacts.slice() };
     }
     default: {

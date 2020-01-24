@@ -70,8 +70,8 @@ export const createNewAccount = (obj) => async (dispatch) => {
       }
     ]
   }).then(async (res) => {
-    dispatch(writeAction(res));
     await AsyncStorage.setItem('@APP:status', 'created');
+    dispatch(writeAction(res));
     ws = new Socket(store, database);
     dispatch({ type: ActionTypes.URL_CONNECTION, payload: ws.url });
   });

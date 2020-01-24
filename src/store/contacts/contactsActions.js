@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import RNFS from 'react-native-fs';
 import { sha256 } from 'js-sha256';
 import { ActionTypes } from '../constants';
-import { FileDirectory, getPhotoBase64 } from '../../utils/utils';
+import { FileDirectory, getPhotoBase64, saveImageBase64 } from '../../utils/utils';
 import { database } from '../../../App';
 import { sendSocket } from '../../utils/socket';
 /**
@@ -103,7 +103,10 @@ export const editContats = (obj, callback) => (dispatch) => {
 
 export const requestImage = (uidContact) => async (dispatch, getState) => {
   const state = getState();
-  const imageBase64 = await getPhotoBase64(state.config.image);
+  let imageBase64;
+  if (state.config.image) {
+    imageBase64 = await getPhotoBase64(state.config.image);
+  }
   const sendStatus = {
     fromUID: sha256(state.config.uid),
     timestamp: new Date().getTime(),
@@ -115,8 +118,90 @@ export const requestImage = (uidContact) => async (dispatch, getState) => {
     },
     toUID: uidContact
   };
+  sendSocket.send(JSON.stringify(sendStatus));
+};
 
-  console.log("MARDETA SEAAAA",sendStatus, state.config);
+export const verifyImage = (contact) => (dispatch, getState) => {
+  const state = getState();
+  const sendStatus = {
+    fromUID: sha256(state.config.uid),
+    timestamp: new Date().getTime(),
+    type: 'status',
+    data: {
+      status: 'verifyHashImage',
+      imageHash: contact.imageHash
+    },
+    toUID: contact.hashUID
+  };
 
   sendSocket.send(JSON.stringify(sendStatus));
+};
+
+export const requestImageStatus = (statusData) => (dispatch, getState) => {
+  const state = getState();
+  database.verifyContact(statusData.fromUID).then(async (verify) => {
+    if (verify) {
+      if (verify.imageHash !== statusData.data.imageHash) {
+        saveImageBase64(statusData.data.image).then((imagePath) => {
+          database.savePhotoContact(
+            statusData.fromUID,
+            imagePath,
+            statusData.data.imageHash
+          ).then(() => {
+            dispatch({
+              type: ActionTypes.SAVE_PHOTO,
+              payload: imagePath,
+              id: statusData.fromUID,
+              imageHash: statusData.data.imageHash
+            });
+          });
+        });
+      }
+      const base64Image = await getPhotoBase64(state.config.image);
+      const obj = {
+        fromUID: statusData.toUID,
+        toUID: statusData.fromUID,
+        timestamp: new Date().getTime(),
+        type: 'status',
+        data: {
+          status: 'sentImage',
+          image: base64Image,
+          imageHash: state.config.imageHash
+        }
+      };
+      sendSocket.send(JSON.stringify(obj));
+    }
+  });
+};
+
+export const sentImageStatus = (statusData) => (dispatch) => {
+  saveImageBase64(statusData.data.image).then((imagePath) => {
+    database.savePhotoContact(statusData.fromUID, imagePath, statusData.data.imageHash).then(() => {
+      dispatch({
+        type: ActionTypes.SAVE_PHOTO,
+        payload: imagePath,
+        id: statusData.fromUID,
+        imageHash: statusData.data.imageHash
+      });
+    });
+  });
+};
+
+export const verifyHashImageStatus = (statusData) => async (getState) => {
+  const state = getState();
+  if (state.config.imageHash !== statusData.data.imageHash) {
+    const base64Image = await getPhotoBase64(state.config.image);
+    const obj = {
+      fromUID: statusData.toUID,
+      toUID: statusData.fromUID,
+      timestamp: new Date().getTime(),
+      type: 'status',
+      data: {
+        status: 'sentImage',
+        image: base64Image,
+        imageHash: state.config.imageHash
+      }
+    };
+    sendSocket.send(JSON.stringify(obj));
+  }
 };

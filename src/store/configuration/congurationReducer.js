@@ -14,7 +14,8 @@ export const configurationReducer = (state = AplicationState, action) => {
       return {
         uid: action.payload.uid,
         name: action.payload.name,
-        image: action.payload.picture
+        image: action.payload.picture,
+        imageHash: action.payload.imageHash
       };
     }
 
