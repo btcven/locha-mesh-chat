@@ -30,7 +30,7 @@ const optionsDatabase = {
     BroadCasContacts,
     fileSchema
   ],
-  schemaVersion: 20
+  schemaVersion: 21
 };
 
 
@@ -55,7 +55,7 @@ export default class Database extends CoreDatabase {
       resolve(this.db);
     } catch (err) {
       // eslint-disable-next-line no-console
-      console.log(err);
+      console.log('getRealm', err);
     }
   })
 

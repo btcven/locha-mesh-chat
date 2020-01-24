@@ -18,19 +18,20 @@ export default class CoreDatabase {
   writteUser = (obj) => new Promise((resolve, reject) => {
     try {
       this.db.write(() => {
+        const userData = {
+          uid: obj.uid,
+          name: obj.name,
+          picture: obj.picture,
+          chats: obj.chats,
+          imageHash: obj.picture ? sha256(obj.picture) : undefined
+        };
         this.db.create(
           'user',
-          {
-            uid: obj.uid,
-            name: obj.name,
-            picture: obj.picture,
-            chats: obj.chats,
-            imageHash: sha256(obj.picture)
-          },
+          userData,
           true
         );
+        resolve(userData);
       });
-      resolve(obj);
     } catch (e) {
       reject(e);
     }
@@ -288,7 +289,6 @@ export default class CoreDatabase {
     });
   });
 
-
   addStatusOnly = (eventStatus) => new Promise((resolve) => {
     this.db.write(() => {
       try {
@@ -312,7 +312,6 @@ export default class CoreDatabase {
     });
   });
 
-
   updateMessage = (message) => new Promise((resolve) => {
     this.db.write(() => {
       try {
@@ -324,9 +323,7 @@ export default class CoreDatabase {
           },
           true
         );
-
         const msg = this.db.objectForPrimaryKey('Message', message.id);
-
         resolve(msg);
       } catch (err) {
         // eslint-disable-next-line no-console
@@ -334,7 +331,6 @@ export default class CoreDatabase {
       }
     });
   });
-
 
   getAllData = () => new Promise((resolve, reject) => {
     try {
@@ -346,18 +342,11 @@ export default class CoreDatabase {
     }
   })
 
-
   savePhotoContact = (id, path) => new Promise((resolve) => {
     this.db.write(() => {
       const result = this.db.objects('Contact').find((contact) => id === contact.hashUID);
-      this.db.create(
-        'Contact',
-        {
-          ...result,
-          picture: path
-        },
-        true
-      );
+      result.picture = path;
+      result.imageHash = sha256(path);
       resolve();
     });
   })

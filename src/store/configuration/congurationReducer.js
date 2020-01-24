@@ -22,7 +22,7 @@ export const configurationReducer = (state = AplicationState, action) => {
       return { ...AplicationState };
     }
     case ActionTypes.GET_PHOTO_USER: {
-      return { ...state, image: action.payload, imageHash: action.payload.imageHash };
+      return { ...state, image: action.payload, imageHash: action.imageHash };
     }
     case ActionTypes.EDIT_NAME: {
       return { ...state, name: action.payload };

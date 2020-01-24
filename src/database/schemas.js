@@ -28,7 +28,6 @@ export const messageSquema = {
     toUID: 'string?',
     msg: 'string',
     file: 'File?',
-    imageHash: 'string?',
     timestamp: 'int',
     shippingTime: 'int',
     viewed: 'int?',
@@ -66,6 +65,7 @@ export const userSchema = {
     uid: { type: 'string', indexed: true },
     name: 'string',
     picture: 'string?',
+    imageHash: 'string?',
     contacts: { type: 'list', objectType: 'Contact' },
     chats: { type: 'list', objectType: 'Chat' }
   }

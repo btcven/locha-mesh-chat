@@ -3,7 +3,7 @@ import RNFS from 'react-native-fs';
 import { Platform } from 'react-native';
 import { ActionTypes } from '../constants';
 import {
-  generateName, notification, FileDirectory, getPhotoBase64
+  generateName, notification, FileDirectory, getPhotoBase64, saveImageBase64
 } from '../../utils/utils';
 import { database } from '../../../App';
 import { sendSocket } from '../../utils/socket';
@@ -143,39 +143,47 @@ export const getChat = async (parse, { dispatch }) => {
 
 const setStatus = async (statusData, { dispatch, getState }) => {
   const state = getState();
-
   switch (statusData.data.status) {
-    case 'RequestImage': {
-      const base64Image = await getPhotoBase64(state.config.image);
-      const obj = {
-        fromUID: statusData.toUID,
-        toUID: statusData.fromUID,
-        timestamp: new Date().getTime(),
-        type: 'status',
-        data: {
-          status: 'sentImage',
-          image: base64Image
+    case 'RequestImage':
+      database.verifyContact(statusData.fromUID).then(async (verify) => {
+        if (verify) {
+          if (verify.imageHash !== statusData.data.imageHash) {
+            saveImageBase64(statusData.data.image).then((imagePath) => {
+              database.savePhotoContact(statusData.fromUID, imagePath).then(() => {
+                dispatch({
+                  type: ActionTypes.SAVE_PHOTO,
+                  payload: imagePath,
+                  id: statusData.fromUID
+                });
+              });
+            });
+          }
+          const base64Image = await getPhotoBase64(state.config.image);
+          const obj = {
+            fromUID: statusData.toUID,
+            toUID: statusData.fromUID,
+            timestamp: new Date().getTime(),
+            type: 'status',
+            data: {
+              status: 'sentImage',
+              image: base64Image
+            }
+          };
+          sendSocket.send(JSON.stringify(obj));
         }
-      };
-      sendSocket.send(JSON.stringify(obj));
-    }
+      });
       break;
-    // eslint-disable-next-line no-lone-blocks
-    case 'sentImage': {
-      const connectiveAddress = Platform.OS === 'android' ? 'file:///' : '';
-      const name = `IMG_${new Date().getTime()}`;
-      const base64File = statusData.data.image;
-      const directory = `${connectiveAddress}${FileDirectory}/Pictures/${name}.jpg`.trim();
-      RNFS.writeFile(directory, base64File, 'base64').then(() => {
-        database.savePhotoContact(statusData.fromUID, directory).then(() => {
+    case 'sentImage':
+      saveImageBase64(statusData.data.image).then((imagePath) => {
+        database.savePhotoContact(statusData.fromUID, imagePath).then(() => {
           dispatch({
             type: ActionTypes.SAVE_PHOTO,
-            payload: directory,
+            payload: imagePath,
             id: statusData.fromUID
           });
         });
       });
-    }
+
       break;
     default: {
       database.addStatusOnly(statusData).then(() => {

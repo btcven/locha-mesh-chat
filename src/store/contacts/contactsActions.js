@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import RNFS from 'react-native-fs';
 import { sha256 } from 'js-sha256';
 import { ActionTypes } from '../constants';
-import { FileDirectory } from '../../utils/utils';
+import { FileDirectory, getPhotoBase64 } from '../../utils/utils';
 import { database } from '../../../App';
 import { sendSocket } from '../../utils/socket';
 /**
@@ -101,18 +101,22 @@ export const editContats = (obj, callback) => (dispatch) => {
   });
 };
 
-export const requestImage = (uidContact) => (dispatch, getState) => {
+export const requestImage = (uidContact) => async (dispatch, getState) => {
   const state = getState();
+  const imageBase64 = await getPhotoBase64(state.config.image);
   const sendStatus = {
     fromUID: sha256(state.config.uid),
     timestamp: new Date().getTime(),
     type: 'status',
     data: {
       status: 'RequestImage',
+      image: imageBase64,
+      imageHash: state.config.imageHash
     },
     toUID: uidContact
   };
 
+  console.log("MARDETA SEAAAA",sendStatus, state.config);
 
   sendSocket.send(JSON.stringify(sendStatus));
 };

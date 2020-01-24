@@ -182,6 +182,17 @@ const getInfoMessage = (id) => {
   return { toUID: result.toUID, ...contact };
 };
 
+export const saveImageBase64 = (base64File) => new Promise((resolve, reject) => {
+  const connectiveAddress = Platform.OS === 'android' ? 'file:///' : '';
+  const name = `IMG_${new Date().getTime()}`;
+  const directory = `${connectiveAddress}${FileDirectory}/Pictures/${name}.jpg`.trim();
+  RNFS.writeFile(directory, base64File, 'base64').then(() => {
+    resolve(directory);
+  }).catch(() => {
+    reject();
+  });
+});
+
 /**
  * This function is used as an observable that runs from time
  * to time verifies the messages of the public chat and eliminates them
@@ -3143,7 +3154,7 @@ export const generateName = () => {
   ];
 
   const name = `${capFirst(name1[getRandomInt(0, name1.length + 1)])
-    } ${
+  } ${
     capFirst(name2[getRandomInt(0, name2.length + 1)])}`;
   return name;
 };
