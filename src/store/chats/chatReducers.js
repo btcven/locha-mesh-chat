@@ -1,6 +1,7 @@
-import { ActionTypes } from "../constants";
-import { chats } from "../../utils/constans";
-import { sha256 } from "js-sha256";
+/* eslint-disable no-param-reassign */
+/* eslint-disable import/prefer-default-export */
+import { sha256 } from 'js-sha256';
+import { ActionTypes } from '../constants';
 
 const AplicationState = {
   chat: []
@@ -8,9 +9,8 @@ const AplicationState = {
 
 export const chatReducer = (state = AplicationState, action) => {
   switch (action.type) {
-
     case ActionTypes.CLEAR_ALL: {
-      return { ...AplicationState }
+      return { ...AplicationState };
     }
 
     case ActionTypes.INITIAL_STATE: {
@@ -24,10 +24,8 @@ export const chatReducer = (state = AplicationState, action) => {
     }
 
     case ActionTypes.DELETE_CONTACT: {
-      const res = Object.values(state.chat).filter(obj => {
-        const result = action.payload.find(payload => {
-          return obj.toUID !== payload.hashUID;
-        });
+      const res = Object.values(state.chat).filter((obj) => {
+        const result = action.payload.find((payload) => obj.toUID !== payload.hashUID);
 
         return result;
       });
@@ -37,11 +35,12 @@ export const chatReducer = (state = AplicationState, action) => {
 
     case ActionTypes.NEW_MESSAGE: {
       const chat = Object.values(state.chat);
-      chatUID = action.payload.toUID ? action.payload.toUID : "broadcast";
-      chatFromUID = action.payload.fromUID;
-      const result = chat.findIndex(chat => {
-        return chat.toUID === chatUID || chat.toUID === chatFromUID;
-      });
+      const chatUID = action.payload.toUID ? action.payload.toUID : 'broadcast';
+      const chatFromUID = action.payload.fromUID;
+      const result = chat.findIndex(
+        (chatItem) => chatItem.toUID === chatUID
+          || chatItem.toUID === chatFromUID
+      );
 
       const messages = Object.values(chat[result].messages);
 
@@ -57,9 +56,11 @@ export const chatReducer = (state = AplicationState, action) => {
     }
 
     case ActionTypes.SELECTED_CHAT: {
-      const result = Object.values(state.chat).findIndex(chat => {
-        return chat.toUID === action.payload.toUID;
-      });
+      const result = Object.values(
+        state.chat
+      ).findIndex(
+        (chat) => chat.toUID === action.payload.toUID
+      );
       return {
         ...state,
         seletedChat: { index: result, id: state.chat[result].id }
@@ -68,8 +69,8 @@ export const chatReducer = (state = AplicationState, action) => {
 
     case ActionTypes.DELETE_MESSAGE: {
       const chats = Object.values(state.chat);
-      chats.map((chat, key) => {
-        action.payload.map(payload => {
+      chats.forEach((chat, key) => {
+        action.payload.forEach((payload) => {
           if (payload.toUID === chat.toUID) {
             chats[key].messages = [];
           }
@@ -80,7 +81,7 @@ export const chatReducer = (state = AplicationState, action) => {
     }
 
     case ActionTypes.DELETE_ALL_MESSAGE: {
-      Object.values(state.chat).map((chat, key) => {
+      Object.values(state.chat).forEach((chat, key) => {
         if (chat.toUID === action.payload) {
           state.chat[key].messages = [];
         }
@@ -89,10 +90,8 @@ export const chatReducer = (state = AplicationState, action) => {
     }
     case ActionTypes.DELETE_SELECTED_MESSAGE: {
       const chat = state.chat[state.seletedChat.index];
-      const messages = Object.values(chat.messages).filter(message => {
-        const res = action.payload.find(payload => {
-          return message.id === payload.id;
-        });
+      const messages = Object.values(chat.messages).filter((message) => {
+        const res = action.payload.find((payload) => message.id === payload.id);
 
         return !res;
       });
@@ -115,9 +114,7 @@ export const chatReducer = (state = AplicationState, action) => {
     }
 
     case ActionTypes.IN_VIEW: {
-      const index = Object.values(state.chat).findIndex(chat => {
-        return chat.toUID === action.payload;
-      });
+      const index = Object.values(state.chat).findIndex((chat) => chat.toUID === action.payload);
 
       if (index !== -1) {
         state.chat[index] = {
@@ -126,71 +123,59 @@ export const chatReducer = (state = AplicationState, action) => {
         };
 
         return { ...state, chat: Object.values(state.chat) };
-      } else {
-        return state;
       }
+      return state;
     }
 
     case ActionTypes.SET_STATUS_MESSAGE: {
       try {
-        const index = Object.values(state.chat).findIndex(chat => {
-          return chat.toUID === sha256(action.payload.fromUID);
-        });
+        const index = Object.values(
+          state.chat
+        ).findIndex(
+          (chat) => chat.toUID === sha256(action.payload.fromUID)
+        );
 
         if (Array.isArray(action.payload.data.msgID)) {
-          action.payload.data.msgID.map((id, key) => {
+          // eslint-disable-next-line array-callback-return
+          action.payload.data.msgID.map((id) => {
             const messageIndex = Object.values(
               state.chat[index].messages
-            ).findIndex(message => {
-              return message.id === id;
-            });
+            ).findIndex((message) => message.id === id);
 
-            state.chat[index].messages[messageIndex].status =
-              action.payload.data.status;
+            state.chat[index].messages[messageIndex].status = action.payload.data.status;
           });
         } else {
           const messageIndex = Object.values(
             state.chat[index].messages
-          ).findIndex(message => {
-            return message.id === action.payload.data.msgID;
-          });
+          ).findIndex((message) => message.id === action.payload.data.msgID);
 
-          state.chat[index].messages[messageIndex].status =
-            action.payload.data.status;
+          state.chat[index].messages[messageIndex].status = action.payload.data.status;
         }
 
         return { ...state, chat: state.chat.slice() };
       } catch (err) {
         const messageIndex = Object.values(state.chat[0].messages).findIndex(
-          message => {
-            return message.id === action.payload.data.msgID;
-          }
+          (message) => message.id === action.payload.data.msgID
         );
 
-        state.chat[0].messages[messageIndex].status =
-          action.payload.data.status;
+        state.chat[0].messages[messageIndex].status = action.payload.data.status;
 
         return { ...state, chat: state.chat.slice() };
       }
     }
 
     case ActionTypes.SEND_AGAIN: {
-      let index = Object.values(state.chat).findIndex(chat => {
-        return chat.toUID === action.payload.toUID;
-      });
-
-      index = index === -1 ? 0 : index;
-
-      const messageIndex = Object.values(state.chat[index].messages).findIndex(
-        message => {
-          return message.id === action.payload.id;
-        }
+      let index = Object.values(
+        state.chat
+      ).findIndex(
+        (chat) => chat.toUID === action.payload.toUID
       );
-
-      state.chat[index].messages[messageIndex].timestamp =
-        action.payload.timestamp;
-      state.chat[index].messages[messageIndex].status = "pending";
-
+      index = index === -1 ? 0 : index;
+      const messageIndex = Object.values(state.chat[index].messages).findIndex(
+        (message) => message.id === action.payload.id
+      );
+      state.chat[index].messages[messageIndex].timestamp = action.payload.timestamp;
+      state.chat[index].messages[messageIndex].status = 'pending';
       return { ...state, chat: state.chat.slice() };
     }
 

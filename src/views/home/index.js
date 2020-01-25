@@ -1,6 +1,6 @@
-import React, { Component } from "react";
-import { chats } from "../../utils/constans";
-import { notification } from '../../utils/utils'
+/* eslint-disable consistent-return */
+/* eslint-disable array-callback-return */
+import React, { Component } from 'react';
 import {
   Container,
   Content,
@@ -12,20 +12,23 @@ import {
   Thumbnail,
   Text,
   Icon
-} from "native-base";
-import Header from "../../components/Header";
-import { connect } from "react-redux";
-import { Alert, Image, View, Platform } from "react-native";
-import { selectedChat, deleteChat } from "../../store/chats";
+} from 'native-base';
+import { connect } from 'react-redux';
+import {
+  Alert, View,
+} from 'react-native';
+import Moment from 'moment';
+import { chats } from '../../utils/constans';
 import {
   getSelectedColor,
   unSelect,
   pendingObservable,
   getIcon
-} from "../../utils/utils";
-import Moment from "moment";
-import FloatButton from "../../components/FloatButton";
-import { database } from '../../../App'
+} from '../../utils/utils';
+import Header from '../../components/Header';
+import { selectedChat, deleteChat } from '../../store/chats';
+import FloatButton from '../../components/FloatButton';
+import { database } from '../../../App';
 
 
 /**
@@ -43,21 +46,22 @@ class index extends Component {
     };
   }
 
+  // eslint-disable-next-line react/sort-comp
   static navigationOptions = {
-    drawerLabel: "Home"
+    drawerLabel: 'Home'
   };
 
   componentDidMount = () => {
+    database.realmObservable();
     pendingObservable();
-    database.realmObservable()
   };
 
   selectedChat = (info, obj) => {
     if (this.state.selected.length === 0) {
       const result = this.getContactInformation(obj);
-      const contacts = result.name === "broadcast" ? undefined : result;
+      const contacts = result.name === 'broadcast' ? undefined : result;
       this.props.selectedChat(obj);
-      this.props.navigation.push("chat", contacts);
+      this.props.navigation.push('chat', contacts);
       return;
     }
 
@@ -75,36 +79,33 @@ class index extends Component {
   deleteChat = async () => {
     const { screenProps } = this.props;
     Alert.alert(
-      `${screenProps.t("Chats:titleDelete")}`,
-      `${screenProps.t("Chats:deleteBody")}`,
+      `${screenProps.t('Chats:titleDelete')}`,
+      `${screenProps.t('Chats:deleteBody')}`,
       [
         {
-          text: "Cancel",
+          text: 'Cancel',
           onPress: () => this.setState({ selected: [] }),
-          style: "cancel"
+          style: 'cancel'
         },
         {
-          text: "OK",
-          onPress: () =>
-            this.props.deleteChat(this.state.selected, () => {
-              this.setState({ selected: [] });
-            })
+          text: 'OK',
+          onPress: () => this.props.deleteChat(this.state.selected, () => {
+            this.setState({ selected: [] });
+          })
         }
       ],
       { cancelable: false }
     );
   };
 
-  getContactInformation = data => {
-    const result = this.props.contacts.find(contact => {
-      return data.toUID === contact.hashUID;
-    });
+  getContactInformation = (data) => {
+    const result = this.props.contacts.find((contact) => data.toUID === contact.hashUID);
 
-    return result ? result : { ...chats[0], picture: null };
+    return result || { ...chats[0], picture: null };
   };
 
-  seleted = data => {
-    const object = Object.assign({}, data);
+  seleted = (data) => {
+    const object = { ...data };
     delete object.messages;
 
     this.setState({
@@ -112,7 +113,7 @@ class index extends Component {
     });
   };
 
-  search = text => {
+  search = (text) => {
     this.setState({ search: text });
   };
 
@@ -123,52 +124,50 @@ class index extends Component {
    * @returns {object}
    */
 
-  getFilesInfo = typeFile => {
+  getFilesInfo = (typeFile) => {
     const { screenProps } = this.props;
-    if (typeFile === "image") {
+    if (typeFile === 'image') {
       return (
-        <View style={{ flexDirection: "row", alignItems: "flex-end" }}>
-          <Icon style={{ fontSize: 20, color: "#9e9e9e" }} name="camera" />
+        <View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>
+          <Icon style={{ fontSize: 20, color: '#9e9e9e' }} name="camera" />
           <Text style={{ marginHorizontal: 5 }} note>
-            {screenProps.t("Chats:photo")}
+            {screenProps.t('Chats:photo')}
           </Text>
         </View>
       );
-    } else if (typeFile === "audio") {
+    } if (typeFile === 'audio') {
       return (
-        <View style={{ flexDirection: "row", alignItems: "flex-end" }}>
-          <Icon style={{ fontSize: 20, color: "#9e9e9e" }} name="mic" />
+        <View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>
+          <Icon style={{ fontSize: 20, color: '#9e9e9e' }} name="mic" />
           <Text style={{ marginHorizontal: 5 }} note>
-            {screenProps.t("Chats:voice")}
+            {screenProps.t('Chats:voice')}
           </Text>
         </View>
-      );
-    } else {
-      return (
-        <Text note>
-          {typeFile.length > 25
-            ? `${typeFile}`.substr(0, 25) + `...`
-            : typeFile}
-        </Text>
       );
     }
+    return (
+      <Text note>
+        {typeFile.length > 25
+          ? `${`${typeFile}`.substr(0, 25)}...`
+          : typeFile}
+      </Text>
+    );
   };
 
-  getDataTypeMessage = message => {
+  getDataTypeMessage = (message) => {
     if (message.file) {
       return this.getFilesInfo(message.file.fileType);
-    } else {
-      return this.getFilesInfo(message.msg);
     }
+    return this.getFilesInfo(message.msg);
   };
 
   closeSelected = () => {
     this.setState({ selected: [] });
   };
 
-  orderChats = chats => {
-    const sort = chats.sort((a, b) => {
-      if (b.toUID !== "broadcast" && a.toUID !== "broadcast") {
+  orderChats = (orderChats) => {
+    const sort = orderChats.sort((a, b) => {
+      if (b.toUID !== 'broadcast' && a.toUID !== 'broadcast') {
         return new Date(b.timestamp) - new Date(a.timestamp);
       }
     });
@@ -178,14 +177,12 @@ class index extends Component {
   render() {
     const result = this.state.search
 
-      ? Object.values(this.props.chats).filter(chat => {
-        return (
-          chat.toUID.toLowerCase().includes(this.state.search) ||
-          this.getContactInformation(chat)
-            .name.toLowerCase()
-            .includes(this.state.search.toLowerCase())
-        );
-      })
+      ? Object.values(this.props.chats).filter((chat) => (
+        chat.toUID.toLowerCase().includes(this.state.search)
+        || this.getContactInformation(chat)
+          .name.toLowerCase()
+          .includes(this.state.search.toLowerCase())
+      ))
       : Object.values(this.props.chats);
     return (
       <Container>
@@ -198,28 +195,30 @@ class index extends Component {
         />
 
         <Content>
-          {this.orderChats(result).map((chat, key) => {
+          {this.orderChats(result).map((chat) => {
             const queue = chat.queue ? Object.values(chat.queue) : [];
 
             const backgroundColor = getSelectedColor(
               this.state.selected,
               chat.toUID
             );
-            infoData = this.getContactInformation(chat);
+            const infoData = this.getContactInformation(chat);
             const messages = Object.values(chat.messages);
             const lastmessage = messages.length ? (
               this.getDataTypeMessage(messages[messages.length - 1])
             ) : (
-                <Text note> {chats[0].lastMessage} </Text>
-              );
+              <Text note>
+                {chats[0].lastMessage}
+              </Text>
+            );
 
             const lasTime = messages.length
               ? Number(messages[messages.length - 1].timestamp)
               : new Date();
 
-            if (messages.length !== 0 || chat.toUID === "broadcast") {
+            if (messages.length !== 0 || chat.toUID === 'broadcast') {
               return (
-                <List key={key} style={{ backgroundColor: backgroundColor }}>
+                <List key={chat.toUID} style={{ backgroundColor }}>
                   <ListItem
                     avatar
                     button
@@ -229,14 +228,15 @@ class index extends Component {
                     onLongPress={() => this.seleted(chat)}
                   >
                     <Left>
-                      {chat.toUID === "broadcast" && (
+                      {chat.toUID === 'broadcast' && (
                         <Thumbnail source={chats[0].picture} />
                       )}
 
-                      {!infoData.picture && chat.toUID !== "broadcast" && (
+                      {!infoData.picture && chat.toUID !== 'broadcast' && (
                         <Thumbnail source={{
                           uri: `${getIcon(infoData.hashUID)}`
-                        }} />
+                        }}
+                        />
                       )}
 
 
@@ -244,7 +244,7 @@ class index extends Component {
                         <Thumbnail
                           source={{
                             uri: infoData.picture,
-                            cache: "force-cache"
+                            cache: 'force-cache'
                           }}
                         />
                       )}
@@ -255,27 +255,30 @@ class index extends Component {
                     </Body>
                     <Right
                       style={{
-                        height: "97%"
+                        height: '97%'
                       }}
                     >
-                      <Text note> {Moment(lasTime).format("LT")}</Text>
+                      <Text note>
+                        {' '}
+                        {Moment(lasTime).format('LT')}
+                      </Text>
 
                       {queue.length > 0 && (
                         <View
                           style={{
-                            backgroundColor: "#52b202",
+                            backgroundColor: '#52b202',
                             width: 25,
                             height: 24,
                             borderRadius: 100,
-                            alignItems: "center",
-                            justifyContent: "center",
-                            marginTop: "10%",
-                            marginRight: "10%"
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            marginTop: '10%',
+                            marginRight: '10%'
                           }}
                         >
                           <Text
                             style={{
-                              color: "white",
+                              color: 'white',
                               fontSize: 14,
                               marginBottom: 2
                             }}
@@ -292,21 +295,21 @@ class index extends Component {
           })}
         </Content>
         <FloatButton
-          add={() => this.props.navigation.push("contacts")}
-          icon={
+          add={() => this.props.navigation.push('contacts')}
+          icon={(
             <Icon
               type="MaterialIcons"
               name="message"
-              style={{ fontSize: 24, color: "#f5f5f5" }}
+              style={{ fontSize: 24, color: '#f5f5f5' }}
             />
-          }
+          )}
         />
       </Container>
     );
   }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   chats: state.chats.chat,
   contacts: Object.values(state.contacts.contacts)
 });

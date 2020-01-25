@@ -1,35 +1,36 @@
-import { NativeModules, Platform } from 'react-native'
+/* eslint-disable global-require */
+import { NativeModules, Platform } from 'react-native';
 
 export const deviceModel = Platform.select({
-  ios: () => NativeModules.RNDeviceInfo.deviceInfo.id.replace("iPhone", "").trim(),
-  android: () => "Android",
+  ios: () => NativeModules.RNDeviceInfo.deviceInfo.id.replace('iPhone', '').trim(),
+  android: () => 'Android',
 })();
 
 
 export const chats = [{
-  idChat: "1",
-  name: "broadcast",
-  lastMessage: "welcome to locha mesh",
-  picture: require("./img/fotoperfil.jpg"),
+  idChat: '1',
+  name: 'broadcast',
+  lastMessage: 'welcome to locha mesh',
+  picture: require('./img/fotoperfil.jpg'),
   date: new Date()
 }
 ];
 
-export const STORAGE_KEY = "@APP:status";
+export const STORAGE_KEY = '@APP:status';
 
 export const images = {
-  noPhoto: { url: require("./img/fotoperfil.jpg") },
-  file: { url: require("./img/archivo.jpg") },
-  camera: { url: require("./img/camara.jpg") },
-  logo: { url: require("./img/logo.png") },
-  logo2: { url: require("./img/logo2.png") }
+  noPhoto: { url: require('./img/fotoperfil.jpg') },
+  file: { url: require('./img/archivo.jpg') },
+  camera: { url: require('./img/camara.jpg') },
+  logo: { url: require('./img/logo.png') },
+  logo2: { url: require('./img/logo2.png') }
 };
 
 export const songs = {
-  song1: { url: require("../songs/clicking.mp3") },
-  song2: { url: require("../songs/case-closed.mp3") },
-  song3: { url: require("../songs/guess-what.mp3") },
-  song4: { url: require("../songs/scissors.mp3") }
+  song1: { url: require('../songs/clicking.mp3') },
+  song2: { url: require('../songs/case-closed.mp3') },
+  song3: { url: require('../songs/guess-what.mp3') },
+  song4: { url: require('../songs/scissors.mp3') }
 };
 
 export const IntialUser = {

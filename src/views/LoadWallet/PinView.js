@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
-import { Button, Icon } from 'native-base'
-import { View, Text, StyleSheet, TextInput } from 'react-native';
+import { Button, Icon } from 'native-base';
+import {
+  View, Text, StyleSheet, TextInput
+} from 'react-native';
 
 
 export default class PinView extends Component {
@@ -10,68 +12,63 @@ export default class PinView extends Component {
       pin: ['', '', '', '', '', ''],
       buttons: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'],
       values: props.values
-    }
+    };
   }
 
   componentDidMount = () => {
-    const result = this.shuffle(this.state.buttons)
-    const penultimate = result[result.length - 1]
-    result[result.length - 1] = ''
-    result.push(penultimate)
-    result.push('delete')
+    const result = this.shuffle(this.state.buttons);
+    const penultimate = result[result.length - 1];
+    result[result.length - 1] = '';
+    result.push(penultimate);
+    result.push('delete');
 
-    this.setState({ buttons: result, })
+    this.setState({ buttons: result, });
   }
 
 
   componentDidUpdate = () => {
-    let pin = ""
-    if (this.state.pin[5] !== "") {
-      this.state.pin.map(arr => {
-        pin += arr
-      })
-      this.props.createAccount(pin, this.state.values)
-      this.setState({ pin: ['', '', '', '', '', ''] })
+    let pin = '';
+    if (this.state.pin[5] !== '') {
+      // eslint-disable-next-line array-callback-return
+      this.state.pin.map((arr) => {
+        pin += arr;
+      });
+      this.props.createAccount(pin, this.state.values);
+      this.setState({ pin: ['', '', '', '', '', ''] });
     }
-
   }
 
   setPin = (character) => {
-    const array = this.state.pin.slice()
-    if (character === "delete") {
-      const result = array.findIndex((pin) => {
-        return pin === ""
-      })
+    const array = this.state.pin.slice();
+    if (character === 'delete') {
+      const result = array.findIndex((pin) => pin === '');
 
-      if (result === -1 && array[array.length - 1] !== "") {
-        array[array.length - 1] = ""
+      if (result === -1 && array[array.length - 1] !== '') {
+        array[array.length - 1] = '';
       } else if (result === 0) {
-        // this.props.back() 
+        // this.props.back()
       } else {
-        array[result - 1] = ""
+        array[result - 1] = '';
       }
-      this.setState({ pin: array })
+      this.setState({ pin: array });
     } else {
-      const result = array.findIndex((pin) => {
-        return pin === ""
-      })
+      const result = array.findIndex((pin) => pin === '');
 
-      array[result] = character
+      array[result] = character;
 
-      this.setState({ pin: array })
+      this.setState({ pin: array });
     }
   }
 
   shuffle = (array) => {
-    let currentIndex = array.length, temporaryValue, randomIndex;
+    let currentIndex = array.length; let temporaryValue; let
+      randomIndex;
 
     // While there remain elements to shuffle...
-    while (0 !== currentIndex) {
-
+    while (currentIndex !== 0) {
       // Pick a remaining element...
       randomIndex = Math.floor(Math.random() * currentIndex);
       if (array[currentIndex] !== 'delete') {
-
         currentIndex -= 1;
 
         // And swap it with the current element.
@@ -84,51 +81,53 @@ export default class PinView extends Component {
     }
 
     return array;
-
   }
 
   render() {
     return (
       <>
         <View style={styles.numberContainer}>
-          {this.state.pin.map((pin, key) => {
-            return <View
+          {this.state.pin.map((pin, key) => (
+            <View
               key={key}
               style={{
-                width: "15%",
+                width: '15%',
                 margin: 0,
-                flexDirection: "row",
+                flexDirection: 'row',
                 justifyContent: 'center',
                 marginBottom: 30,
               }}
             >
               <TextInput
-                value={pin === "" ? pin : "*"}
+                value={pin === '' ? pin : '*'}
                 editable={false}
                 style={{
-                  color: "black",
+                  color: 'black',
                   borderBottomWidth: 0.5,
                   minWidth: 40,
                   height: 50,
                   fontSize: 20,
-                  textAlign: "center"
+                  textAlign: 'center'
                 }}
               />
             </View>
-          })}
+          ))}
         </View>
         <View style={styles.container}>
-          {this.state.buttons.map((button, key) => {
-            return (
-              <View key={key} style={styles.buttonContainer}>
-                <Button style={{ width: "50%", justifyContent: 'center' }} transparent onPress={() => this.setPin(button)}>
-                  {button !== 'delete' && <Text style={styles.text}> {button} </Text>}
-                  {button === 'delete' && <Icon name="backspace" style={{ color: '#fbc233' }} />}
-                </Button>
-              </View>
-            )
-          })
-          }
+          {this.state.buttons.map((button, key) => (
+            <View key={key} style={styles.buttonContainer}>
+              <Button style={{ width: '50%', justifyContent: 'center' }} transparent onPress={() => this.setPin(button)}>
+                {button !== 'delete' && (
+                  <Text style={styles.text}>
+                    {' '}
+                    {button}
+                    {' '}
+                  </Text>
+                )}
+                {button === 'delete' && <Icon name="backspace" style={{ color: '#fbc233' }} />}
+              </Button>
+            </View>
+          ))}
         </View>
       </>
     );
@@ -159,4 +158,4 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center'
   }
-})
+});

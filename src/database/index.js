@@ -1,27 +1,23 @@
-import { seed } from './schemas';
 import Realm from 'realm';
 import { sha256 } from 'js-sha256';
-import Bitcoin from '../utils/Bitcoin'
-
-import CoreDatabase from './realmDatabase'
-
 import {
   userSchema,
   contactSchema,
   chatSquema,
   BroadCasContacts,
-  messageSquema
-} from "./schemas";
+  messageSquema,
+  fileSchema,
+  seed
+} from './schemas';
+import CoreDatabase from './realmDatabase';
 
-
-const options =
-{
+const options = {
   schema: [
     seed,
   ],
   path: 'seed.realm',
   schemaVersion: 2,
-}
+};
 
 const optionsDatabase = {
   path: 'default.realm',
@@ -34,22 +30,19 @@ const optionsDatabase = {
     fileSchema
   ],
   schemaVersion: 18
-}
+};
 
 export default class Database extends CoreDatabase {
-  constructor() {
-    super()
-  }
-
   /**
    * @function
    * @description convert the password to buffer format
    * @param {String} str password
    * @return {String}
    */
+  // eslint-disable-next-line class-methods-use-this
   toByteArray(str) {
-    var array = new Int8Array(str.length);
-    for (i = 0; i < str.length; i++) {
+    const array = new Int8Array(str.length);
+    for (let i = 0; i < str.length; i += 1) {
       array[i] = str.charCodeAt(i);
     }
     return array;
@@ -63,17 +56,18 @@ export default class Database extends CoreDatabase {
    * @return {Promise}
    */
 
-  getRealm = (key, key2) => new Promise((resolve, reject) => {
-    options.encryptionKey = this.toByteArray(key)
-    optionsDatabase.encryptionKey = this.toByteArray(key2)
+  getRealm = (key, key2) => new Promise((resolve) => {
+    options.encryptionKey = this.toByteArray(key);
+    optionsDatabase.encryptionKey = this.toByteArray(key2);
 
     try {
-      this.seed = new Realm(options)
-      this.db = new Realm(optionsDatabase)
-      this.listener = new Realm(optionsDatabase)
-      resolve(this.db)
+      this.seed = new Realm(options);
+      this.db = new Realm(optionsDatabase);
+      this.listener = new Realm(optionsDatabase);
+      resolve(this.db);
     } catch (err) {
-      console.log(err)
+      // eslint-disable-next-line no-console
+      console.log(err);
     }
   })
 
@@ -83,18 +77,19 @@ export default class Database extends CoreDatabase {
    * @param {String} key pin
    * @return {Promise}
    */
+  // eslint-disable-next-line no-async-promise-executor
   restoreWithPin = (key) => new Promise(async (resolve, reject) => {
-    options.encryptionKey = this.toByteArray(key)
+    options.encryptionKey = this.toByteArray(key);
     try {
-      this.seed = new Realm(options)
-      const result = this.seed.objects('Seed')
-      optionsDatabase.encryptionKey = this.toByteArray(result[0].id)
-      this.db = new Realm(optionsDatabase)
-      this.listener = new Realm(optionsDatabase)
-      const userData = await this.getUserData()
+      this.seed = new Realm(options);
+      const result = this.seed.objects('Seed');
+      optionsDatabase.encryptionKey = this.toByteArray(result[0].id);
+      this.db = new Realm(optionsDatabase);
+      this.listener = new Realm(optionsDatabase);
+      const userData = await this.getUserData();
       resolve(userData);
     } catch (err) {
-      reject(err)
+      reject(err);
     }
   })
 
@@ -104,18 +99,19 @@ export default class Database extends CoreDatabase {
    * @param {String} phrases account phrases
    * @return {Promise}
    */
-  setDataSeed = (phrases) => new Promise(resolve => {
+  setDataSeed = (phrases) => new Promise((resolve) => {
     try {
       this.seed.write(() => {
-        this.seed.create("Seed", {
-          id: sha256(data),
+        this.seed.create('Seed', {
+          id: sha256(phrases),
           seed: phrases
-        }, true)
+        }, true);
 
-        resolve()
-      })
+        resolve();
+      });
     } catch (err) {
-      console.log("2", err)
+      // eslint-disable-next-line no-console
+      console.log('2', err);
     }
   })
 
@@ -126,12 +122,12 @@ export default class Database extends CoreDatabase {
    * @param {String} pin  New pin
    * @return {Promise}
    */
-  restoreWithPhrase = (pin, phrase) => new Promise(resolve => {
-    this.getRealm(sha256(pin), sha256(phrase)).then(data => {
+  restoreWithPhrase = (pin, phrase) => new Promise((resolve) => {
+    this.getRealm(sha256(pin), sha256(phrase)).then(() => {
       this.setDataSeed(phrase).then(() => {
-        resolve()
-      })
-    })
+        resolve();
+      });
+    });
   })
 
   /**
@@ -142,11 +138,12 @@ export default class Database extends CoreDatabase {
    */
   verifyPin = (pin) => new Promise((resolve, reject) => {
     try {
-      options.encryptionKey = this.toByteArray(sha256(pin))
-      new Realm(options)
-      resolve()
+      options.encryptionKey = this.toByteArray(sha256(pin));
+      // eslint-disable-next-line no-new
+      new Realm(options);
+      resolve();
     } catch (err) {
-      reject(err)
+      reject(err);
     }
   })
 
@@ -157,28 +154,29 @@ export default class Database extends CoreDatabase {
    * @param {String} pin  New pin
    * @return {Promise}
    */
-  restoreWithFile = (pin, data) => new Promise((resolve, reject) => {
+  restoreWithFile = (pin, data) => new Promise((resolve) => {
     this.getRealm(sha256(pin), sha256(data.seed.seed)).then(async () => {
+      const chats = Object.values(data.user.chats);
+      const contacts = Object.values(data.user.contacts);
 
-      const chats = Object.values(data.user.chats)
-      const contacts = Object.values(data.user.contacts)
-
-      for (let index = 0; index < chats.length; index++) {
-        chats[index].messages = Object.values(chats[index].messages)
-        chats[index].queue = []
+      for (let index = 0; index < chats.length; index += 1) {
+        chats[index].messages = Object.values(chats[index].messages);
+        chats[index].queue = [];
       }
 
       try {
-        await this.setDataSeed(data.seed.seed)
+        await this.setDataSeed(data.seed.seed);
         await this.writteUser({
           ...data.user,
-          chats, contacts
-        })
-        resolve()
+          chats,
+          contacts
+        });
+        resolve();
       } catch (err) {
-        console.log(err)
+        // eslint-disable-next-line no-console
+        console.log(err);
       }
-    })
+    });
   })
 
   /**
@@ -189,12 +187,12 @@ export default class Database extends CoreDatabase {
    */
   verifyPhrases = (phrases) => new Promise((resolve, reject) => {
     try {
-      optionsDatabase.encryptionKey = this.toByteArray(sha256(phrases))
-      const db = new Realm(optionsDatabase)
-      const deletePath = Realm.defaultPath.substring(0, Realm.defaultPath.lastIndexOf('/')) + "/" + options.path
-      resolve(deletePath)
+      optionsDatabase.encryptionKey = this.toByteArray(sha256(phrases));
+      const db = new Realm(optionsDatabase);
+      const deletePath = `${Realm.defaultPath.substring(0, Realm.defaultPath.lastIndexOf('/'))}/${options.path}`;
+      resolve(deletePath);
     } catch (error) {
-      reject()
+      reject();
     }
   })
 
@@ -206,17 +204,11 @@ export default class Database extends CoreDatabase {
    * @return {Promise}
    */
   newPin = (pin, phrase) => new Promise((resolve, reject) => {
-    this.getRealm(sha256(pin), sha256(phrase)).then(data => {
+    this.getRealm(sha256(pin), sha256(phrase)).then((data) => {
       this.setDataSeed(phrase).then(async () => {
-        const userData = await this.getUserData()
+        const userData = await this.getUserData();
         resolve(userData);
-      })
-    })
+      });
+    });
   })
 }
-
-
-
-
-
-

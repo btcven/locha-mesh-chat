@@ -1,2 +1,2 @@
-export * from './aplicationAction'
-export * from './aplicationReducer'
+export * from './aplicationAction';
+export * from './aplicationReducer';

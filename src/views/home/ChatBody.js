@@ -1,11 +1,11 @@
-import React, { Component } from "react";
-import { View, StyleSheet, FlatList } from "react-native";
-import { sha256 } from "js-sha256";
-import FileModal from "./fileModal";
-import { ReceiveMessage, SenderMessage, SoundMessage } from "./Messages";
-import Sound from "react-native-sound";
-import { songs } from "../../utils/constans";
-import ImagesView from './imagesView'
+import React, { Component } from 'react';
+import { View, StyleSheet, FlatList } from 'react-native';
+import { sha256 } from 'js-sha256';
+import Sound from 'react-native-sound';
+import FileModal from './fileModal';
+import { ReceiveMessage, SenderMessage, SoundMessage } from './Messages';
+import { songs } from '../../utils/constans';
+import ImagesView from './imagesView';
 
 /**
  *
@@ -26,21 +26,21 @@ export default class ChatBody extends Component {
   }
 
   componentDidMount = () => {
-    this.sound = new Sound(songs.song3.url, error => {
+    this.sound = new Sound(songs.song3.url, (error) => {
       if (error) {
-        console.warn("failed to load the sound", error);
-      } else {
+        // eslint-disable-next-line no-console
+        console.warn('failed to load the sound', error);
       }
     });
   };
 
-  componentDidUpdate = prevProps => {
+  componentDidUpdate = (prevProps) => {
     if (this.props.chats.length > 0) {
       const rule1 = prevProps
         ? this.props.chats.length !== prevProps.chats.length
         : false;
 
-      lastMessage = this.props.chats[0];
+      const lastMessage = this.props.chats[0];
       if (rule1) {
         if (sha256(this.props.user.uid) !== lastMessage.fromUID) {
           this.sound.setVolume(0.1).play();
@@ -50,10 +50,10 @@ export default class ChatBody extends Component {
             toUID: lastMessage.fromUID,
             timestamp: new Date().getTime(),
             data: {
-              status: "read",
+              status: 'read',
               msgID: lastMessage.id
             },
-            type: "status"
+            type: 'status'
           };
 
           if (lastMessage.toUID) {
@@ -64,40 +64,38 @@ export default class ChatBody extends Component {
     }
   };
 
-  getContactInfo = item => {
-    const result = this.props.contacts.find(contact => {
-      return item.fromUID === contact.hashUID;
-    });
+  getContactInfo = (infoItem) => {
+    const result = this.props.contacts.find((contact) => infoItem.fromUID === contact.hashUID);
 
     return result;
   };
 
-  onSelected = item => {
+  onSelected = (item) => {
     this.setState({
       selected: this.state.selected.concat(item)
     });
   };
 
-  verifySelected = item => {
-    const result = this.props.selected.find(select => {
-      return select.id === item.id;
-    });
+  verifySelected = (item) => {
+    const result = this.props.selected.find((select) => select.id === item.id);
 
     if (result) {
       return styles.selected;
     }
+    return undefined;
   };
 
-  retry = item => {
-    item.shippingTime = new Date().getTime();
+  retry = (retryItem) => {
+    // eslint-disable-next-line no-param-reassign
+    retryItem.shippingTime = new Date().getTime();
 
-    this.props.sendAgain(item);
+    this.props.sendAgain(retryItem);
   };
 
   setImageView = (imageArray) => {
     setTimeout(() => {
       this.setState({ imagesView: imageArray });
-    }, 200)
+    }, 200);
   }
 
   closeView = () => {
@@ -106,8 +104,8 @@ export default class ChatBody extends Component {
 
   render() {
     const { screenProps } = this.props;
-    let { imagesView } = this.state;
-    let viewImages = imagesView.length === 0 ? false : true;
+    const { imagesView } = this.state;
+    const viewImages = imagesView.length !== 0;
     return (
       <View style={{ flex: 1 }}>
         {this.props.open && (
@@ -135,15 +133,13 @@ export default class ChatBody extends Component {
           keyExtractor={(item, index) => index.toString()}
           renderItem={({ item, index }) => {
             const contactInfo = this.getContactInfo(item);
-            const selected =
-              this.props.selected.length > 0 ? this.verifySelected(item) : null;
-            let userInfo = contactInfo ? contactInfo : item;
+            const selected = this.props.selected.length > 0 ? this.verifySelected(item) : null;
+            const userInfo = contactInfo || item;
             const file = item.file ? item.file.fileType : undefined;
 
-            const rule =
-              sha256(this.props.user.uid) === item.fromUID ? true : false;
+            const rule = sha256(this.props.user.uid) === item.fromUID;
 
-            if (!rule && file !== "audio") {
+            if (!rule && file !== 'audio') {
               return (
                 <ReceiveMessage
                   {...this.props}
@@ -154,7 +150,7 @@ export default class ChatBody extends Component {
                   index={index}
                 />
               );
-            } else if (rule && file !== "audio") {
+            } if (rule && file !== 'audio') {
               return (
                 <SenderMessage
                   {...this.props}
@@ -164,19 +160,18 @@ export default class ChatBody extends Component {
                   retry={this.retry}
                 />
               );
-            } else {
-              return (
-                <SoundMessage
-                  {...this.props}
-                  item={item}
-                  rule={rule}
-                  contactInfo={contactInfo}
-                  userInfo={userInfo}
-                  selected={selected}
-                  index={index}
-                />
-              );
             }
+            return (
+              <SoundMessage
+                {...this.props}
+                item={item}
+                rule={rule}
+                contactInfo={contactInfo}
+                userInfo={userInfo}
+                selected={selected}
+                index={index}
+              />
+            );
           }}
         />
       </View>
@@ -186,46 +181,45 @@ export default class ChatBody extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    minHeight: "100%",
-    backgroundColor: "#eeeeee",
+    minHeight: '100%',
+    backgroundColor: '#eeeeee',
     paddingBottom: 10
   },
   senderContainer: {
-    width: "100%",
-    flexDirection: "row",
-    justifyContent: "flex-end",
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
     marginBottom: 10
   },
 
   selected: {
-    backgroundColor: "rgba(255, 235, 59 , 0.5)"
+    backgroundColor: 'rgba(255, 235, 59 , 0.5)'
   },
 
   receiveContainer: {
-    width: "100%",
-    alignItems: "flex-start",
+    width: '100%',
+    alignItems: 'flex-start',
     marginBottom: 10,
-    flexDirection: "row"
+    flexDirection: 'row'
   },
   textContent1: {
-    maxWidth: "82%",
-    backgroundColor: "#fff",
+    maxWidth: '82%',
+    backgroundColor: '#fff',
     minHeight: 30,
     paddingTop: 5,
     paddingHorizontal: 10,
     marginHorizontal: 10,
     borderRadius: 7,
-    flexDirection: "column"
+    flexDirection: 'column'
   },
   textContent2: {
-    maxWidth: "82%",
-    backgroundColor: "#fff",
+    maxWidth: '82%',
+    backgroundColor: '#fff',
     minHeight: 30,
     paddingTop: 5,
     paddingHorizontal: 10,
     marginHorizontal: 10,
     borderRadius: 7,
-    flexDirection: "column",
-    backgroundColor: "#90caf9"
+    flexDirection: 'column',
   }
 });

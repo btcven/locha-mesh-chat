@@ -1,16 +1,15 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { route } from "./store/aplication/aplicationAction";
-import { StyleSheet, View, Alert, Text, AppState, Share, NativeModules } from "react-native";
-import Home from "./views/home";
-import LoadWallet from "./views/LoadWallet";
-import RestoreWithPing from './views/LoadWallet/RestoreWithPin'
-import Spinner from "./components/Spinner";
-import { clearAll } from "./store/aplication";
-import { selectedChat } from "./store/chats";
-import { AsyncStorage } from "react-native";
-import i18n from "./i18n/index";
-import moment from 'moment'
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { StyleSheet, View } from 'react-native';
+import moment from 'moment';
+import { route } from './store/aplication/aplicationAction';
+import Home from './views/home';
+import LoadWallet from './views/LoadWallet';
+import RestoreWithPing from './views/LoadWallet/RestoreWithPin';
+import Spinner from './components/Spinner';
+import { clearAll } from './store/aplication';
+import { selectedChat } from './store/chats';
+
 // import locale from "react-native-locale-detector";
 
 /**
@@ -23,52 +22,46 @@ class DualComponent extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      appState: "active",
+      appState: 'active',
       timeBackgroud: null
-    }
+    };
   }
 
-  static navigationOptions = {
-    header: null
-  };
 
   verifyState = (nextAppState) => {
     this.setState({
       appState: nextAppState
-    })
+    });
   }
+
+  // eslint-disable-next-line react/sort-comp
+  static navigationOptions = {
+    header: null
+  };
 
   componentDidUpdate = () => {
-    if (this.state.appState === "background" && !this.state.timeBackgroud) {
-      this.setState({ timeBackgroud: new Date().getTime() })
+    if (this.state.appState === 'background' && !this.state.timeBackgroud) {
+      this.setState({ timeBackgroud: new Date().getTime() });
     }
-    if (this.state.appState !== "background" && this.state.timeBackgroud) {
+    if (this.state.appState !== 'background' && this.state.timeBackgroud) {
       const timeCreated = moment(this.state.timeBackgroud);
-      if (moment().diff(timeCreated, "m" > 14)) {
-        this.props.clearAll()
-        this.setState({ timeBackgroud: null })
+      if (moment().diff(timeCreated, 'm' > 14)) {
+        this.props.clearAll();
+        this.setState({ timeBackgroud: null });
       } else {
-        this.setState({ timeBackgroud: null })
+        this.setState({ timeBackgroud: null });
       }
     }
-
   }
 
-  getDefaultLanguage = async () => {
-    const savedDataJSON = await AsyncStorage.getItem("@APP:languageCode");
-    const lng = savedDataJSON ? savedDataJSON : locale;
-    return lng;
-  };
-
-  componentDidMount = async () => {
-    // const lng = await this.getDefaultLanguage()
-    // if (lng) {
-    //   i18n.changeLanguage(lng.substr(0, 2));
-    // }
-  };
+  // getDefaultLanguage = async () => {
+  //   const savedDataJSON = await AsyncStorage.getItem('@APP:languageCode');
+  //   const lng = savedDataJSON || locale;
+  //   return lng;
+  // };
 
   render() {
-    const open = !this.props.user && this.props.status ? true : false
+    const open = !!(!this.props.user && this.props.status);
     return (
       <View style={styles.container}>
         {this.props.loading && (this.props.retryConnection !== 4) && <Spinner />}
@@ -93,7 +86,7 @@ class DualComponent extends Component {
 }
 
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   tabPosition: state.aplication.tab,
   user: state.config.uid,
   chat: state.chats.chat,
@@ -108,6 +101,6 @@ export default connect(mapStateToProps, { route, selectedChat, clearAll })(DualC
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F5FCFF"
+    backgroundColor: '#F5FCFF'
   }
 });
