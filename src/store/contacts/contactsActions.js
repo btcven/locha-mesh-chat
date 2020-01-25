@@ -101,6 +101,13 @@ export const editContats = (obj, callback) => (dispatch) => {
   });
 };
 
+
+/**
+ * function is executed when adding a contact, it sends a message to the contact
+ * requesting your profile picture and sending ours
+ * @param {*} uidContact  uid of the new contact added
+ */
+
 export const requestImage = (uidContact) => async (dispatch, getState) => {
   const state = getState();
   let imageBase64;
@@ -121,6 +128,26 @@ export const requestImage = (uidContact) => async (dispatch, getState) => {
   sendSocket.send(JSON.stringify(sendStatus));
 };
 
+
+/**
+ * function is executed when adding a contact, it sends a message to the contact
+ * requesting your profile picture and sending ours
+ * @param {*} uidContact  uid of the new contact added
+ */
+
+
+/**
+ * It is executed when the contact's chat is opened,
+ * a hash is sent to verify that the contact does not change the image
+ * @param {Object} contact contact information ,
+ * @param {String} contact.name  contact name
+ * @param {String} contact.picture picture contact
+ * @param {String} contact.uid uid contact
+ * @param {String} contact.hashUID hashUID contact
+ * @param {String} contact.imageHash hashUID contact
+ *
+ */
+
 export const verifyImage = (contact) => (dispatch, getState) => {
   const state = getState();
   const sendStatus = {
@@ -136,6 +163,17 @@ export const verifyImage = (contact) => (dispatch, getState) => {
 
   sendSocket.send(JSON.stringify(sendStatus));
 };
+
+/**
+ * This function is executed when a requestImage state arrives when adding being added as a contact.
+ * Its function is to save the contact image that makes the request and send our image
+ * @param {Object} statusData
+ * @param {string} statusData.toUID address where the status will be sent
+ * @param {string} statusData.fromUID ui of the one that is receiving in state
+ * @param {number} statusData.timestamp sent date
+ * @param {string} statusData.type type status
+ * @param {Object} statusData.data object that contains the status data
+ */
 
 export const requestImageStatus = (statusData) => (dispatch, getState) => {
   const state = getState();
@@ -174,6 +212,17 @@ export const requestImageStatus = (statusData) => (dispatch, getState) => {
   });
 };
 
+/**
+ * This function is executed when a contact sends an image,
+ * it is saved and updates the state of the application
+ * @param {Object} statusData
+ * @param {string} statusData.toUID address where the status will be sent
+ * @param {string} statusData.fromUID ui of the one that is receiving in state
+ * @param {number} statusData.timestamp sent date
+ * @param {string} statusData.type type status
+ * @param {Object} statusData.data object that contains the status data
+ */
+
 export const sentImageStatus = (statusData) => (dispatch) => {
   saveImageBase64(statusData.data.image).then((imagePath) => {
     database.savePhotoContact(statusData.fromUID, imagePath, statusData.data.imageHash).then(() => {
@@ -187,6 +236,16 @@ export const sentImageStatus = (statusData) => (dispatch) => {
   });
 };
 
+/**
+ * This function is executed when a contact tries to verify if we have the same perfine image
+ * and if not, it is sent again
+ * @param {Object} statusData
+ * @param {string} statusData.toUID address where the status will be sent
+ * @param {string} statusData.fromUID ui of the one that is receiving in state
+ * @param {number} statusData.timestamp sent date
+ * @param {string} statusData.type type status
+ * @param {Object} statusData.data object that contains the status data
+ */
 export const verifyHashImageStatus = (statusData) => async (getState) => {
   const state = getState();
   if (state.config.imageHash !== statusData.data.imageHash) {

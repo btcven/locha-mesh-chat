@@ -52,6 +52,12 @@ export const FileDirectory = Platform.select({
 })();
 
 
+/**
+ * this function extracts an image from memory with base64 format
+ * @param path address in the image to be extracted
+ * @returns {String}
+ */
+
 export const getPhotoBase64 = async (path) => {
   const photoBase64 = await RNFS.readFile(path, 'base64');
   return photoBase64;
@@ -182,6 +188,10 @@ const getInfoMessage = (id) => {
   return { toUID: result.toUID, ...contact };
 };
 
+/**
+ * function used to save the image in memory
+ * @param {String} base64File base64 format image
+ */
 export const saveImageBase64 = (base64File) => new Promise((resolve, reject) => {
   const connectiveAddress = Platform.OS === 'android' ? 'file:///' : '';
   const name = `IMG_${new Date().getTime()}`;
