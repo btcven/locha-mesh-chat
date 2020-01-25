@@ -188,7 +188,8 @@ export default class Database extends CoreDatabase {
   verifyPhrases = (phrases) => new Promise((resolve, reject) => {
     try {
       optionsDatabase.encryptionKey = this.toByteArray(sha256(phrases));
-      const db = new Realm(optionsDatabase);
+      // eslint-disable-next-line no-new
+      new Realm(optionsDatabase);
       const deletePath = `${Realm.defaultPath.substring(0, Realm.defaultPath.lastIndexOf('/'))}/${options.path}`;
       resolve(deletePath);
     } catch (error) {
@@ -203,8 +204,8 @@ export default class Database extends CoreDatabase {
    * @param {String} phrases account phrases
    * @return {Promise}
    */
-  newPin = (pin, phrase) => new Promise((resolve, reject) => {
-    this.getRealm(sha256(pin), sha256(phrase)).then((data) => {
+  newPin = (pin, phrase) => new Promise((resolve) => {
+    this.getRealm(sha256(pin), sha256(phrase)).then(() => {
       this.setDataSeed(phrase).then(async () => {
         const userData = await this.getUserData();
         resolve(userData);

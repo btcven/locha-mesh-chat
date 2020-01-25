@@ -14,7 +14,7 @@ import RestoreFile from './RestoreWithPin';
 import AddName from "./AddName";
 import Phrases from "./Phrases";
 import PinView from "./PinView";
-import { toast } from "../../utils/utils"
+import { toast } from "../../utils/utils";
 
 
 /**
