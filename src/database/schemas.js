@@ -35,7 +35,7 @@ export const messageSquema = {
   }
 };
 
-export const BroadCasContacts = {
+export const broadcastContacts = {
   name: 'temporalContacts',
   primaryKey: 'hashUID',
   properties: {

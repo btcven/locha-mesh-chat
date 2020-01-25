@@ -4,7 +4,7 @@ import {
   userSchema,
   contactSchema,
   chatSquema,
-  BroadCasContacts,
+  broadcastContacts,
   messageSquema,
   fileSchema,
   seed
@@ -26,7 +26,7 @@ const optionsDatabase = {
     contactSchema,
     chatSquema,
     messageSquema,
-    BroadCasContacts,
+    broadcastContacts,
     fileSchema
   ],
   schemaVersion: 18
