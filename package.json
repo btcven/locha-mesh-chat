@@ -9,6 +9,7 @@
     "lint": "eslint '**/*.{js,jsx}' --quiet",
     "test": "jest"
   },
+  "pre-commit": "lint",
   "dependencies": {
     "@react-native-community/async-storage": "^1.6.1",
     "@react-native-community/cameraroll": "^1.1.1",
@@ -104,6 +105,7 @@
     "jest": "^24.8.0",
     "jsdoc": "^3.6.3",
     "metro-react-native-babel-preset": "^0.55.0",
+    "pre-commit": "^1.2.2",
     "react-test-renderer": "16.8.3",
     "rn-nodeify": "tradle/rn-nodeify"
   },
