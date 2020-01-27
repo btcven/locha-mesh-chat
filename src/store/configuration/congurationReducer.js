@@ -4,7 +4,8 @@ import { ActionTypes } from '../constants';
 const AplicationState = {
   uid: null,
   image: null,
-  name: ''
+  name: '',
+  imageHash: null
 };
 
 export const configurationReducer = (state = AplicationState, action) => {
@@ -13,7 +14,8 @@ export const configurationReducer = (state = AplicationState, action) => {
       return {
         uid: action.payload.uid,
         name: action.payload.name,
-        image: action.payload.picture
+        image: action.payload.picture,
+        imageHash: action.payload.imageHash
       };
     }
 
@@ -21,7 +23,7 @@ export const configurationReducer = (state = AplicationState, action) => {
       return { ...AplicationState };
     }
     case ActionTypes.GET_PHOTO_USER: {
-      return { ...state, image: action.payload };
+      return { ...state, image: action.payload, imageHash: action.imageHash };
     }
     case ActionTypes.EDIT_NAME: {
       return { ...state, name: action.payload };

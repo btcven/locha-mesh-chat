@@ -1,8 +1,8 @@
 /* eslint-disable consistent-return */
 
 import moment from 'moment';
+import { sha256 } from 'js-sha256';
 import { onNotification } from '../utils/utils';
-// import Store from "../store";
 
 
 export default class CoreDatabase {
@@ -18,22 +18,44 @@ export default class CoreDatabase {
   writteUser = (obj) => new Promise((resolve, reject) => {
     try {
       this.db.write(() => {
+        const userData = {
+          uid: obj.uid,
+          name: obj.name,
+          picture: obj.picture,
+          chats: obj.chats,
+          contacts: [],
+          imageHash: obj.picture ? sha256(obj.picture) : null
+        };
         this.db.create(
           'user',
-          {
-            uid: obj.uid,
-            name: obj.name,
-            picture: obj.picture,
-            chats: obj.chats
-          },
+          userData,
           true
         );
+        resolve(userData);
       });
-      resolve(obj);
     } catch (e) {
       reject(e);
     }
   });
+
+  saveUserPhoto = (obj) => new Promise((resolve, reject) => {
+    try {
+      this.db.write(() => {
+        this.db.create(
+          'user',
+          {
+            ...obj,
+            imageHash: obj.picture ? sha256(obj.picture) : null
+          },
+          true
+        );
+        resolve(obj);
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+
 
   cancelUnreadMessages = (id) => new Promise((resolve) => {
     this.db.write(() => {
@@ -287,7 +309,6 @@ export default class CoreDatabase {
     });
   });
 
-
   addStatusOnly = (eventStatus) => new Promise((resolve) => {
     this.db.write(() => {
       try {
@@ -311,7 +332,6 @@ export default class CoreDatabase {
     });
   });
 
-
   updateMessage = (message) => new Promise((resolve) => {
     this.db.write(() => {
       try {
@@ -323,9 +343,7 @@ export default class CoreDatabase {
           },
           true
         );
-
         const msg = this.db.objectForPrimaryKey('Message', message.id);
-
         resolve(msg);
       } catch (err) {
         // eslint-disable-next-line no-console
@@ -333,7 +351,6 @@ export default class CoreDatabase {
       }
     });
   });
-
 
   getAllData = () => new Promise((resolve, reject) => {
     try {
@@ -343,5 +360,14 @@ export default class CoreDatabase {
     } catch (err) {
       reject();
     }
+  })
+
+  savePhotoContact = (id, path, imageHash) => new Promise((resolve) => {
+    this.db.write(() => {
+      const result = this.db.objects('Contact').find((contact) => id === contact.hashUID);
+      result.picture = path;
+      result.imageHash = imageHash;
+      resolve();
+    });
   })
 }

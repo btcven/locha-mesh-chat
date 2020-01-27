@@ -2,9 +2,10 @@ import { sha256 } from 'js-sha256';
 import RNFS from 'react-native-fs';
 import { Platform } from 'react-native';
 import { ActionTypes } from '../constants';
-import { generateName, notification, FileDirectory } from '../../utils/utils';
+import {
+  generateName, notification, FileDirectory,
+} from '../../utils/utils';
 import { database } from '../../../App';
-
 import { sendSocket } from '../../utils/socket';
 
 /**
@@ -100,43 +101,40 @@ export const broadcastRandomData = async (parse, id) => new Promise((resolve) =>
  * @param  {string} data.type type message
  * @returns {object}
  */
-
-export const getChat = (data) => async (dispatch) => {
-  const parse = JSON.parse(data);
+export const getChat = (parse) => async (dispatch) => {
   let infoMensagge;
-  if (parse.type !== 'status') {
-    sendStatus(parse);
-    if (!parse.toUID) {
-      infoMensagge = await broadcastRandomData(parse);
-    }
-
-    if (parse.msg.file) {
-      parse.msg.file = await saveFile(parse.msg);
-    }
-
-    const uidChat = parse.toUID ? parse.fromUID : 'broadcast';
-    const name = infoMensagge ? infoMensagge.name : undefined;
-    database.setMessage(uidChat, { ...parse, name }, 'delivered').then((res) => {
-      dispatch({
-        type: ActionTypes.NEW_MESSAGE,
-        payload: {
-          name,
-          ...parse,
-          msg: parse.msg.text,
-          id: parse.msgID,
-          file: res.file,
-          time: res.time
-        }
-      });
-    });
-  } else {
-    database.addStatusOnly(parse).then(() => {
-      dispatch({
-        type: ActionTypes.SET_STATUS_MESSAGE,
-        payload: parse
-      });
-    });
+  sendStatus(parse);
+  if (!parse.toUID) {
+    infoMensagge = await broadcastRandomData(parse);
   }
+  if (parse.msg.file) {
+    parse.msg.file = await saveFile(parse.msg);
+  }
+  const uidChat = parse.toUID ? parse.fromUID : 'broadcast';
+  const name = infoMensagge ? infoMensagge.name : undefined;
+  database.setMessage(uidChat, { ...parse, name }, 'delivered').then((res) => {
+    dispatch({
+      type: ActionTypes.NEW_MESSAGE,
+      payload: {
+        name,
+        ...parse,
+        msg: parse.msg.text,
+        id: parse.msgID,
+        file: res.file,
+        time: res.time
+      }
+    });
+  });
+};
+
+
+export const setStatusMessage = (statusData) => (dispatch) => {
+  database.addStatusOnly(statusData).then(() => {
+    dispatch({
+      type: ActionTypes.SET_STATUS_MESSAGE,
+      payload: statusData
+    });
+  });
 };
 
 /**

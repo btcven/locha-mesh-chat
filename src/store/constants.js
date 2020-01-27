@@ -25,6 +25,7 @@ export const ActionTypes = {
   ADD_CONTACTS: '@@contacts/ADD_CONTACTS',
   DELETE_CONTACT: '@contacts/DELETE_CONTACT',
   EDIT_CONTACT: '@contacts/EDIT_CONTACT',
+  SAVE_PHOTO: '@contacts/SAVE_PHOTO',
 
   // CHATS
 

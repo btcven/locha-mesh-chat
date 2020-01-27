@@ -29,7 +29,7 @@ const optionsDatabase = {
     broadcastContacts,
     fileSchema
   ],
-  schemaVersion: 18
+  schemaVersion: 21
 };
 
 export default class Database extends CoreDatabase {
@@ -67,7 +67,7 @@ export default class Database extends CoreDatabase {
       resolve(this.db);
     } catch (err) {
       // eslint-disable-next-line no-console
-      console.log(err);
+      console.log('getRealm', err);
     }
   })
 

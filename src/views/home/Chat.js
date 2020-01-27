@@ -5,6 +5,7 @@ import {
   Alert, Clipboard, Dimensions, KeyboardAvoidingView, Platform, View
 } from 'react-native';
 import { sha256 } from 'js-sha256';
+import { verifyImage } from '../../store/contacts/contactsActions';
 import Header from '../../components/Header';
 import ChatBody from './ChatBody';
 import ChatForm from './ChatForm';
@@ -56,6 +57,9 @@ class Chat extends Component {
 
   componentDidMount = () => {
     this.props.setView(this.props.chat[this.props.chatSelected.index].toUID);
+    if (this.props.navigation.state.params) {
+      this.props.verifyImage(this.props.navigation.state.params);
+    }
   };
 
   /**
@@ -350,5 +354,6 @@ export default connect(mapStateToProps, {
   sendMessageWithFile,
   deleteMessages,
   sendReadMessageStatus,
-  sendAgain
+  sendAgain,
+  verifyImage
 })(Chat);
