@@ -91,7 +91,7 @@ export const deleteContactAction = (data, callback) => (dispatch) => {
  * @returns {{type:String  , payload: Object }}
  */
 
-export const editContats = (obj, callback) => (dispatch) => {
+export const editContacts = (obj, callback) => (dispatch) => {
   database.editContact(obj).then((res) => {
     callback();
     dispatch({

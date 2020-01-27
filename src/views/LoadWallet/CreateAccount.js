@@ -2,20 +2,24 @@
 import React, { Component } from 'react';
 import { Button } from 'native-base';
 import {
-  View, Text, TextInput, StyleSheet, Clipboard, Platform
+  View, Text, StyleSheet, Clipboard, Platform
 } from 'react-native';
 import Modal from 'react-native-modal';
 import { Formik } from 'formik';
 import DocumentPicker from 'react-native-document-picker';
-import RNFS from 'react-native-fs';
-import CryptoJS from 'crypto-js';
-import { sha256 } from 'js-sha256';
+import RNFS from "react-native-fs";
+import CryptoJS from "crypto-js";
+import { sha256 } from "js-sha256";
 import RestoreFile from './RestoreWithPin';
-import { toast } from '../../utils/utils';
-import PinView from './PinView';
-import AddName from './AddName';
+import AddName from "./AddName";
+import Phrases from "./Phrases";
+import PinView from "./PinView";
+import { toast } from "../../utils/utils";
 
 
+/**
+ * visual component to create or restore account
+ */
 export default class CreateAccount extends Component {
   constructor(props) {
     super(props);
@@ -94,7 +98,6 @@ export default class CreateAccount extends Component {
   }
 
   getFile = async () => {
-    // this.props.close()
     try {
       const res = await DocumentPicker.pick({
         type: [DocumentPicker.types.allFiles],
@@ -115,11 +118,10 @@ export default class CreateAccount extends Component {
       RNFS.readFile(this.state.file).then((res) => {
         const bytes = CryptoJS.AES.decrypt(res, sha256(pin));
         const decryptedData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
-
         this.setState({ file: null });
         this.props.restoreWithFile(pin, decryptedData);
       }).catch(() => {
-        toast(this.props.screenProps.t('Initial:error1'));
+        toast(this.props.screenProps.t("Initial:error1"));
       });
     } catch (error) {
       // eslint-disable-next-line no-console
@@ -250,48 +252,31 @@ export default class CreateAccount extends Component {
                 {/* --------------------- End header --------------------- */}
 
                 {/* ----------------------- Component body ------------------  */}
-                <View style={styles.phrasesContainer}>
-                  {this.state.step !== 3 && this.state.step !== 5 && values.map((phrase, key) => (
-                    <View
-                      key={key}
-                      style={{
-                        width: '20%',
-                        margin: 0,
-                        flexDirection: 'row'
-                      }}
-                    >
-                      <TextInput
-                        value={phrase}
-                        autoCapitalize="none"
-                        onChangeText={(text) => {
-                          setFieldValue(`${key}`, text);
-                        }}
-                        style={styles.inputStyles}
-                      />
-                    </View>
-                  ))}
 
-                </View>
+                {this.state.step !== 3 && this.state.step !== 5 && (
+                  <Phrases values={values} setFieldValue={setFieldValue} />
+                )}
+
                 {this.state.step === 4 && (
-                  <View style={{
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    marginBottom: 40,
-                    marginTop: 20
-                  }}
+                <View style={{
+                  alignItems: "center",
+                  justifyContent: "center",
+                  marginBottom: 40,
+                  marginTop: 20
+                }}
+                >
+                  <Button
+                    success
+                    onPress={this.getFile}
+                    style={{
+                      justifyContent: 'center',
+                      minWidth: 150,
+                      marginHorizontal: 10
+                    }}
                   >
-                    <Button
-                      success
-                      onPress={this.getFile}
-                      style={{
-                        justifyContent: 'center',
-                        minWidth: 150,
-                        marginHorizontal: 10
-                      }}
-                    >
-                      <Text>{`${screenProps.t('Initial:buttonFile')}`.toUpperCase()}</Text>
-                    </Button>
-                  </View>
+                    <Text>{`${screenProps.t('Initial:buttonFile')}`.toUpperCase()}</Text>
+                  </Button>
+                </View>
                 )}
 
                 {this.state.step === 3 && (
@@ -371,15 +356,12 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
     backgroundColor: 'white'
   },
-
   NameHeight: {
     minHeight: 270,
   },
-
   otherHeight: {
     minHeight: 330,
   },
-
   phrasesContainer: {
     marginTop: 20,
     flexDirection: 'row',
@@ -395,7 +377,6 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
     justifyContent: 'space-between'
   },
-
   inputStyles: {
     borderBottomWidth: 0.5,
     minWidth: 60,

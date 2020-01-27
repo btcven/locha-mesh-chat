@@ -99,7 +99,7 @@ export default class AddContact extends Component {
           }
         );
       } else {
-        this.props.editContats(obj, () => {
+        this.props.editContacts(obj, () => {
           toast(
             this.props.screenProps.t('Contacts:contactSuccessfully')
           );

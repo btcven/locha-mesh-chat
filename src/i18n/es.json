@@ -23,7 +23,9 @@
     "subtitleRestore": "es muy importante que ingrese las palabras correctamente, de lo contrario su cuenta no se restaurará con el mismo uid",
     "textBackup": "Ingrese la contraseña para desbloquear el archivo de respaldo",
     "titleUsername": "Agregar Nombre de Usuario",
-    "textUsername": "Por favor ingrese su nombre o alias"
+    "textUsername": "Por favor ingrese su nombre o alias",
+    "restorePinTitle":"Restaurar pin",
+    "restorePinText":"Ingrese las palabras de respaldo para poder restaurar su pin"
   },
   "Drawer": {
     "contacts": "Contactos",
