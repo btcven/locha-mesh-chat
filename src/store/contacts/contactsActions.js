@@ -1,9 +1,10 @@
-import AsyncStorage from "@react-native-community/async-storage";
-import RNFS from "react-native-fs";
-import { ActionTypes } from "../constants";
-import { createFolder, FileDirectory } from "../../utils/utils";
-import { database } from '../../../App'
-
+import AsyncStorage from '@react-native-community/async-storage';
+import RNFS from 'react-native-fs';
+import { sha256 } from 'js-sha256';
+import { ActionTypes } from '../constants';
+import { FileDirectory, getPhotoBase64, saveImageBase64 } from '../../utils/utils';
+import { database } from '../../../App';
+import { sendSocket } from '../../utils/socket';
 /**
  * here are all the actions references to contacts
  * @module ContactAction
@@ -27,7 +28,7 @@ export const saveContact = (
   data,
   lastContact,
   callback
-) => async dispatch => {
+) => async (dispatch) => {
   const newPath = `file:///${FileDirectory}/${data.name}Photo.jpg`;
   if (data.picture) {
     await RNFS.moveFile(data.picture, newPath);
@@ -39,7 +40,7 @@ export const saveContact = (
     }
   ];
 
-  database.addContacts(id, obj).then(res => {
+  database.addContacts(id, obj).then((res) => {
     obj.push(...lastContact);
     dispatch({
       type: ActionTypes.ADD_CONTACTS,
@@ -56,9 +57,8 @@ export const saveContact = (
  * @returns {Object}
  */
 
-export const getContacts = () => async dispatch => {
-  const contacts = await AsyncStorage.getItem("contacts");
-  parse = JSON.parse(contacts);
+export const getContacts = () => async (dispatch) => {
+  const contacts = await AsyncStorage.getItem('contacts');
   dispatch({
     type: ActionTypes.ADD_CONTACTS,
     payload: contacts ? Object.values(JSON.parse(contacts)) : []
@@ -73,8 +73,8 @@ export const getContacts = () => async dispatch => {
  * @returns {{type:String  , payload: Object }}
  */
 
-export const deleteContactAction = (data, callback) => dispatch => {
-  database.deleteContact(data).then(res => {
+export const deleteContactAction = (data, callback) => (dispatch) => {
+  database.deleteContact(data).then(() => {
     dispatch({
       type: ActionTypes.DELETE_CONTACT,
       payload: data
@@ -91,12 +91,176 @@ export const deleteContactAction = (data, callback) => dispatch => {
  * @returns {{type:String  , payload: Object }}
  */
 
-export const editContats = (obj, callback) => dispatch => {
-  database.editContact(obj).then(res => {
+export const editContacts = (obj, callback) => (dispatch) => {
+  database.editContact(obj).then((res) => {
     callback();
     dispatch({
       type: ActionTypes.EDIT_CONTACT,
       payload: res
     });
   });
+};
+
+
+/**
+ * function is executed when adding a contact, it sends a message to the contact
+ * requesting your profile picture and sending ours
+ * @param {*} uidContact  uid of the new contact added
+ */
+
+export const requestImage = (uidContact) => async (dispatch, getState) => {
+  const state = getState();
+  let imageBase64;
+  if (state.config.image) {
+    imageBase64 = await getPhotoBase64(state.config.image);
+  }
+  const sendStatus = {
+    fromUID: sha256(state.config.uid),
+    timestamp: new Date().getTime(),
+    type: 'status',
+    data: {
+      status: 'RequestImage',
+      image: imageBase64,
+      imageHash: state.config.imageHash
+    },
+    toUID: uidContact
+  };
+  sendSocket.send(JSON.stringify(sendStatus));
+};
+
+
+/**
+ * function is executed when adding a contact, it sends a message to the contact
+ * requesting your profile picture and sending ours
+ * @param {*} uidContact  uid of the new contact added
+ */
+
+
+/**
+ * It is executed when the contact's chat is opened,
+ * a hash is sent to verify that the contact does not change the image
+ * @param {Object} contact contact information ,
+ * @param {String} contact.name  contact name
+ * @param {String} contact.picture picture contact
+ * @param {String} contact.uid uid contact
+ * @param {String} contact.hashUID hashUID contact
+ * @param {String} contact.imageHash hashUID contact
+ *
+ */
+
+export const verifyImage = (contact) => (dispatch, getState) => {
+  const state = getState();
+  const sendStatus = {
+    fromUID: sha256(state.config.uid),
+    timestamp: new Date().getTime(),
+    type: 'status',
+    data: {
+      status: 'verifyHashImage',
+      imageHash: contact.imageHash
+    },
+    toUID: contact.hashUID
+  };
+
+  sendSocket.send(JSON.stringify(sendStatus));
+};
+
+/**
+ * This function is executed when a requestImage state arrives when adding being added as a contact.
+ * Its function is to save the contact image that makes the request and send our image
+ * @param {Object} statusData
+ * @param {string} statusData.toUID address where the status will be sent
+ * @param {string} statusData.fromUID ui of the one that is receiving in state
+ * @param {number} statusData.timestamp sent date
+ * @param {string} statusData.type type status
+ * @param {Object} statusData.data object that contains the status data
+ */
+
+export const requestImageStatus = (statusData) => (dispatch, getState) => {
+  const state = getState();
+  database.verifyContact(statusData.fromUID).then(async (verify) => {
+    if (verify) {
+      if (verify.imageHash !== statusData.data.imageHash) {
+        saveImageBase64(statusData.data.image).then((imagePath) => {
+          database.savePhotoContact(
+            statusData.fromUID,
+            imagePath,
+            statusData.data.imageHash
+          ).then(() => {
+            dispatch({
+              type: ActionTypes.SAVE_PHOTO,
+              payload: imagePath,
+              id: statusData.fromUID,
+              imageHash: statusData.data.imageHash
+            });
+          });
+        });
+      }
+      const base64Image = await getPhotoBase64(state.config.image);
+      const obj = {
+        fromUID: statusData.toUID,
+        toUID: statusData.fromUID,
+        timestamp: new Date().getTime(),
+        type: 'status',
+        data: {
+          status: 'sentImage',
+          image: base64Image,
+          imageHash: state.config.imageHash
+        }
+      };
+      sendSocket.send(JSON.stringify(obj));
+    }
+  });
+};
+
+/**
+ * This function is executed when a contact sends an image,
+ * it is saved and updates the state of the application
+ * @param {Object} statusData
+ * @param {string} statusData.toUID address where the status will be sent
+ * @param {string} statusData.fromUID ui of the one that is receiving in state
+ * @param {number} statusData.timestamp sent date
+ * @param {string} statusData.type type status
+ * @param {Object} statusData.data object that contains the status data
+ */
+
+export const sentImageStatus = (statusData) => (dispatch) => {
+  saveImageBase64(statusData.data.image).then((imagePath) => {
+    database.savePhotoContact(statusData.fromUID, imagePath, statusData.data.imageHash).then(() => {
+      dispatch({
+        type: ActionTypes.SAVE_PHOTO,
+        payload: imagePath,
+        id: statusData.fromUID,
+        imageHash: statusData.data.imageHash
+      });
+    });
+  });
+};
+
+/**
+ * This function is executed when a contact tries to verify if we have the same perfine image
+ * and if not, it is sent again
+ * @param {Object} statusData
+ * @param {string} statusData.toUID address where the status will be sent
+ * @param {string} statusData.fromUID ui of the one that is receiving in state
+ * @param {number} statusData.timestamp sent date
+ * @param {string} statusData.type type status
+ * @param {Object} statusData.data object that contains the status data
+ */
+export const verifyHashImageStatus = (statusData) => async (getState) => {
+  const state = getState();
+  if (state.config.imageHash !== statusData.data.imageHash) {
+    const base64Image = await getPhotoBase64(state.config.image);
+    const obj = {
+      fromUID: statusData.toUID,
+      toUID: statusData.fromUID,
+      timestamp: new Date().getTime(),
+      type: 'status',
+      data: {
+        status: 'sentImage',
+        image: base64Image,
+        imageHash: state.config.imageHash
+      }
+    };
+    sendSocket.send(JSON.stringify(obj));
+  }
 };

@@ -1,5 +1,6 @@
-import React, { Component } from "react";
-import { Icon, Button } from "native-base";
+/* eslint-disable no-underscore-dangle */
+import React, { Component } from 'react';
+import { Icon } from 'native-base';
 import {
   View,
   StyleSheet,
@@ -9,14 +10,14 @@ import {
   Platform,
   Text,
   Animated,
-} from "react-native";
-import RNFS from "react-native-fs";
-import { FileDirectory } from "../../utils/utils";
-import { sha256 } from "js-sha256";
-import { AudioRecorder, AudioUtils } from "react-native-audio";
-import * as Animatable from "react-native-animatable";
-import moment from "moment";
-import Draggable from "../../components/Draggable";
+} from 'react-native';
+import RNFS from 'react-native-fs';
+import { sha256 } from 'js-sha256';
+import { AudioRecorder, AudioUtils } from 'react-native-audio';
+import * as Animatable from 'react-native-animatable';
+import moment from 'moment';
+import { FileDirectory } from '../../utils/utils';
+import Draggable from '../../components/Draggable';
 
 /**
  *
@@ -31,17 +32,14 @@ export default class ChatForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      message: "",
+      message: '',
       height: 20,
       currentTime: 0.0,
       recording: false,
       moveText: new Animated.ValueXY(),
-      paused: false,
-      stoppedRecording: false,
       cancelRecoding: false,
-      finished: false,
       audioPath:
-        AudioUtils.DocumentDirectoryPath + `/AUDIO_${new Date().getTime()}.aac`,
+        `${AudioUtils.DocumentDirectoryPath}/AUDIO_${new Date().getTime()}.aac`,
       hasPermission: undefined
     };
   }
@@ -52,37 +50,37 @@ export default class ChatForm extends Component {
     this.setState({ hasPermission: recoderPermision });
   };
 
-  prepareRecordingPath = audioPath => {
+  prepareRecordingPath = (audioPath) => {
     try {
       AudioRecorder.prepareRecordingAtPath(audioPath, {
         SampleRate: 22050,
         Channels: 1,
-        AudioQuality: "Low",
-        AudioEncoding: "aac",
+        AudioQuality: 'Low',
+        AudioEncoding: 'aac',
         AudioEncodingBitRate: 32000,
         IncludeBase64: true,
-        OutputFormat: Platform === "android" ? undefined : 'aac_adts',
+        OutputFormat: Platform === 'android' ? undefined : 'aac_adts',
       });
     } catch (err) {
-      console.log("error", err);
+      // eslint-disable-next-line no-console
+      console.log('error', err);
     }
   };
 
   _record = async () => {
-    const { user, navigation, setChat, previousChat } = this.props;
+    const { user, navigation } = this.props;
     const toUID = navigation.params ? navigation.params.hashUID : null;
 
     if (this.state.hasPermission) {
       this.prepareRecordingPath(this.state.audioPath);
 
-      AudioRecorder.onProgress = data => {
+      AudioRecorder.onProgress = (data) => {
         this.setState({ currentTime: Math.floor(data.currentTime) });
       };
 
       try {
         this.setState({
           recording: true,
-          paused: false,
           cancelRecoding: false
         });
 
@@ -90,25 +88,25 @@ export default class ChatForm extends Component {
       } catch (error) {
         this.setState({ recording: false });
       }
-      AudioRecorder.onFinished = data => {
+      AudioRecorder.onFinished = (data) => {
         if (this.state.currentTime !== 0 && !this.state.cancelRecoding) {
           const newPath = `${FileDirectory}/Audios/AUDIO_${new Date().getTime()}.aac`;
           RNFS.exists(this.state.audioPath).then(() => {
             RNFS.moveFile(this.state.audioPath, newPath).then(() => {
               const sendObject = {
                 fromUID: sha256(user.uid),
-                toUID: toUID,
+                toUID,
                 msg: {
-                  text: "",
-                  typeFile: "audio"
+                  text: '',
+                  typeFile: 'audio'
                 },
                 timestamp: new Date().getTime(),
-                type: "msg"
+                type: 'msg'
               };
 
               const id = sha256(
                 `${sha256(user.uid)} + ${toUID}  +  ${
-                sendObject.msg.text
+                  sendObject.msg.text
                 }  + ${new Date().getTime()}`
               );
 
@@ -122,7 +120,7 @@ export default class ChatForm extends Component {
         }
       };
     } else {
-      AudioRecorder.requestAuthorization().then(async isAuthorised => {
+      AudioRecorder.requestAuthorization().then(async (isAuthorised) => {
         this.setState({ recording: false, hasPermission: isAuthorised });
       });
     }
@@ -133,49 +131,51 @@ export default class ChatForm extends Component {
       return;
     }
     this.setState({
-      stoppedRecording: true,
       recording: false,
-      paused: false
     });
     try {
       const filePath = await AudioRecorder.stopRecording();
-      if (Platform.OS === "android") {
-        this._finishRecording(true, filePath);
+      if (Platform.OS === 'android') {
+        this._finishRecording(true);
       }
+      // eslint-disable-next-line consistent-return
       return filePath;
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.log(error);
     }
   };
 
-  _finishRecording(didSucceed, filePath, fileSize) {
+  // eslint-disable-next-line react/sort-comp
+  _finishRecording(didSucceed) {
+    // eslint-disable-next-line react/no-unused-state
     this.setState({ finished: didSucceed });
   }
 
   send = () => {
-    const { user, navigation, setChat, previousChat } = this.props;
+    const { user, navigation, setChat } = this.props;
     const toUID = navigation.params ? navigation.params.hashUID : null;
     const sendObject = {
       fromUID: sha256(user.uid),
-      toUID: toUID,
+      toUID,
       msg: {
         text: this.state.message
       },
       timestamp: new Date().getTime(),
-      type: "msg"
+      type: 'msg'
     };
 
     const id = sha256(
       `${user.uid} + ${toUID}  +  ${
-      sendObject.msg.text
+        sendObject.msg.text
       }  + ${new Date().getTime()}`
     );
 
-    setChat({ ...sendObject, msgID: id }, "pending");
-    this.setState({ message: "" });
+    setChat({ ...sendObject, msgID: id }, 'pending');
+    this.setState({ message: '' });
   };
 
-  moveText = value => {
+  moveText = (value) => {
     if (value.__getValue().x < -30 && !this.state.cancelRecoding) {
       this.setState({ cancelRecoding: true });
     }
@@ -190,7 +190,7 @@ export default class ChatForm extends Component {
       >
         <ScrollView
           contentContainerStyle={styles.contentForm}
-          keyboardShouldPersistTaps={"handled"}
+          keyboardShouldPersistTaps="handled"
         >
           {!this.state.recording && (
             <>
@@ -202,61 +202,60 @@ export default class ChatForm extends Component {
                 />
               </TouchableOpacity>
               <TextInput
-                multiline={true}
-                style={{ height: this.state.height }}
+                multiline
+                style={[{ height: this.state.height }, styles.inputStyle]}
                 value={this.state.message}
-                onChangeText={text => this.setState({ message: text })}
-                onContentSizeChange={event => {
+                onChangeText={(text) => this.setState({ message: text })}
+                onContentSizeChange={(event) => {
                   this.setState({
                     height: event.nativeEvent.contentSize.height
                   });
                 }}
-                placeholder={screenProps.t("Chats:message")}
-                style={styles.inputStyle}
+                placeholder={screenProps.t('Chats:message')}
               />
             </>
           )}
-          <View style={{ flexDirection: "row" }}>
+          <View style={{ flexDirection: 'row' }}>
             {this.state.recording && (
               <View
                 style={{
                   flex: 1,
-                  justifyContent: "center",
-                  alignItems: "center"
+                  justifyContent: 'center',
+                  alignItems: 'center'
                 }}
               >
                 <Animatable.View animation="slideInRight" duration={1000}>
                   <View
                     style={{
-                      flexDirection: "row",
-                      minWidth: "70%"
+                      flexDirection: 'row',
+                      minWidth: '70%'
                     }}
                   >
                     <Icon
                       name="trash"
-                      style={{ fontSize: 25, color: "#9e9e9e" }}
+                      style={{ fontSize: 25, color: '#9e9e9e' }}
                     />
                     <Text style={{ fontSize: 20, marginLeft: 10 }}>
                       {moment
                         .utc(this.state.currentTime * 1000)
-                        .format("mm:ss")}
+                        .format('mm:ss')}
                     </Text>
                     <Animated.View
                       style={[
                         this.state.moveText.getLayout(),
                         {
                           marginHorizontal: 10,
-                          flexDirection: "row",
-                          justifyContent: "center",
-                          alignItems: "center"
+                          flexDirection: 'row',
+                          justifyContent: 'center',
+                          alignItems: 'center'
                         }
                       ]}
                     >
                       <Icon
                         name="arrow-dropleft"
-                        style={{ marginHorizontal: 10, color: "#9e9e9e" }}
+                        style={{ marginHorizontal: 10, color: '#9e9e9e' }}
                       />
-                      <Text>{screenProps.t("Chats:cancelAudio")}</Text>
+                      <Text>{screenProps.t('Chats:cancelAudio')}</Text>
                     </Animated.View>
                   </View>
                 </Animatable.View>
@@ -304,19 +303,19 @@ const styles = StyleSheet.create({
   },
 
   iconChatStyle: {
-    color: "#fbc233",
+    color: '#fbc233',
     fontSize: 32,
     paddingHorizontal: 5,
     paddingBottom: 7
   },
   contentForm: {
-    flexDirection: "row",
-    alignItems: "flex-end",
+    flexDirection: 'row',
+    alignItems: 'flex-end',
     flex: 1,
-    justifyContent: "space-between"
+    justifyContent: 'space-between'
   },
   buttonTouch: {
-    color: "green",
+    color: 'green',
     fontSize: 40,
     paddingHorizontal: 5,
     paddingBottom: 7

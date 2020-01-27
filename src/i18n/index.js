@@ -1,20 +1,20 @@
-import i18n from "i18next";
-import { reactI18nextModule } from "react-i18next";
+import i18n from 'i18next';
+import { reactI18nextModule } from 'react-i18next';
 // import locale from "react-native-language-detector";
-import { AsyncStorage } from "react-native";
+import { AsyncStorage } from 'react-native';
 
-import en from "./en.json";
-import es from "./es.json";
+import en from './en.json';
+import es from './es.json';
 
-const STORAGE_KEY = "@APP:languageCode";
+const STORAGE_KEY = '@APP:languageCode';
 
 const languageDetector = {
   init: Function.prototype,
-  type: "languageDetector",
+  type: 'languageDetector',
   async: true, // flags below detection to be async
-  detect: async callback => {
+  detect: async (callback) => {
     const savedDataJSON = await AsyncStorage.getItem(STORAGE_KEY);
-    const lng = savedDataJSON ? savedDataJSON : "en";
+    const lng = savedDataJSON || 'en';
     callback(lng);
   },
   cacheUserLanguage: () => {}
@@ -26,16 +26,16 @@ i18n
   .init({
     debug: true,
     initImmediate: false,
-    preload: ["en", "es"],
-    fallbackLng: "en",
-    lng: "en",
+    preload: ['en', 'es'],
+    fallbackLng: 'en',
+    lng: 'en',
     resources: {
       en,
       es
     },
     // have a common namespace used around the full app
-    ns: ["common"],
-    defaultNS: "common",
+    ns: ['common'],
+    defaultNS: 'common',
 
     //   cache: {
     //  enabled: true

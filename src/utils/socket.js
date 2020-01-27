@@ -1,8 +1,10 @@
-import { getChat } from "../store/chats";
-import { reestarConnection, loading, loaded } from "../store/aplication";
-import { sha256 } from "js-sha256";
+import { sha256 } from 'js-sha256';
+import { getChat, setStatusMessage } from '../store/chats';
+import { requestImageStatus, sentImageStatus, verifyHashImageStatus } from '../store/contacts/contactsActions';
+import { reestarConnection, loading, loaded } from '../store/aplication';
 
-export let sendSocket = undefined;
+// eslint-disable-next-line import/no-mutable-exports
+export let sendSocket;
 
 /**
  *
@@ -12,10 +14,11 @@ export let sendSocket = undefined;
  */
 
 export default class Socket {
-  constructor(store, database) {
-    this.socket = new WebSocket("wss://lochat.coinlab.info");
-    this.database = database
-    //this.socket = new WebSocket("wss://192.168.1.1");
+  constructor(store, database, url) {
+    this.url = url || 'wss://lochat.coinlab.info';
+    // eslint-disable-next-line no-undef
+    this.socket = new WebSocket(this.url);
+    this.database = database;
     this.openSocketConnection();
     this.onMenssage();
     this.store = store;
@@ -33,7 +36,7 @@ export default class Socket {
    * @description websocket client management class
    * @memberof Socket
    */
-  checkingSocketStatus = store => {
+  checkingSocketStatus = (store) => {
     this.idInterval = setInterval(() => {
       if (this.socket.readyState !== 1 && this.socket.readyState !== 3) {
         if (!store.getState().aplication.loading) {
@@ -42,6 +45,7 @@ export default class Socket {
       } else if (this.socket.readyState === 3) {
         this.closeTimmer();
       } else {
+        // eslint-disable-next-line no-unused-expressions
         store.getState().aplication.loading === false
           ? null
           : this.store.dispatch(loaded());
@@ -54,30 +58,31 @@ export default class Socket {
    * @description Sending messages
    * @memberof Socket
    */
-  sendMenssage = data => {
+  sendMenssage = (data) => {
     this.socket.send(data);
   };
 
   /**
    * @function
-   * @description makes a request to the database looking for user data to pass them to the initial connection
+   * @description makes a request to the database looking for user data to pass
+   * them to the initial connection
    * @param {callback} callback
    * @memberof Socket
    */
 
-  getUserObject = callback => {
+  getUserObject = (callback) => {
     try {
-      this.database.getUserData().then(res => {
+      this.database.getUserData().then((res) => {
         const object = {
           hashUID: sha256(res[0].uid),
           timestamp: new Date().getTime(),
-          type: "handshake"
+          type: 'handshake'
         };
         callback(object);
       });
-
     } catch (error) {
-      console.log(error)
+      // eslint-disable-next-line no-console
+      console.log(error);
     }
   };
 
@@ -88,13 +93,14 @@ export default class Socket {
    */
 
   openSocketConnection = async () => {
-    this.getUserObject(res => {
+    this.getUserObject((res) => {
       this.store.dispatch(loading());
       this.socket.onopen = () => {
-        console.log("conecto");
+        // eslint-disable-next-line no-console
+        console.log('conecto');
         this.socket.send(JSON.stringify(res));
       };
-    })
+    });
   };
 
   /**
@@ -103,20 +109,70 @@ export default class Socket {
    * @description contains the onMessage, onError and onClose of the webscket
    * @memberof Socket
    */
+
+  connectionRetry = () => {
+    setTimeout(() => {
+      reestarConnection(this.store);
+    }, 10000);
+  }
+
+  /**
+  * function that is executed when the socket returns a status object
+  * @param {Object} statusData
+  * @param {string} statusData.toUID address where the status will be sent
+  * @param {string} statusData.fromUID ui of the one that is receiving in state
+  * @param {number} statusData.timestamp sent date
+  * @param {string} statusData.type type status
+  * @param {Object} statusData.data object that contains the status data
+  */
+
+  setStatus = async (statusData) => {
+    const { dispatch } = this.store;
+    switch (statusData.data.status) {
+      // execute function that is in contact actions
+      case 'RequestImage': dispatch(requestImageStatus(statusData));
+        break;
+      // Execute function that is in contact actions
+      case 'sentImage': dispatch(sentImageStatus(statusData));
+        break;
+      // Execute function that is in contact actions
+      case 'verifyHashImage': dispatch(verifyHashImageStatus(statusData));
+        break;
+      // Execute function that is in chat actions
+      default: dispatch(setStatusMessage(statusData));
+        break;
+    }
+  };
+
+  /**
+   * it is executed when a new data arrives at websocket
+   */
   onMenssage = () => {
-    this.socket.onmessage = e => {
+    this.socket.onmessage = (e) => {
       // a message was received
-      this.store.dispatch(getChat(e.data));
+      const parse = JSON.parse(e.data);
+      const { dispatch } = this.store;
+      switch (parse.type) {
+        case 'status': this.setStatus(parse);
+          break;
+        // Execute function that is in chat actions
+        case 'msg': dispatch(getChat(parse));
+          break;
+        default:
+          break;
+      }
     };
 
-    this.socket.onerror = e => {
+    this.socket.onerror = (e) => {
       // a message was received
-      console.log("OnError", e);
+      // eslint-disable-next-line no-console
+      console.log('OnError', e);
     };
 
-    this.socket.onclose = e => {
-      console.log("close", e);
-      this.store.dispatch(reestarConnection);
+    this.socket.onclose = (e) => {
+      // eslint-disable-next-line no-console
+      console.log('close', e);
+      this.connectionRetry();
     };
   };
 }

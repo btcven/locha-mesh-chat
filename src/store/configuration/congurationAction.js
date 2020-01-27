@@ -1,9 +1,9 @@
-import ImagePicker from "react-native-image-crop-picker";
-import RNFS from "react-native-fs";
-import { ActionTypes } from "../constants";
-import { FileDirectory } from "../../utils/utils";
-import { database } from '../../../App'
-import { Platform } from 'react-native'
+import ImagePicker from 'react-native-image-crop-picker';
+import RNFS from 'react-native-fs';
+import { sha256 } from 'js-sha256';
+import { ActionTypes } from '../constants';
+import { FileDirectory } from '../../utils/utils';
+import { database } from '../../../App';
 
 /**
  * in this module are the configuration actions
@@ -17,20 +17,21 @@ import { Platform } from 'react-native'
  * @param {callback} callback
  */
 
-export const getPhotosFromUser = (id, callback) => async dispatch => {
+export const getPhotosFromUser = (id, callback) => async (dispatch) => {
   ImagePicker.openPicker({
     width: 500,
     height: 500
-  }).then(async images => {
+  }).then(async (images) => {
     const name = await getName(images);
-    const newPath = `file:///${FileDirectory}/${name}`;
-    RNFS.moveFile(images.path, newPath).then(async res => {
+    const newPath = `file://${FileDirectory}/Pictures/${name}`;
+    RNFS.moveFile(images.path, newPath).then(async () => {
       await deletePhotoFromPhone();
-      database.writteUser({ uid: id, picture: newPath }).then(async res => {
+      database.saveUserPhoto({ uid: id, picture: newPath }).then(async () => {
         callback();
         dispatch({
           type: ActionTypes.GET_PHOTO_USER,
-          payload: newPath
+          payload: newPath,
+          imageHash: sha256(newPath)
         });
       });
     });
@@ -44,14 +45,9 @@ export const getPhotosFromUser = (id, callback) => async dispatch => {
  * @returns {string}
  */
 
-const getName = data => {
-  const result = data.path.split("/");
-  console.log("diossss", result)
-  if (Platform.OS == "android") {
-    return result[9];
-  }
-
-  return result[15]
+const getName = (data) => {
+  const result = data.path.split('/');
+  return result[result.length - 1];
 };
 
 /**
@@ -61,11 +57,11 @@ const getName = data => {
  */
 
 const deletePhotoFromPhone = async () => {
-  database.getUserData("user").then(async res => {
+  database.getUserData('user').then(async (res) => {
     const parse = JSON.parse(JSON.stringify(res));
     if (parse.picture) {
-      await RNFS.exists(parse.picture).then(async res => {
-        if (res) {
+      await RNFS.exists(parse.picture).then(async (exist) => {
+        if (exist) {
           await RNFS.unlink(parse.picture);
         }
       });
@@ -79,25 +75,25 @@ const deletePhotoFromPhone = async () => {
  * @param {callback} callback
  */
 
-export const openCamera = (id, callback) => async dispatch => {
-
+export const openCamera = (id, callback) => async (dispatch) => {
   ImagePicker.openCamera({
     width: 500,
     height: 500,
     cropping: true
-  }).then(async images => {
+  }).then(async (images) => {
     const name = await getName(images);
-    const newPath = `file:///${directory}/${name}`;
+    const newPath = `file://${FileDirectory}/Pictures/${name}`;
     RNFS.moveFile(images.path, newPath).then(async () => {
       await deletePhotoFromPhone();
-      database.writteUser({
+      database.saveUserPhoto({
         uid: id,
         picture: newPath
-      }).then(async res => {
+      }).then(async (res) => {
         callback();
         dispatch({
           type: ActionTypes.GET_PHOTO_USER,
-          payload: res.picture
+          payload: res.picture,
+          imageHash: sha256(newPath)
         });
       });
     });
@@ -114,8 +110,8 @@ export const openCamera = (id, callback) => async dispatch => {
  * @param {callback} callback
  */
 
-export const editName = (obj, callback) => async dispatch => {
-  database.writteUser({ ...obj, id: obj.uid }).then(res => {
+export const editName = (obj, callback) => async (dispatch) => {
+  database.writteUser({ ...obj, id: obj.uid }).then((res) => {
     callback();
     dispatch({
       type: ActionTypes.EDIT_NAME,
@@ -123,5 +119,3 @@ export const editName = (obj, callback) => async dispatch => {
     });
   });
 };
-
-

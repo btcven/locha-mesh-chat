@@ -1,69 +1,65 @@
 import React, { Component } from 'react';
-import Modal from 'react-native-modal';
 import { View, StyleSheet } from 'react-native';
 import {
-  Item, Input, Form, Button, Text
+  Form, Item, Input, Button, Text
 } from 'native-base';
-/**
- *
- *
- * @export
- * @class EditName
- * @description component to edit the username
- * @extends {Component}
- */
-export default class EditName extends Component {
+import Modal from 'react-native-modal';
+
+
+export default class NetWorkSettings extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      name: ''
+      name: undefined
     };
   }
 
-  saveName = () => {
-    this.props.editName(
-      { name: this.state.name, uid: this.props.config.uid },
-      () => {
-        this.props.close('openModalName');
-      }
-    );
-  };
+  changeNetworkEndPoint = () => {
+    this.props.close('network');
+    this.props.changeNetworkEndPoint(this.state.name);
+  }
 
   render() {
-    const { open, close, screenProps } = this.props;
-    const disabled = !(this.state.name.length > 1);
+    const {
+      open, close, screenProps, aplication
+    } = this.props;
+    const disabled = (this.state.name === undefined);
     return (
       <View>
         <Modal
           style={{
-            justifyContent: 'flex-end',
-            margin: 0
+            margin: 0,
+            justifyContent: 'flex-end'
           }}
           avoidKeyboard
           isVisible={open}
           animationIn="slideInUp"
           animationOut="slideOutDown"
           animationOutTiming={800}
-          onBackdropPress={() => close('openModalName')}
+          onBackdropPress={() => close('network')}
         >
-          <View
-            style={{
-              backgroundColor: 'white',
-              borderRadius: 5,
-              marginHorizontal: 5
-            }}
+          <View style={{
+            minHeight: '40%',
+            backgroundColor: 'white',
+            borderRadius: 5,
+            marginHorizontal: 5
+          }}
           >
             <Text style={styles.titleModal}>
-              {screenProps.t('Settings:editName')}
+              Network settings
+            </Text>
+            <Text style={{
+              paddingHorizontal: 10
+            }}
+            >
+              Welcome to the network configuration,
+              here you can change the connection path with the esp32 device or server
             </Text>
             <Form>
-              <Text style={{ position: 'absolute', top: '40%', right: '5%' }}>
-                {12 - this.state.name.length}
-              </Text>
+              <Text style={{ position: 'absolute', top: '40%', right: '5%' }} />
               <Item stackedLabel>
                 <Input
-                  maxLength={12}
-                  placeholder={screenProps.t('Settings:enterName')}
+                  placeholder={aplication.wsUrl}
                   value={this.state.name}
                   onChangeText={(event) => this.setState({ name: event })}
                 />
@@ -77,7 +73,7 @@ export default class EditName extends Component {
               }}
             >
               <Button
-                onPress={() => close('openModalName')}
+                onPress={() => close('network')}
                 transparent
                 style={{
                   marginHorizontal: 10
@@ -90,28 +86,33 @@ export default class EditName extends Component {
               <Button
                 transparent
                 disabled={disabled}
-                onPress={() => this.saveName()}
+                onPress={() => this.changeNetworkEndPoint(this.state.name)}
                 style={styles.styleTextButton}
               >
                 <Text>{screenProps.t('Settings:saveButton')}</Text>
               </Button>
             </View>
           </View>
+
         </Modal>
       </View>
     );
   }
 }
 
+
 const styles = StyleSheet.create({
   styleTextButton: {
     paddingHorizontal: 10
   },
-
   titleModal: {
     padding: 20,
     paddingBottom: 10,
     fontSize: 20,
     fontWeight: '400'
+  },
+  iconStyle: {
+    fontSize: 24,
+    color: 'white'
   }
 });

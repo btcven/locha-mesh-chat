@@ -1,5 +1,5 @@
-import { NativeModules, NativeEventEmitter, Platform } from "react-native"
-import { notifyRedirect } from "./utils";
+import { NativeModules, NativeEventEmitter, Platform } from 'react-native';
+import { notifyRedirect } from './utils';
 
 /**
  *
@@ -9,35 +9,30 @@ import { notifyRedirect } from "./utils";
  */
 
 export default class NotifService {
-    constructor() {
-        this.LocalNotification = NativeModules.LocalNotification;
-        this.onNotification()
-        Platform.OS !== "android" ? NativeModules.LocalNotification.requestPermission() : null
-
-
-    }
+  constructor() {
+    this.LocalNotification = NativeModules.LocalNotification;
+    this.onNotification();
+    // eslint-disable-next-line no-unused-expressions
+    Platform.OS !== 'android' ? NativeModules.LocalNotification.requestPermission() : null;
+  }
 
     onNotification = () => {
-        const eventEmitter = new NativeEventEmitter(this.LocalNotification);
-        eventEmitter.addListener('NoticationReceiver', (event) => {
-            let notification = Platform.OS === "android" ? JSON.parse(event.dataJSON) : event
-
-
-            console.log("notification", notification ,Platform.os)
-            notifyRedirect(notification);
-        })
+      const eventEmitter = new NativeEventEmitter(this.LocalNotification);
+      eventEmitter.addListener('NoticationReceiver', (event) => {
+        const notification = Platform.OS === 'android' ? JSON.parse(event.dataJSON) : event;
+        notifyRedirect(notification);
+      });
     }
 
     localNotif = (data, id) => {
-        this.LocalNotification.createNotification(
-            {
-                id: id.toString(),
-                title: data.name,
-                message: data.msg
-            }
-        )
+      this.LocalNotification.createNotification(
+        {
+          id: id.toString(),
+          title: data.name,
+          message: data.msg
+        }
+      );
     }
-
 
 
     //   checkPermission(cbk) {
@@ -47,10 +42,10 @@ export default class NotifService {
     //   }
 
     cancelNotif(id) {
-        this.LocalNotification.clearNotificationID({ id: id });
+      this.LocalNotification.clearNotificationID({ id });
     }
 
     cancelAll() {
-        this.LocalNotification.clearNotificationAll();
+      this.LocalNotification.clearNotificationAll();
     }
 }

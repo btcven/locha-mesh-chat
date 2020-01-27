@@ -1,9 +1,10 @@
-import React, { Component } from "react";
-import { StyleSheet, View } from "react-native";
-import { Footer, FooterTab, Button, Text, Icon } from "native-base";
-import { changeTab } from "../store/aplication/aplicationAction";
-import { connect } from "react-redux";
-import NavigationService from "../utils/navigationService";
+import React, { Component } from 'react';
+import { StyleSheet } from 'react-native';
+import {
+  Footer, FooterTab, Button, Text, Icon
+} from 'native-base';
+import { connect } from 'react-redux';
+import { changeTab } from '../store/aplication/aplicationAction';
 
 class FooterComponent extends Component {
   constructor(props) {
@@ -13,9 +14,9 @@ class FooterComponent extends Component {
     };
   }
 
-  hangleChage = (tab, active) => {
+  hangleChage = (active) => {
     this.setState({
-      active: active
+      active
     });
     this.props.changeTab(active);
   };
@@ -28,8 +29,8 @@ class FooterComponent extends Component {
           <Button
             vertical
             style={styles.bottonActive}
-            onPress={() => this.hangleChage("initial", 1)}
-            active={active === 1 ? true : false}
+            onPress={() => this.hangleChage('initial', 1)}
+            active={active === 1}
           >
             <Icon
               type="MaterialIcons"
@@ -45,8 +46,8 @@ class FooterComponent extends Component {
           <Button
             vertical
             style={styles.bottonActive}
-            onPress={() => this.hangleChage("contacts", 2)}
-            active={active === 2 ? true : false}
+            onPress={() => this.hangleChage('contacts', 2)}
+            active={active === 2}
           >
             <Icon
               type="MaterialIcons"
@@ -60,8 +61,8 @@ class FooterComponent extends Component {
             </Text>
           </Button>
           <Button
-            onPress={() => this.hangleChage("config", 3)}
-            active={active === 3 ? true : false}
+            onPress={() => this.hangleChage('config', 3)}
+            active={active === 3}
             style={styles.bottonActive}
           >
             <Icon
@@ -81,7 +82,7 @@ class FooterComponent extends Component {
   }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   stateP: state
 });
 
@@ -92,27 +93,27 @@ export default connect(
 
 const styles = StyleSheet.create({
   footerContainer: {
-   
-    borderTopColor: "#bdbdbd"
+
+    borderTopColor: '#bdbdbd'
   },
 
   footerTab: {
-    backgroundColor: "#fff",
-    color: "red"
+    backgroundColor: '#fff',
+    color: 'red'
   },
 
   bottonActive: {
-    display: "flex",
-    backgroundColor: "#fafafa",
-   
-   
-    borderTopColor: "#bdbdbd",
-    borderLeftColor: "#bdbdbd"
+    display: 'flex',
+    backgroundColor: '#fafafa',
+
+
+    borderTopColor: '#bdbdbd',
+    borderLeftColor: '#bdbdbd'
   },
   textTabColor1: {
-    color: "black"
+    color: 'black'
   },
   textTabColor2: {
-    color: "#fbc233"
+    color: '#fbc233'
   }
 });

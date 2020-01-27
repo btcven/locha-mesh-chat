@@ -1,15 +1,16 @@
-import React from "react";
+import React from 'react';
 import {
   Modal,
   View,
-  Text,
   StyleSheet,
   TextInput,
   TouchableOpacity,
   TouchableHighlight
-} from "react-native";
-import ImageViewer from "react-native-image-zoom-viewer";
-import { Icon, Header, Left, Body, Title } from "native-base";
+} from 'react-native';
+import ImageViewer from 'react-native-image-zoom-viewer';
+import {
+  Icon, Header, Left, Body,
+} from 'native-base';
 
 export default class App extends React.Component {
   constructor(props) {
@@ -17,7 +18,7 @@ export default class App extends React.Component {
     this.state = {
       height: 20,
       postition: 0,
-      message: ""
+      message: ''
     };
   }
 
@@ -37,13 +38,13 @@ export default class App extends React.Component {
     return (
       <Modal
         visible={this.props.open}
-        transparent={true}
+        transparent
         onRequestClose={() => this.props.close()}
       >
         <ImageViewer
           imageUrls={this.props.images}
           // onChange={event => this.setState({ postition: event })}
-          renderHeader={props => (
+          renderHeader={() => (
             <Header
               style={styles.headerContainer}
               androidStatusBarColor="black"
@@ -61,12 +62,12 @@ export default class App extends React.Component {
                   }}
                 >
                   <Icon
-                    style={{ color: "white" }}
+                    style={{ color: 'white' }}
                     name="arrow-back"
                   />
                 </TouchableHighlight>
               </Left>
-              <Body></Body>
+              <Body />
             </Header>
           )}
         />
@@ -74,31 +75,31 @@ export default class App extends React.Component {
         {this.props.sendFileWithImage && (
           <View
             style={{
-              backgroundColor: "black",
+              backgroundColor: 'black',
               minHeight: 50,
               paddingHorizontal: 10,
-              paddingBottom: "3%",
-              alignItems: "flex-end",
-              flexDirection: "row",
+              paddingBottom: '3%',
+              alignItems: 'flex-end',
+              flexDirection: 'row',
             }}
           >
             <TextInput
               placeholderTextColor="gray"
-              multiline={true}
+              multiline
               style={{
                 height: this.state.height,
                 flex: 1,
-                color: "gray",
-                backgroundColor: "black"
+                color: 'gray',
+                backgroundColor: 'black'
               }}
               value={this.state.message}
-              onChangeText={text => this.setState({ message: text })}
-              onContentSizeChange={event => {
+              onChangeText={(text) => this.setState({ message: text })}
+              onContentSizeChange={(event) => {
                 this.setState({
                   height: event.nativeEvent.contentSize.height
                 });
               }}
-              placeholder={screenProps.t("Chats:commentImage")}
+              placeholder={screenProps.t('Chats:commentImage')}
             />
 
             <TouchableOpacity onPress={this.sendFile}>
@@ -117,10 +118,10 @@ export default class App extends React.Component {
 
 const styles = StyleSheet.create({
   headerContainer: {
-    backgroundColor: "black"
+    backgroundColor: 'black'
   },
   iconChatStyle: {
-    color: "#fbc233",
+    color: '#fbc233',
     fontSize: 32,
     paddingHorizontal: 5,
     paddingBottom: 7

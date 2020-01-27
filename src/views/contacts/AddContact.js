@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 import {
   View,
   Text,
@@ -6,15 +6,17 @@ import {
   StyleSheet,
   TouchableOpacity,
   TouchableHighlight,
-} from "react-native";
-import { images } from "../../utils/constans";
-import { toast } from "../../utils/utils";
-import { Icon, Form, Item, Input, Label, Spinner, Thumbnail, Container, Header } from "native-base";
-import EditPhoto from "../config/EditPhoto";
-import ImagePicker from "react-native-image-crop-picker";
-import QRCodeScanner from "react-native-qrcode-scanner";
-import { sha256 } from "js-sha256";
-/**ƒ
+} from 'react-native';
+import {
+  Icon, Form, Item, Input, Label, Spinner, Thumbnail, Header
+} from 'native-base';
+import ImagePicker from 'react-native-image-crop-picker';
+import QRCodeScanner from 'react-native-qrcode-scanner';
+import { sha256 } from 'js-sha256';
+import EditPhoto from '../config/EditPhoto';
+import { toast } from '../../utils/utils';
+import { images } from '../../utils/constans';
+/** ƒ
  *
  *
  * @export
@@ -29,8 +31,8 @@ export default class AddContact extends Component {
     this.state = {
       openModalPhoto: false,
       image: undefined,
-      name: "",
-      uid: "",
+      name: '',
+      uid: '',
       spinner: true,
       openQrCode: false
     };
@@ -47,7 +49,7 @@ export default class AddContact extends Component {
     }
   };
 
-  close = name => {
+  close = () => {
     this.setState({ openModalPhoto: false });
   };
 
@@ -56,9 +58,9 @@ export default class AddContact extends Component {
       cropping: true,
       width: 500,
       height: 500
-    }).then(async images => {
+    }).then(async (imagesResponse) => {
       callback();
-      this.setState({ image: images.path });
+      this.setState({ image: imagesResponse.path });
     });
   };
 
@@ -67,14 +69,14 @@ export default class AddContact extends Component {
       width: 500,
       height: 500,
       cropping: true
-    }).then(async images => {
+    }).then(async (CameraResponse) => {
       callback();
-      this.setState({ image: images.path });
+      this.setState({ image: CameraResponse.path });
     });
   };
 
   save = () => {
-    const update = this.props.selected.length > 0 ? true : false;
+    const update = this.props.selected.length > 0;
     const verify = this.verifyContacts(update);
     if (verify) {
       const obj = {
@@ -90,15 +92,16 @@ export default class AddContact extends Component {
           this.props.contacts,
           () => {
             toast(
-              this.props.screenProps.t("Contacts:contactSuccessfully")
+              this.props.screenProps.t('Contacts:contactSuccessfully')
             );
             this.props.close();
+            this.props.requestImage(sha256(this.state.uid));
           }
         );
       } else {
-        this.props.editContats(obj, () => {
+        this.props.editContacts(obj, () => {
           toast(
-            this.props.screenProps.t("Contacts:contactSuccessfully")
+            this.props.screenProps.t('Contacts:contactSuccessfully')
           );
           this.props.close();
         });
@@ -106,7 +109,7 @@ export default class AddContact extends Component {
     }
   };
 
-  onSuccess = event => {
+  onSuccess = (event) => {
     this.setState({ spinner: false });
     try {
       const result = JSON.parse(event.data);
@@ -119,30 +122,26 @@ export default class AddContact extends Component {
           });
         }, 50);
       } else {
-        toast(this.props.screenProps.t("Contacts:invalidFormat"));
+        toast(this.props.screenProps.t('Contacts:invalidFormat'));
       }
     } catch (err) {
-      toast(this.props.screenProps.t("Contacts:invalidFormat"));
+      toast(this.props.screenProps.t('Contacts:invalidFormat'));
     }
   };
 
-  verifyContacts = update => {
+  verifyContacts = (update) => {
     if (!update) {
-      const uidExist = this.props.contacts.find(contact => {
-        return contact.name === this.state.uid;
-      });
+      const uidExist = this.props.contacts.find((contact) => contact.name === this.state.uid);
 
       if (uidExist) {
-        toast(this.props.screenProps.t("Contacts:existContact"));
+        toast(this.props.screenProps.t('Contacts:existContact'));
         return false;
       }
 
-      const nameExist = this.props.contacts.find(contact => {
-        return contact.name === this.state.name;
-      });
+      const nameExist = this.props.contacts.find((contact) => contact.name === this.state.name);
 
       if (nameExist) {
-        toast(this.props.screenProps.t("Contacts:existName"));
+        toast(this.props.screenProps.t('Contacts:existName'));
         return false;
       }
     }
@@ -151,11 +150,8 @@ export default class AddContact extends Component {
 
   render() {
     const { screenProps } = this.props;
-    let disabled1 = this.props.selected.length > 0 ? true : false;
-    let disabled2 =
-      this.state.name.length === 0 || this.state.uid.length === 0
-        ? true
-        : false;
+    const disabled1 = this.props.selected.length > 0;
+    const disabled2 = !!(this.state.name.length === 0 || this.state.uid.length === 0);
 
     return (
       <View>
@@ -199,12 +195,12 @@ export default class AddContact extends Component {
             )}
             {this.props.selected.length < 1 && (
               <Text style={styles.textStyle}>
-                {screenProps.t("Contacts:addContact")}
+                {screenProps.t('Contacts:addContact')}
               </Text>
             )}
             {this.props.selected.length > 0 && (
               <Text style={styles.textStyle}>
-                {screenProps.t("Contacts:editContact")}
+                {screenProps.t('Contacts:editContact')}
               </Text>
             )}
             {
@@ -223,9 +219,9 @@ export default class AddContact extends Component {
               <Form
                 style={{
                   paddingHorizontal: 10,
-                  height: "60%",
+                  height: '60%',
                   minHeight: 270,
-                  justifyContent: "space-evenly"
+                  justifyContent: 'space-evenly'
                 }}
               >
                 <View>
@@ -234,11 +230,9 @@ export default class AddContact extends Component {
 
                     <TouchableOpacity
                       style={{
-                        position: "relative"
+                        position: 'relative'
                       }}
-                      onPress={() =>
-                        this.setState({ openQrCode: true, spinner: true })
-                      }
+                      onPress={() => this.setState({ openQrCode: true, spinner: true })}
                     >
                       <Icon
                         type="FontAwesome5"
@@ -255,27 +249,25 @@ export default class AddContact extends Component {
                       disabled={disabled1}
                       value={this.state.uid}
                       style={{ fontSize: 16 }}
-                      onChangeText={text => this.setState({ uid: text })}
+                      onChangeText={(text) => this.setState({ uid: text })}
                     />
                   </Item>
                 </View>
 
-                {
-                  <Item stackedLabel>
-                    <Label>{screenProps.t("Contacts:name")}</Label>
-                    <Input
-                      value={this.state.name}
-                      onChangeText={text => this.setState({ name: text })}
-                    />
-                  </Item>
-                }
+                <Item stackedLabel>
+                  <Label>{screenProps.t('Contacts:name')}</Label>
+                  <Input
+                    value={this.state.name}
+                    onChangeText={(text) => this.setState({ name: text })}
+                  />
+                </Item>
               </Form>
               <View />
 
               <View
                 style={{
-                  width: "100%",
-                  alignItems: "center"
+                  width: '100%',
+                  alignItems: 'center'
                 }}
               >
                 <View style={styles.imageContainer}>
@@ -283,9 +275,6 @@ export default class AddContact extends Component {
                     <TouchableHighlight
                       style={styles.touchable}
                       underlayColor="#eeeeee"
-                      onPress={() => {
-                        console.log("click");
-                      }}
                     >
                       <Thumbnail
                         source={images.noPhoto.url}
@@ -298,14 +287,11 @@ export default class AddContact extends Component {
                     <TouchableHighlight
                       style={styles.touchable}
                       underlayColor="#eeeeee"
-                      onPress={() => {
-                        console.log("click");
-                      }}
                     >
                       <Thumbnail
                         source={{
                           uri: this.state.image,
-                          cache: "force-cache"
+                          cache: 'force-cache'
                         }}
                         style={styles.imageStyle}
                       />
@@ -315,11 +301,11 @@ export default class AddContact extends Component {
                   <View style={styles.actionButtonContainer}>
                     <TouchableOpacity
                       style={{
-                        height: "100%",
-                        width: "100%",
+                        height: '100%',
+                        width: '100%',
                         borderRadius: 100,
-                        justifyContent: "center",
-                        display: "flex"
+                        justifyContent: 'center',
+                        display: 'flex'
                       }}
                       underlayColor="#eeeeee"
                       onPress={() => {
@@ -339,26 +325,26 @@ export default class AddContact extends Component {
           )}
 
           {this.state.openQrCode && (
-            <View style={{ height: "100%" }}>
+            <View style={{ height: '100%' }}>
               {this.state.spinner && (
                 <View
                   style={{
-                    width: "100%",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    height: "100%",
-                    position: "absolute"
+                    width: '100%',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    height: '100%',
+                    position: 'absolute'
                   }}
                 >
                   <Spinner />
-                  <Text>{screenProps.t("Contacts:wait")}</Text>
+                  <Text>{screenProps.t('Contacts:wait')}</Text>
                 </View>
               )}
               <QRCodeScanner
                 onRead={this.onSuccess}
-                reactivate={true}
+                reactivate
                 reactivateTimeout={1000}
-                showMarker={true}
+                showMarker
               />
             </View>
           )}
@@ -370,32 +356,32 @@ export default class AddContact extends Component {
 
 const styles = StyleSheet.create({
   HeaderModal: {
-    flexDirection: "row",
+    flexDirection: 'row',
     height: 50,
-    justifyContent: "space-between",
-    alignItems: "center",
+    justifyContent: 'space-between',
+    alignItems: 'center',
     paddingHorizontal: 15,
-    backgroundColor: "white"
+    backgroundColor: 'white'
   },
 
   iconStyle: {
     fontSize: 25,
-    fontWeight: "600"
+    fontWeight: '600'
   },
 
   textStyle: {
-    fontWeight: "normal",
+    fontWeight: 'normal',
     fontSize: 20,
-    color: "black"
+    color: 'black'
   },
   touchable: {
 
   },
 
   inputStyle: {
-    flexDirection: "row",
-    width: "100%",
-    alignItems: "center",
+    flexDirection: 'row',
+    width: '100%',
+    alignItems: 'center',
     paddingHorizontal: 10
   },
 
@@ -407,27 +393,27 @@ const styles = StyleSheet.create({
 
   imageContainer: {
     width: 150,
-    alignItems: "center"
+    alignItems: 'center'
   },
   iconStyles: {
-    display: "flex",
-    color: "white",
-    textAlign: "center",
-    justifyContent: "center",
+    display: 'flex',
+    color: 'white',
+    textAlign: 'center',
+    justifyContent: 'center',
     borderRadius: 100,
     fontSize: 18
   },
 
   actionButtonContainer: {
-    backgroundColor: "#fbc233",
+    backgroundColor: '#fbc233',
     borderRadius: 100,
     height: 45,
     width: 45,
 
-    position: "absolute",
-    top: "80%",
-    left: "36%",
+    position: 'absolute',
+    top: '80%',
+    left: '36%',
     borderWidth: 0,
-    justifyContent: "center"
+    justifyContent: 'center'
   }
 });
