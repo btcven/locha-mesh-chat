@@ -1,4 +1,4 @@
-import AsyncStorage from '@react-native-community/async-storage';
+import { AsyncStorage } from 'react-native';
 import RNFS from 'react-native-fs';
 import { ActionTypes } from '../constants';
 import { FileDirectory } from '../../utils/utils';

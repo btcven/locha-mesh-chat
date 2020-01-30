@@ -21,7 +21,6 @@ import com.horcrux.svg.SvgPackage;
 import io.realm.react.RealmReactPackage;
 import org.reactnative.camera.RNCameraPackage;
 import com.rnfs.RNFSPackage;
-import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
 import com.reactnative.ivpusic.imagepicker.PickerPackage;
 import com.reactnativecommunity.cameraroll.CameraRollPackage;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
@@ -60,7 +59,6 @@ public class MainApplication extends Application implements ReactApplication {
             new RealmReactPackage(),
             new RNCameraPackage(),
             new RNFSPackage(),
-            new AsyncStoragePackage(),
             new PickerPackage(),
             new CameraRollPackage(),
             new RNGestureHandlerPackage(),

@@ -6,7 +6,6 @@ import {
 } from 'react-native';
 import Modal from 'react-native-modal';
 import { Formik } from 'formik';
-import DocumentPicker from 'react-native-document-picker';
 import RNFS from 'react-native-fs';
 import CryptoJS from 'crypto-js';
 import { sha256 } from 'js-sha256';
@@ -94,6 +93,8 @@ export default class CreateAccount extends Component {
   }
 
   getFile = async () => {
+    // eslint-disable-next-line global-require
+    const DocumentPicker = require('react-native-document-picker');
     // this.props.close()
     try {
       const res = await DocumentPicker.pick({
