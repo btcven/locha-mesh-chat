@@ -1,4 +1,6 @@
-import Realm from 'realm';
+/* eslint-disable no-undef */
+/* eslint-disable global-require */
+/* eslint-disable no-unused-vars */
 import { sha256 } from 'js-sha256';
 import {
   seed,
@@ -10,6 +12,13 @@ import {
   fileSchema
 } from './schemas';
 import CoreDatabase from './realmDatabase';
+
+let Realm;
+if (!process.env.JEST_WORKER_ID) {
+  Realm = require('realm');
+} else {
+  Realm = require('../../__Mocks__/realmMock').default;
+}
 
 
 const options = {
@@ -33,8 +42,10 @@ const optionsDatabase = {
   schemaVersion: 18
 };
 
-
+// CoreDatabase
 export default class Database extends CoreDatabase {
+  // eslint-disable-next-line class-methods-use-this
+
   // eslint-disable-next-line class-methods-use-this
   toByteArray(str) {
     const array = new Int8Array(str.length);

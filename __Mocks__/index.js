@@ -1,5 +1,6 @@
 import 'react-native';
 
+
 jest.mock('react-native-fs', () => ({
   mkdir: jest.fn(),
   moveFile: jest.fn(),
@@ -116,7 +117,6 @@ jest.mock('NativeEventEmitter', () => class MockNativeEventEmitter {
 // jest.mock('NativeModules', () => ({
 //   LocalNotification: { requestPermission: jest.fn() }
 // }));
-
 
 jest.mock('Platform', () => {
   const Platform = require.requireActual('Platform');

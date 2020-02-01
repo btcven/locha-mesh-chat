@@ -66,6 +66,8 @@ class Contacts extends Component {
 
     const selected = unSelect(this.state.selected, contact);
 
+    console.log("selected", selected);
+
     if (selected.found) {
       this.setState({ selected: selected.data });
     } else {

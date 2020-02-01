@@ -126,8 +126,11 @@ export const unreadMessages = (rule, state, view, data) => {
  * @param {object} unSelected objecto a remover del la lista de seleccionados
  * @returns {object}
  */
+
 export const unSelect = (selected, unSelected) => {
-  console.log('selected', selected, 'unselected', unSelect);
+  if (!Array.isArray(selected)) {
+    throw new Error();
+  }
   const result = selected.filter((itemSelected) => {
     if (selected.toUID) {
       return unSelected.toUID !== itemSelected.toUID;
@@ -3148,7 +3151,7 @@ export const generateName = () => {
   ];
 
   const name = `${capFirst(name1[getRandomInt(0, name1.length + 1)])
-  } ${
+    } ${
     capFirst(name2[getRandomInt(0, name2.length + 1)])}`;
   return name;
 };
