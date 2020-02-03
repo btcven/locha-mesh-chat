@@ -2,6 +2,7 @@
 /* eslint-disable global-require */
 /* eslint-disable no-unused-vars */
 import { sha256 } from 'js-sha256';
+import Realm from 'realm';
 import {
   seed,
   userSchema,
@@ -13,24 +14,24 @@ import {
 } from './schemas';
 import CoreDatabase from './realmDatabase';
 
-let Realm;
-if (!process.env.JEST_WORKER_ID) {
-  Realm = require('realm');
-} else {
-  Realm = require('../../__Mocks__/realmMock').default;
-}
+// let Realm;
+// if (!process.env.JEST_WORKER_ID) {
+//   Realm = require('realm');
+// } else {
+//   Realm = require('../../__Mocks__/realmMock').default;
+// }
 
 
 const options = {
   schema: [
     seed,
   ],
-  path: 'seed.realm',
-  schemaVersion: 2,
+  path: 'mockDatabase/seed.realm',
+  schemaVersion: 3,
 };
 
 const optionsDatabase = {
-  path: 'default.realm',
+  path: 'mockDatabase/default.realm',
   schema: [
     userSchema,
     contactSchema,
@@ -39,7 +40,7 @@ const optionsDatabase = {
     BroadCasContacts,
     fileSchema
   ],
-  schemaVersion: 18
+  schemaVersion: 20
 };
 
 // CoreDatabase

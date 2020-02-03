@@ -7,7 +7,7 @@
     "postinstall": "./node_modules/.bin/rn-nodeify  --install stream,crypto,vm  --hack  --yarn",
     "docs": "./node_modules/.bin/jsdoc -c jsdoc.json",
     "lint": "eslint '**/*.{js,jsx}' --quiet",
-    "test": "jest"
+    "test": "jest --verbose"
   },
   "pre-commit": "lint",
   "dependencies": {

@@ -115,17 +115,6 @@ const writeAction = (data) => ({
   payload: data
 });
 
-/**
- * @function
- * @description function to change menu tabs
- * @param {number} tab - tab id
- * @returns {object}
- */
-
-export const changeTab = (tab) => ({
-  type: ActionTypes.CHANGE_TAB,
-  payload: tab
-});
 
 /**
  * @function

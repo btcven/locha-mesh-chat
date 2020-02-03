@@ -12,6 +12,7 @@ export default class CoreDatabase {
 
   getUserData = () => new Promise((resolve) => {
     const user = this.db.objects('user');
+
     resolve(user.slice(0, 1));
   });
 
@@ -98,12 +99,11 @@ export default class CoreDatabase {
   });
 
 
-  setMessage = (id, obj, status) => new Promise((resolve) => {
+  setMessage = (id, obj, status) => new Promise((resolve, reject) => {
     this.db.write(() => {
       try {
         const chat = this.db.objectForPrimaryKey('Chat', id);
         const time = new Date().getTime();
-        console.log(chat, "aqui");
         const file = obj.msg.typeFile
           ? {
             fileType: obj.msg.typeFile,
@@ -122,7 +122,7 @@ export default class CoreDatabase {
         resolve({ file, time });
       } catch (err) {
         // eslint-disable-next-line no-console
-        console.log('function setMessage', err);
+        reject(err);
       }
     });
   });
@@ -131,7 +131,8 @@ export default class CoreDatabase {
     this.db.write(() => {
       this.db.create('temporalContacts', {
         ...obj
-      });
+      },
+      true);
       resolve(obj);
     });
   });
@@ -194,10 +195,10 @@ export default class CoreDatabase {
         }
       });
 
+
       this.db.delete(chats);
       this.db.delete(contact);
-
-      resolve(contact);
+      resolve(true);
     });
   });
 
@@ -252,7 +253,7 @@ export default class CoreDatabase {
       const chat = this.db.objectForPrimaryKey('Chat', id);
 
       this.db.delete(chat.messages);
-      resolve();
+      resolve(true);
     });
   });
 

@@ -3150,8 +3150,7 @@ export const generateName = () => {
     'Lieuwe'
   ];
 
-  const name = `${capFirst(name1[getRandomInt(0, name1.length + 1)])
-    } ${
+  const name = `${capFirst(name1[getRandomInt(0, name1.length + 1)])} ${
     capFirst(name2[getRandomInt(0, name2.length + 1)])}`;
   return name;
 };
