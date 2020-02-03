@@ -21,4 +21,13 @@ describe('database realm test', () => {
     const data = await realm.getUserData();
     expect(data.length).toBeDefined();
   });
+
+
+  // test('set message', () => {
+  //   realm.setMessage('broadcast', MockData.mocksetMessage, 'pending').then((res) => {
+  //     console.log("paso");
+  //   }).catch(() => {
+  //     console.log("no paso");
+  //   })
+  // });
 });

@@ -1,3 +1,4 @@
+/* eslint-disable no-empty */
 /* eslint-disable max-classes-per-file */
 export default class Realm {
   constructor(params) {
@@ -36,44 +37,34 @@ export default class Realm {
     this.writing = false;
   }
 
+
+  verifySchema(id) {
+    const exist = !!this.schema[id];
+    return exist;
+  }
+
   create(schemaName, object) {
     const modelObject = object;
     const { properties } = this.schema[schemaName];
+    const data = {};
     Object.keys(properties).forEach((key) => {
-      if (modelObject[key] && modelObject[key].model) {
-        this.data[modelObject[key].model][modelObject[key].id] = this.create(
-          modelObject[key].model, modelObject[key],
-        );
-      } else if (modelObject[key] && modelObject[key].length && modelObject[key][0].model) {
-        modelObject[key].forEach((obj) => {
-          this.data[modelObject[key][0].model][obj.id] = obj;
-        });
-        modelObject[key].filtered = this.filtered ? this.filtered : () => modelObject[key];
-        modelObject[key].sorted = () => modelObject[key].sort();
-      } else if (modelObject[key] === undefined) {
-        if (typeof properties[key] === 'object' && properties[key].optional) {
-          modelObject[key] = null;
-        }
-        if (typeof properties[key] === 'object' && ['list', 'linkingObjects'].includes(properties[key].type)) {
-          modelObject[key] = [];
-          modelObject[key].filtered = () => [];
-          modelObject[key].sorted = () => [];
+      if (modelObject[key]) {
+        data[key] = modelObject[key];
+      } else if (!modelObject[key]) {
+        if (typeof properties[key] === 'string') {
+          if (properties[key].substring(properties[key].length - 1) === '?') {
+            data[key] = null;
+          } else {
+            throw new Error(`${properties[key]} is required`);
+          }
+        } else {
+          const resultSchema = this.verifySchema(properties[key].objectType);
+          if (resultSchema && properties[key].type === 'list') {
+            data[key] = {};
+          }
         }
       }
     });
-
-    this.data[schemaName][modelObject.id] = modelObject;
-    if (this.writing) {
-      if (this.schemaCallbackList[schemaName]) {
-        this.schemaCallbackList[schemaName].forEach((cb) => cb(schemaName, {
-          insertions: { length: 1 },
-          modifications: { length: 0 },
-          deletions: { length: 0 },
-        }));
-      }
-      // this.callbackList.forEach((cb) => { cb(); });
-    }
-    return modelObject;
   }
 
   objectForPrimaryKey(model, id) {

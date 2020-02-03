@@ -45,10 +45,23 @@ const mockUser = {
 };
 
 
+const mocksetMessage = {
+  fromUID: '5c28fab375d47994b30190b01338ea48daa0b307909a3d465a597772469633e1',
+  toUID: null,
+  msgID: '5c28fab375d47994b30190b01338ea18daa0b307909a2d465a597772469634e5',
+  msg: {
+    text: "message"
+  },
+  timestamp: 12345512421242,
+  type: 'msg'
+};
+
+
 export default {
   mockContact1,
   mockContact2,
   mockMessage2,
   mockMessage1,
+  mocksetMessage,
   mockUser
 };

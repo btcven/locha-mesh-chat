@@ -103,6 +103,7 @@ export default class CoreDatabase {
       try {
         const chat = this.db.objectForPrimaryKey('Chat', id);
         const time = new Date().getTime();
+        console.log(chat, "aqui");
         const file = obj.msg.typeFile
           ? {
             fileType: obj.msg.typeFile,
