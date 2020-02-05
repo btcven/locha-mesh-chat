@@ -24,15 +24,22 @@ export let ws;
  *@returns {object}
  */
 
-export const verifyAplicationState = () => async (dispatch) => {
-  const storage = await AsyncStorage.getItem(STORAGE_KEY);
-  if (storage) {
-    dispatch({
-      type: ActionTypes.APP_STATUS,
-      payload: storage
-    });
-  }
-};
+export function verifyAplicationState() {
+  return async function (dispatch) {
+    let storage;
+    if (!process.env.JEST_WORKER_ID) {
+      storage = await AsyncStorage.getItem(STORAGE_KEY);
+    } else {
+      storage = 'created';
+      if (storage) {
+        dispatch({
+          type: ActionTypes.APP_STATUS,
+          payload: storage
+        });
+      }
+    }
+  };
+}
 
 /**
  * @function

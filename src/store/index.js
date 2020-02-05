@@ -3,6 +3,12 @@ import ReduxThunk from 'redux-thunk';
 import logger from 'redux-logger';
 import { rootReducer } from './root';
 
-const middleWare = applyMiddleware(ReduxThunk, logger)(createStore);
+let middleWare;
+if (process.env.JEST_WORKER_ID) {
+  middleWare = applyMiddleware(ReduxThunk)(createStore);
+} else {
+  middleWare = applyMiddleware(ReduxThunk, logger)(createStore);
+}
+
 
 export default middleWare(rootReducer);
