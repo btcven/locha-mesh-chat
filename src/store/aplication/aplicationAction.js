@@ -24,22 +24,20 @@ export let ws;
  *@returns {object}
  */
 
-export function verifyAplicationState() {
-  return async function (dispatch) {
-    let storage;
-    if (!process.env.JEST_WORKER_ID) {
-      storage = await AsyncStorage.getItem(STORAGE_KEY);
-    } else {
-      storage = 'created';
-      if (storage) {
-        dispatch({
-          type: ActionTypes.APP_STATUS,
-          payload: storage
-        });
-      }
+export const verifyAplicationState = () => async (dispatch) => {
+  let storage;
+  if (!process.env.JEST_WORKER_ID) {
+    storage = await AsyncStorage.getItem(STORAGE_KEY);
+  } else {
+    storage = 'created';
+    if (storage) {
+      dispatch({
+        type: ActionTypes.APP_STATUS,
+        payload: storage
+      });
     }
-  };
-}
+  }
+};
 
 /**
  * @function
@@ -48,7 +46,7 @@ export function verifyAplicationState() {
  * @param {string} obj.name The name of the user.
  */
 
-export const restoreAccountWithPin = (pin, callback) => (dispatch) => {
+export const restoreAccountWithPin = (pin, callback) => async (dispatch) => {
   database.restoreWithPin(sha256(pin)).then(async (res) => {
     dispatch(writeAction(JSON.parse(JSON.stringify(res[0]))));
     const url = await AsyncStorage.getItem('@APP:URL_KEY');
@@ -85,7 +83,7 @@ export const createNewAccount = (obj) => async (dispatch) => {
 };
 
 
-export const restoreWithPhrase = (pin, phrase, name) => (dispatch) => {
+export const restoreWithPhrase = (pin, phrase, name) => async (dispatch) => {
   database.restoreWithPhrase(pin, phrase).then(async () => {
     await createFolder();
     const result = await bitcoin.generateAddress(phrase);

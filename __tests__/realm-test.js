@@ -7,7 +7,7 @@ const realm = new Database();
 
 describe('database realm test', () => {
   test('initialize database ', async () => {
-    const db = await realm.getRealm(sha256('123456'), sha256('123456'));
+    const db = await realm.getRealm(sha256('123456'), sha256('click tag quit book door know comic alone elephant unhappy lunch sun'));
     expect(db).toBeDefined();
   });
 
@@ -125,3 +125,10 @@ describe('database realm test', () => {
     ).resolves.toBeTruthy();
   });
 });
+
+afterAll(() => {
+  realm.db.close();
+  realm.seed.close();
+  realm.listener.close();
+});
+

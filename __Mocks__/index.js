@@ -123,3 +123,13 @@ jest.mock('Platform', () => {
   Platform.OS = 'android';
   return Platform;
 });
+
+
+jest.mock('PermissionsAndroid', () => {
+  const PermissionsAndroid = require.requireActual('PermissionsAndroid');
+
+  return {
+    ...PermissionsAndroid,
+    request: () => jest.fn()
+  };
+});
