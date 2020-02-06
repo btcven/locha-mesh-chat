@@ -56,14 +56,6 @@ export const saveContact = (
  * @returns {Object}
  */
 
-export const getContacts = () => async (dispatch) => {
-  const contacts = await AsyncStorage.getItem('contacts');
-  dispatch({
-    type: ActionTypes.ADD_CONTACTS,
-    payload: contacts ? Object.values(JSON.parse(contacts)) : []
-  });
-};
-
 /**
  * function to delete multiple contacts
  * @param {Array<ContactData>} data data array of a contact
@@ -72,7 +64,7 @@ export const getContacts = () => async (dispatch) => {
  * @returns {{type:String  , payload: Object }}
  */
 
-export const deleteContactAction = (data, callback) => (dispatch) => {
+export const deleteContactAction = (data, callback) => async (dispatch) => {
   database.deleteContact(data).then(() => {
     dispatch({
       type: ActionTypes.DELETE_CONTACT,
@@ -90,7 +82,7 @@ export const deleteContactAction = (data, callback) => (dispatch) => {
  * @returns {{type:String  , payload: Object }}
  */
 
-export const editContats = (obj, callback) => (dispatch) => {
+export const editContats = (obj, callback) => async (dispatch) => {
   database.editContact(obj).then((res) => {
     callback();
     dispatch({

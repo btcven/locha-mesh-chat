@@ -60,7 +60,20 @@ const mocksetMessage = {
 const mocksetMessage2 = {
   fromUID: '5c28fab375d47994b30190b01338ea48daa0b307909a3d465a597772469633e1',
   toUID: null,
-  msgID: '5c28f23b375d47994b30190b01338ea18daa0b307909a2d465a597772469634e5123',
+  msgID: '5c28f23b375d47994b30190b01338ea18daa0b307909a2d465a597772469634e512334123',
+  msg: {
+    text: 'message'
+  },
+  timestamp: 12345512421242,
+  type: 'msg'
+};
+
+
+
+const mocksetMessage3 = {
+  fromUID: '5c28fab375d47994b30190b01338ea48daa0b307909a3d465a597772469633e1',
+  toUID: null,
+  msgID: '5c28f23b375d47994b30190b01338ea18daa0b307909a2d465a5977724634123',
   msg: {
     text: 'message'
   },
@@ -97,6 +110,7 @@ export default {
   mockMessage1,
   mocksetMessage,
   mocksetMessage2,
+  mocksetMessage3,
   mockUser,
   mockContact,
   temporalInfo,

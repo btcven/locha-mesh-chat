@@ -1,4 +1,5 @@
 import '../../__Mocks__';
+import MockData from '../../__Mocks__/dataMock'
 import store from '../../src/store';
 import {
   verifyAplicationState,
@@ -8,7 +9,8 @@ import {
   restoreWithPhrase,
   restoreAccountWithPin
 } from '../../src/store/aplication/aplicationAction';
-import { saveContact } from '../../src/store/contacts';
+import { saveContact, editContats, deleteContactAction } from '../../src/store/contacts';
+import { initialChat } from '../../src/store/chats/chatAction';
 import { database } from '../../App';
 
 describe('Aplication actions', () => {
@@ -83,19 +85,70 @@ describe('Aplication actions', () => {
       });
     });
   });
-  describe('contact action', () => {
-    test('save contact action', async () => {
-      const idUSer = '02676c01888dc0b31caceac3304dc1f5fb386ea4ab867492070c88b0eb0a91db2d';
-      const newContact = {
-        name: 'TEST',
-        picture: undefined,
-        uid: 'TEST',
-        hashUID: '94ee059335e587e501cc4bf90613e0814f00a7b08bc7c'
-      };
 
-      store.dispatch(saveContact(idUSer, newContact, []));
+  // --- CONTACT ACTIONS -----
+  describe('contact action', () => {
+    const idUSer = '02676c01888dc0b31caceac3304dc1f5fb386ea4ab867492070c88b0eb0a91db2d';
+    const newContact = {
+      name: 'TEST',
+      picture: undefined,
+      uid: 'TEST',
+      hashUID: '94ee059335e587e501cc4bf90613e0814f00a7b08bc7c'
+    };
+
+    test('save contact action', async () => {
+      await store.dispatch(saveContact(idUSer, newContact, [])).then(() => {
+        const newState = store.getState();
+        const { contacts } = newState;
+        expect(contacts.contacts).toEqual(
+          [{
+            name: 'TEST',
+            picture: null,
+            uid: 'TEST',
+            hashUID: '94ee059335e587e501cc4bf90613e0814f00a7b08bc7c'
+          }]
+        );
+      });
+    });
+    test('Edit contact action', () => {
+      newContact.name = 'hiii';
+      store.dispatch(editContats(newContact, () => { })).then(() => {
+        const newState = store.getState();
+        const { contacts } = newState;
+        expect(contacts.contacts).toEqual(
+          [{
+            name: 'hiii',
+            picture: null,
+            uid: 'TEST',
+            hashUID: '94ee059335e587e501cc4bf90613e0814f00a7b08bc7c'
+          }]
+        );
+      });
+    });
+
+    test('Delete contact action', async () => {
+      await store.dispatch(deleteContactAction([newContact], () => { })).then(() => {
+        const newState = store.getState();
+        const { contacts } = newState;
+        expect(contacts.contacts).toEqual(
+          []
+        );
+      });
     });
   });
+
+  // --- CHAT ACTIONS -----
+  describe('Chat Actions', () => {
+    test('save new message ', async () => {
+      await store.dispatch(initialChat(MockData.mocksetMessage3, 'pending')).then(() => {
+        const newState = store.getState();
+        const { chats } = newState;
+        expect(chats.chat[0].messages[0].msgID).toBe('5c28f23b375d47994b30190b01338ea18daa0b307909a2d465a5977724634123');
+      });
+    });
+  });
+
+  
 });
 
 

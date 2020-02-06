@@ -24,10 +24,14 @@ import { sendSocket } from '../../utils/socket';
  * @returns {object}
  */
 
-export const initialChat = (data, status) => (dispatch) => {
+export const initialChat = (data, status) => async (dispatch) => {
   const uidChat = data.toUID ? data.toUID : 'broadcast';
   database.setMessage(uidChat, { ...data }, status).then((res) => {
-    sendSocket.send(JSON.stringify(data));
+
+    if (!process.env.JEST_WORKER_ID) {
+      sendSocket.send(JSON.stringify(data));
+    }
+
     dispatch({
       type: ActionTypes.NEW_MESSAGE,
       payload: {
