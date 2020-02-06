@@ -10,6 +10,7 @@ import {
   Icon,
   Thumbnail
 } from 'native-base';
+
 import { StyleSheet, Alert } from 'react-native';
 import { connect } from 'react-redux';
 import Header from '../../components/Header';
@@ -21,7 +22,8 @@ import {
   saveContact,
   getContacts,
   deleteContactAction,
-  editContats
+  requestImage,
+  editContacts
 } from '../../store/contacts';
 
 
@@ -224,7 +226,8 @@ export default connect(
     getContacts,
     selectedChat,
     deleteContact: deleteContactAction,
-    editContats
+    requestImage,
+    editContacts
   }
 )(Contacts);
 

@@ -1,5 +1,6 @@
 import { sha256 } from 'js-sha256';
-import { getChat } from '../store/chats';
+import { getChat, setStatusMessage } from '../store/chats';
+import { requestImageStatus, sentImageStatus, verifyHashImageStatus } from '../store/contacts/contactsActions';
 import { reestarConnection, loading, loaded } from '../store/aplication';
 
 // eslint-disable-next-line import/no-mutable-exports
@@ -115,10 +116,51 @@ export default class Socket {
     }, 10000);
   }
 
+  /**
+  * function that is executed when the socket returns a status object
+  * @param {Object} statusData
+  * @param {string} statusData.toUID address where the status will be sent
+  * @param {string} statusData.fromUID ui of the one that is receiving in state
+  * @param {number} statusData.timestamp sent date
+  * @param {string} statusData.type type status
+  * @param {Object} statusData.data object that contains the status data
+  */
+
+  setStatus = async (statusData) => {
+    const { dispatch } = this.store;
+    switch (statusData.data.status) {
+      // execute function that is in contact actions
+      case 'RequestImage': dispatch(requestImageStatus(statusData));
+        break;
+      // Execute function that is in contact actions
+      case 'sentImage': dispatch(sentImageStatus(statusData));
+        break;
+      // Execute function that is in contact actions
+      case 'verifyHashImage': dispatch(verifyHashImageStatus(statusData));
+        break;
+      // Execute function that is in chat actions
+      default: dispatch(setStatusMessage(statusData));
+        break;
+    }
+  };
+
+  /**
+   * it is executed when a new data arrives at websocket
+   */
   onMenssage = () => {
     this.socket.onmessage = (e) => {
       // a message was received
-      this.store.dispatch(getChat(e.data));
+      const parse = JSON.parse(e.data);
+      const { dispatch } = this.store;
+      switch (parse.type) {
+        case 'status': this.setStatus(parse);
+          break;
+        // Execute function that is in chat actions
+        case 'msg': dispatch(getChat(parse));
+          break;
+        default:
+          break;
+      }
     };
 
     this.socket.onerror = (e) => {

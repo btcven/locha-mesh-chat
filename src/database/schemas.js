@@ -5,6 +5,7 @@ export const contactSchema = {
     uid: 'string',
     name: 'string',
     picture: 'string?',
+    imageHash: 'string?',
     hashUID: 'string'
   }
 };
@@ -35,7 +36,7 @@ export const messageSquema = {
   }
 };
 
-export const BroadCasContacts = {
+export const broadcastContacts = {
   name: 'temporalContacts',
   primaryKey: 'hashUID',
   properties: {
@@ -64,6 +65,7 @@ export const userSchema = {
     uid: { type: 'string', indexed: true },
     name: 'string',
     picture: 'string?',
+    imageHash: 'string?',
     contacts: { type: 'list', objectType: 'Contact' },
     chats: { type: 'list', objectType: 'Chat' }
   }

@@ -147,8 +147,6 @@ describe('Aplication actions', () => {
       });
     });
   });
-
-  
 });
 
 

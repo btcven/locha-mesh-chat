@@ -39,6 +39,11 @@ class DualComponent extends Component {
     header: null
   };
 
+
+
+
+
+  
   componentDidUpdate = () => {
     if (this.state.appState === 'background' && !this.state.timeBackgroud) {
       this.setState({ timeBackgroud: new Date().getTime() });

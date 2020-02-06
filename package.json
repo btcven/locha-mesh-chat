@@ -9,7 +9,7 @@
     "lint": "eslint '**/*.{js,jsx}' --quiet",
     "test": "jest --verbose"
   },
-  "pre-commit": "lint",
+  "precommit": "lint-staged",
   "dependencies": {
     "@react-native-community/async-storage": "^1.7.1",
     "@react-native-community/cameraroll": "^1.1.1",
