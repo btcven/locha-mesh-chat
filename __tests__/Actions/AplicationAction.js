@@ -8,6 +8,8 @@ import {
   restoreWithPhrase,
   restoreAccountWithPin
 } from '../../src/store/aplication/aplicationAction';
+import { saveContact } from '../../src/store/contacts';
+import { database } from '../../App';
 
 describe('Aplication actions', () => {
   const obj = {
@@ -76,9 +78,27 @@ describe('Aplication actions', () => {
         uid: config.uid,
         name: config.name
       }).toEqual({
-        uid: '02e5f8f594f8ca7e27d0f0b3e37432bcad4c066f4bbd91b0be9c052a36ba5bc1d6',
-        name: 'new name'
+        uid: '02676c01888dc0b31caceac3304dc1f5fb386ea4ab867492070c88b0eb0a91db2d',
+        name: 'test'
       });
     });
   });
+  describe('contact action', () => {
+    test('save contact action', async () => {
+      const idUSer = '02676c01888dc0b31caceac3304dc1f5fb386ea4ab867492070c88b0eb0a91db2d';
+      const newContact = {
+        name: 'TEST',
+        picture: undefined,
+        uid: 'TEST',
+        hashUID: '94ee059335e587e501cc4bf90613e0814f00a7b08bc7c'
+      };
+
+      store.dispatch(saveContact(idUSer, newContact, []));
+    });
+  });
+});
+
+
+afterAll(() => {
+  database.closeDB();
 });

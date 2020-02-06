@@ -131,4 +131,3 @@ afterAll(() => {
   realm.seed.close();
   realm.listener.close();
 });
-

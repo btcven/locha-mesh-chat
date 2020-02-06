@@ -72,8 +72,39 @@ export default class CoreDatabase {
 
   addContacts = (uid, obj, update) => new Promise((resolve) => {
     this.db.write(() => {
-      const user = this.db.objectForPrimaryKey('user', uid);
+      try {
+        const user = this.db.objectForPrimaryKey('user', uid);
+        user.contacts.push({
+          uid: obj[0].uid,
+          name: obj[0].name,
+          picture: obj[0].picture,
+          hashUID: obj[0].hashUID
+        });
 
+        if (!update) {
+          user.chats.push({
+            fromUID: uid,
+            toUID: obj[0].hashUID,
+            messages: [],
+            queue: []
+          });
+        }
+        resolve({
+          fromUID: uid,
+          toUID: obj[0].hashUID,
+          messages: {},
+          queue: []
+        });
+      } catch (error) {
+        console.log('error', error);
+      }
+    });
+  });
+
+
+  malditaSeaNojoda = (uid, obj, update) => new Promise((resolve) => {
+    this.db.write(() => {
+      const user = this.db.objectForPrimaryKey('user', uid);
       user.contacts.push({
         uid: obj[0].uid,
         name: obj[0].name,
@@ -89,6 +120,7 @@ export default class CoreDatabase {
           queue: []
         });
       }
+
       resolve({
         fromUID: uid,
         toUID: obj[0].hashUID,
@@ -96,8 +128,7 @@ export default class CoreDatabase {
         queue: []
       });
     });
-  });
-
+  })
 
   setMessage = (id, obj, status) => new Promise((resolve, reject) => {
     this.db.write(() => {
@@ -131,8 +162,7 @@ export default class CoreDatabase {
     this.db.write(() => {
       this.db.create('temporalContacts', {
         ...obj
-      },
-      true);
+      }, true);
       resolve(obj);
     });
   });

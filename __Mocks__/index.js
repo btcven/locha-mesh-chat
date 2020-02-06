@@ -1,6 +1,5 @@
 import 'react-native';
 
-
 jest.mock('react-native-fs', () => ({
   mkdir: jest.fn(),
   moveFile: jest.fn(),

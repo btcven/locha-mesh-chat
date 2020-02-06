@@ -14,24 +14,27 @@ import {
 } from './schemas';
 import CoreDatabase from './realmDatabase';
 
-// let Realm;
-// if (!process.env.JEST_WORKER_ID) {
-//   Realm = require('realm');
-// } else {
-//   Realm = require('../../__Mocks__/realmMock').default;
-// }
+let pathDefault;
+let pathSeed;
+if (!process.env.JEST_WORKER_ID) {
+  pathDefault = 'default.realm';
+  pathSeed = 'seed.realm';
+} else {
+  pathDefault = 'mockDatabase/default.realm';
+  pathSeed = 'mockDatabase/seed.realm';
+}
 
 
 const options = {
   schema: [
     seed,
   ],
-  path: 'mockDatabase/seed.realm',
+  path: pathSeed,
   schemaVersion: 3,
 };
 
 const optionsDatabase = {
-  path: 'mockDatabase/default.realm',
+  path: pathDefault,
   schema: [
     userSchema,
     contactSchema,
@@ -123,6 +126,17 @@ export default class Database extends CoreDatabase {
     }
   })
 
+  closeDB() {
+    if (this.db) {
+      this.db.close();
+    }
+    if (this.seed) {
+      this.seed.close();
+    }
+    if (this.listener) {
+      this.listener.close();
+    }
+  }
 
   restoreWithFile = (pin, data) => new Promise((resolve) => {
     this.getRealm(sha256(pin), sha256(data.seed.seed)).then(async () => {

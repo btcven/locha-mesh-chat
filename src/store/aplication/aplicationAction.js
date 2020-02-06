@@ -30,12 +30,12 @@ export const verifyAplicationState = () => async (dispatch) => {
     storage = await AsyncStorage.getItem(STORAGE_KEY);
   } else {
     storage = 'created';
-    if (storage) {
-      dispatch({
-        type: ActionTypes.APP_STATUS,
-        payload: storage
-      });
-    }
+  }
+  if (storage) {
+    dispatch({
+      type: ActionTypes.APP_STATUS,
+      payload: storage
+    });
   }
 };
 
