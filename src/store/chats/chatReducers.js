@@ -34,7 +34,6 @@ export const chatReducer = (state = AplicationState, action) => {
     }
 
     case ActionTypes.NEW_MESSAGE: {
-      console.log("!!!!!!!!!!!!!!!", action.payload);
       const chat = Object.values(state.chat);
       const chatUID = action.payload.toUID ? action.payload.toUID : 'broadcast';
       const chatFromUID = action.payload.fromUID;

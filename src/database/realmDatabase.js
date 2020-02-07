@@ -5,8 +5,6 @@ import moment from 'moment';
 // import Store from "../store";
 import { sha256 } from 'js-sha256';
 
-
-
 export default class CoreDatabase {
   constructor() {
     this.db = undefined;
@@ -156,6 +154,7 @@ export default class CoreDatabase {
 
   setMessage = (id, obj, status) => new Promise((resolve, reject) => {
     this.db.write(() => {
+      console.log(id);
       try {
         const chat = this.db.objectForPrimaryKey('Chat', id);
         const time = new Date().getTime();
@@ -316,16 +315,22 @@ export default class CoreDatabase {
 
   deleteMessage = (id, obj) => new Promise((resolve) => {
     this.db.write(() => {
-      const chat = this.db.objectForPrimaryKey('Chat', id);
+      try {
+        const chat = this.db.objectForPrimaryKey('Chat', id);
 
-      const messages = chat.messages.filter((data) => {
-        const result = obj.find((message) => message.id === data.id);
+        console.log(chat.messages, "acaaaaaaasdwqeqwe12")
+        chat.messages.filter((data) => console.log(data));
+        const messages = chat.messages.filter((data) => {
+          const result = obj.find((message) => message.id === data.id);
 
-        return result;
-      });
+          return result;
+        });
 
-      this.db.delete(messages);
-      resolve();
+        this.db.delete(messages);
+        resolve();
+      } catch (error) {
+        console.log(error)
+      }
     });
   });
 

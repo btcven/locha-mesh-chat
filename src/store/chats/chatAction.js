@@ -28,7 +28,6 @@ import { sendSocket } from '../../utils/socket';
 export const initialChat = (data, status) => async (dispatch) => {
   const uidChat = data.toUID ? data.toUID : 'broadcast';
   database.setMessage(uidChat, { ...data }, status).then((res) => {
-
     if (!process.env.JEST_WORKER_ID) {
       sendSocket.send(JSON.stringify(data));
     }
@@ -107,7 +106,9 @@ export const broadcastRandomData = async (parse, id) => new Promise((resolve) =>
  */
 export const getChat = (parse) => async (dispatch) => {
   let infoMensagge;
-  sendStatus(parse);
+  if (!process.env.JEST_WORKER_ID) {
+    sendStatus(parse);
+  }
   if (!parse.toUID) {
     infoMensagge = await broadcastRandomData(parse);
   }
@@ -132,7 +133,7 @@ export const getChat = (parse) => async (dispatch) => {
 };
 
 
-export const setStatusMessage = (statusData) => (dispatch) => {
+export const setStatusMessage = (statusData) => async (dispatch) => {
   database.addStatusOnly(statusData).then(() => {
     dispatch({
       type: ActionTypes.SET_STATUS_MESSAGE,
@@ -225,7 +226,7 @@ export const deleteChat = (obj, callback) => (dispatch) => {
  * @param {string} id
  */
 
-export const cleanAllChat = (id) => (dispatch) => {
+export const cleanAllChat = (id) => async (dispatch) => {
   database.cleanChat(id).then(() => {
     dispatch({
       type: ActionTypes.DELETE_ALL_MESSAGE,
@@ -265,8 +266,9 @@ export const sendMessageWithFile = (data, path, base64) => (dispatch) => {
   });
 };
 
-export const deleteMessages = (id, data, callback) => (dispatch) => {
+export const deleteMessages = (id, data, callback) => async (dispatch) => {
   database.deleteMessage(id, data).then(() => {
+    console.log("paso")
     dispatch({
       type: ActionTypes.DELETE_SELECTED_MESSAGE,
       id,

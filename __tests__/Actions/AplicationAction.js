@@ -1,5 +1,5 @@
 import '../../__Mocks__';
-import MockData from '../../__Mocks__/dataMock'
+import MockData from '../../__Mocks__/dataMock';
 import store from '../../src/store';
 import {
   verifyAplicationState,
@@ -10,7 +10,9 @@ import {
   restoreAccountWithPin
 } from '../../src/store/aplication/aplicationAction';
 import { saveContact, editContats, deleteContactAction } from '../../src/store/contacts';
-import { initialChat } from '../../src/store/chats/chatAction';
+import {
+  initialChat, getChat, setStatusMessage, cleanAllChat
+} from '../../src/store/chats/chatAction';
 import { database } from '../../App';
 
 describe('Aplication actions', () => {
@@ -144,6 +146,30 @@ describe('Aplication actions', () => {
         const newState = store.getState();
         const { chats } = newState;
         expect(chats.chat[0].messages[0].msgID).toBe('5c28f23b375d47994b30190b01338ea18daa0b307909a2d465a5977724634123');
+      });
+    });
+
+    test('getChat functions', async () => {
+      await store.dispatch(getChat(MockData.mocksetMessage4)).then(() => {
+        const newState = store.getState();
+        const { chats } = newState;
+        expect(chats.chat[0].messages[1].msgID).toBe(MockData.mocksetMessage4.msgID);
+      });
+    });
+
+    test('update status message ', async () => {
+      await store.dispatch(setStatusMessage(MockData.messageStatus)).then(() => {
+        const newState = store.getState();
+        const { chats } = newState;
+        expect(chats.chat[0].messages[1].status).toBe(MockData.messageStatus.data.status);
+      });
+    });
+
+    test('delete messages', async () => {
+      await store.dispatch(cleanAllChat('bradcast')).then(() => {
+        const newState = store.getState();
+        const { chats } = newState;
+        console.log('deleteMessage', chats.chat[0].messages);
       });
     });
   });

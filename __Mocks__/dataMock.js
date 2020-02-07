@@ -68,14 +68,24 @@ const mocksetMessage2 = {
   type: 'msg'
 };
 
-
-
 const mocksetMessage3 = {
   fromUID: '5c28fab375d47994b30190b01338ea48daa0b307909a3d465a597772469633e1',
   toUID: null,
   msgID: '5c28f23b375d47994b30190b01338ea18daa0b307909a2d465a5977724634123',
   msg: {
     text: 'message'
+  },
+  timestamp: 12345512421242,
+  type: 'msg'
+};
+
+
+const mocksetMessage4 = {
+  fromUID: '5c28fab375d47994b30190b01338ea48daa0b307909a3d465a597772469633e1',
+  toUID: null,
+  msgID: '5c28f23b375d47994b30190b01338ea18daa0b307909a2d465a59777246341231242',
+  msg: {
+    text: 'message x2'
   },
   timestamp: 12345512421242,
   type: 'msg'
@@ -103,6 +113,18 @@ const temporalInfo2 = {
 };
 
 
+const messageStatus = {
+  fromUID: '5c28fab375d47994b30190b01338ea48daa0b307909a3d465a597772469633e1',
+  toUID: null,
+  timestamp: 1234251234,
+  data: {
+    status: 'delivered',
+    msgID: '5c28f23b375d47994b30190b01338ea18daa0b307909a2d465a59777246341231242'
+  },
+  type: 'status'
+};
+
+
 export default {
   mockContact1,
   mockContact2,
@@ -111,8 +133,10 @@ export default {
   mocksetMessage,
   mocksetMessage2,
   mocksetMessage3,
+  mocksetMessage4,
   mockUser,
   mockContact,
   temporalInfo,
-  temporalInfo2
+  temporalInfo2,
+  messageStatus
 };

@@ -43,7 +43,7 @@ const optionsDatabase = {
     broadcastContacts,
     fileSchema
   ],
-  schemaVersion: 20
+  schemaVersion: 21
 };
 
 // CoreDatabase
