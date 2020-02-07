@@ -184,7 +184,9 @@ const saveFile = (obj) => new Promise((resolve) => {
  */
 
 export const selectedChat = (obj) => (dispatch) => {
-  notification.cancelAll();
+  if (!process.env.JEST_WORKER_ID) {
+    notification.cancelAll();
+  }
   dispatch({
     type: ActionTypes.SELECTED_CHAT,
     payload: obj
@@ -268,7 +270,6 @@ export const sendMessageWithFile = (data, path, base64) => (dispatch) => {
 
 export const deleteMessages = (id, data, callback) => async (dispatch) => {
   database.deleteMessage(id, data).then(() => {
-    console.log("paso")
     dispatch({
       type: ActionTypes.DELETE_SELECTED_MESSAGE,
       id,
@@ -278,7 +279,13 @@ export const deleteMessages = (id, data, callback) => async (dispatch) => {
   });
 };
 
-export const messageQueue = (index, id, view) => (dispatch) => {
+/**
+ * add messages to a queue of unread messages
+ * @param {String} index  position of the message in the state
+ * @param {String} id msg id
+ * @param {String} view chat id
+ */
+export const messageQueue = (index, id, view) => async (dispatch) => {
   database.unreadMessages(view, id).then((time) => {
     dispatch({
       type: ActionTypes.UNREAD_MESSAGES,
@@ -288,6 +295,7 @@ export const messageQueue = (index, id, view) => (dispatch) => {
     });
   });
 };
+
 
 export const sendStatus = (data) => {
   // eslint-disable-next-line global-require
@@ -332,29 +340,30 @@ export const sendStatus = (data) => {
  * @returns {object}
  */
 
-export const setView = (idChat) => (dispatch) => {
+export const setView = (idChat) => async (dispatch) => {
   database.cancelUnreadMessages(idChat).then((res) => {
-    // eslint-disable-next-line global-require
-    const store = require('../../store');
-    const state = store.default.getState();
+    if (!process.env.JEST_WORKER_ID) {
+      // eslint-disable-next-line global-require
+      const store = require('../../store');
+      const state = store.default.getState();
 
-    if (idChat && res.length > 0) {
-      const chat = Object.values(state.chats.chat).find((itemChat) => itemChat.toUID === idChat);
+      if (idChat && res.length > 0) {
+        const chat = Object.values(state.chats.chat).find((itemChat) => itemChat.toUID === idChat);
 
-      // eslint-disable-next-line no-shadow
-      const sendStatus = {
-        fromUID: state.config.uid,
-        toUID: chat.toUID,
-        timestamp: new Date().getTime(),
-        data: {
-          status: 'read',
-          msgID: res
-        },
-        type: 'status'
-      };
-      sendSocket.send(JSON.stringify(sendStatus));
+        // eslint-disable-next-line no-shadow
+        const sendStatus = {
+          fromUID: state.config.uid,
+          toUID: chat.toUID,
+          timestamp: new Date().getTime(),
+          data: {
+            status: 'read',
+            msgID: res
+          },
+          type: 'status'
+        };
+        sendSocket.send(JSON.stringify(sendStatus));
+      }
     }
-
     dispatch({
       type: ActionTypes.IN_VIEW,
       payload: idChat

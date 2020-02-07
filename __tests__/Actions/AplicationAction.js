@@ -11,7 +11,7 @@ import {
 } from '../../src/store/aplication/aplicationAction';
 import { saveContact, editContats, deleteContactAction } from '../../src/store/contacts';
 import {
-  initialChat, getChat, setStatusMessage, cleanAllChat
+  initialChat, getChat, setStatusMessage, cleanAllChat, selectedChat, messageQueue, setView
 } from '../../src/store/chats/chatAction';
 import { database } from '../../App';
 
@@ -82,8 +82,8 @@ describe('Aplication actions', () => {
         uid: config.uid,
         name: config.name
       }).toEqual({
-        uid: '02676c01888dc0b31caceac3304dc1f5fb386ea4ab867492070c88b0eb0a91db2d',
-        name: 'test'
+        uid: '02e5f8f594f8ca7e27d0f0b3e37432bcad4c066f4bbd91b0be9c052a36ba5bc1d6',
+        name: 'obj.name'
       });
     });
   });
@@ -166,10 +166,34 @@ describe('Aplication actions', () => {
     });
 
     test('delete messages', async () => {
-      await store.dispatch(cleanAllChat('bradcast')).then(() => {
+      await store.dispatch(cleanAllChat('broadcast')).then(() => {
         const newState = store.getState();
         const { chats } = newState;
-        console.log('deleteMessage', chats.chat[0].messages);
+        expect(chats.chat[0].messages).toEqual([]);
+      });
+    });
+
+    test('action to identify in which chat you are writing', async () => {
+      await store.dispatch(selectedChat({ toUID: 'broadcast' }));
+      const newState = store.getState();
+      const { chats } = newState;
+
+      expect(chats.seletedChat).toBeTruthy();
+    });
+
+    test('action to add a message to the unread queue', async () => {
+      await store.dispatch(messageQueue(0, MockData.mocksetMessage4.msgID, 'broadcast')).then(() => {
+        const newState = store.getState();
+        const { chats } = newState;
+        expect(chats.chat[0].queue).toEqual([MockData.mocksetMessage4.msgID]);
+      });
+    });
+
+    test('remove messages from unread queue', async () => {
+      await store.dispatch(setView('broadcast')).then(() => {
+        const newState = store.getState();
+        const { chats } = newState;
+        expect(chats.chat[0].queue).toEqual([]);
       });
     });
   });

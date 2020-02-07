@@ -58,16 +58,25 @@ export default class CoreDatabase {
   });
 
 
+  converToString = (realmData) => {
+    try {
+      const result = JSON.parse(JSON.stringify(realmData));
+      return Object.values(result);
+    } catch (err) {
+      return [];
+    }
+  }
+
+
   cancelUnreadMessages = (id) => new Promise((resolve) => {
     this.db.write(() => {
-      if (id) {
+      try {
         const chat = this.db.objectForPrimaryKey('Chat', id);
-        const notRead = chat.queue.slice();
+        const notRead = this.converToString(chat.queue);
         chat.queue = [];
-
         resolve(notRead);
-      } else {
-        resolve();
+      } catch (err) {
+        console.log('cancel unread', err);
       }
     });
   });
@@ -154,7 +163,6 @@ export default class CoreDatabase {
 
   setMessage = (id, obj, status) => new Promise((resolve, reject) => {
     this.db.write(() => {
-      console.log(id);
       try {
         const chat = this.db.objectForPrimaryKey('Chat', id);
         const time = new Date().getTime();
@@ -176,8 +184,6 @@ export default class CoreDatabase {
         resolve({ file, time });
       } catch (err) {
         // eslint-disable-next-line no-console
-
-        console.log("dios mio", err)
         reject(err);
       }
     });
@@ -272,8 +278,8 @@ export default class CoreDatabase {
 
   listenerr = (chats, changes) => {
     changes.insertions.forEach((index) => {
-      const changeChat = chats[index];
-      onNotification(JSON.parse(JSON.stringify(changeChat)));
+      // const changeChat = chats[index];
+      // onNotification(JSON.parse(JSON.stringify(changeChat)));
     });
   };
 
@@ -317,9 +323,6 @@ export default class CoreDatabase {
     this.db.write(() => {
       try {
         const chat = this.db.objectForPrimaryKey('Chat', id);
-
-        console.log(chat.messages, "acaaaaaaasdwqeqwe12")
-        chat.messages.filter((data) => console.log(data));
         const messages = chat.messages.filter((data) => {
           const result = obj.find((message) => message.id === data.id);
 
@@ -329,7 +332,7 @@ export default class CoreDatabase {
         this.db.delete(messages);
         resolve();
       } catch (error) {
-        console.log(error)
+        // console.log(error);
       }
     });
   });

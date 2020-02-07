@@ -75,7 +75,9 @@ export const createNewAccount = (obj) => async (dispatch) => {
       }
     ]
   }).then(async (res) => {
-    await AsyncStorage.setItem('@APP:status', 'created');
+    if (!process.env.JEST_WORKER_ID) {
+      await AsyncStorage.setItem('@APP:status', 'created');
+    }
     dispatch(writeAction(res));
     ws = new Socket(store, database);
     dispatch({ type: ActionTypes.URL_CONNECTION, payload: ws.url });
@@ -101,6 +103,9 @@ export const restoreWithPhrase = (pin, phrase, name) => async (dispatch) => {
       ]
     }).then(async (res) => {
       dispatch(writeAction(res));
+      if (!process.env.JEST_WORKER_ID) {
+        await AsyncStorage.setItem('@APP:status', 'created');
+      }
       await AsyncStorage.setItem('@APP:status', 'created');
       ws = new Socket(store, database);
       dispatch({ type: ActionTypes.URL_CONNECTION, payload: ws.url });
