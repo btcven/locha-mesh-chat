@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  Text, TouchableOpacity, StyleSheet
+  Text, TouchableOpacity, StyleSheet, View
 } from 'react-native';
 /**
  *
@@ -18,13 +18,15 @@ export default class FloatButtons extends Component {
 
   render() {
     return (
-      <TouchableOpacity
-        onPress={() => this.props.add()}
-        style={styles.floatButton}
-      >
-        {!this.props.icon && <Text style={styles.textButton}> + </Text>}
-        {this.props.icon && this.props.icon}
-      </TouchableOpacity>
+      <View>
+        <TouchableOpacity
+          onPress={() => this.props.add()}
+          style={styles.floatButton}
+        >
+          {!this.props.icon && <Text testID="addIcon" style={styles.textButton}> + </Text>}
+          {this.props.icon && this.props.icon}
+        </TouchableOpacity>
+      </View>
     );
   }
 }
