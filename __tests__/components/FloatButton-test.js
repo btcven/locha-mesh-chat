@@ -38,6 +38,5 @@ describe('load wallet component', () => {
     const element = shallow(<FloatButton add={mockFunction} />);
     element.find('TouchableOpacity').first().props().onPress();
     expect(mockFunction.mock.calls.length).toBe(1);
-
   });
 });
