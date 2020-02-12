@@ -2,7 +2,7 @@ import '../../__Mocks__';
 import React from 'react';
 import renderer from 'react-test-renderer';
 import { shallow } from 'enzyme';
-import Player from '../../src/components/Player';
+import Player from '../../src/components/Player ';
 
 describe('spinner component', () => {
   test('Spinner component rendering', () => {

@@ -50,16 +50,16 @@ class HeaderComponent extends Component {
   };
 
   render() {
-    const { screenProps, retryConnection } = this.props;
-    const router = this.getNameContact(this.props.navigation);
+    const { screenProps, retryConnection, navigation } = this.props;
+    const router = this.getNameContact(navigation);
     const selected = this.props.selected
       ? this.props.selected.length < 1
       : true;
-
     if (selected) {
       return (
         <>
           <Header
+            testID="selected"
             style={styles.container}
             androidStatusBarColor={this.props.modal ? 'white' : '#af7d00'}
           >
@@ -79,11 +79,11 @@ class HeaderComponent extends Component {
                     <Icon style={styles.iconStyle} name="arrow-back" />
                   </TouchableHighlight>
                 </Left>
-            )}
-
+              )}
             {router.routeName === 'initial' && (
               <Left>
                 <TouchableHighlight
+                  testID="iconMenu"
                   underlayColor="#eeeeee"
                   style={{
                     paddingHorizontal: 10,
@@ -193,12 +193,12 @@ class HeaderComponent extends Component {
           </Header>
           {retryConnection === 4
             && (
-            <View style={styles.notConnectedContainer}>
-              <Text>not connected</Text>
-              <TouchableOpacity onPress={this.props.manualConnection}>
-                <Text style={{ textDecorationLine: 'underline' }}>RETRY</Text>
-              </TouchableOpacity>
-            </View>
+              <View style={styles.notConnectedContainer}>
+                <Text>not connected</Text>
+                <TouchableOpacity onPress={this.props.manualConnection}>
+                  <Text style={{ textDecorationLine: 'underline' }}>RETRY</Text>
+                </TouchableOpacity>
+              </View>
             )}
         </>
       );
@@ -225,26 +225,26 @@ class HeaderComponent extends Component {
           {this.props.selected.length === 1 ? (
             <Title>{this.props.selected[0].name}</Title>
           ) : (
-            <Title>{this.props.selected.length}</Title>
-          )}
+              <Title>{this.props.selected.length}</Title>
+            )}
         </Body>
         <Right>
           {this.props.copy && (
-          <TouchableHighlight
-            underlayColor="#eeeeee"
-            style={{
-              paddingHorizontal: 10,
-              paddingVertical: 6,
-              borderRadius: 100
-            }}
-            onPress={this.props.copy}
-          >
-            <Icon
-              style={styles.iconStyle}
-              type="FontAwesome5"
-              name="copy"
-            />
-          </TouchableHighlight>
+            <TouchableHighlight
+              underlayColor="#eeeeee"
+              style={{
+                paddingHorizontal: 10,
+                paddingVertical: 6,
+                borderRadius: 100
+              }}
+              onPress={this.props.copy}
+            >
+              <Icon
+                style={styles.iconStyle}
+                type="FontAwesome5"
+                name="copy"
+              />
+            </TouchableHighlight>
           )}
           {
             <TouchableHighlight
@@ -258,20 +258,20 @@ class HeaderComponent extends Component {
             >
               <Icon style={styles.iconStyle} name="trash" />
             </TouchableHighlight>
-            }
+          }
 
           {this.props.selected.length === 1 && this.props.edit && (
-          <TouchableHighlight
-            underlayColor="#eeeeee"
-            style={{
-              paddingHorizontal: 10,
-              paddingVertical: 6,
-              borderRadius: 100
-            }}
-            onPress={this.props.edit}
-          >
-            <Icon style={styles.iconStyle} name="create" />
-          </TouchableHighlight>
+            <TouchableHighlight
+              underlayColor="#eeeeee"
+              style={{
+                paddingHorizontal: 10,
+                paddingVertical: 6,
+                borderRadius: 100
+              }}
+              onPress={this.props.edit}
+            >
+              <Icon style={styles.iconStyle} name="create" />
+            </TouchableHighlight>
           )}
         </Right>
 
