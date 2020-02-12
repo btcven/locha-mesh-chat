@@ -23,8 +23,4 @@ describe('testing the functionality of the menu component', () => {
   test('verify that the menu is closed when rendering', () => {
     expect(wrapper.instance()._menu).toBe(false);
   });
-
-  test('show default icon', () => {
-    console.log(wrapper.find('Menu').props().onPress());
-  });
 });

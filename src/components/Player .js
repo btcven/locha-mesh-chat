@@ -4,7 +4,6 @@ import { Icon } from 'native-base';
 import Slider from '@react-native-community/slider';
 import Sound from 'react-native-sound';
 import moment from 'moment';
-import { connect } from 'react-redux';
 import RNFS from 'react-native-fs';
 
 class Player extends Component {
@@ -21,11 +20,14 @@ class Player extends Component {
 
   componentDidMount = () => {
     RNFS.exists(this.props.path).then(() => {
+
       this.sound = new Sound(this.props.path, '', (error) => {
         if (!error) {
-          this.setState({
-            duration: this.sound.getDuration()
-          });
+          if (this.sound) {
+            this.setState({
+              duration: this.sound.getDuration()
+            });
+          }
         }
       });
     });
@@ -87,16 +89,17 @@ class Player extends Component {
       <View
         style={{ flexDirection: 'row', alignItems: 'center', marginTop: 15 }}
       >
-        <TouchableOpacity onPress={() => this.play()}>
-          {!this.state.play && (
+        {!this.state.play && (
+          <TouchableOpacity testID="playButton" onPress={() => this.play()}>
             <Icon name="play" style={{ color: '#616161' }} />
-          )}
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => this.pause()}>
-          {this.state.play && (
+          </TouchableOpacity>
+        )}
+        {this.state.play && (
+          <TouchableOpacity testID="pauseButton" onPress={() => this.pause()}>
             <Icon name="pause" style={{ color: '#616161' }} />
-          )}
-        </TouchableOpacity>
+          </TouchableOpacity>
+        )}
+
         <Slider
           style={{ width: 150 }}
           minimumValue={0}
@@ -125,12 +128,5 @@ class Player extends Component {
   }
 }
 
-const mapStateToProps = (state) => ({
-  chat: state.chats.chat,
-  chatSelected: state.chats.seletedChat
-});
 
-export default connect(
-  mapStateToProps,
-  null
-)(Player);
+export default Player;

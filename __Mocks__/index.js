@@ -1,5 +1,7 @@
+/* eslint-disable max-classes-per-file */
 /* eslint-disable import/no-extraneous-dependencies */
-import 'react-native';
+// eslint-disable-next-line no-unused-vars
+import { View, Text } from 'react-native';
 import enzyme from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 
@@ -13,7 +15,9 @@ jest.mock('react-native-fs', () => ({
   getFSInfo: jest.fn(),
   getAllExternalFilesDirs: jest.fn(),
   unlink: jest.fn(),
-  exists: jest.fn(),
+  exists: jest.fn(() => new Promise((resolve) => {
+    resolve(true);
+  })),
   stopDownload: jest.fn(),
   resumeDownload: jest.fn(),
   isResumable: jest.fn(),
@@ -58,8 +62,20 @@ jest.mock('react-native-share', () => {
   // code here
 });
 
-jest.mock('react-native-sound', () => {
-  // code here
+jest.mock('react-native-sound', () => class Sound {
+  constructor(path, enconde, callback) {
+    this.path = path;
+    this.enconde = enconde;
+    callback(false);
+  }
+
+  getDuration = () => {
+    return 20;
+  }
+
+  pause = () => {
+    jest.fn();
+  }
 });
 
 
@@ -72,17 +88,13 @@ jest.mock('react-navigation-stack', () => {
 });
 
 
-jest.mock('@react-native-community/slider', () => {
-  // code here
-});
-
-
 jest.mock('react-native-audio', () => {
   // code here
 });
 
 jest.mock('@react-native-community/slider', () => {
-  // code here
+  const data = () => null;
+  return data;
 });
 
 
