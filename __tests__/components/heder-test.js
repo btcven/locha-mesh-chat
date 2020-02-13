@@ -1,3 +1,4 @@
+/* eslint-disable import/prefer-default-export */
 import '../../__Mocks__';
 import React from 'react';
 import renderer from 'react-test-renderer';
@@ -6,7 +7,7 @@ import { Provider } from 'react-redux';
 import Header from '../../src/components/Header';
 import store from '../../src/store';
 
-const navigationPops = {
+export const navigationPops = {
   openDrawer: jest.fn(),
   closeDrawer: jest.fn(),
   toggleDrawer: jest.fn(),
