@@ -1,3 +1,4 @@
+/* eslint-disable no-shadow */
 /* eslint-disable quotes */
 import React, { Component } from 'react';
 import { Button } from 'native-base';
@@ -74,7 +75,6 @@ export default class CreateAccount extends Component {
     if (this.props.phrases.length !== values.length) {
       return;
     }
-
     for (let index = 0; index <= values.length; index += 1) {
       if (values[index] !== this.props.phrases[index]) {
         toast(this.props.screenProps.t('Initial:error3'));
@@ -168,104 +168,105 @@ export default class CreateAccount extends Component {
         enableReinitialize
         onSubmit={this.confirm}
         initialValues={values}
-        render={
-          // eslint-disable-next-line no-shadow
-          ({ values, setFieldValue, handleSubmit }) => (
-            <Modal
-              isVisible={open}
-              onBackdropPress={() => close('openModalPhoto')}
-              swipeDirection={['up', 'left', 'right', 'down']}
-              avoidKeyboard
-              style={{
-                margin: 0, justifyContent: 'flex-end',
-              }}
-            >
-              <View style={[styles.container, minHeight]}>
-                <RestoreFile
-                  open={restoreWithFile}
-                  close={this.closePin}
-                  config
-                  action={this.restoreAccountWithFile}
-                  text={screenProps.t('Initial:textBackup')}
-                />
+      >
+        {({ values, setFieldValue, handleSubmit }) => (
+          <Modal
+            isVisible={open}
+            onBackdropPress={() => close('openModalPhoto')}
+            swipeDirection={['up', 'left', 'right', 'down']}
+            avoidKeyboard
+            style={{
+              margin: 0, justifyContent: 'flex-end',
+            }}
+          >
+            <View style={[styles.container, minHeight]}>
+              <RestoreFile
+                open={restoreWithFile}
+                close={this.closePin}
+                config
+                action={this.restoreAccountWithFile}
+                text={screenProps.t('Initial:textBackup')}
+              />
 
-                {/* ---------------------   Component header --------------------- */}
+              {/* ---------------------   Component header --------------------- */}
 
-                {this.state.step === 1
-                  && (
-                    <View>
-                      <Text style={{ textAlign: 'center', padding: 10, fontSize: 23 }}>
-                        {screenProps.t('Initial:titleCreateAccount')}
-                      </Text>
-                      <Text style={{ paddingHorizontal: 10 }}>
-                        {screenProps.t('Initial:subTitleCreateAccount')}
-                      </Text>
-                    </View>
-                  )}
-
-                {this.state.step === 2
-                  && (
-                    <View>
-                      <Text style={{ textAlign: 'center', padding: 10, fontSize: 23 }}>
-                        {screenProps.t('Initial:titleConfirm')}
-                      </Text>
-                      <Text style={{ paddingHorizontal: 10 }}>
-                        {screenProps.t('Initial:subTitleCorfirm')}
-                      </Text>
-                    </View>
-                  )}
-
-                {this.state.step === 5
-                  && (
-                    <View>
-                      <Text style={{ textAlign: 'center', padding: 10, fontSize: 23 }}>
-                        {screenProps.t('Initial:titlePin')}
-                      </Text>
-                      <Text style={{ paddingHorizontal: 10 }}>
-                        {screenProps.t('Initial:subtitlePin')}
-                      </Text>
-                    </View>
-                  )}
-
-                {this.state.step === 3
-                  && (
-                    <View>
-                      <Text style={{ textAlign: 'center', padding: 10, fontSize: 23 }}>
-                        {screenProps.t('Initial:titleUsername')}
-                      </Text>
-                      <Text style={{ paddingHorizontal: 10 }}>
-                        {screenProps.t('Initial:textUsername')}
-                      </Text>
-                    </View>
-                  )}
-
-                {this.state.step === 4
-                  && (
-                    <View>
-                      <Text style={{ textAlign: 'center', padding: 10, fontSize: 23 }}>
-                        {screenProps.t('Initial:titleRestore')}
-                      </Text>
-                      <Text style={{ paddingHorizontal: 10 }}>
-                        {screenProps.t('Initial:subtitleRestore')}
-                      </Text>
-                    </View>
-                  )}
-
-                {/* --------------------- End header --------------------- */}
-
-                {/* ----------------------- Component body ------------------  */}
-
-                {this.state.step !== 3 && this.state.step !== 5 && (
-                  <Phrases values={values} setFieldValue={setFieldValue} />
+              {this.state.step === 1
+                && (
+                  <View testID="TextCreateAccount">
+                    <Text style={{ textAlign: 'center', padding: 10, fontSize: 23 }}>
+                      {screenProps.t('Initial:titleCreateAccount')}
+                    </Text>
+                    <Text style={{ paddingHorizontal: 10 }}>
+                      {screenProps.t('Initial:subTitleCreateAccount')}
+                    </Text>
+                  </View>
                 )}
 
-                {this.state.step === 4 && (
-                <View style={{
-                  alignItems: "center",
-                  justifyContent: "center",
-                  marginBottom: 40,
-                  marginTop: 20
-                }}
+              {this.state.step === 2
+                && (
+                  <View testID="TextConfirmWords">
+                    <Text style={{ textAlign: 'center', padding: 10, fontSize: 23 }}>
+                      {screenProps.t('Initial:titleConfirm')}
+                    </Text>
+                    <Text style={{ paddingHorizontal: 10 }}>
+                      {screenProps.t('Initial:subTitleCorfirm')}
+                    </Text>
+                  </View>
+                )}
+
+              {this.state.step === 5
+                && (
+                  <View testID="TextPin">
+                    <Text style={{ textAlign: 'center', padding: 10, fontSize: 23 }}>
+                      {screenProps.t('Initial:titlePin')}
+                    </Text>
+                    <Text style={{ paddingHorizontal: 10 }}>
+                      {screenProps.t('Initial:subtitlePin')}
+                    </Text>
+                  </View>
+                )}
+
+              {this.state.step === 3
+                && (
+                  <View testID="TextUserName">
+                    <Text style={{ textAlign: 'center', padding: 10, fontSize: 23 }}>
+                      {screenProps.t('Initial:titleUsername')}
+                    </Text>
+                    <Text style={{ paddingHorizontal: 10 }}>
+                      {screenProps.t('Initial:textUsername')}
+                    </Text>
+                  </View>
+                )}
+
+              {this.state.step === 4
+                && (
+                  <View testID="TextRestoreAccount">
+                    <Text style={{ textAlign: 'center', padding: 10, fontSize: 23 }}>
+                      {screenProps.t('Initial:titleRestore')}
+                    </Text>
+                    <Text style={{ paddingHorizontal: 10 }}>
+                      {screenProps.t('Initial:subtitleRestore')}
+                    </Text>
+                  </View>
+                )}
+
+              {/* --------------------- End header --------------------- */}
+
+              {/* ----------------------- Component body ------------------  */}
+
+              {this.state.step !== 3 && this.state.step !== 5 && (
+                <Phrases values={values} setFieldValue={setFieldValue} />
+              )}
+
+              {this.state.step === 4 && (
+                <View
+                  testID="ButtonRestore"
+                  style={{
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginBottom: 40,
+                    marginTop: 20
+                  }}
                 >
                   <Button
                     success
@@ -279,75 +280,77 @@ export default class CreateAccount extends Component {
                     <Text>{`${screenProps.t('Initial:buttonFile')}`.toUpperCase()}</Text>
                   </Button>
                 </View>
-                )}
+              )}
 
-                {this.state.step === 3 && (
-                  <View>
-                    <AddName
-                      screenProps={screenProps}
-                      setName={this.setName}
-                      name={this.state.name}
-                    />
-                  </View>
-                )}
-
-                {this.state.step === 5 && (
-                  <View>
-                    <PinView back={this.back} createAccount={action} values={values} />
-                  </View>
-                )}
-
-                {/* ----------------------- End body ------------------  */}
-
-                <View style={styles.buttonContainer}>
-                  {this.state.step !== 5 && (
-                    <Button
-                      light
-                      onPress={this.back}
-                      style={{
-                        justifyContent: 'center',
-                        minWidth: 100,
-                        marginHorizontal: 10
-                      }}
-                    >
-                      <Text>{`${screenProps.t('Initial:back')}`.toUpperCase()}</Text>
-                    </Button>
-                  )}
-                  {rule && (
-                    <Button
-                      disabled={disabled}
-                      onPress={() => this.continue(values)}
-                      style={{
-                        marginHorizontal: 10,
-                        justifyContent: 'center',
-                        backgroundColor: '#fbc233',
-                        minWidth: 100
-                      }}
-                    >
-                      <Text>{`${screenProps.t('Initial:next')}`.toUpperCase()}</Text>
-                    </Button>
-                  )}
-
-                  {this.state.step === 2 && (
-                    <Button
-                      onPress={handleSubmit}
-                      style={{
-                        marginHorizontal: 10,
-                        justifyContent: 'center',
-                        backgroundColor: '#fbc233',
-                        minWidth: 100
-                      }}
-                    >
-                      <Text>{`${screenProps.t('Initial:confirm')}`.toUpperCase()}</Text>
-                    </Button>
-                  )}
+              {this.state.step === 3 && (
+                <View>
+                  <AddName
+                    screenProps={screenProps}
+                    setName={this.setName}
+                    name={this.state.name}
+                  />
                 </View>
-              </View>
+              )}
 
-            </Modal>
-          )
-        }
-      />
+              {this.state.step === 5 && (
+                <View>
+                  <PinView back={this.back} createAccount={action} values={values} />
+                </View>
+              )}
+
+              {/* ----------------------- End body ------------------  */}
+
+              <View style={styles.buttonContainer}>
+                {this.state.step !== 5 && (
+                  <Button
+                    light
+                    testID="buttonBack"
+                    onPress={this.back}
+                    style={{
+                      justifyContent: 'center',
+                      minWidth: 100,
+                      marginHorizontal: 10
+                    }}
+                  >
+                    <Text>{`${screenProps.t('Initial:back')}`.toUpperCase()}</Text>
+                  </Button>
+                )}
+                {rule && (
+                  <Button
+                    testID="buttonContinue"
+                    disabled={disabled}
+                    onPress={() => this.continue(values)}
+                    style={{
+                      marginHorizontal: 10,
+                      justifyContent: 'center',
+                      backgroundColor: '#fbc233',
+                      minWidth: 100
+                    }}
+                  >
+                    <Text>{`${screenProps.t('Initial:next')}`.toUpperCase()}</Text>
+                  </Button>
+                )}
+
+                {this.state.step === 2 && (
+                  <Button
+                    testID="buttonComfirm"
+                    onPress={handleSubmit}
+                    style={{
+                      marginHorizontal: 10,
+                      justifyContent: 'center',
+                      backgroundColor: '#fbc233',
+                      minWidth: 100
+                    }}
+                  >
+                    <Text>{`${screenProps.t('Initial:confirm')}`.toUpperCase()}</Text>
+                  </Button>
+                )}
+              </View>
+            </View>
+
+          </Modal>
+        )}
+      </Formik>
     );
   }
 }

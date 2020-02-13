@@ -130,7 +130,11 @@ class InitialStep extends Component {
   }
 }
 
-export default connect(null, {
+const mapStateToProps = () => ({
+
+});
+
+export default connect(mapStateToProps, {
   setInitialUser, createNewAccount, restoreWithPhrase, restoreWithFile
 })(InitialStep);
 
