@@ -1,8 +1,8 @@
 import '../../../__Mocks__';
 import React from 'react';
 import renderer from 'react-test-renderer';
-import PinView from '../../../src/views/LoadWallet/PinView';
 import { shallow } from 'enzyme';
+import PinView from '../../../src/views/LoadWallet/PinView';
 
 const mockFuntion = jest.fn();
 
