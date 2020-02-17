@@ -16,9 +16,8 @@ test('render the component', () => {
 });
 
 describe('Language component', () => {
-  const wrapper = shallow(<Language screenProps={screenProps} open={true} />);
+  const wrapper = shallow(<Language screenProps={screenProps} open />);
   test('vercheck if the modal is openify epe', () => {
-
     expect(wrapper.instance().props.open).toBeTruthy();
   });
 

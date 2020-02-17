@@ -1,9 +1,13 @@
+/* eslint-disable global-require */
 /* eslint-disable consistent-return */
 
 import moment from 'moment';
-// import { onNotification } from '../utils/utils';
-// import Store from "../store";
 import { sha256 } from 'js-sha256';
+
+let utilsFuntions;
+if (!process.env.JEST_WORKER_ID) {
+  utilsFuntions = require('../utils/utils');
+}
 
 export default class CoreDatabase {
   constructor() {
@@ -278,8 +282,9 @@ export default class CoreDatabase {
 
   listenerr = (chats, changes) => {
     changes.insertions.forEach((index) => {
-      // const changeChat = chats[index];
-      // onNotification(JSON.parse(JSON.stringify(changeChat)));
+      const { onNotification } = utilsFuntions;
+      const changeChat = chats[index];
+      onNotification(JSON.parse(JSON.stringify(changeChat)));
     });
   };
 

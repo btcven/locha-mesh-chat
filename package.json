@@ -118,6 +118,7 @@
     "transformIgnorePatterns": [
       "node_modules/(?!react-native|native-base-shoutem-theme|@shoutem/animation|@shoutem/ui|tcomb-form-native|react-navigation)"
     ],
+    
     "setupFilesAfterEnv": [
       "<rootDir>/testSetup.js",
       "<rootDir>/node_modules/jest-enzyme/lib/index.js"
@@ -131,7 +132,11 @@
     ],
     "testPathIgnorePatterns": [
       "/node_modules/"
-    ]
+    ],
+    "moduleNameMapper": { 
+      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/assetsTransformer.js", 
+      "\\.(css|less)$": "<rootDir>/assetsTransformer.js" 
+    }
   },
   "react-native": {
     "zlib": "browserify-zlib",

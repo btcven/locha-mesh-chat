@@ -32,5 +32,4 @@ describe('Language component', () => {
 
     expect(wrapper.instance().props.open).not.toBeTruthy();
   });
-
 });

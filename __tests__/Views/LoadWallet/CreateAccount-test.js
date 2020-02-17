@@ -139,6 +139,5 @@ describe('test component createAccount', () => {
       const restoreWrapper = initial.dive();
       expect(restoreWrapper.findWhere((node) => node.prop('testID') === 'ButtonRestore').exists()).toBeTruthy();
     });
-
   });
 });

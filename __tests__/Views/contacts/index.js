@@ -10,6 +10,7 @@ import store from '../../../src/store';
 const screenProps = {
   t: (data) => data
 };
+
 const arrayContact = [{
   name: 'test',
   picture: undefined,
@@ -47,7 +48,7 @@ describe('tests to the main component of contacts', () => {
 
   test('', () => {
     const fbWrapper = wrapper.find('FloatButtons').dive();
-    fbWrapper.find('TouchableOpacity').first().props().onPress(); 
+    fbWrapper.find('TouchableOpacity').first().props().onPress();
     expect(wrapper.find('AddContact').exists()).toBeTruthy();
   });
 });

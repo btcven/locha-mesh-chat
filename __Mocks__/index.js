@@ -69,9 +69,7 @@ jest.mock('react-native-sound', () => class Sound {
     callback(false);
   }
 
-  getDuration = () => {
-    return 20;
-  }
+  getDuration = () => 20
 
   pause = () => {
     jest.fn();

@@ -33,6 +33,5 @@ describe('Edit naame component', () => {
     test('verify that the button is disabled', () => {
       expect(wrapper.find('Styled(Button)').at(1).props().disabled).not.toBeTruthy();
     });
-
   });
 });

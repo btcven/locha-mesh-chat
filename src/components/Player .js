@@ -20,7 +20,6 @@ class Player extends Component {
 
   componentDidMount = () => {
     RNFS.exists(this.props.path).then(() => {
-
       this.sound = new Sound(this.props.path, '', (error) => {
         if (!error) {
           if (this.sound) {

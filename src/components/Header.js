@@ -79,7 +79,7 @@ class HeaderComponent extends Component {
                     <Icon style={styles.iconStyle} name="arrow-back" />
                   </TouchableHighlight>
                 </Left>
-              )}
+            )}
             {router.routeName === 'initial' && (
               <Left>
                 <TouchableHighlight
@@ -225,8 +225,8 @@ class HeaderComponent extends Component {
           {this.props.selected.length === 1 ? (
             <Title>{this.props.selected[0].name}</Title>
           ) : (
-              <Title>{this.props.selected.length}</Title>
-            )}
+            <Title>{this.props.selected.length}</Title>
+          )}
         </Body>
         <Right>
           {this.props.copy && (

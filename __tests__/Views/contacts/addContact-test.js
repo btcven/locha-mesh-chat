@@ -3,7 +3,6 @@ import React from 'react';
 import renderer from 'react-test-renderer';
 import { shallow } from 'enzyme';
 import AddContact from '../../../src/views/contacts/AddContact';
-import { sha256 } from 'js-sha256';
 
 const screenProps = {
   t: (data) => data
