@@ -1,10 +1,10 @@
 /* eslint-disable global-require */
-import { NativeModules, Platform } from 'react-native';
+// import { NativeModules, Platform } from 'react-native';
 
-export const deviceModel = Platform.select({
-  ios: () => NativeModules.RNDeviceInfo.deviceInfo.id.replace('iPhone', '').trim(),
-  android: () => 'Android',
-})();
+// export const deviceModel = Platform.select({
+//   ios: () => NativeModules.RNDeviceInfo.deviceInfo.id.replace('iPhone', '').trim(),
+//   android: () => 'Android',
+// })();
 
 
 export const chats = [{

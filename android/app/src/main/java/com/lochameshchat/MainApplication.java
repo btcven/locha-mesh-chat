@@ -3,6 +3,7 @@ package com.lochameshchat;
 
 import android.app.Application;
 import com.facebook.react.ReactApplication;
+import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
 import com.reactlibrary.LanguageDetectorPackage;
 
 import DeviceInfo.DeviceInfoPackage;
@@ -21,7 +22,6 @@ import com.horcrux.svg.SvgPackage;
 import io.realm.react.RealmReactPackage;
 import org.reactnative.camera.RNCameraPackage;
 import com.rnfs.RNFSPackage;
-import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
 import com.reactnative.ivpusic.imagepicker.PickerPackage;
 import com.reactnativecommunity.cameraroll.CameraRollPackage;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
@@ -45,6 +45,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
             new MainReactPackage(),
+            new AsyncStoragePackage(),
             new LocalNotificationPackage(),
             new LanguageDetectorPackage(),
             new RNSharePackage(),
@@ -60,7 +61,6 @@ public class MainApplication extends Application implements ReactApplication {
             new RealmReactPackage(),
             new RNCameraPackage(),
             new RNFSPackage(),
-            new AsyncStoragePackage(),
             new PickerPackage(),
             new CameraRollPackage(),
             new RNGestureHandlerPackage(),

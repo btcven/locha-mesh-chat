@@ -16,8 +16,7 @@ import { sha256 } from 'js-sha256';
 import EditPhoto from '../config/EditPhoto';
 import { toast } from '../../utils/utils';
 import { images } from '../../utils/constans';
-/** ƒ
- *
+/**
  *
  * @export
  * @class AddContact

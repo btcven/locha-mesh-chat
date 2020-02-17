@@ -137,7 +137,11 @@ export const unreadMessages = (rule, state, view, data) => {
  * @param {object} unSelected objecto a remover del la lista de seleccionados
  * @returns {object}
  */
+
 export const unSelect = (selected, unSelected) => {
+  if (!Array.isArray(selected)) {
+    throw new Error();
+  }
   const result = selected.filter((itemSelected) => {
     if (selected.toUID) {
       return unSelected.toUID !== itemSelected.toUID;
@@ -268,19 +272,23 @@ export const toast = (message) => {
  * @returns {string}
  */
 export const hashGenerateColort = (str) => {
-  let hash = 0;
-  for (let i = 0; i < str.length; i += 1) {
-    // eslint-disable-next-line no-bitwise
-    hash = str.charCodeAt(i) + ((hash << 5) - hash);
-  }
+  try {
+    let hash = 0;
+    for (let i = 0; i < str.length; i += 1) {
+      // eslint-disable-next-line no-bitwise
+      hash = str.charCodeAt(i) + ((hash << 5) - hash);
+    }
 
-  let colour = '#';
-  for (let i = 0; i < 3; i += 1) {
-    // eslint-disable-next-line no-bitwise
-    const value = (hash >> (i * 8)) & 0xff;
-    colour += (`00${value.toString(16)}`).substr(-2);
+    let colour = '#';
+    for (let i = 0; i < 3; i += 1) {
+      // eslint-disable-next-line no-bitwise
+      const value = (hash >> (i * 8)) & 0xff;
+      colour += (`00${value.toString(16)}`).substr(-2);
+    }
+    return colour;
+  } catch (error) {
+    throw new Error(error);
   }
-  return colour;
 };
 
 /**
@@ -290,12 +298,16 @@ export const hashGenerateColort = (str) => {
  */
 
 export const getIcon = (data) => {
-  const icon = new Identicon(data, {
-    background: [255, 255, 255, 255],
-    size: 100
-  }).toString();
+  try {
+    const icon = new Identicon(data, {
+      background: [255, 255, 255, 255],
+      size: 100
+    }).toString();
 
-  return `data:image/png;base64,${icon}`;
+    return `data:image/png;base64,${icon}`;
+  } catch (error) {
+    throw new Error(error);
+  }
 };
 
 const capFirst = (string) => string.charAt(0).toUpperCase() + string.slice(1);
@@ -307,6 +319,7 @@ const getRandomInt = (min, max) => Math.floor(Math.random() * (max - min)) + min
  * function to generate random names
  * @returns {string }
  */
+
 export const generateName = () => {
   const name1 = [
     'abandoned',
@@ -3163,8 +3176,7 @@ export const generateName = () => {
     'Lieuwe'
   ];
 
-  const name = `${capFirst(name1[getRandomInt(0, name1.length + 1)])
-  } ${
+  const name = `${capFirst(name1[getRandomInt(0, name1.length + 1)])} ${
     capFirst(name2[getRandomInt(0, name2.length + 1)])}`;
   return name;
 };

@@ -32,9 +32,10 @@ public class DeviceInfoModule  extends ReactContextBaseJavaModule {
 
 
     /**
-     * /// method used to obtain the constants
+     * method used to obtain the constants
      * @return constants
      */
+
     @Override
     public Map<String, Object> getConstants() {
         final Map<String, Object> constants = new HashMap<>();

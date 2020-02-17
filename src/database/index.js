@@ -1,5 +1,8 @@
-import Realm from 'realm';
+/* eslint-disable no-undef */
+/* eslint-disable global-require */
+/* eslint-disable no-unused-vars */
 import { sha256 } from 'js-sha256';
+import Realm from 'realm';
 import {
   userSchema,
   contactSchema,
@@ -11,16 +14,27 @@ import {
 } from './schemas';
 import CoreDatabase from './realmDatabase';
 
+let pathDefault;
+let pathSeed;
+if (!process.env.JEST_WORKER_ID) {
+  pathDefault = 'default.realm';
+  pathSeed = 'seed.realm';
+} else {
+  pathDefault = 'mockDatabase/default.realm';
+  pathSeed = 'mockDatabase/seed.realm';
+}
+
+
 const options = {
   schema: [
     seed,
   ],
-  path: 'seed.realm',
-  schemaVersion: 2,
+  path: pathSeed,
+  schemaVersion: 3,
 };
 
 const optionsDatabase = {
-  path: 'default.realm',
+  path: pathDefault,
   schema: [
     userSchema,
     contactSchema,
@@ -32,6 +46,7 @@ const optionsDatabase = {
   schemaVersion: 21
 };
 
+// CoreDatabase
 export default class Database extends CoreDatabase {
   /**
    * @function
@@ -39,6 +54,8 @@ export default class Database extends CoreDatabase {
    * @param {String} str password
    * @return {String}
    */
+  // eslint-disable-next-line class-methods-use-this
+
   // eslint-disable-next-line class-methods-use-this
   toByteArray(str) {
     const array = new Int8Array(str.length);
@@ -146,6 +163,18 @@ export default class Database extends CoreDatabase {
       reject(err);
     }
   })
+
+  closeDB() {
+    if (this.db) {
+      this.db.close();
+    }
+    if (this.seed) {
+      this.seed.close();
+    }
+    if (this.listener) {
+      this.listener.close();
+    }
+  }
 
   /**
    * @function
