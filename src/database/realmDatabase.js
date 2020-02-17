@@ -1,9 +1,13 @@
+/* eslint-disable global-require */
 /* eslint-disable consistent-return */
 
 import moment from 'moment';
 import { sha256 } from 'js-sha256';
-import { onNotification } from '../utils/utils';
 
+let utilsFuntions;
+if (!process.env.JEST_WORKER_ID) {
+  utilsFuntions = require('../utils/utils');
+}
 
 export default class CoreDatabase {
   constructor() {
@@ -12,6 +16,7 @@ export default class CoreDatabase {
 
   getUserData = () => new Promise((resolve) => {
     const user = this.db.objects('user');
+
     resolve(user.slice(0, 1));
   });
 
@@ -57,16 +62,25 @@ export default class CoreDatabase {
   });
 
 
+  converToString = (realmData) => {
+    try {
+      const result = JSON.parse(JSON.stringify(realmData));
+      return Object.values(result);
+    } catch (err) {
+      return [];
+    }
+  }
+
+
   cancelUnreadMessages = (id) => new Promise((resolve) => {
     this.db.write(() => {
-      if (id) {
+      try {
         const chat = this.db.objectForPrimaryKey('Chat', id);
-        const notRead = chat.queue.slice();
+        const notRead = this.converToString(chat.queue);
         chat.queue = [];
-
         resolve(notRead);
-      } else {
-        resolve();
+      } catch (err) {
+        console.log('cancel unread', err);
       }
     });
   });
@@ -93,8 +107,39 @@ export default class CoreDatabase {
 
   addContacts = (uid, obj, update) => new Promise((resolve) => {
     this.db.write(() => {
-      const user = this.db.objectForPrimaryKey('user', uid);
+      try {
+        const user = this.db.objectForPrimaryKey('user', uid);
+        user.contacts.push({
+          uid: obj[0].uid,
+          name: obj[0].name,
+          picture: obj[0].picture,
+          hashUID: obj[0].hashUID
+        });
 
+        if (!update) {
+          user.chats.push({
+            fromUID: uid,
+            toUID: obj[0].hashUID,
+            messages: [],
+            queue: []
+          });
+        }
+        resolve({
+          fromUID: uid,
+          toUID: obj[0].hashUID,
+          messages: {},
+          queue: []
+        });
+      } catch (error) {
+        console.log('error', error);
+      }
+    });
+  });
+
+
+  malditaSeaNojoda = (uid, obj, update) => new Promise((resolve) => {
+    this.db.write(() => {
+      const user = this.db.objectForPrimaryKey('user', uid);
       user.contacts.push({
         uid: obj[0].uid,
         name: obj[0].name,
@@ -110,6 +155,7 @@ export default class CoreDatabase {
           queue: []
         });
       }
+
       resolve({
         fromUID: uid,
         toUID: obj[0].hashUID,
@@ -117,10 +163,9 @@ export default class CoreDatabase {
         queue: []
       });
     });
-  });
+  })
 
-
-  setMessage = (id, obj, status) => new Promise((resolve) => {
+  setMessage = (id, obj, status) => new Promise((resolve, reject) => {
     this.db.write(() => {
       try {
         const chat = this.db.objectForPrimaryKey('Chat', id);
@@ -143,7 +188,7 @@ export default class CoreDatabase {
         resolve({ file, time });
       } catch (err) {
         // eslint-disable-next-line no-console
-        console.log('function setMessage', err);
+        reject(err);
       }
     });
   });
@@ -152,7 +197,7 @@ export default class CoreDatabase {
     this.db.write(() => {
       this.db.create('temporalContacts', {
         ...obj
-      });
+      }, true);
       resolve(obj);
     });
   });
@@ -215,10 +260,10 @@ export default class CoreDatabase {
         }
       });
 
+
       this.db.delete(chats);
       this.db.delete(contact);
-
-      resolve(contact);
+      resolve(true);
     });
   });
 
@@ -237,6 +282,7 @@ export default class CoreDatabase {
 
   listenerr = (chats, changes) => {
     changes.insertions.forEach((index) => {
+      const { onNotification } = utilsFuntions;
       const changeChat = chats[index];
       onNotification(JSON.parse(JSON.stringify(changeChat)));
     });
@@ -273,23 +319,26 @@ export default class CoreDatabase {
       const chat = this.db.objectForPrimaryKey('Chat', id);
 
       this.db.delete(chat.messages);
-      resolve();
+      resolve(true);
     });
   });
 
 
   deleteMessage = (id, obj) => new Promise((resolve) => {
     this.db.write(() => {
-      const chat = this.db.objectForPrimaryKey('Chat', id);
+      try {
+        const chat = this.db.objectForPrimaryKey('Chat', id);
+        const messages = chat.messages.filter((data) => {
+          const result = obj.find((message) => message.id === data.id);
 
-      const messages = chat.messages.filter((data) => {
-        const result = obj.find((message) => message.id === data.id);
+          return result;
+        });
 
-        return result;
-      });
-
-      this.db.delete(messages);
-      resolve();
+        this.db.delete(messages);
+        resolve();
+      } catch (error) {
+        // console.log(error);
+      }
     });
   });
 

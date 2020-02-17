@@ -25,7 +25,12 @@ export let ws;
  */
 
 export const verifyAplicationState = () => async (dispatch) => {
-  const storage = await AsyncStorage.getItem(STORAGE_KEY);
+  let storage;
+  if (!process.env.JEST_WORKER_ID) {
+    storage = await AsyncStorage.getItem(STORAGE_KEY);
+  } else {
+    storage = 'created';
+  }
   if (storage) {
     dispatch({
       type: ActionTypes.APP_STATUS,
@@ -41,7 +46,7 @@ export const verifyAplicationState = () => async (dispatch) => {
  * @param {string} obj.name The name of the user.
  */
 
-export const restoreAccountWithPin = (pin, callback) => (dispatch) => {
+export const restoreAccountWithPin = (pin, callback) => async (dispatch) => {
   database.restoreWithPin(sha256(pin)).then(async (res) => {
     dispatch(writeAction(JSON.parse(JSON.stringify(res[0]))));
     const url = await AsyncStorage.getItem('@APP:URL_KEY');
@@ -70,7 +75,9 @@ export const createNewAccount = (obj) => async (dispatch) => {
       }
     ]
   }).then(async (res) => {
-    await AsyncStorage.setItem('@APP:status', 'created');
+    if (!process.env.JEST_WORKER_ID) {
+      await AsyncStorage.setItem('@APP:status', 'created');
+    }
     dispatch(writeAction(res));
     ws = new Socket(store, database);
     dispatch({ type: ActionTypes.URL_CONNECTION, payload: ws.url });
@@ -78,7 +85,7 @@ export const createNewAccount = (obj) => async (dispatch) => {
 };
 
 
-export const restoreWithPhrase = (pin, phrase, name) => (dispatch) => {
+export const restoreWithPhrase = (pin, phrase, name) => async (dispatch) => {
   database.restoreWithPhrase(pin, phrase).then(async () => {
     await createFolder();
     const result = await bitcoin.generateAddress(phrase);
@@ -96,6 +103,9 @@ export const restoreWithPhrase = (pin, phrase, name) => (dispatch) => {
       ]
     }).then(async (res) => {
       dispatch(writeAction(res));
+      if (!process.env.JEST_WORKER_ID) {
+        await AsyncStorage.setItem('@APP:status', 'created');
+      }
       await AsyncStorage.setItem('@APP:status', 'created');
       ws = new Socket(store, database);
       dispatch({ type: ActionTypes.URL_CONNECTION, payload: ws.url });
@@ -115,17 +125,6 @@ const writeAction = (data) => ({
   payload: data
 });
 
-/**
- * @function
- * @description function to change menu tabs
- * @param {number} tab - tab id
- * @returns {object}
- */
-
-export const changeTab = (tab) => ({
-  type: ActionTypes.CHANGE_TAB,
-  payload: tab
-});
 
 /**
  * @function

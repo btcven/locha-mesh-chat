@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 import React, { Component } from 'react';
 import { View } from 'react-native';
 import { Button, Icon } from 'native-base';
@@ -13,6 +14,11 @@ import Menu, { MenuItem } from 'react-native-material-menu';
  */
 
 export default class MenuComponent extends Component {
+  constructor(props) {
+    super(props);
+    this._menu = false;
+  }
+
   setMenuRef = (ref) => {
     // eslint-disable-next-line no-underscore-dangle
     this._menu = ref;
@@ -35,7 +41,7 @@ export default class MenuComponent extends Component {
           ref={this.setMenuRef}
           button={(
             <Button onPress={this.showMenu} transparent>
-              {!this.props.item && <Icon name="more" />}
+              {!this.props.item && <Icon testID="defaulIcon" name="more" />}
               {this.props.item && this.props.item}
             </Button>
           )}

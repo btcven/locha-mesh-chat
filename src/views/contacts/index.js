@@ -69,7 +69,7 @@ class Contacts extends Component {
     const selected = unSelect(this.state.selected, contact);
 
     if (selected.found) {
-      this.setState({ selected: selected.data });
+      this.setStaste({ selected: selected.data });
     } else {
       this.setState({
         selected: this.state.selected.concat(contact)
@@ -226,7 +226,7 @@ export default connect(
     getContacts,
     selectedChat,
     deleteContact: deleteContactAction,
-    requestImage
+    requestImage,
     editContacts
   }
 )(Contacts);

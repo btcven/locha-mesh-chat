@@ -15,19 +15,8 @@ import { Text } from 'native-base';
 export default class ViewQR extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      name: ''
-    };
+    this.state = {};
   }
-
-  saveName = () => {
-    this.props.editName(
-      { name: this.state.name, uid: this.props.config.uid },
-      () => {
-        this.props.close('viewQR');
-      }
-    );
-  };
 
   render() {
     const { open, close, screenProps } = this.props;
