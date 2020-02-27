@@ -64,7 +64,7 @@ class DualComponent extends Component {
     const open = !!(!this.props.user && this.props.status);
     return (
       <View style={styles.container}>
-        {this.props.loading && (this.props.retryConnection !== 4) && <Spinner />}
+        {/* {this.props.loading && (this.props.retryConnection !== 4) && <Spinner />} */}
         {this.props.user && (
           <View style={styles.container}>
             {this.props.tabPosition === 1 && <Home {...this.props} />}
