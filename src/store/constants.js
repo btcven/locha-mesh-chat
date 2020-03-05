@@ -39,5 +39,10 @@ export const ActionTypes = {
   UNREAD_MESSAGES: '@@chat/UNREAD_MESSAGES',
   SET_STATUS_MESSAGE: '@@chat/SET_STATUS_MESSAGE',
   SEND_AGAIN: '@@chat/SEND_AGAIN',
-  UPDATE_STATE: '@@chat/UPDATE_STATE'
+  UPDATE_STATE: '@@chat/UPDATE_STATE',
+
+
+  // DEVICE SETTINGS
+  GET_DEVICE_INFO: '@@deviceSettings/GET_DEVICE_INFO'
+
 };

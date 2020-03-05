@@ -3,9 +3,11 @@ import { View, Text } from 'react-native';
 import {
   Container, Content, List, ListItem, Left, Right, Icon, Switch
 } from 'native-base';
+import { connect } from 'react-redux';
 import Header from '../../components/Header';
+import { getDeviceInfo } from '../../store/deviceSettins/deviceSettingsAction';
 
-export default class index extends Component {
+class index extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -16,6 +18,11 @@ export default class index extends Component {
   static navigationOptions = {
     header: null
   };
+
+
+  componentDidMount = () => {
+    this.props.getDeviceInfo();
+  }
 
 
   render() {
@@ -139,3 +146,9 @@ export default class index extends Component {
     );
   }
 }
+
+const mapDispatchToProps = (state) => ({
+  deviceInfo: state.device
+});
+
+export default connect(mapDispatchToProps, { getDeviceInfo })(index);

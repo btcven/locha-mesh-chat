@@ -11,11 +11,12 @@
   },
   "precommit": "lint --staged",
   "dependencies": {
-    "@react-native-community/async-storage": "^1.7.1",       
+    "@react-native-community/async-storage": "^1.7.1",
     "@react-native-community/cameraroll": "^1.1.1",
     "@react-native-community/slider": "1.1.4",
     "@tradle/react-native-http": "^2.0.0",
     "assert": "^1.1.1",
+    "axios": "^0.19.2",
     "babel-eslint": "^10.0.3",
     "base64-arraybuffer": "^0.2.0",
     "bitcore-lib": "^8.6.0",
@@ -118,7 +119,6 @@
     "transformIgnorePatterns": [
       "node_modules/(?!react-native|native-base-shoutem-theme|@shoutem/animation|@shoutem/ui|tcomb-form-native|react-navigation)"
     ],
-    
     "setupFilesAfterEnv": [
       "<rootDir>/testSetup.js",
       "<rootDir>/node_modules/jest-enzyme/lib/index.js"
@@ -133,9 +133,9 @@
     "testPathIgnorePatterns": [
       "/node_modules/"
     ],
-    "moduleNameMapper": { 
-      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/assetsTransformer.js", 
-      "\\.(css|less)$": "<rootDir>/assetsTransformer.js" 
+    "moduleNameMapper": {
+      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/assetsTransformer.js",
+      "\\.(css|less)$": "<rootDir>/assetsTransformer.js"
     }
   },
   "react-native": {
