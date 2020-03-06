@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import React, { Component } from 'react';
 import { View, Text } from 'react-native';
 import {
@@ -26,6 +27,7 @@ class index extends Component {
 
 
   render() {
+    const { deviceInfo } = this.props;
     return (
       <Container>
         <Header {...this.props} name="Settings Device" />
@@ -39,23 +41,29 @@ class index extends Component {
                 <Text>Batery status</Text>
               </Left>
               <Right>
-                <Text> 30%</Text>
+                <Text>
+                  {deviceInfo.voltage}
+                  %
+                </Text>
               </Right>
             </ListItem>
             <ListItem>
               <Left>
-                <Text>Device type</Text>
+                <Text>Device name</Text>
               </Left>
               <Right>
-                <Text>ESP32</Text>
+                <Text>{deviceInfo.device_name}</Text>
               </Right>
             </ListItem>
             <ListItem>
               <Left>
-                <Text>Version</Text>
+                <Text>Available memory</Text>
               </Left>
               <Right>
-                <Text>0.0.2</Text>
+                <Text>
+                  {Number(`${deviceInfo.free_memory / 1024}`).toFixed(2)}
+                  kB
+                </Text>
               </Right>
             </ListItem>
             <ListItem itemDivider>
@@ -63,7 +71,10 @@ class index extends Component {
             </ListItem>
             <ListItem>
               <Left>
-                <Text>name: Locha.io</Text>
+                <Text>
+                  name:
+                  {deviceInfo.wap_ssid}
+                </Text>
               </Left>
               <Right>
                 <Icon
@@ -104,7 +115,7 @@ class index extends Component {
             </ListItem>
             <ListItem>
               <Left>
-                <Text>name: turpial123456</Text>
+                <Text>name: {deviceInfo.st_ssid}</Text>
               </Left>
               <Right>
                 <Icon

@@ -2,7 +2,7 @@
 import { ActionTypes } from '../constants';
 
 const AplicationState = {
-  voltaje: 'null',
+  voltaje: '',
   avg_current: '',
   temp: '',
   avg_power: '',
