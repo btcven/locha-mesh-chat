@@ -24,8 +24,8 @@
     "textBackup": "Ingrese la contraseña para desbloquear el archivo de respaldo",
     "titleUsername": "Agregar Nombre de Usuario",
     "textUsername": "Por favor ingrese su nombre o alias",
-    "restorePinTitle":"Restaurar pin",
-    "restorePinText":"Ingrese las palabras de respaldo para poder restaurar su pin"
+    "restorePinTitle": "Restaurar pin",
+    "restorePinText": "Ingrese las palabras de respaldo para poder restaurar su pin"
   },
   "Drawer": {
     "contacts": "Contactos",
@@ -74,5 +74,8 @@
   "Languages": {
     "en": "Ingles",
     "es": "Español"
+  },
+  "DeviceSettings": {
+    "errorInfo": "falló la conexión, verifique que esté conectada al dispositivo turpial",
   }
 }

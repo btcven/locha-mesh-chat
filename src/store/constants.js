@@ -43,6 +43,6 @@ export const ActionTypes = {
 
 
   // DEVICE SETTINGS
-  GET_DEVICE_INFO: '@@deviceSettings/GET_DEVICE_INFO'
-
+  GET_DEVICE_INFO: '@@deviceSettings/GET_DEVICE_INFO',
+  SET_DEVICE_CONNECTION_STATUS: '@@deviceSettings/SET_DEVICE_CONNECTION_STATUS'
 };

@@ -6,13 +6,24 @@ const AplicationState = {
   avg_current: '',
   temp: '',
   avg_power: '',
-  free_memory: ''
+  free_memory: '',
+  ap: {
+    ssid: ''
+  },
+  sta: {
+    ssid: '',
+    enabled: false
+  },
+  status: 'waiting'
 };
 
 export const deviceInfoReducer = (state = AplicationState, action) => {
   switch (action.type) {
     case ActionTypes.GET_DEVICE_INFO: {
-      return { ...action.payload };
+      return { status: 'connected', ...action.payload };
+    }
+    case ActionTypes.SET_DEVICE_CONNECTION_STATUS: {
+      return { ...state, status: action.payload };
     }
     default: {
       return state;

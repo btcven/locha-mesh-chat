@@ -2,11 +2,14 @@
 import React, { Component } from 'react';
 import { View, Text } from 'react-native';
 import {
-  Container, Content, List, ListItem, Left, Right, Icon, Switch
+  Container,
 } from 'native-base';
 import { connect } from 'react-redux';
+import SettingsPanel from './settingsPanel';
 import Header from '../../components/Header';
 import { getDeviceInfo } from '../../store/deviceSettins/deviceSettingsAction';
+import Spinner from '../../components/Spinner';
+import ErrorInfo from './errorInfo';
 
 class index extends Component {
   constructor(props) {
@@ -27,132 +30,25 @@ class index extends Component {
 
 
   render() {
-    const { deviceInfo } = this.props;
+    const { deviceInfo, screenProps } = this.props;
     return (
       <Container>
         <Header {...this.props} name="Settings Device" />
-        <Content>
-          <List>
-            <ListItem itemDivider>
-              <Text>Device Characteris</Text>
-            </ListItem>
-            <ListItem>
-              <Left>
-                <Text>Batery status</Text>
-              </Left>
-              <Right>
-                <Text>
-                  {deviceInfo.voltage}
-                  %
-                </Text>
-              </Right>
-            </ListItem>
-            <ListItem>
-              <Left>
-                <Text>Device name</Text>
-              </Left>
-              <Right>
-                <Text>{deviceInfo.device_name}</Text>
-              </Right>
-            </ListItem>
-            <ListItem>
-              <Left>
-                <Text>Available memory</Text>
-              </Left>
-              <Right>
-                <Text>
-                  {Number(`${deviceInfo.free_memory / 1024}`).toFixed(2)}
-                  kB
-                </Text>
-              </Right>
-            </ListItem>
-            <ListItem itemDivider>
-              <Text>WAP(WiFi Access Point)</Text>
-            </ListItem>
-            <ListItem>
-              <Left>
-                <Text>
-                  name:
-                  {deviceInfo.wap_ssid}
-                </Text>
-              </Left>
-              <Right>
-                <Icon
-                  style={{
-                    color: '#bdbdbd',
-                    fontSize: 20,
-                  }}
-                  type="MaterialIcons"
-                  name="edit"
-                />
-              </Right>
-            </ListItem>
-            <ListItem>
-              <Left>
-                <Text>Activar</Text>
-              </Left>
-              <Right>
-                <Switch value={false} />
-              </Right>
-            </ListItem>
-            <ListItem>
-              <Left>
-                <Text>Change password</Text>
-              </Left>
-              <Right>
-                <Icon
-                  style={{
-                    color: '#bdbdbd',
-                    fontSize: 20,
-                  }}
-                  type="MaterialIcons"
-                  name="edit"
-                />
-              </Right>
-            </ListItem>
-            <ListItem itemDivider>
-              <Text>WST(WiFi Station)</Text>
-            </ListItem>
-            <ListItem>
-              <Left>
-                <Text>name: {deviceInfo.st_ssid}</Text>
-              </Left>
-              <Right>
-                <Icon
-                  style={{
-                    color: '#bdbdbd',
-                    fontSize: 20,
-                  }}
-                  type="MaterialIcons"
-                  name="edit"
-                />
-              </Right>
-            </ListItem>
-            <ListItem>
-              <Left>
-                <Text>Activar</Text>
-              </Left>
-              <Right>
-                <Switch value={false} />
-              </Right>
-            </ListItem>
-            <ListItem>
-              <Left>
-                <Text>Change password</Text>
-              </Left>
-              <Right>
-                <Icon
-                  style={{
-                    color: '#bdbdbd',
-                    fontSize: 20,
-                  }}
-                  type="MaterialIcons"
-                  name="edit"
-                />
-              </Right>
-            </ListItem>
-          </List>
-        </Content>
+        {deviceInfo.status === 'waiting' && <Spinner />}
+        {deviceInfo.status === 'error'
+          && (
+            <ErrorInfo
+              getDeviceInfo={this.props.getDeviceInfo}
+              screenProps={screenProps}
+            />
+          )}
+        {deviceInfo.status === 'connected'
+          && (
+            <SettingsPanel
+              deviceInfo={deviceInfo}
+              screenProps={screenProps}
+            />
+          )}
       </Container>
     );
   }
