@@ -1,8 +1,6 @@
 import '../../../__Mocks__';
 import React from 'react';
-import renderer from 'react-test-renderer';
 import { shallow } from 'enzyme';
-import { Provider } from 'react-redux';
 import { navigationPops } from '../../components/heder-test';
 import DeviceSettings from '../../../src/views/deviceSettings';
 import store from '../../../src/store';
@@ -13,11 +11,13 @@ const screenProps = {
 };
 
 test('render the main component', () => {
-  const rendered = renderer.create(
-    <Provider store={store}>
-      <DeviceSettings screenProps={screenProps} navigation={navigationPops} />
-    </Provider>
-  ).toJSON();
+  const rendered = shallow(
+    <DeviceSettings
+      store={store}
+      screenProps={screenProps}
+      navigation={navigationPops}
+    />
+  );
   expect(rendered).toBeTruthy();
 });
 
