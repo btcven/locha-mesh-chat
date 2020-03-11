@@ -9,7 +9,6 @@ import Config from './views/config';
 import Chat from './views/home/Chat';
 import Drawer from './components/Drawer';
 import DeviceSettings from './views/deviceSettings';
-// import Gallery from "./components/Gallery";
 
 export const AppStackNavigator = createStackNavigator({
   initial: DualComponent,
