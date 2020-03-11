@@ -8,6 +8,7 @@ import LoadWallet from './views/LoadWallet';
 import RestoreWithPing from './views/LoadWallet/RestoreWithPin';
 import { clearAll } from './store/aplication';
 import { selectedChat } from './store/chats';
+import Spinner from './components/Spinner';
 
 // import locale from "react-native-locale-detector";
 
@@ -63,7 +64,7 @@ class DualComponent extends Component {
     const open = !!(!this.props.user && this.props.status);
     return (
       <View style={styles.container}>
-        {/* {this.props.loading && (this.props.retryConnection !== 4) && <Spinner />} */}
+        {this.props.loading && (this.props.retryConnection !== 4) && <Spinner />}
         {this.props.user && (
           <View style={styles.container}>
             {this.props.tabPosition === 1 && <Home {...this.props} />}

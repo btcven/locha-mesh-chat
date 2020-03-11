@@ -241,7 +241,7 @@ class Chat extends Component {
       timestamp: new Date().getTime(),
       type: 'msg'
     };
-    data.images.array.forEach((image, key) => {
+    data.images.forEach((image, key) => {
       const id = sha256(
         `${sha256(userData.uid)} + ${toUID}  +  ${sendObject.msg.text
         + sendObject.msg.file}  + ${new Date().getTime()}`
