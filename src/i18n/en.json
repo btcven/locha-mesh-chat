@@ -88,10 +88,13 @@
     "changePassword": "Change password",
     "wstTitle": "WST(WiFi Station)",
     "active": "Active",
-    "changePasswordSta": "Change password",
     "changeNameWap": "Change name WAP",
     "placeholderWap": "Change name",
     "changePasswordWap": "Change password WAP",
-    "placeholderPWapPassword": "Change password"
+    "placeholderPWapPassword": "Change password",
+    "changeNameSta": "Change name STA",
+    "placeholderSta": "Change name",
+    "changePasswordSta": "Change password STA",
+    "placeholderPStaPassword": "Change password"
   }
 }

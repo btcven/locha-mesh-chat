@@ -4,6 +4,11 @@ import {
 } from 'react-native';
 import { Icon, Container } from 'native-base';
 
+
+/**
+ * component used to show when there is no connection to the server
+ */
+
 const ErrorInfo = ({ getDeviceInfo, screenProps }) => (
   <Container style={styles.container}>
     <Icon type="MaterialIcons" name="error" style={styles.iconStyle} />

@@ -1,15 +1,22 @@
 /* eslint-disable camelcase */
 import React, { Component } from 'react';
-import { View, Text } from 'react-native';
 import {
   Container,
 } from 'native-base';
 import { connect } from 'react-redux';
 import SettingsPanel from './settingsPanel';
 import Header from '../../components/Header';
-import { getDeviceInfo } from '../../store/deviceSettins/deviceSettingsAction';
+import {
+  getDeviceInfo, setApSettings, setStaSettings, activateOrDesactivate
+}
+  from '../../store/deviceSettins/deviceSettingsAction';
 import Spinner from '../../components/Spinner';
 import ErrorInfo from './errorInfo';
+
+
+/**
+ * main device panel component
+ */
 
 class index extends Component {
   constructor(props) {
@@ -47,6 +54,9 @@ class index extends Component {
             <SettingsPanel
               deviceInfo={deviceInfo}
               screenProps={screenProps}
+              setApConfig={this.props.setApSettings}
+              setStaSettings={this.props.setStaSettings}
+              activateOrDesactivate={this.props.activateOrDesactivate}
             />
           )}
       </Container>
@@ -58,4 +68,10 @@ const mapDispatchToProps = (state) => ({
   deviceInfo: state.device
 });
 
-export default connect(mapDispatchToProps, { getDeviceInfo })(index);
+export default connect(mapDispatchToProps,
+  {
+    getDeviceInfo,
+    setApSettings,
+    setStaSettings,
+    activateOrDesactivate
+  })(index);

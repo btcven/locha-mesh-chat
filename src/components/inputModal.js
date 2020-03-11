@@ -21,17 +21,21 @@ export default class InputModal extends Component {
   }
 
   saveName = () => {
-    this.props.editName(
-      { name: this.state.name, uid: this.props.config.uid },
-      () => {
-        this.props.close('openModalName');
-      }
-    );
+    this.props.action(this.state.name, () => {
+      this.setState({ name: '' });
+      this.props.close();
+    });
   };
+
+
+  close = () => {
+    this.props.close();
+    this.setState({ name: '' });
+  }
 
   render() {
     const {
-      open, close, screenProps, size, placeholder, title, secureText
+      open, screenProps, size, placeholder, title, secureText
     } = this.props;
     const disabled = !(this.state.name.length > 1);
     return (
@@ -46,7 +50,7 @@ export default class InputModal extends Component {
           animationIn="slideInUp"
           animationOut="slideOutDown"
           animationOutTiming={800}
-          onBackdropPress={() => close('openModalName')}
+          onBackdropPress={() => this.close()}
         >
           <View
             style={{
@@ -80,7 +84,7 @@ export default class InputModal extends Component {
               }}
             >
               <Button
-                onPress={() => close('openModalName')}
+                onPress={() => this.close()}
                 transparent
                 style={{
                   marginHorizontal: 10

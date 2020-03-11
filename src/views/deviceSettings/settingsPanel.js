@@ -3,8 +3,13 @@ import { Text, TouchableHighlight, StyleSheet } from 'react-native';
 import {
   Container, Content, List, ListItem, Left, Right, Icon, Switch
 } from 'native-base';
+import { toast } from '../../utils/utils';
+
 import InputModal from '../../components/inputModal';
 
+/**
+ * component where is the views of the esp32 configuration panel
+ */
 export default class settingsPanel extends Component {
   constructor(props) {
     super(props);
@@ -16,13 +21,122 @@ export default class settingsPanel extends Component {
     };
   }
 
+  /**
+   * function that closes the modal
+   * @memberof settingsPanel
+   */
   close = () => {
     this.setState({ open: false });
   }
 
+  /**
+  * function to change the name of the wap
+  * @param {String} name name to change
+  * @param {Callback}
+  * @memberof settingsPanel
+  */
+  wapName = (name, callback) => {
+    const sendObject = {
+      ssid: name,
+      password: null
+    };
+    this.props.setApConfig(sendObject);
+    callback();
+  }
+
+
+  /**
+  * function to change the password of the wap
+  * @param {String} password password to change
+  * @param {Callback}
+  * @memberof settingsPanel
+  */
+  wapPassword = (password, callback) => {
+    const sendObject = {
+      ssid: null,
+      password
+    };
+    this.props.setApConfig(sendObject);
+    callback();
+  }
+
+
+  /**
+  * function to change the name of the sta
+  * @param {String} name name to change
+  * @param {Callback}
+  * @memberof settingsPanel
+  */
+  staName = (name, callback) => {
+    const sendObject = {
+      ssid: name,
+      password: null,
+    };
+    this.props.setStaSettings(sendObject);
+    callback();
+  }
+
+  /**
+  * function to change the password of the sta
+  * @param {String} password password to change
+  * @param {Callback}
+  * @memberof settingsPanel
+  */
+  staPasword = (password, callback) => {
+    const sendObject = {
+      ssid: null,
+      password
+    };
+    this.props.setStaSettings(sendObject);
+    callback();
+  }
+
+
+  /**
+  * function to activate and deactivate the sta
+  * @memberof settingsPanel
+  */
+  activeOrDesactivateSta = () => {
+    const sendObject = {
+      ssid: null,
+      password: null,
+      enable: true
+    };
+
+    if (this.props.deviceInfo.sta.enabled) {
+      sendObject.enable = false;
+    }
+    this.props.activateOrDesactivate(sendObject);
+  }
+
+  /**
+   * returns the correct function to use
+   * @returns {()=>void}
+   */
+  getActionFunction = () => {
+    const { title } = this.state;
+    const { screenProps } = this.props;
+    switch (title) {
+      case screenProps.t('DeviceSettings:changeNameWap'):
+        return this.wapName;
+      case screenProps.t('DeviceSettings:changePasswordWap'):
+        return this.wapPassword;
+      case screenProps.t('DeviceSettings:changeNameSta'):
+        return this.staName;
+      case screenProps.t('DeviceSettings:changePasswordSta'):
+        return this.staPasword;
+      default:
+        return null;
+    }
+  }
+
+
   render() {
     const { deviceInfo, screenProps } = this.props;
-    const { open, title, placeholder, secureText } = this.state;
+    const {
+      open, title, placeholder, secureText
+    } = this.state;
+    const action = this.getActionFunction();
     return (
       <Container>
         <InputModal
@@ -33,6 +147,7 @@ export default class settingsPanel extends Component {
           placeholder={placeholder}
           size={32}
           secureText={secureText}
+          action={action}
         />
         <Content>
           <List>
@@ -95,7 +210,8 @@ export default class settingsPanel extends Component {
                     this.setState({
                       open: true,
                       title: screenProps.t('DeviceSettings:changeNameWap'),
-                      placeholder: screenProps.t('DeviceSettings:placeholderWap')
+                      placeholder: screenProps.t('DeviceSettings:placeholderWap'),
+                      secureText: false
                     });
                   }}
                   style={styles.touchable}
@@ -146,6 +262,18 @@ export default class settingsPanel extends Component {
               </Left>
               <Right>
                 <TouchableHighlight
+                  onPress={() => {
+                    if (deviceInfo.sta.enabled) {
+                      this.setState({
+                        open: true,
+                        title: screenProps.t('DeviceSettings:changeNameSta'),
+                        placeholder: screenProps.t('DeviceSettings:placeholderSta'),
+                        secureText: false
+                      });
+                    } else {
+                      toast('sta is not active');
+                    }
+                  }}
                   style={styles.touchable}
                   underlayColor="#eeeeee"
                 >
@@ -164,7 +292,7 @@ export default class settingsPanel extends Component {
                 </Text>
               </Left>
               <Right>
-                <Switch value={deviceInfo.sta.enabled} />
+                <Switch value={deviceInfo.sta.enabled} onTouchEnd={this.activeOrDesactivateSta} />
               </Right>
             </ListItem>
             <ListItem>
@@ -175,6 +303,18 @@ export default class settingsPanel extends Component {
               </Left>
               <Right>
                 <TouchableHighlight
+                  onPress={() => {
+                    if (deviceInfo.sta.enabled) {
+                      this.setState({
+                        open: true,
+                        title: screenProps.t('DeviceSettings:changePasswordSta'),
+                        placeholder: screenProps.t('DeviceSettings:placeholderPStaPassword'),
+                        secureText: true
+                      });
+                    } else {
+                      toast('sta is not active');
+                    }
+                  }}
                   style={styles.touchable}
                   underlayColor="#eeeeee"
                 >
