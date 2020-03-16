@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
 import React from 'react';
-import { View } from 'react-native';
+import { Container } from 'native-base';
 import { connect } from 'react-redux';
 import SettingsPanel from './settingsPanel';
 import Header from '../../components/Header';
@@ -37,7 +37,7 @@ class DeviceSettings extends React.Component {
   render() {
     const { deviceInfo, screenProps } = this.props;
     return (
-      <View>
+      <Container>
         <Header {...this.props} name="Settings Device" />
         {deviceInfo.status === 'waiting' && <Spinner />}
         {deviceInfo.status === 'error'
@@ -57,7 +57,7 @@ class DeviceSettings extends React.Component {
               activateOrDesactivate={this.props.activateOrDesactivate}
             />
           )}
-      </View>
+      </Container>
     );
   }
 }
