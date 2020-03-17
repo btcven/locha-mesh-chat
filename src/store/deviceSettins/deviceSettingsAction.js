@@ -1,5 +1,5 @@
 /* eslint-disable import/prefer-default-export */
-import RNFetchBlob from 'react-native-fetch-blob';
+import RNFetchBlob from 'rn-fetch-blob';
 import { ActionTypes } from '../constants';
 import { toast } from '../../utils/utils';
 

@@ -114,7 +114,7 @@ jest.mock('react-native-background-timer', () => {
   // code here
 });
 
-jest.mock('react-native-fetch-blob', () => ({
+jest.mock('rn-fetch-blob', () => ({
   config: jest.fn().mockReturnValue(() => {
     jest.fn().mockReturnValue(() => new Promise());
   })
