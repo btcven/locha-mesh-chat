@@ -82,8 +82,8 @@ describe('Aplication actions', () => {
         uid: config.uid,
         name: config.name
       }).toEqual({
-        uid: '02e5f8f594f8ca7e27d0f0b3e37432bcad4c066f4bbd91b0be9c052a36ba5bc1d6',
-        name: 'obj.name'
+        uid: '02676c01888dc0b31caceac3304dc1f5fb386ea4ab867492070c88b0eb0a91db2d',
+        name: 'test'
       });
     });
   });

@@ -3,6 +3,7 @@ package com.lochameshchat;
 
 import android.app.Application;
 import com.facebook.react.ReactApplication;
+import com.RNFetchBlob.RNFetchBlobPackage;
 import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
 import com.reactlibrary.LanguageDetectorPackage;
 
@@ -45,6 +46,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
             new MainReactPackage(),
+            new RNFetchBlobPackage(),
             new AsyncStoragePackage(),
             new LocalNotificationPackage(),
             new LanguageDetectorPackage(),

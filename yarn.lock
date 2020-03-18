@@ -8664,14 +8664,6 @@ react-native-easy-grid@0.2.2:
   dependencies:
     lodash "^4.17.15"
 
-react-native-fetch-blob@^0.10.8:
-  version "0.10.8"
-  resolved "https://registry.yarnpkg.com/react-native-fetch-blob/-/react-native-fetch-blob-0.10.8.tgz#4fc256abae0cb5f10e7c41f28c11b3ff330d72a9"
-  integrity sha1-T8JWq64MtfEOfEHyjBGz/zMNcqk=
-  dependencies:
-    base-64 "0.1.0"
-    glob "7.0.6"
-
 react-native-fs@2.13.2:
   version "2.13.2"
   resolved "https://registry.yarnpkg.com/react-native-fs/-/react-native-fs-2.13.2.tgz#78257c5e461d19723b51cc369eb2e161f942676d"
@@ -9476,6 +9468,14 @@ ripemd160@^2.0.0, ripemd160@^2.0.1:
   dependencies:
     hash-base "^3.0.0"
     inherits "^2.0.1"
+
+rn-fetch-blob@0.10.15:
+  version "0.10.15"
+  resolved "https://registry.yarnpkg.com/rn-fetch-blob/-/rn-fetch-blob-0.10.15.tgz#3526860c1c57e0bf4c09bdbe409c919264afffba"
+  integrity sha512-/m/gurTaPAvR3J843uehHhznj5k89x7XClyO5ejmbspNLNQ4ByF+kZs80wiiKGWntj+Wqo0jJu1goArXEfc0kA==
+  dependencies:
+    base-64 "0.1.0"
+    glob "7.0.6"
 
 rn-nodeify@tradle/rn-nodeify:
   version "10.1.0"
