@@ -304,7 +304,7 @@ export const sendStatus = (data) => {
   const state = store.default.getState();
   // eslint-disable-next-line no-shadow
   const sendStatus = {
-    fromUID: state.config.uid,
+    fromUID: sha256(state.config.uid),
     timestamp: new Date().getTime(),
     data: {
       status: 'delivered',
