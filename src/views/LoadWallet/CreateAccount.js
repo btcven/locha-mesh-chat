@@ -98,7 +98,7 @@ export default class CreateAccount extends Component {
 
   getFile = async () => {
     // eslint-disable-next-line global-require
-    const DocumentPicker = require('react-native-document-picker');
+    const DocumentPicker = require('react-native-document-picker').default;
     // this.props.close()
     try {
       const res = await DocumentPicker.pick({

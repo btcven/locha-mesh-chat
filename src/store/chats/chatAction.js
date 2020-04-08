@@ -29,7 +29,7 @@ export const initialChat = (data, status) => async (dispatch) => {
   const uidChat = data.toUID ? data.toUID : 'broadcast';
   database.setMessage(uidChat, { ...data }, status).then((res) => {
     if (!process.env.JEST_WORKER_ID) {
-      sendSocket.send(JSON.stringify(data));
+      sendSocket.sendSocket(JSON.stringify(data));
     }
 
     dispatch({
@@ -252,7 +252,7 @@ export const sendMessageWithFile = (data, path, base64) => (dispatch) => {
   saveDatabase.msg.file = path;
   database.setMessage(uidChat, { ...saveDatabase }, 'pending').then((res) => {
     saveDatabase.msg.file = base64;
-    sendSocket.send(JSON.stringify(saveDatabase));
+    sendSocket.sendSocket(JSON.stringify(saveDatabase));
     dispatch({
       type: ActionTypes.NEW_MESSAGE,
       payload: {
@@ -314,7 +314,7 @@ export const sendStatus = (data) => {
 
   if (!data.toUID) {
     sendStatus.toUID = null;
-    sendSocket.send(JSON.stringify(sendStatus));
+    sendSocket.sendSocket(JSON.stringify(sendStatus));
   } else {
     try {
       const contacts = Object.values(state.contacts.contacts);
@@ -323,7 +323,7 @@ export const sendStatus = (data) => {
         if (data.fromUID === contact.hashUID) {
           sendStatus.toUID = contact.hashUID;
 
-          sendSocket.send(JSON.stringify(sendStatus));
+          sendSocket.sendSocket(JSON.stringify(sendStatus));
         }
       });
     } catch (err) {
@@ -389,7 +389,7 @@ export const sendAgain = (message) => (dispatch) => {
       shippingTime: res.shippingTime
     };
 
-    sendSocket.send(JSON.stringify(sendObject));
+    sendSocket.sendSocket(JSON.stringify(sendObject));
     dispatch({
       type: ActionTypes.SEND_AGAIN,
       payload: message

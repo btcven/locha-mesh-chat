@@ -1,8 +1,8 @@
 import { sha256 } from 'js-sha256';
+import { NativeModules, NativeEventEmitter } from 'react-native';
 import { getChat, setStatusMessage } from '../store/chats';
 import { requestImageStatus, sentImageStatus, verifyHashImageStatus } from '../store/contacts/contactsActions';
 import { reestarConnection, loading, loaded } from '../store/aplication';
-
 // eslint-disable-next-line import/no-mutable-exports
 export let sendSocket;
 
@@ -13,18 +13,22 @@ export let sendSocket;
  * @class Socket
  */
 
+const ws = NativeModules.RNWebsocketModule;
+
 export default class Socket {
   constructor(store, database, url) {
-    this.url = url || 'wss://lochat.coinlab.info';
-    // eslint-disable-next-line no-undef
-    this.socket = new WebSocket(this.url);
+    this.url = url || 'wss://192.168.4.1:443/ws';
+    ws.instantiateWeboscket(this.url);
     this.database = database;
-    this.openSocketConnection();
-    this.onMenssage();
+    this.eventEmitter = new NativeEventEmitter(ws);
+    this.onOpen();
+    this.onMessage();
+    this.onClose();
+    this.onError();
     this.store = store;
-    sendSocket = this.socket;
-    this.checkingSocketStatus(store);
-    this.idInterval = undefined;
+    sendSocket = ws;
+    // this.checkingSocketStatus(store);
+    // this.idInterval = undefined;
   }
 
   closeTimmer = () => {
@@ -59,7 +63,7 @@ export default class Socket {
    * @memberof Socket
    */
   sendMenssage = (data) => {
-    this.socket.send(data);
+    ws.sendSocket(data);
   };
 
   /**
@@ -74,9 +78,9 @@ export default class Socket {
     try {
       this.database.getUserData().then((res) => {
         const object = {
-          hashUID: sha256(res[0].uid),
+          shaUID: sha256(res[0].uid),
           timestamp: new Date().getTime(),
-          type: 'handshake'
+          type: 0
         };
         callback(object);
       });
@@ -92,16 +96,57 @@ export default class Socket {
    * @memberof Socket
    */
 
-  openSocketConnection = async () => {
-    this.getUserObject((res) => {
-      this.store.dispatch(loading());
-      this.socket.onopen = () => {
-        // eslint-disable-next-line no-console
-        console.log('conecto');
-        this.socket.send(JSON.stringify(res));
-      };
+  // openSocketConnection = async () => {
+  //   this.getUserObject((res) => {
+  //     this.store.dispatch(loading());
+  //     this.socket.onopen = () => {
+  //       // eslint-disable-next-line no-console
+  //       console.warn('conecto');
+  //       this.socket.send(JSON.stringify(res));
+  //     };
+  //   });
+  // };
+
+
+  onOpen = () => {
+    this.eventEmitter.addListener('onOpen', (isConnected) => {
+      if (isConnected) {
+        this.getUserObject((user) => {
+          ws.sendSocket(JSON.stringify(user));
+        });
+      }
     });
-  };
+  }
+
+  onMessage = () => {
+    this.eventEmitter.addListener('onMessage', (message) => {
+      const parse = JSON.parse(message);
+
+      console.log('!!!!!!!!!parse', parse);
+      const { dispatch } = this.store;
+      switch (parse.type) {
+        case 1: dispatch(getChat(parse));
+          break;
+        // Execute function that is in chat actions
+        case 2: this.setStatus(parse);
+          break;
+        default:
+          break;
+      }
+    });
+  }
+
+  onError = () => {
+    this.eventEmitter.addListener('onError', (error) => {
+      console.warn('[onError]: ', error);
+    });
+  }
+
+  onClose = () => {
+    this.eventEmitter.addListener('onClose', (close) => {
+      console.warn('[onClose]: ', error);
+    });
+  }
 
   /**
    *
@@ -150,29 +195,19 @@ export default class Socket {
   onMenssage = () => {
     this.socket.onmessage = (e) => {
       // a message was received
-      const parse = JSON.parse(e.data);
-      const { dispatch } = this.store;
-      switch (parse.type) {
-        case 'status': this.setStatus(parse);
-          break;
-        // Execute function that is in chat actions
-        case 'msg': dispatch(getChat(parse));
-          break;
-        default:
-          break;
-      }
+
     };
 
     this.socket.onerror = (e) => {
       // a message was received
       // eslint-disable-next-line no-console
-      console.log('OnError', e);
+      console.warn('OnError', e.message);
     };
 
     this.socket.onclose = (e) => {
-      // eslint-disable-next-line no-console
-      console.log('close', e);
-      this.connectionRetry();
+      // // eslint-disable-next-line no-console
+      // console.warn('close', e.message);
+      // this.connectionRetry();
     };
   };
 }
