@@ -9,7 +9,6 @@ import com.facebook.react.modules.core.DeviceEventManagerModule;
 
 import java.security.cert.CertificateException;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
@@ -31,12 +30,19 @@ public class RNWebsocketModule  extends ReactContextBaseJavaModule {
     private WebSocket webSocket;
     public final String TAG = "WEBSOCKET MODULE";
 
+    /**
+     * constructor
+     * @param reactContext
+     */
     public RNWebsocketModule(ReactApplicationContext reactContext) {
         super(reactContext);
         this.reactContext = reactContext;
     }
 
-    @Nonnull
+    /**
+     * the name is added to the module
+     * @return RNWebsocketModule - module name
+     */
     @Override
     public String getName() {
         return "RNWebsocketModule";
@@ -55,9 +61,11 @@ public class RNWebsocketModule  extends ReactContextBaseJavaModule {
          webSocket = client.newWebSocket(request, socketListener);
     }
 
-
-    @ReactMethod
-    public void sendSocket (String message){
+    /**
+     * Sending messages
+     * @param message
+     */
+    @ReactMethod public void sendSocket (String message){
 
         Log.d(TAG , "mensaje que se va enviar: "+ message);
 
@@ -66,7 +74,11 @@ public class RNWebsocketModule  extends ReactContextBaseJavaModule {
 
     }
 
-
+    /**
+     * executes an event that sends the type and data to react native
+     * @param eventName name of the event
+     * @param params send parameters
+     */
     public void sendEvent (String eventName , Object params){
         if (reactContext.hasActiveCatalystInstance()) {
             reactContext
@@ -76,7 +88,10 @@ public class RNWebsocketModule  extends ReactContextBaseJavaModule {
     }
 
 
-
+    /**
+     * websocket library is configured to connect to a server with self-signed certificate
+     * @return OkHttpClient
+     */
     private OkHttpClient getUnsafeOkHttpClient() {
         try {
             final TrustManager[] trustAllCerts = new TrustManager[]{
@@ -123,7 +138,9 @@ public class RNWebsocketModule  extends ReactContextBaseJavaModule {
     }
 
 
-
+    /**
+     *  class containing websocket functions
+     */
     public class SocketListener extends WebSocketListener {
         ReactApplicationContext activity;
         public SocketListener(ReactApplicationContext reactContext){
