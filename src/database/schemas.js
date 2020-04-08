@@ -32,7 +32,7 @@ export const messageSquema = {
     shippingTime: 'int',
     viewed: 'int?',
     status: 'string?',
-    type: 'string'
+    type: 'int'
   }
 };
 

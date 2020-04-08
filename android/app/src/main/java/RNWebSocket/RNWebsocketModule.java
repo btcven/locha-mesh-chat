@@ -62,6 +62,8 @@ public class RNWebsocketModule  extends ReactContextBaseJavaModule {
         Log.d(TAG , "mensaje que se va enviar: "+ message);
 
         webSocket.send(message);
+
+
     }
 
 
@@ -153,19 +155,19 @@ public class RNWebsocketModule  extends ReactContextBaseJavaModule {
         @Override
         public void onClosing(WebSocket webSocket, int code, String reason) {
             super.onClosing(webSocket, code, reason);
-            Log.e(TAG, reason.toString());
+            sendEvent("onClose" , "Error");
         }
 
         @Override
         public void onClosed(WebSocket webSocket, int code, String reason) {
             super.onClosed(webSocket, code, reason);
-
+            sendEvent("onClose" , "Error");
         }
 
         @Override
         public void onFailure(WebSocket webSocket, Throwable t, @Nullable Response response) {
             super.onFailure(webSocket, t, response);
-            sendEvent("onError" , "Error");
+            sendEvent("onError" , t.getMessage());
         }
     }
 
