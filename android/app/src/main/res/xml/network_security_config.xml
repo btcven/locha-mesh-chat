@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config xmlns:tools="http://schemas.android.com/tools">
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">wss://192.168.4.1:443/ws</domain>
+        <trust-anchors>
+            <certificates src="@raw/cacert"/>
+            <certificates src="@raw/prvtkey"/>
+        </trust-anchors>
+    </domain-config>
+</network-security-config>

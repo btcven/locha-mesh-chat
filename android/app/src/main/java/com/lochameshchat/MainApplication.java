@@ -2,37 +2,41 @@ package com.lochameshchat;
 
 
 import android.app.Application;
-import com.facebook.react.ReactApplication;
-import com.RNFetchBlob.RNFetchBlobPackage;
-import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
-import com.reactlibrary.LanguageDetectorPackage;
 
-import DeviceInfo.DeviceInfoPackage;
-import LocalNotification.LocalNotificationPackage;
-import cl.json.RNSharePackage;
-import com.wenkesj.voice.VoicePackage;
-import com.tradle.react.UdpSocketsModule;
-import com.peel.react.TcpSocketsModule;
-import com.reactnativecommunity.slider.ReactSliderPackage;
-import com.zmxv.RNSound.RNSoundPackage;
-import com.rnim.rn.audio.ReactNativeAudioPackage;
-import com.ocetnik.timer.BackgroundTimerPackage;
-import io.github.elyx0.reactnativedocumentpicker.DocumentPickerPackage; // Import package
+import com.RNFetchBlob.RNFetchBlobPackage;
 import com.bitgo.randombytes.RandomBytesPackage;
-import com.horcrux.svg.SvgPackage;
-import io.realm.react.RealmReactPackage;
-import org.reactnative.camera.RNCameraPackage;
-import com.rnfs.RNFSPackage;
-import com.reactnative.ivpusic.imagepicker.PickerPackage;
-import com.reactnativecommunity.cameraroll.CameraRollPackage;
-import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
-import com.oblador.vectoricons.VectorIconsPackage;
+import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
+import com.horcrux.svg.SvgPackage;
+import com.oblador.vectoricons.VectorIconsPackage;
+import com.ocetnik.timer.BackgroundTimerPackage;
+import com.peel.react.TcpSocketsModule;
+import com.reactlibrary.LanguageDetectorPackage;
+import com.reactnative.ivpusic.imagepicker.PickerPackage;
+import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
+import com.reactnativecommunity.cameraroll.CameraRollPackage;
+import com.reactnativecommunity.slider.ReactSliderPackage;
+import com.rnfs.RNFSPackage;
+import com.rnim.rn.audio.ReactNativeAudioPackage;
+import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
+import com.tradle.react.UdpSocketsModule;
+import com.wenkesj.voice.VoicePackage;
+import com.zmxv.RNSound.RNSoundPackage;
+
+import org.reactnative.camera.RNCameraPackage;
+
 import java.util.Arrays;
 import java.util.List;
+
+import DeviceInfo.DeviceInfoPackage;
+import LocalNotification.LocalNotificationPackage;
+import RNWebSocket.RNWebsocketPakage;
+import cl.json.RNSharePackage;
+import io.github.elyx0.reactnativedocumentpicker.DocumentPickerPackage;
+import io.realm.react.RealmReactPackage;
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -68,7 +72,8 @@ public class MainApplication extends Application implements ReactApplication {
             new RNGestureHandlerPackage(),
             new VectorIconsPackage(),
             new DocumentPickerPackage(),
-            new DeviceInfoPackage()
+            new DeviceInfoPackage(),
+            new RNWebsocketPakage()
       );
     }
 

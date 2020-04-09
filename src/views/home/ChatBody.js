@@ -6,6 +6,7 @@ import FileModal from './fileModal';
 import { ReceiveMessage, SenderMessage, SoundMessage } from './Messages';
 import { songs } from '../../utils/constans';
 import ImagesView from './imagesView';
+import { messageType } from '../../utils/constans'
 
 /**
  *
@@ -53,7 +54,7 @@ export default class ChatBody extends Component {
               status: 'read',
               msgID: lastMessage.id
             },
-            type: 'status'
+            type: messageType.STATUS
           };
 
           if (lastMessage.toUID) {

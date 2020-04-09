@@ -53,7 +53,7 @@ const mocksetMessage = {
     text: 'message'
   },
   timestamp: 12345512421242,
-  type: 'msg'
+  type: 1
 };
 
 
@@ -65,7 +65,7 @@ const mocksetMessage2 = {
     text: 'message'
   },
   timestamp: 12345512421242,
-  type: 'msg'
+  type: 1
 };
 
 const mocksetMessage3 = {
@@ -76,7 +76,7 @@ const mocksetMessage3 = {
     text: 'message'
   },
   timestamp: 12345512421242,
-  type: 'msg'
+  type: 1
 };
 
 
@@ -88,7 +88,7 @@ const mocksetMessage4 = {
     text: 'message x2'
   },
   timestamp: 12345512421242,
-  type: 'msg'
+  type: 1
 };
 
 const mockContact = {
@@ -121,7 +121,7 @@ const messageStatus = {
     status: 'delivered',
     msgID: '5c28f23b375d47994b30190b01338ea18daa0b307909a2d465a59777246341231242'
   },
-  type: 'status'
+  type: 2
 };
 
 

@@ -1,10 +1,13 @@
+
 import { sha256 } from 'js-sha256';
+import { NativeModules, NativeEventEmitter } from 'react-native';
 import { getChat, setStatusMessage } from '../store/chats';
 import { requestImageStatus, sentImageStatus, verifyHashImageStatus } from '../store/contacts/contactsActions';
 import { reestarConnection, loading, loaded } from '../store/aplication';
+import { messageType } from './constans';
 
 // eslint-disable-next-line import/no-mutable-exports
-export let sendSocket;
+export let socket;
 
 /**
  *
@@ -13,23 +16,38 @@ export let sendSocket;
  * @class Socket
  */
 
+const ws = NativeModules.RNWebsocketModule;
+
 export default class Socket {
   constructor(store, database, url) {
-    this.url = url || 'wss://lochat.coinlab.info';
-    // eslint-disable-next-line no-undef
-    this.socket = new WebSocket(this.url);
+    // singleton class
+    if (Socket.instance instanceof Socket) {
+      return Socket.instance;
+    }
+
+    this.url = url || 'wss://192.168.4.1:443/ws';
+    this.init();
     this.database = database;
-    this.openSocketConnection();
-    this.onMenssage();
+    this.eventEmitter = new NativeEventEmitter(ws);
+    this.onOpen();
+    this.onMessage();
+    this.onClose();
+    this.onError();
     this.store = store;
-    sendSocket = this.socket;
+    socket = ws;
+    this.isConnected = false;
     this.checkingSocketStatus(store);
     this.idInterval = undefined;
+    Socket.instance = this;
   }
 
   closeTimmer = () => {
     clearInterval(this.idInterval);
   };
+
+  init() {
+    ws.instantiateWeboscket(this.url);
+  }
 
   /**
    * @function
@@ -38,12 +56,10 @@ export default class Socket {
    */
   checkingSocketStatus = (store) => {
     this.idInterval = setInterval(() => {
-      if (this.socket.readyState !== 1 && this.socket.readyState !== 3) {
+      if (!this.isConnected) {
         if (!store.getState().aplication.loading) {
           this.store.dispatch(loading());
         }
-      } else if (this.socket.readyState === 3) {
-        this.closeTimmer();
       } else {
         // eslint-disable-next-line no-unused-expressions
         store.getState().aplication.loading === false
@@ -59,7 +75,7 @@ export default class Socket {
    * @memberof Socket
    */
   sendMenssage = (data) => {
-    this.socket.send(data);
+    ws.sendSocket(data);
   };
 
   /**
@@ -74,9 +90,9 @@ export default class Socket {
     try {
       this.database.getUserData().then((res) => {
         const object = {
-          hashUID: sha256(res[0].uid),
+          shaUID: sha256(res[0].uid),
           timestamp: new Date().getTime(),
-          type: 'handshake'
+          type: 0
         };
         callback(object);
       });
@@ -92,16 +108,46 @@ export default class Socket {
    * @memberof Socket
    */
 
-  openSocketConnection = async () => {
-    this.getUserObject((res) => {
-      this.store.dispatch(loading());
-      this.socket.onopen = () => {
-        // eslint-disable-next-line no-console
-        console.log('conecto');
-        this.socket.send(JSON.stringify(res));
-      };
+  onOpen = () => {
+    this.eventEmitter.addListener('onOpen', (isConnected) => {
+      this.isConnected = isConnected;
+      if (isConnected) {
+        this.getUserObject((user) => {
+          ws.sendSocket(JSON.stringify(user));
+        });
+      }
     });
-  };
+  }
+
+  onMessage = () => {
+    this.eventEmitter.addListener('onMessage', (message) => {
+      const parse = JSON.parse(message);
+      const { dispatch } = this.store;
+      switch (parse.type) {
+        case messageType.MESSAGE: dispatch(getChat(parse));
+          break;
+        // Execute function that is in chat actions
+        case messageType.STATUS: this.setStatus(parse);
+          break;
+        default:
+          break;
+      }
+    });
+  }
+
+  onError = () => {
+    this.eventEmitter.addListener('onError', (error) => {
+      console.log('[error]: ', error);
+      this.isConnected = false;
+      this.connectionRetry();
+    });
+  }
+
+  onClose = () => {
+    this.eventEmitter.addListener('onClose', (close) => {
+      console.warn('[onClose]: ', close);
+    });
+  }
 
   /**
    *
@@ -142,37 +188,5 @@ export default class Socket {
       default: dispatch(setStatusMessage(statusData));
         break;
     }
-  };
-
-  /**
-   * it is executed when a new data arrives at websocket
-   */
-  onMenssage = () => {
-    this.socket.onmessage = (e) => {
-      // a message was received
-      const parse = JSON.parse(e.data);
-      const { dispatch } = this.store;
-      switch (parse.type) {
-        case 'status': this.setStatus(parse);
-          break;
-        // Execute function that is in chat actions
-        case 'msg': dispatch(getChat(parse));
-          break;
-        default:
-          break;
-      }
-    };
-
-    this.socket.onerror = (e) => {
-      // a message was received
-      // eslint-disable-next-line no-console
-      console.log('OnError', e);
-    };
-
-    this.socket.onclose = (e) => {
-      // eslint-disable-next-line no-console
-      console.log('close', e);
-      this.connectionRetry();
-    };
   };
 }

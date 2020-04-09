@@ -6,7 +6,8 @@ import {
   generateName, notification, FileDirectory,
 } from '../../utils/utils';
 import { database } from '../../../App';
-import { sendSocket } from '../../utils/socket';
+import { socket } from '../../utils/socket';
+import { messageType } from '../../utils/constans';
 
 /**
  *here are all the actions of sending and receiving messages
@@ -29,7 +30,7 @@ export const initialChat = (data, status) => async (dispatch) => {
   const uidChat = data.toUID ? data.toUID : 'broadcast';
   database.setMessage(uidChat, { ...data }, status).then((res) => {
     if (!process.env.JEST_WORKER_ID) {
-      sendSocket.send(JSON.stringify(data));
+      socket.sendSocket(JSON.stringify(data));
     }
 
     dispatch({
@@ -252,7 +253,7 @@ export const sendMessageWithFile = (data, path, base64) => (dispatch) => {
   saveDatabase.msg.file = path;
   database.setMessage(uidChat, { ...saveDatabase }, 'pending').then((res) => {
     saveDatabase.msg.file = base64;
-    sendSocket.send(JSON.stringify(saveDatabase));
+    socket.sendSocket(JSON.stringify(saveDatabase));
     dispatch({
       type: ActionTypes.NEW_MESSAGE,
       payload: {
@@ -303,18 +304,18 @@ export const sendStatus = (data) => {
   const state = store.default.getState();
   // eslint-disable-next-line no-shadow
   const sendStatus = {
-    fromUID: state.config.uid,
+    fromUID: sha256(state.config.uid),
     timestamp: new Date().getTime(),
     data: {
       status: 'delivered',
       msgID: data.msgID
     },
-    type: 'status'
+    type: messageType.STATUS
   };
 
   if (!data.toUID) {
     sendStatus.toUID = null;
-    sendSocket.send(JSON.stringify(sendStatus));
+    socket.sendSocket(JSON.stringify(sendStatus));
   } else {
     try {
       const contacts = Object.values(state.contacts.contacts);
@@ -323,7 +324,7 @@ export const sendStatus = (data) => {
         if (data.fromUID === contact.hashUID) {
           sendStatus.toUID = contact.hashUID;
 
-          sendSocket.send(JSON.stringify(sendStatus));
+          socket.sendSocket(JSON.stringify(sendStatus));
         }
       });
     } catch (err) {
@@ -359,9 +360,9 @@ export const setView = (idChat) => async (dispatch) => {
             status: 'read',
             msgID: res
           },
-          type: 'status'
+          type: messageType.STATUS
         };
-        sendSocket.send(JSON.stringify(sendStatus));
+        socket.sendSocket(JSON.stringify(sendStatus));
       }
     }
     dispatch({
@@ -372,7 +373,7 @@ export const setView = (idChat) => async (dispatch) => {
 };
 
 export const sendReadMessageStatus = (data) => () => {
-  sendSocket.send(JSON.stringify(data));
+  socket.sendSocket(JSON.stringify(data));
 };
 
 export const sendAgain = (message) => (dispatch) => {
@@ -389,7 +390,7 @@ export const sendAgain = (message) => (dispatch) => {
       shippingTime: res.shippingTime
     };
 
-    sendSocket.send(JSON.stringify(sendObject));
+    socket.sendSocket(JSON.stringify(sendObject));
     dispatch({
       type: ActionTypes.SEND_AGAIN,
       payload: message
