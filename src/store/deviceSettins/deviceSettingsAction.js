@@ -24,19 +24,29 @@ const request = RNFetchBlob.config({
  * @returns {Object}
  */
 export const getDeviceInfo = () => async (dispatch) => {
-  request.fetch('GET', deviceInfoURL).then((res) => {
-    dispatch({
-      type: ActionTypes.GET_DEVICE_INFO,
-      payload: JSON.parse(res.data)
-    });
+  request.fetch('GET', deviceInfoURL, {
+    user: 'admin',
+    password: 'admin'
+  }).then((res) => {
+    const { status } = res.info();
+    if (status === 200) {
+      dispatch({
+        type: ActionTypes.GET_DEVICE_INFO,
+        payload: JSON.parse(res.data)
+      });
+    } else {
+      dispatch(errorConnection());
+    }
   }).catch(() => {
-    dispatch({
-      type: ActionTypes.SET_DEVICE_CONNECTION_STATUS,
-      payload: 'error'
-    });
+    dispatch(errorConnection());
   });
 };
 
+
+const errorConnection = () => ({
+  type: ActionTypes.SET_DEVICE_CONNECTION_STATUS,
+  payload: 'error'
+});
 
 /**
  * function used to change the WAP settings
