@@ -3,7 +3,8 @@ import { sha256 } from 'js-sha256';
 import { ActionTypes } from '../constants';
 import { FileDirectory, getPhotoBase64, saveImageBase64 } from '../../utils/utils';
 import { database } from '../../../App';
-import { sendSocket } from '../../utils/socket';
+import { socket } from '../../utils/socket';
+import { messageType } from '../../utils/constans';
 /**
  * here are all the actions references to contacts
  * @module ContactAction
@@ -108,7 +109,7 @@ export const requestImage = (uidContact) => async (dispatch, getState) => {
   const sendStatus = {
     fromUID: sha256(state.config.uid),
     timestamp: new Date().getTime(),
-    type: 'status',
+    type: messageType.STATUS,
     data: {
       status: 'RequestImage',
       image: imageBase64,
@@ -116,7 +117,7 @@ export const requestImage = (uidContact) => async (dispatch, getState) => {
     },
     toUID: uidContact
   };
-  sendSocket.send(JSON.stringify(sendStatus));
+  socket.sendSocket(JSON.stringify(sendStatus));
 };
 
 
@@ -144,7 +145,7 @@ export const verifyImage = (contact) => (dispatch, getState) => {
   const sendStatus = {
     fromUID: sha256(state.config.uid),
     timestamp: new Date().getTime(),
-    type: 'status',
+    type: messageType.STATUS,
     data: {
       status: 'verifyHashImage',
       imageHash: contact.imageHash
@@ -152,7 +153,7 @@ export const verifyImage = (contact) => (dispatch, getState) => {
     toUID: contact.hashUID
   };
 
-  sendSocket.send(JSON.stringify(sendStatus));
+  socket.sendSocket(JSON.stringify(sendStatus));
 };
 
 /**
@@ -191,14 +192,14 @@ export const requestImageStatus = (statusData) => (dispatch, getState) => {
         fromUID: statusData.toUID,
         toUID: statusData.fromUID,
         timestamp: new Date().getTime(),
-        type: 'status',
+        type: messageType.STATUS,
         data: {
           status: 'sentImage',
           image: base64Image,
           imageHash: state.config.imageHash
         }
       };
-      sendSocket.send(JSON.stringify(obj));
+      socket.sendSocket(JSON.stringify(obj));
     }
   });
 };
@@ -245,13 +246,13 @@ export const verifyHashImageStatus = (statusData) => async (getState) => {
       fromUID: statusData.toUID,
       toUID: statusData.fromUID,
       timestamp: new Date().getTime(),
-      type: 'status',
+      type: messageType.STATUS,
       data: {
         status: 'sentImage',
         image: base64Image,
         imageHash: state.config.imageHash
       }
     };
-    sendSocket.send(JSON.stringify(obj));
+    socket.sendSocket(JSON.stringify(obj));
   }
 };
