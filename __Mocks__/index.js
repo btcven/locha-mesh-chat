@@ -90,6 +90,10 @@ jest.mock('react-native-audio', () => {
   // code here
 });
 
+jest.mock(('react-native-permissions'), () => {
+  // code here
+});
+
 jest.mock('@react-native-community/slider', () => {
   const data = () => null;
   return data;
