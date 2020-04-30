@@ -1,17 +1,18 @@
+/* eslint-disable react/sort-comp */
 /* eslint-disable camelcase */
 import React from 'react';
 import { Container } from 'native-base';
 import { connect } from 'react-redux';
+import { AsyncStorage } from 'react-native';
 import SettingsPanel from './settingsPanel';
 import Header from '../../components/Header';
 import {
-  getDeviceInfo, setApSettings, setStaSettings, activateOrDesactivate
+  getDeviceInfo, setApSettings, setStaSettings, activateOrDesactivate, changeCredentials
 }
   from '../../store/deviceSettins/deviceSettingsAction';
 import Spinner from '../../components/Spinner';
 import ErrorInfo from './errorInfo';
-
-
+import AlertMessage from './alertMessage';
 /**
  * main device panel component
  */
@@ -20,6 +21,7 @@ class DeviceSettings extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      visibleAlert: false
     };
   }
 
@@ -29,16 +31,27 @@ class DeviceSettings extends React.Component {
   };
 
 
-  componentDidMount = () => {
-    this.props.getDeviceInfo();
+  componentDidMount = async () => {
+    const value = await AsyncStorage.getItem('credentials');
+    if (value) {
+      this.props.getDeviceInfo();
+    } else {
+      this.setState({ visibleAlert: true });
+    }
   }
 
+
+  closeAlert = () => {
+    this.props.getDeviceInfo();
+    this.setState({ visibleAlert: false });
+  }
 
   render() {
     const { deviceInfo, screenProps } = this.props;
     return (
       <Container>
         <Header {...this.props} name="Settings Device" />
+        <AlertMessage close={this.closeAlert} open={this.state.visibleAlert} screenProps={screenProps} />
         {deviceInfo.status === 'waiting' && <Spinner />}
         {deviceInfo.status === 'error'
           && (
@@ -55,6 +68,7 @@ class DeviceSettings extends React.Component {
               setApConfig={this.props.setApSettings}
               setStaSettings={this.props.setStaSettings}
               activateOrDesactivate={this.props.activateOrDesactivate}
+              changeCredentials={this.props.changeCredentials}
             />
           )}
       </Container>
@@ -68,6 +82,7 @@ const mapDispatchToProps = (state) => ({
 
 export default connect(mapDispatchToProps,
   {
+    changeCredentials,
     getDeviceInfo,
     setApSettings,
     setStaSettings,

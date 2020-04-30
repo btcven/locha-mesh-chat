@@ -1,8 +1,8 @@
 /* eslint-disable import/prefer-default-export */
 import RNFetchBlob from 'rn-fetch-blob';
+import { AsyncStorage } from 'react-native';
 import { ActionTypes } from '../constants';
 import { toast } from '../../utils/utils';
-
 
 /**
  *here are all the actions of sending and receiving messages
@@ -13,7 +13,7 @@ const url = 'https://192.168.4.1:443';
 const deviceInfoURL = `${url}/system/info`;
 const apSettings = `${url}/wifi/ap`;
 const staSettings = `${url}/wifi/sta`;
-
+const changeCredentialsUrl = `${url}/system/changeCredentials`;
 const request = RNFetchBlob.config({
   trusty: true
 });
@@ -40,6 +40,25 @@ export const getDeviceInfo = () => async (dispatch) => {
   }).catch(() => {
     dispatch(errorConnection());
   });
+};
+
+getCredentials = async () => {
+  let storageCredentials;
+  const value = await AsyncStorage.getItem('credentials');
+  if (value) {
+    storageCredentials = JSON.parse(value);
+  } else {
+    storageCredentials = {
+      username: 'admin',
+      password: 'admin'
+    };
+  }
+  return storageCredentials;
+};
+
+export const changeCredentials = (credentials, callback) => {
+  value = getCredentials();
+  callback();
 };
 
 
