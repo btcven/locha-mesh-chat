@@ -229,31 +229,6 @@ export default class settingsPanel extends Component {
                 </TouchableHighlight>
               </Right>
             </ListItem>
-            <ListItem>
-              <Left>
-                <Text>{screenProps.t('DeviceSettings:ChangePassword')}</Text>
-              </Left>
-              <Right>
-                <TouchableHighlight
-                  onPress={() => {
-                    this.setState({
-                      open: true,
-                      title: screenProps.t('DeviceSettings:changePasswordWap'),
-                      placeholder: screenProps.t('DeviceSettings:placeholderPWapPassword'),
-                      secureText: true
-                    });
-                  }}
-                  style={styles.touchable}
-                  underlayColor="#eeeeee"
-                >
-                  <Icon
-                    style={styles.editButtonStyle}
-                    type="MaterialIcons"
-                    name="edit"
-                  />
-                </TouchableHighlight>
-              </Right>
-            </ListItem>
             <ListItem itemDivider>
               <Text>{screenProps.t('DeviceSettings:wapTitle')}</Text>
             </ListItem>

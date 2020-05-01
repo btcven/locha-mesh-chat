@@ -26,7 +26,7 @@ const AplicationState = {
 export const deviceInfoReducer = (state = AplicationState, action) => {
   switch (action.type) {
     case ActionTypes.GET_DEVICE_INFO: {
-      return { status: 'connected', ...action.payload };
+      return { ...state, status: 'connected', ...action.payload };
     }
     case ActionTypes.SET_DEVICE_CONNECTION_STATUS: {
       return { ...state, status: action.payload };
@@ -77,6 +77,14 @@ export const deviceInfoReducer = (state = AplicationState, action) => {
       return {
         ...state,
         status: 'waiting',
+        user: {
+          ...action.payload
+        }
+      };
+    }
+    case ActionTypes.CHANGE_CREDENTIAL: {
+      return {
+        ...state,
         user: {
           ...action.payload
         }

@@ -2,6 +2,8 @@
 import RNFetchBlob from 'rn-fetch-blob';
 import { AsyncStorage } from 'react-native';
 import { Toast } from 'native-base';
+import CryptoJS from 'crypto-js';
+import { sha256 } from 'js-sha256';
 import { ActionTypes } from '../constants';
 import { toast } from '../../utils/utils';
 
@@ -25,7 +27,8 @@ const request = RNFetchBlob.config({
  * @returns {Object}
  */
 export const getDeviceInfo = () => async (dispatch, getState) => {
-  const value = await getCredentials();
+  const { username, password } = getState().device.user;
+  const value = await getCredentials({ username, password });
   request.fetch('GET', deviceInfoURL, {
     user: value.username,
     password: value.password,
@@ -44,11 +47,18 @@ export const getDeviceInfo = () => async (dispatch, getState) => {
   });
 };
 
-const getCredentials = async () => {
+const getCredentials = async (auth) => {
   let storageCredentials;
+
   const value = await AsyncStorage.getItem('credentials');
   if (value) {
-    storageCredentials = JSON.parse(value);
+    try {
+      const bytes = CryptoJS.AES.decrypt(value, sha256(JSON.stringify(auth)));
+      const decryptedData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+      storageCredentials = decryptedData;
+    } catch (err) {
+      storageCredentials = undefined;
+    }
   } else {
     storageCredentials = {
       username: 'admin',
@@ -58,8 +68,10 @@ const getCredentials = async () => {
   return storageCredentials;
 };
 
-export const changeCredentials = (credentials, callback) => async (dispatch) => {
-  const value = await getCredentials();
+export const changeCredentials = (credentials, callback) => async (dispatch, getState) => {
+  const { username, password } = getState().device.user;
+  const value = await getCredentials({ username, password });
+
   request.fetch('POST', changeCredentialsUrl, {
     user: value.username,
     password: value.password,
@@ -68,11 +80,18 @@ export const changeCredentials = (credentials, callback) => async (dispatch) => 
   JSON.stringify(credentials)).then(async (res) => {
     const { status } = res.info();
     if (status === 200) {
-      await AsyncStorage.setItem('credentials', JSON.stringify(credentials));
+      const ciphertext = CryptoJS.AES.encrypt(
+        JSON.stringify(credentials),
+        sha256(JSON.stringify(credentials))
+      ).toString();
+
+      await AsyncStorage.setItem('credentials', ciphertext);
+      dispatch({
+        type: ActionTypes.CHANGE_CREDENTIAL,
+        payload: credentials
+      });
       callback();
     }
-  }).catch(() => {
-    callback();
   });
 };
 
@@ -175,10 +194,10 @@ export const activateOrDesactivate = (deviceSettings) => (dispatch) => {
 
 
 export const authDevice = (credentials) => async (dispatch) => {
-  const value = await getCredentials();
+  const value = await getCredentials(credentials);
   const typeUser = await AsyncStorage.getItem('credentials');
-  if (
-    value.password === credentials.password
+  if (value
+    && value.password === credentials.password
     && value.username === credentials.username
   ) {
     dispatch({

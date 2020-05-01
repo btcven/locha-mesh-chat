@@ -22,6 +22,8 @@ export default class Auth extends Component {
   }
 
   render() {
+    const { username, password } = this.state;
+    const disabled = username.length < 8 && password.length < 8;
     return (
       <View style={{ flex: 1, justifyContent: 'center' }}>
         <View style={{ marginLeft: 30, marginRight: 15, marginVertical: 30 }}>
@@ -53,7 +55,7 @@ export default class Auth extends Component {
         </Form>
         <View style={{ width: '100%', alignItems: 'flex-end' }}>
           <View style={{ paddingVertical: 25, paddingHorizontal: 30 }}>
-            <Button title="Login" color="#fbc233" onPress={this.submitCredentials} />
+            <Button title="Login" color="#fbc233" disabled={disabled} onPress={this.submitCredentials} />
           </View>
         </View>
       </View>

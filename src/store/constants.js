@@ -49,4 +49,5 @@ export const ActionTypes = {
   UPDATE_DEVICE_DATA_STA: '@@deviceSettings/UPDATE_DEVICE_DATA_STA',
   ACTIVE_OR_DESACTIVE_STA: '@@deviceSettings/ACTIVE_OR_DESACTIVE_STA',
   AUTH_SETTING_DEVICE: '@@deviceSettings/AUTH_SETTING_DEVICE',
+  CHANGE_CREDENTIAL: '@@deviceSettings/AUTH_SETTING_DEVICE'
 };

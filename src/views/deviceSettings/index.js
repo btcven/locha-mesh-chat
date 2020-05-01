@@ -81,11 +81,11 @@ class DeviceSettings extends React.Component {
   }
 }
 
-const mapDispatchToProps = (state) => ({
+const mapStateToProps = (state) => ({
   deviceInfo: state.device
 });
 
-export default connect(mapDispatchToProps,
+export default connect(mapStateToProps,
   {
     authDevice,
     changeCredentials,
