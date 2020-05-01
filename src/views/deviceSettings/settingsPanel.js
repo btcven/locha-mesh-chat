@@ -139,7 +139,7 @@ export default class settingsPanel extends Component {
   }
 
   render() {
-    const { deviceInfo, screenProps } = this.props;
+    const { deviceInfo, screenProps, changeCredentials } = this.props;
     const {
       open, title, placeholder, secureText, openCredential
     } = this.state;
@@ -156,7 +156,7 @@ export default class settingsPanel extends Component {
           secureText={secureText}
           action={action}
         />
-        <AddNewCredentials open={openCredential} close={this.closeModalCredential} />
+        <AddNewCredentials open={openCredential} changeCredentials={changeCredentials} close={this.closeModalCredential} />
         <Content>
           <List>
             <ListItem itemDivider>

@@ -22,27 +22,27 @@ export default class AddNewCredentials extends Component {
   getInput = ({
     size, payload, secure, key, placeholder, error
   }) => (
-      <Form key={key}>
-        <Text style={{ position: 'absolute', top: '40%', right: '5%' }}>
-          {size - payload.length}
-        </Text>
-        <Item stackedLabel>
-          <Input
-            maxLength={size}
-            placeholder={placeholder}
-            secureTextEntry={secure}
-            value={payload}
-            onChangeText={(text) => this.setState({ [key]: text })}
-          />
-        </Item>
-        {(error.length > 0)
+    <Form key={key}>
+      <Text style={{ position: 'absolute', top: '40%', right: '5%' }}>
+        {size - payload.length}
+      </Text>
+      <Item stackedLabel>
+        <Input
+          maxLength={size}
+          placeholder={placeholder}
+          secureTextEntry={secure}
+          value={payload}
+          onChangeText={(text) => this.setState({ [key]: text })}
+        />
+      </Item>
+      {(error.length > 0)
           && (
             <Text style={styles.textError}>
               {error}
             </Text>
           )}
-      </Form>
-    )
+    </Form>
+  )
 
   saveNewCredential = () => {
     const {
@@ -73,6 +73,7 @@ export default class AddNewCredentials extends Component {
         password
       }, () => {
         this.setState({ loading: false });
+        this.props.close();
       });
     }
   };

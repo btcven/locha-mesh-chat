@@ -1,6 +1,7 @@
 /* eslint-disable import/prefer-default-export */
 import RNFetchBlob from 'rn-fetch-blob';
 import { AsyncStorage } from 'react-native';
+import { Toast } from 'native-base';
 import { ActionTypes } from '../constants';
 import { toast } from '../../utils/utils';
 
@@ -13,7 +14,7 @@ const url = 'https://192.168.4.1:443';
 const deviceInfoURL = `${url}/system/info`;
 const apSettings = `${url}/wifi/ap`;
 const staSettings = `${url}/wifi/sta`;
-const changeCredentialsUrl = `${url}/system/changeCredentials`;
+const changeCredentialsUrl = `${url}/system/credentials`;
 const request = RNFetchBlob.config({
   trusty: true
 });
@@ -23,10 +24,11 @@ const request = RNFetchBlob.config({
  * function used to read the characteristics of esp32
  * @returns {Object}
  */
-export const getDeviceInfo = () => async (dispatch) => {
+export const getDeviceInfo = () => async (dispatch, getState) => {
+  const value = await getCredentials();
   request.fetch('GET', deviceInfoURL, {
-    user: 'admin',
-    password: 'admin'
+    user: value.username,
+    password: value.password,
   }).then((res) => {
     const { status } = res.info();
     if (status === 200) {
@@ -42,7 +44,7 @@ export const getDeviceInfo = () => async (dispatch) => {
   });
 };
 
-getCredentials = async () => {
+const getCredentials = async () => {
   let storageCredentials;
   const value = await AsyncStorage.getItem('credentials');
   if (value) {
@@ -56,11 +58,23 @@ getCredentials = async () => {
   return storageCredentials;
 };
 
-export const changeCredentials = (credentials, callback) => {
-  value = getCredentials();
-  callback();
+export const changeCredentials = (credentials, callback) => async (dispatch) => {
+  const value = await getCredentials();
+  request.fetch('POST', changeCredentialsUrl, {
+    user: value.username,
+    password: value.password,
+    'Content-Type': 'application/json',
+  },
+  JSON.stringify(credentials)).then(async (res) => {
+    const { status } = res.info();
+    if (status === 200) {
+      await AsyncStorage.setItem('credentials', JSON.stringify(credentials));
+      callback();
+    }
+  }).catch(() => {
+    callback();
+  });
 };
-
 
 const errorConnection = () => ({
   type: ActionTypes.SET_DEVICE_CONNECTION_STATUS,
@@ -157,4 +171,21 @@ export const activateOrDesactivate = (deviceSettings) => (dispatch) => {
       payload: 'error'
     });
   });
+};
+
+
+export const authDevice = (credentials) => async (dispatch) => {
+  const value = await getCredentials();
+  const typeUser = await AsyncStorage.getItem('credentials');
+  if (
+    value.password === credentials.password
+    && value.username === credentials.username
+  ) {
+    dispatch({
+      type: ActionTypes.AUTH_SETTING_DEVICE,
+      payload: { ...credentials, typeUser: typeUser.length }
+    });
+  } else {
+    toast('Incorrect user or password');
+  }
 };

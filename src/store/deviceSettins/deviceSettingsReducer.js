@@ -15,7 +15,12 @@ const AplicationState = {
     ssid: '',
     enabled: false
   },
-  status: 'waiting'
+  status: 'auth',
+  user: {
+    username: null,
+    password: null,
+    typeUser: null
+  }
 };
 
 export const deviceInfoReducer = (state = AplicationState, action) => {
@@ -65,6 +70,15 @@ export const deviceInfoReducer = (state = AplicationState, action) => {
         sta: {
           ...state.sta,
           enabled: action.payload.enable
+        }
+      };
+    }
+    case ActionTypes.AUTH_SETTING_DEVICE: {
+      return {
+        ...state,
+        status: 'waiting',
+        user: {
+          ...action.payload
         }
       };
     }
