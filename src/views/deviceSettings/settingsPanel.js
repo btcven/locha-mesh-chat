@@ -6,7 +6,7 @@ import {
 import { toast } from '../../utils/utils';
 
 import InputModal from '../../components/inputModal';
-
+import AddNewCredentials from './addNewCredentials';
 /**
  * component where is the views of the esp32 configuration panel
  */
@@ -17,7 +17,9 @@ export default class settingsPanel extends Component {
       open: false,
       title: '',
       placeholder: '',
-      secureText: false
+      secureText: false,
+
+      openCredential: false
     };
   }
 
@@ -130,11 +132,16 @@ export default class settingsPanel extends Component {
     }
   }
 
+  closeModalCredential = () => {
+    this.setState({
+      openCredential: false
+    });
+  }
 
   render() {
-    const { deviceInfo, screenProps } = this.props;
+    const { deviceInfo, screenProps, changeCredentials } = this.props;
     const {
-      open, title, placeholder, secureText
+      open, title, placeholder, secureText, openCredential
     } = this.state;
     const action = this.getActionFunction();
     return (
@@ -149,6 +156,7 @@ export default class settingsPanel extends Component {
           secureText={secureText}
           action={action}
         />
+        <AddNewCredentials open={openCredential} changeCredentials={changeCredentials} close={this.closeModalCredential} />
         <Content>
           <List>
             <ListItem itemDivider>
@@ -192,6 +200,33 @@ export default class settingsPanel extends Component {
                   {Number(`${deviceInfo.free_memory / 1024}`).toFixed(2)}
                   kB
                 </Text>
+              </Right>
+            </ListItem>
+            <ListItem itemDivider>
+              <Text>{screenProps.t('DeviceSettings:credentialTitle')}</Text>
+            </ListItem>
+            <ListItem>
+              <Left>
+                <Text>
+                  {screenProps.t('DeviceSettings:ChangeCredencial')}
+                </Text>
+              </Left>
+              <Right>
+                <TouchableHighlight
+                  onPress={() => {
+                    this.setState({
+                      openCredential: true
+                    });
+                  }}
+                  style={styles.touchable}
+                  underlayColor="#eeeeee"
+                >
+                  <Icon
+                    style={styles.editButtonStyle}
+                    type="MaterialIcons"
+                    name="edit"
+                  />
+                </TouchableHighlight>
               </Right>
             </ListItem>
             <ListItem itemDivider>

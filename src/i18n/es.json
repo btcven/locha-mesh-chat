@@ -93,6 +93,12 @@
     "changeNameSta": "Cambiar nombre STA",
     "placeholderSta": "Cambiar nombre",
     "changePasswordSta": "Cambiar contraseña STA",
-    "placeholderPStaPassword": "Cambia la contraseña"
+    "placeholderPStaPassword": "Cambia la contraseña",
+    "credentialTitle": "Credenciales",
+    "ChangeCredencial": "Cambiar credenciales",
+    "ChangePassword": "Cambiar contraseña",
+    "usernameError": "Este campo no debe estar vacio",
+    "passwordError": "Este campo no debe estar vacio",
+    "confirmPassword":"Las contraseñas no coinciden"
   }
 }

@@ -112,7 +112,7 @@ export default class InputModal extends Component {
 
 const styles = StyleSheet.create({
   styleTextButton: {
-    paddingHorizontal: 10
+    paddingHorizontal: 20
   },
 
   titleModal: {
