@@ -8,7 +8,9 @@ import { verifyAplicationState } from './src/store/aplication';
 import NativationService from './src/utils/navigationService';
 import Bitcoin from './src/utils/Bitcoin';
 import Database from './src/database';
+import { NativeModules } from 'react-native'
 
+console.log("el webo mio esta prendido", NativeModules);
 
 const WrappedStack = ({ t }) => (
   <RouteContainer

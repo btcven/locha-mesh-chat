@@ -36,6 +36,7 @@ import DeviceInfo.DeviceInfoPackage;
 import LocalNotification.LocalNotificationPackage;
 import RNWebSocket.RNWebsocketPakage;
 import cl.json.RNSharePackage;
+import RNCoapClient.CoapClientPackage;
 import io.github.elyx0.reactnativedocumentpicker.DocumentPickerPackage;
 import io.realm.react.RealmReactPackage;
 
@@ -75,7 +76,8 @@ public class MainApplication extends Application implements ReactApplication {
             new VectorIconsPackage(),
             new DocumentPickerPackage(),
             new DeviceInfoPackage(),
-            new RNWebsocketPakage()
+            new RNWebsocketPakage(),
+            new CoapClientPackage()
       );
     }
 
