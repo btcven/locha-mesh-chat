@@ -1,5 +1,7 @@
+/* eslint-disable no-alert */
+/* eslint-disable no-undef */
 import React, { Component } from 'react';
-import { Text, TouchableHighlight, StyleSheet } from 'react-native';
+import { Text, TouchableHighlight, StyleSheet, View } from 'react-native';
 import {
   Container, Content, List, ListItem, Left, Right, Icon, Switch
 } from 'native-base';
@@ -132,6 +134,18 @@ export default class settingsPanel extends Component {
     }
   }
 
+  componentDidUpdate = () => {
+    if (this.state.open === true) {
+      alert('not avaliable');
+      this.setState({ open: false });
+    }
+
+    if (this.state.openCredential === true) {
+      alert('not avaliable');
+      this.setState({ openCredential: false });
+    }
+  }
+
   closeModalCredential = () => {
     this.setState({
       openCredential: false
@@ -146,7 +160,7 @@ export default class settingsPanel extends Component {
     const action = this.getActionFunction();
     return (
       <Container>
-        <InputModal
+        {/* <InputModal
           open={open}
           screenProps={screenProps}
           close={this.close}
@@ -156,7 +170,7 @@ export default class settingsPanel extends Component {
           secureText={secureText}
           action={action}
         />
-        <AddNewCredentials open={openCredential} changeCredentials={changeCredentials} close={this.closeModalCredential} />
+        <AddNewCredentials open={openCredential} changeCredentials={changeCredentials} close={this.closeModalCredential} /> */}
         <Content>
           <List>
             <ListItem itemDivider>
@@ -177,19 +191,19 @@ export default class settingsPanel extends Component {
               <Left>
                 <Text>{screenProps.t('DeviceSettings:devicename')}</Text>
               </Left>
-              <Right>
+              <View>
                 <Text>{deviceInfo.device_name}</Text>
-              </Right>
+              </View>
             </ListItem>
             <ListItem>
               <Left>
                 <Text>{screenProps.t('DeviceSettings:compilationVersion')}</Text>
               </Left>
-              <Right>
+              <View >
                 <Text>
                   {deviceInfo.device_version}
                 </Text>
-              </Right>
+              </View>
             </ListItem>
             <ListItem>
               <Left>
@@ -285,7 +299,7 @@ export default class settingsPanel extends Component {
                 </TouchableHighlight>
               </Right>
             </ListItem>
-            <ListItem itemDivider>
+            {/* <ListItem itemDivider>
               <Text>{screenProps.t('DeviceSettings:wstTitle')}</Text>
             </ListItem>
             <ListItem>
@@ -360,7 +374,7 @@ export default class settingsPanel extends Component {
                   />
                 </TouchableHighlight>
               </Right>
-            </ListItem>
+            </ListItem> */}
           </List>
         </Content>
       </Container>

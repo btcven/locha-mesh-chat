@@ -1,7 +1,6 @@
 /* eslint-disable import/prefer-default-export */
 import RNFetchBlob from 'rn-fetch-blob';
-import { AsyncStorage } from 'react-native';
-import { Toast } from 'native-base';
+import { AsyncStorage, NativeModules } from 'react-native';
 import CryptoJS from 'crypto-js';
 import { sha256 } from 'js-sha256';
 import { ActionTypes } from '../constants';
@@ -26,23 +25,42 @@ const request = RNFetchBlob.config({
  * function used to read the characteristics of esp32
  * @returns {Object}
  */
+// export const getDeviceInfo = () => async (dispatch, getState) => {
+//   const { username, password } = getState().device.user;
+//   const value = await getCredentials({ username, password });
+//   request.fetch('GET', deviceInfoURL, {
+//     user: value.username,
+//     password: value.password,
+//   }).then((res) => {
+//     const { status } = res.info();
+//     if (status === 200) {
+//       dispatch({
+//         type: ActionTypes.GET_DEVICE_INFO,
+//         payload: JSON.parse(res.data)
+//       });
+//     } else {
+//       dispatch(errorConnection());
+//     }
+//   }).catch(() => {
+//     dispatch(errorConnection());
+//   });
+// };
+
+
 export const getDeviceInfo = () => async (dispatch, getState) => {
-  const { username, password } = getState().device.user;
-  const value = await getCredentials({ username, password });
-  request.fetch('GET', deviceInfoURL, {
-    user: value.username,
-    password: value.password,
-  }).then((res) => {
-    const { status } = res.info();
-    if (status === 200) {
-      dispatch({
-        type: ActionTypes.GET_DEVICE_INFO,
-        payload: JSON.parse(res.data)
-      });
-    } else {
-      dispatch(errorConnection());
-    }
-  }).catch(() => {
+  NativeModules.RNCoapClient.request(
+    'coap://[2001:db8::1]:5683/system/info',
+    'get'
+  ).then((res) => {
+    console.log(
+      'ress', res
+    );
+    dispatch({
+      type: ActionTypes.GET_DEVICE_INFO,
+      payload: JSON.parse(res)
+    });
+  }).catch((err) => {
+    console.log('despues aqui', err);
     dispatch(errorConnection());
   });
 };
@@ -77,22 +95,22 @@ export const changeCredentials = (credentials, callback) => async (dispatch, get
     password: value.password,
     'Content-Type': 'application/json',
   },
-  JSON.stringify(credentials)).then(async (res) => {
-    const { status } = res.info();
-    if (status === 200) {
-      const ciphertext = CryptoJS.AES.encrypt(
-        JSON.stringify(credentials),
-        sha256(JSON.stringify(credentials))
-      ).toString();
+    JSON.stringify(credentials)).then(async (res) => {
+      const { status } = res.info();
+      if (status === 200) {
+        const ciphertext = CryptoJS.AES.encrypt(
+          JSON.stringify(credentials),
+          sha256(JSON.stringify(credentials))
+        ).toString();
 
-      await AsyncStorage.setItem('credentials', ciphertext);
-      dispatch({
-        type: ActionTypes.CHANGE_CREDENTIAL,
-        payload: credentials
-      });
-      callback();
-    }
-  });
+        await AsyncStorage.setItem('credentials', ciphertext);
+        dispatch({
+          type: ActionTypes.CHANGE_CREDENTIAL,
+          payload: credentials
+        });
+        callback();
+      }
+    });
 };
 
 const errorConnection = () => ({
