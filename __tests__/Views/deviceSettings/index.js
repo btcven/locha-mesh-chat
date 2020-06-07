@@ -30,9 +30,9 @@ describe('tests to the main component of device settings', () => {
     />
   ).childAt(0).dive();
 
-  test('render spiner component', () => {
-    expect(wrapper.find('Auth').exists()).toBeTruthy();
-  });
+  // test('render spiner component', () => {
+  //   expect(wrapper.find('Auth').exists()).toBeTruthy();
+  // });
 
   test('render error component', () => {
     wrapper.setProps({
