@@ -6,7 +6,6 @@ import android.app.Application;
 import com.RNFetchBlob.RNFetchBlobPackage;
 import com.bitgo.randombytes.RandomBytesPackage;
 import com.facebook.react.ReactApplication;
-import com.reactnativecommunity.rnpermissions.RNPermissionsPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
@@ -19,6 +18,7 @@ import com.reactlibrary.LanguageDetectorPackage;
 import com.reactnative.ivpusic.imagepicker.PickerPackage;
 import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
 import com.reactnativecommunity.cameraroll.CameraRollPackage;
+import com.reactnativecommunity.rnpermissions.RNPermissionsPackage;
 import com.reactnativecommunity.slider.ReactSliderPackage;
 import com.rnfs.RNFSPackage;
 import com.rnim.rn.audio.ReactNativeAudioPackage;
@@ -34,11 +34,12 @@ import java.util.List;
 
 import DeviceInfo.DeviceInfoPackage;
 import LocalNotification.LocalNotificationPackage;
+import RNCoapClient.CoapClientPackage;
 import RNWebSocket.RNWebsocketPakage;
 import cl.json.RNSharePackage;
-import RNCoapClient.CoapClientPackage;
 import io.github.elyx0.reactnativedocumentpicker.DocumentPickerPackage;
 import io.realm.react.RealmReactPackage;
+import upd.RNUdpServerPackage;
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -77,7 +78,8 @@ public class MainApplication extends Application implements ReactApplication {
             new DocumentPickerPackage(),
             new DeviceInfoPackage(),
             new RNWebsocketPakage(),
-            new CoapClientPackage()
+            new CoapClientPackage(),
+            new RNUdpServerPackage()
       );
     }
 

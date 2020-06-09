@@ -10,6 +10,9 @@ import NativationService from './src/utils/navigationService';
 import Bitcoin from './src/utils/Bitcoin';
 import Database from './src/database';
 
+
+NativeModules.RBUdpServer.initServer();
+
 const WrappedStack = ({ t }) => (
   <RouteContainer
     ref={(ref) => {

@@ -37,7 +37,7 @@ public class CoapClientModule extends ReactContextBaseJavaModule {
 
     private static final String typeGet = "get";
     private static final String typePost = "post";
-    
+
     private static NetworkConfigDefaultHandler DEFAULTS = new NetworkConfigDefaultHandler() {
 
         @Override
