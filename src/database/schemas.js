@@ -2,7 +2,6 @@ export const contactSchema = {
   name: 'Contact',
   primaryKey: 'uid',
   properties: {
-    ipv6Address: 'string',
     uid: 'string',
     name: 'string',
     picture: 'string?',

@@ -295,7 +295,6 @@ export const setView = (idChat) => async (dispatch) => {
       // eslint-disable-next-line global-require
       const store = require('..');
       const state = store.default.getState();
-
       if (idChat && res.length > 0) {
         const chat = Object.values(state.chats.chat).find((itemChat) => itemChat.toUID === idChat);
 

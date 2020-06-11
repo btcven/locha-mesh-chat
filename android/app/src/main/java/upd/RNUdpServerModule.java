@@ -39,9 +39,8 @@ public class RNUdpServerModule  extends ReactContextBaseJavaModule  {
 
 
     private void sendEvent (String eventName , Object params) {
-        Log.i("execute event", "HEREEEEEEEEEEEE");
         if (context.hasActiveCatalystInstance()) {
-            context
+          context
                     .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
                     .emit(eventName, params);
         }
