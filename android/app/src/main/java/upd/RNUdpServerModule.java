@@ -20,13 +20,14 @@ public class RNUdpServerModule  extends ReactContextBaseJavaModule  {
     private final static int port = 8888;
     private final static String TAG = "upd server";
     Thread UDPBroadcastThread;
+    DatagramSocket udpServer;
+    Boolean shouldRestartSocketListen = false;
 
     ReactApplicationContext context;
     public RNUdpServerModule(@Nonnull ReactApplicationContext reactContext) {
         super(reactContext);
 
         context = reactContext;
-
     }
 
     @Nonnull
@@ -35,14 +36,15 @@ public class RNUdpServerModule  extends ReactContextBaseJavaModule  {
         return "RBUdpServer";
     }
 
+
     @ReactMethod
     public void initServer(){
-        Log.i(TAG,"!!!!!!!!!!!execute hereee!!!!!!!! ");
+        shouldRestartSocketListen = true;
         UDPBroadcastThread = new Thread(new Runnable() {
             public void run() {
                 try {
 
-                    while (true) {
+                    while (shouldRestartSocketListen) {
                         start();
                     }
                     //if (!shouldListenForUDPBroadcast) throw new ThreadDeath();
@@ -69,13 +71,17 @@ public class RNUdpServerModule  extends ReactContextBaseJavaModule  {
 
 
     public void start() {
-        final String url = "localhost";
+        final String url = "[2001:db8::8d55:c1dd:1210:5097]";
 
         try {
-            DatagramSocket udpServer = new DatagramSocket(
-                    port,
-                    InetAddress.getLocalHost()
-            );
+
+            if(udpServer == null || udpServer.isClosed()){
+                udpServer = new DatagramSocket(
+                        port,
+                        InetAddress.getByName(url)
+                );
+            }
+
             Log.i(TAG, "Created UDP  server socket at " + udpServer.getLocalSocketAddress());
 
                 Log.i(TAG, "Waiting for a UDP packet...");
@@ -86,7 +92,7 @@ public class RNUdpServerModule  extends ReactContextBaseJavaModule  {
                 udpServer.setBroadcast(true);
                 displayPacketDetails(packet);
 
-                udpServer.send(packet);
+
                 udpServer.close();
 
 
@@ -98,5 +104,26 @@ public class RNUdpServerModule  extends ReactContextBaseJavaModule  {
             e.printStackTrace();
         }
 
+    }
+
+
+    void stopListen() {
+        shouldRestartSocketListen = false;
+        udpServer.close();
+    }
+
+
+    @ReactMethod
+    public void send(String message ,  String url ) throws IOException {
+        Log.i(TAG, "EXECUTE EL SEND");
+        String aqui = "el webo mio";
+        DatagramPacket datagramPacket = new DatagramPacket(
+                message.getBytes(),
+                message.length(),
+                InetAddress.getByName(url),
+                port
+        );
+
+        udpServer.send(datagramPacket);
     }
 }

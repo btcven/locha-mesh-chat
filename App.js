@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Provider } from 'react-redux';
 import { translate } from 'react-i18next';
 import { Root } from 'native-base';
-import { NativeModules } from 'react-native';
+
 import RouteContainer from './src/routes';
 import store from './src/store';
 import { verifyAplicationState } from './src/store/aplication';
@@ -10,8 +10,6 @@ import NativationService from './src/utils/navigationService';
 import Bitcoin from './src/utils/Bitcoin';
 import Database from './src/database';
 
-
-NativeModules.RBUdpServer.initServer();
 
 const WrappedStack = ({ t }) => (
   <RouteContainer
