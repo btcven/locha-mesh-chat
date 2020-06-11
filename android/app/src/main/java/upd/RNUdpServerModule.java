@@ -49,7 +49,6 @@ public class RNUdpServerModule  extends ReactContextBaseJavaModule  {
 
     @ReactMethod
     public void initServer(){
-        Log.i(TAG,"!!!!!!!!!!!execute hereee!!!!!!!! ");
         UDPBroadcastThread = new Thread(new Runnable() {
             public void run() {
                 try {
@@ -83,7 +82,7 @@ public class RNUdpServerModule  extends ReactContextBaseJavaModule  {
 
 
     public void start() {
-        final String url = "[2001:db8::8d55:c1dd:1210:5097]";
+        final String url = "fe80::e1da:b5f2:b11b:2ffd";
 
         try {
             DatagramSocket udpServer = new DatagramSocket(

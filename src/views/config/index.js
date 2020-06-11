@@ -241,10 +241,10 @@ class Config extends Component {
                 }}
               >
                 <TouchableOpacity
-                  onPress={() => this.setContent(this.props.config.uid)}
+                  onPress={() => this.setContent(this.props.config.ipv6Address)}
                 >
                   <Text style={styles.textInfo}>
-                    {`${this.props.config.uid}`.substr(0, 25)}
+                    {`${this.props.config.ipv6Address}`.substr(0, 25)}
                     ...
                   </Text>
                 </TouchableOpacity>

@@ -2,6 +2,7 @@ export const contactSchema = {
   name: 'Contact',
   primaryKey: 'uid',
   properties: {
+    ipv6Address: 'string',
     uid: 'string',
     name: 'string',
     picture: 'string?',
@@ -63,6 +64,7 @@ export const userSchema = {
   primaryKey: 'uid',
   properties: {
     uid: { type: 'string', indexed: true },
+    ipv6Address: 'string?',
     name: 'string',
     picture: 'string?',
     imageHash: 'string?',

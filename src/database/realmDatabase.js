@@ -22,9 +22,11 @@ export default class CoreDatabase {
 
   writteUser = (obj) => new Promise((resolve, reject) => {
     try {
+      console.warn(obj.ipv6Address);
       this.db.write(() => {
         const userData = {
           uid: obj.uid,
+          ipv6Address: obj.ipv6Address,
           name: obj.name,
           picture: obj.picture,
           chats: obj.chats,

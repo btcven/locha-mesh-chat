@@ -1,5 +1,5 @@
 /* eslint-disable no-new */
-import { AsyncStorage } from 'react-native';
+import { AsyncStorage, NativeModules } from 'react-native';
 import { sha256 } from 'js-sha256';
 import RNSF from 'react-native-fs';
 import { ActionTypes } from '../constants';
@@ -66,6 +66,7 @@ export const createNewAccount = (obj) => async (dispatch) => {
   const result = await bitcoin.generateAddress(obj.seed);
   database.writteUser({
     uid: result.publicKey.toString(),
+    ipv6Address: NativeModules.RNDeviceInfo.globalIpv6,
     name: obj.name,
     image: null,
     contacts: [],
@@ -87,6 +88,7 @@ export const restoreWithPhrase = (pin, phrase, name) => async (dispatch) => {
     const result = await bitcoin.generateAddress(phrase);
     database.writteUser({
       uid: result.publicKey.toString(),
+      ipv6Address: NativeModules.RNDeviceInfo.globalIpv6,
       name,
       image: null,
       contacts: [],
