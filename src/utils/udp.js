@@ -16,8 +16,12 @@ export default class UdpServer {
     this.onReceive();
   }
 
+
+  send = (message, url) => {
+    this.udp.send(message, url);
+  }
+
   startServer = () => {
-    console.warn('init sercvcer');
     this.udp.initServer();
   }
 

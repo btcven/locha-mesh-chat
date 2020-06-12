@@ -4,8 +4,11 @@ import { Platform } from 'react-native';
 import { ActionTypes } from '../constants';
 import { notification, FileDirectory } from '../../utils/utils';
 import { database } from '../../../App';
-import { socket } from '../../utils/socket';
+import UdpServer from '../../utils/udp';
 import { messageType } from '../../utils/constans';
+
+
+
 
 /**
  *here are all the actions of sending and receiving messages
@@ -25,9 +28,10 @@ import { messageType } from '../../utils/constans';
  */
 
 export const initialChat = (data, status) => async (dispatch) => {
+  // const udp = new UdpServer();
   database.setMessage(data.toUID, { ...data }, status).then((res) => {
     if (!process.env.JEST_WORKER_ID) {
-      socket.sendSocket(JSON.stringify(data));
+      // udp.send(JSON.stringify(data), data.toUID);
     }
     dispatch({
       type: ActionTypes.NEW_MESSAGE,
@@ -201,7 +205,7 @@ export const sendMessageWithFile = (data, path, base64) => (dispatch) => {
   saveDatabase.msg.file = path;
   database.setMessage(uidChat, { ...saveDatabase }, 'pending').then((res) => {
     saveDatabase.msg.file = base64;
-    socket.sendSocket(JSON.stringify(saveDatabase));
+    // socket.sendSocket(JSON.stringify(saveDatabase));
     dispatch({
       type: ActionTypes.NEW_MESSAGE,
       payload: {
@@ -263,7 +267,7 @@ export const sendStatus = (data) => {
 
   if (!data.toUID) {
     sendStatus.toUID = null;
-    socket.sendSocket(JSON.stringify(sendStatus));
+    // socket.sendSocket(JSON.stringify(sendStatus));
   } else {
     try {
       const contacts = Object.values(state.contacts.contacts);
@@ -272,7 +276,7 @@ export const sendStatus = (data) => {
         if (data.fromUID === contact.hashUID) {
           sendStatus.toUID = contact.hashUID;
 
-          socket.sendSocket(JSON.stringify(sendStatus));
+          // socket.sendSocket(JSON.stringify(sendStatus));
         }
       });
     } catch (err) {
@@ -309,7 +313,7 @@ export const setView = (idChat) => async (dispatch) => {
           },
           type: messageType.STATUS
         };
-        socket.sendSocket(JSON.stringify(sendStatus));
+        // socket.sendSocket(JSON.stringify(sendStatus));
       }
     }
     dispatch({
@@ -320,7 +324,7 @@ export const setView = (idChat) => async (dispatch) => {
 };
 
 export const sendReadMessageStatus = (data) => () => {
-  socket.sendSocket(JSON.stringify(data));
+  // socket.sendSocket(JSON.stringify(data));
 };
 
 export const sendAgain = (message) => (dispatch) => {
@@ -337,7 +341,7 @@ export const sendAgain = (message) => (dispatch) => {
       shippingTime: res.shippingTime
     };
 
-    socket.sendSocket(JSON.stringify(sendObject));
+    // socket.sendSocket(JSON.stringify(sendObject));
     dispatch({
       type: ActionTypes.SEND_AGAIN,
       payload: message

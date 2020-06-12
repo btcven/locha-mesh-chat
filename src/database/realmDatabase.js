@@ -77,9 +77,11 @@ export default class CoreDatabase {
   cancelUnreadMessages = (id) => new Promise((resolve) => {
     this.db.write(() => {
       try {
-        const chat = this.db.objectForPrimaryKey('Chat', id);
-        const notRead = this.converToString(chat.queue);
-        chat.queue = [];
+        // const chat = this.db.objectForPrimaryKey('Chat', id);
+        // const notRead = this.converToString(chat.queue);
+        // chat.queue = [];
+
+        const notRead = [];
         resolve(notRead);
       } catch (err) {
         console.log('cancel unread', err);
@@ -121,14 +123,14 @@ export default class CoreDatabase {
         if (!update) {
           user.chats.push({
             fromUID: uid,
-            toUID: obj[0].hashUID,
+            toUID: obj[0].uid,
             messages: [],
             queue: []
           });
         }
         resolve({
           fromUID: uid,
-          toUID: obj[0].hashUID,
+          toUID: obj[0].uid,
           messages: {},
           queue: []
         });
@@ -137,35 +139,6 @@ export default class CoreDatabase {
       }
     });
   });
-
-
-  malditaSeaNojoda = (uid, obj, update) => new Promise((resolve) => {
-    this.db.write(() => {
-      const user = this.db.objectForPrimaryKey('user', uid);
-      user.contacts.push({
-        uid: obj[0].uid,
-        name: obj[0].name,
-        picture: obj[0].picture,
-        hashUID: obj[0].hashUID
-      });
-
-      if (!update) {
-        user.chats.push({
-          fromUID: uid,
-          toUID: obj[0].hashUID,
-          messages: [],
-          queue: []
-        });
-      }
-
-      resolve({
-        fromUID: uid,
-        toUID: obj[0].hashUID,
-        messages: {},
-        queue: []
-      });
-    });
-  })
 
   setMessage = (id, obj, status) => new Promise((resolve, reject) => {
     this.db.write(() => {
@@ -190,7 +163,7 @@ export default class CoreDatabase {
         resolve({ file, time });
       } catch (err) {
         // eslint-disable-next-line no-console
-        console.ward(['en el setFile', err]);
+        console.warn(['en el setFile', err]);
         reject(err);
       }
     });

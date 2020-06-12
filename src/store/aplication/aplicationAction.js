@@ -63,9 +63,9 @@ export const createNewAccount = (obj) => async (dispatch) => {
   await database.getRealm(sha256(obj.pin), sha256(obj.seed));
   await database.setDataSeed(obj.seed);
   await createFolder();
-  const result = await bitcoin.generateAddress(obj.seed);
+  // const result = await bitcoin.generateAddress(obj.seed);
   database.writteUser({
-    uid: result.publicKey.toString(),
+    uid: NativeModules.RNDeviceInfo.globalIpv6,
     ipv6Address: NativeModules.RNDeviceInfo.globalIpv6,
     name: obj.name,
     image: null,
@@ -85,9 +85,9 @@ export const createNewAccount = (obj) => async (dispatch) => {
 export const restoreWithPhrase = (pin, phrase, name) => async (dispatch) => {
   database.restoreWithPhrase(pin, phrase).then(async () => {
     await createFolder();
-    const result = await bitcoin.generateAddress(phrase);
+    // const result = await bitcoin.generateAddress(phrase);
     database.writteUser({
-      uid: result.publicKey.toString(),
+      uid: NativeModules.RNDeviceInfo.globalIpv6,
       ipv6Address: NativeModules.RNDeviceInfo.globalIpv6,
       name,
       image: null,
