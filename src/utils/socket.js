@@ -25,20 +25,20 @@ export default class Socket {
       return Socket.instance;
     }
 
-    this.url = url || 'wss://192.168.4.1:443/ws';
-    this.init();
-    this.database = database;
-    this.eventEmitter = new NativeEventEmitter(ws);
-    this.onOpen();
-    this.onMessage();
-    this.onClose();
-    this.onError();
-    this.store = store;
-    socket = ws;
-    this.isConnected = false;
-    this.checkingSocketStatus(store);
-    this.idInterval = undefined;
-    Socket.instance = this;
+    // this.url = url || 'wss://192.168.4.1:443/ws';
+    // this.init();
+    // this.database = database;
+    // this.eventEmitter = new NativeEventEmitter(ws);
+    // this.onOpen();
+    // this.onMessage();
+    // this.onClose();
+    // this.onError();
+    // this.store = store;
+    // socket = ws;
+    // this.isConnected = false;
+    // this.checkingSocketStatus(store);
+    // this.idInterval = undefined;
+    // Socket.instance = this;
   }
 
   closeTimmer = () => {

@@ -148,6 +148,17 @@ android {
             }
         }
     }
+
+    packagingOptions {
+        exclude 'META-INF/legal/3rd-party/APACHE-LICENSE-2.0.txt'
+        exclude 'META-INF/legal/3rd-party/BSD-3-Clause-LICENSE.txt'
+        exclude 'META-INF/legal/3rd-party/cc0-legalcode.html'
+        exclude 'META-INF/legal/LICENSE'
+        exclude 'META-INF/legal/3rd-party/CDDL+GPL-1.1.txt'
+        exclude 'META-INF/legal/3rd-party/MIT-license.html'
+        exclude  'META-INF/legal/NOTICE.md'
+    }
+
 }
 
 dependencies {
@@ -173,6 +184,7 @@ dependencies {
     implementation project(':react-native-fs')
     implementation project(':react-native-image-crop-picker')
     implementation project(':@react-native-community_cameraroll')
+    implementation 'org.eclipse.californium:californium-core:2.2.1'
     implementation project(':react-native-gesture-handler')
     implementation 'com.squareup.okhttp3:okhttp:3.11.0'
     implementation project(':react-native-vector-icons')

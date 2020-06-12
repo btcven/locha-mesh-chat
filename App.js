@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Provider } from 'react-redux';
 import { translate } from 'react-i18next';
 import { Root } from 'native-base';
+
 import RouteContainer from './src/routes';
 import store from './src/store';
 import { verifyAplicationState } from './src/store/aplication';
