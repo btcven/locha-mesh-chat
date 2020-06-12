@@ -188,6 +188,7 @@ export default class CoreDatabase {
         resolve({ file, time });
       } catch (err) {
         // eslint-disable-next-line no-console
+        console.ward(['en el setFile', err]);
         reject(err);
       }
     });

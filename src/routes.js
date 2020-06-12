@@ -8,14 +8,14 @@ import Contact from './views/contacts';
 import Config from './views/config';
 import Chat from './views/home/Chat';
 import Drawer from './components/Drawer';
-
-// import Gallery from "./components/Gallery";
+import DeviceSettings from './views/deviceSettings';
 
 export const AppStackNavigator = createStackNavigator({
   initial: DualComponent,
   contacts: Contact,
   config: Config,
-  chat: Chat
+  chat: Chat,
+  deviceSettings: DeviceSettings
 });
 
 const MyDrawerNavigator = createDrawerNavigator(

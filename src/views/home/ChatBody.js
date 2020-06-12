@@ -4,8 +4,9 @@ import { sha256 } from 'js-sha256';
 import Sound from 'react-native-sound';
 import FileModal from './fileModal';
 import { ReceiveMessage, SenderMessage, SoundMessage } from './Messages';
-import { songs } from '../../utils/constans';
+import { songs, messageType } from '../../utils/constans';
 import ImagesView from './imagesView';
+
 
 /**
  *
@@ -53,7 +54,7 @@ export default class ChatBody extends Component {
               status: 'read',
               msgID: lastMessage.id
             },
-            type: 'status'
+            type: messageType.STATUS
           };
 
           if (lastMessage.toUID) {

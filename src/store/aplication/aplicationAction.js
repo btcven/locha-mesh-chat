@@ -157,6 +157,7 @@ export const reestarConnection = async ({ dispatch, getState }) => {
   const url = await AsyncStorage.getItem('@APP:URL_KEY');
   if (applicationState.retryConnection < 3) {
     ws = new Socket(store, database, url);
+    ws.init();
   } else {
     dispatch(loaded);
   }
@@ -211,6 +212,7 @@ export const manualConnection = () => async (dispatch) => {
   dispatch({ type: ActionTypes.MANUAL_CONNECTION });
   const url = await AsyncStorage.getItem('@APP:URL_KEY');
   ws = new Socket(store, database, url);
+  ws.init();
 };
 
 /**

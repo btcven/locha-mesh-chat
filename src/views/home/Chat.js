@@ -19,6 +19,7 @@ import {
   sendReadMessageStatus,
   sendAgain
 } from '../../store/chats';
+import { messageType } from '../../utils/constans';
 
 import ImagesView from './imagesView';
 
@@ -239,9 +240,9 @@ class Chat extends Component {
         text: ''
       },
       timestamp: new Date().getTime(),
-      type: 'msg'
+      type: messageType.MESSAGE
     };
-    data.images.array.forEach((image, key) => {
+    data.images.forEach((image, key) => {
       const id = sha256(
         `${sha256(userData.uid)} + ${toUID}  +  ${sendObject.msg.text
         + sendObject.msg.file}  + ${new Date().getTime()}`

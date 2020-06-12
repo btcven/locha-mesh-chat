@@ -99,7 +99,7 @@ React Navigation is born from the React Native community's need for an extensibl
 ## Requirements
 Before you start, make sure you have the following requirements
 
-    - Node.js v10.x or greater
+    - Node.js v10.x or a version less than 12.x
     - Java SE Development Kit (JDK 8)
     - Python 2.7
     - git

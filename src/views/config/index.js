@@ -3,7 +3,7 @@ import {
   Container, Icon, Left, Right, Thumbnail
 } from 'native-base';
 import {
-  Text, View, StyleSheet, TouchableHighlight, TouchableOpacity, Clipboard,
+  Text, View, StyleSheet, TouchableHighlight, TouchableOpacity, Clipboard, ScrollView
 } from 'react-native';
 import { connect } from 'react-redux';
 import CryptoJS from 'crypto-js';
@@ -83,6 +83,10 @@ class Config extends Component {
     });
   }
 
+  navigate = () => {
+    this.props.navigation.push('deviceSettings');
+  }
+
   render() {
     const { screenProps } = this.props;
     return (
@@ -117,277 +121,316 @@ class Config extends Component {
         <ViewQR {...this.props} open={this.state.viewQR} close={this.close} />
 
         {!this.state.forceDialog && (
-        <AddPin
-          {...this.props}
-          open={this.state.pin}
-          text={screenProps.t('Settings:textBackup')}
-          action={this.createBackupFile}
-          close={this.close}
-          config
-        />
+          <AddPin
+            {...this.props}
+            open={this.state.pin}
+            text={screenProps.t('Settings:textBackup')}
+            action={this.createBackupFile}
+            close={this.close}
+            config
+          />
         )}
 
-        <View style={styles.sectionContainer}>
-          <View style={styles.imageContainer}>
-            {this.props.config.image && (
-              <TouchableHighlight
-                style={styles.touchable}
-                underlayColor="#eeeeee"
-              >
-                <Thumbnail
-                  source={{
-                    uri: this.props.config.image,
-                    cache: 'force-cache'
-                  }}
-                  style={styles.imageStyle}
-                />
-              </TouchableHighlight>
-            )}
+        <View>
+          <ScrollView>
+            <View style={styles.sectionContainer}>
+              <View style={styles.imageContainer}>
+                {this.props.config.image && (
+                  <TouchableHighlight
+                    style={styles.touchable}
+                    underlayColor="#eeeeee"
+                  >
+                    <Thumbnail
+                      source={{
+                        uri: this.props.config.image,
+                        cache: 'force-cache'
+                      }}
+                      style={styles.imageStyle}
+                    />
+                  </TouchableHighlight>
+                )}
 
-            {!this.props.config.image && (
-              <TouchableHighlight
-                style={styles.touchable}
-                underlayColor="#eeeeee"
-                onPress={() => {
-                  this.setState({ openModalPhoto: true });
-                }}
-              >
-                <Thumbnail source={images.noPhoto.url} style={styles.imageStyle} />
-              </TouchableHighlight>
-            )}
-            <View style={styles.actionButtonContainer}>
-              <TouchableOpacity
-                style={{
-                  height: '100%',
-                  width: '100%',
-                  borderRadius: 100,
-                  justifyContent: 'center',
-                  display: 'flex'
-                }}
-                underlayColor="#eeeeee"
-                onPress={() => {
-                  this.setState({ openModalPhoto: true });
-                }}
-              >
+                {!this.props.config.image && (
+                  <TouchableHighlight
+                    style={styles.touchable}
+                    underlayColor="#eeeeee"
+                    onPress={() => {
+                      this.setState({ openModalPhoto: true });
+                    }}
+                  >
+                    <Thumbnail source={images.noPhoto.url} style={styles.imageStyle} />
+                  </TouchableHighlight>
+                )}
+                <View style={styles.actionButtonContainer}>
+                  <TouchableOpacity
+                    style={{
+                      height: '100%',
+                      width: '100%',
+                      borderRadius: 100,
+                      justifyContent: 'center',
+                      display: 'flex'
+                    }}
+                    underlayColor="#eeeeee"
+                    onPress={() => {
+                      this.setState({ openModalPhoto: true });
+                    }}
+                  >
+                    <Icon
+                      style={styles.iconStyles}
+                      type="MaterialIcons"
+                      name="camera-alt"
+                    />
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </View>
+
+            <View style={styles.infoContainer}>
+              <Left>
                 <Icon
-                  style={styles.iconStyles}
+                  style={{ color: '#fbc233' }}
                   type="MaterialIcons"
-                  name="camera-alt"
+                  name="person"
                 />
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-
-        <View style={styles.infoContainer}>
-          <Left>
-            <Icon
-              style={{ color: '#fbc233' }}
-              type="MaterialIcons"
-              name="person"
-            />
-          </Left>
-          <View
-            style={{
-              width: '70%',
-              alignContent: 'flex-start',
-              paddingLeft: 10
-            }}
-          >
-            <Text style={styles.textLabel}>
-              {screenProps.t('Settings:name')}
-            </Text>
-            <Text style={styles.textInfo}>{this.props.config.name}</Text>
-          </View>
-          <Right
-            style={{
-              top: 5
-            }}
-          >
-            <TouchableHighlight
-              style={styles.touchable}
-              underlayColor="#eeeeee"
-              onPress={() => {
-                this.setState({ openModalName: true });
-              }}
-            >
-              <Icon
+              </Left>
+              <View
                 style={{
-                  color: '#bdbdbd',
-                  fontSize: 25,
-                  paddingVertical: 10,
-                  paddingHorizontal: 10
+                  width: '70%',
+                  alignContent: 'flex-start',
+                  paddingLeft: 10
                 }}
-                type="MaterialIcons"
-                name="edit"
-              />
-            </TouchableHighlight>
-          </Right>
-        </View>
-
-        <View style={styles.infoContainerAddress}>
-          <View
-            style={{
-              width: '90%',
-              justifyContent: 'flex-end',
-              paddingLeft: 10,
-              minHeight: 30
-            }}
-          >
-            <TouchableOpacity
-              onPress={() => this.setContent(this.props.config.uid)}
-            >
-              <Text style={styles.textInfo}>
-                {`${this.props.config.uid}`.substr(0, 25)}
-...
-              </Text>
-            </TouchableOpacity>
-          </View>
-          <View
-            style={{
-              flexDirection: 'row',
-              flex: 1,
-              alignItems: 'center'
-            }}
-          >
-            <TouchableHighlight
-              style={styles.touchable}
-              underlayColor="#eeeeee"
-              onPress={() => {
-                this.setState({ viewQR: true });
-              }}
-            >
-              <Icon
-                style={{
-                  color: '#bdbdbd',
-                  fontSize: 25
-                }}
-                type="FontAwesome5"
-                name="qrcode"
-              />
-            </TouchableHighlight>
-          </View>
-        </View>
-
-        <View style={styles.infoContainerAddress}>
-          <Left>
-            <Icon style={{ color: '#fbc233' }} name="globe" />
-          </Left>
-          <View
-            style={{
-              width: '70%',
-              alignContent: 'flex-start',
-              paddingLeft: 10
-            }}
-          >
-            <Text style={styles.textLabel}>
-              {screenProps.t('Settings:language')}
-            </Text>
-            <Text style={styles.textInfo}>
-              {' '}
-              {screenProps.t(`Languages:${i18n.language}`)}
-            </Text>
-          </View>
-          <Right
-            style={{
-              top: 5
-            }}
-          >
-            <TouchableOpacity
-              style={styles.touchable}
-              underlayColor="#eeeeee"
-              onPress={() => {
-                this.setState({ language: true });
-              }}
-            >
-              <Icon
-                style={{
-                  color: '#bdbdbd',
-                  fontSize: 25,
-                  paddingVertical: 10,
-                  paddingHorizontal: 10
-                }}
-                name="arrow-dropright"
-              />
-            </TouchableOpacity>
-          </Right>
-
-        </View>
-        <TouchableOpacity onPress={() => this.setState({ pin: true })}>
-          <View style={styles.infoContainerAddress}>
-            <Left>
-              <Icon type="FontAwesome5" style={{ color: '#fbc233' }} name="file-export" />
-            </Left>
-            <View
-              style={{
-                width: '70%',
-                alignContent: 'flex-start',
-                paddingLeft: 10
-              }}
-            >
-              <Text style={styles.textInfo}>
-                {screenProps.t('Settings:createBackup')}
-              </Text>
-            </View>
-            <Right
-              style={{
-                top: 5
-              }}
-            >
-              <TouchableOpacity
-                style={styles.touchable}
-                underlayColor="#eeeeee"
               >
-                <Icon
-                  style={{
-                    color: '#bdbdbd',
-                    fontSize: 25,
-                    paddingVertical: 10,
-                    paddingHorizontal: 10
-                  }}
-                  name="arrow-dropright"
-                />
-              </TouchableOpacity>
-            </Right>
-
-          </View>
-        </TouchableOpacity>
-
-
-        <TouchableOpacity onPress={() => this.setState({ network: true })}>
-          <View style={styles.infoContainerAddress}>
-            <Left>
-              <Icon type="FontAwesome5" style={{ color: '#fbc233' }} name="server" />
-            </Left>
-            <View
-              style={{
-                width: '70%',
-                alignContent: 'flex-start',
-                paddingLeft: 10
-              }}
-            >
-              <Text style={styles.textInfo}>
-                  Network settings
-              </Text>
-            </View>
-            <Right
-              style={{
-                top: 5
-              }}
-            >
-              <Icon
+                <Text style={styles.textLabel}>
+                  {screenProps.t('Settings:name')}
+                </Text>
+                <Text style={styles.textInfo}>{this.props.config.name}</Text>
+              </View>
+              <Right
                 style={{
-                  color: '#bdbdbd',
-                  fontSize: 25,
-                  paddingVertical: 10,
-                  paddingHorizontal: 10
+                  top: 5
                 }}
-                name="arrow-dropright"
-              />
-            </Right>
+              >
+                <TouchableHighlight
+                  style={styles.touchable}
+                  underlayColor="#eeeeee"
+                  onPress={() => {
+                    this.setState({ openModalName: true });
+                  }}
+                >
+                  <Icon
+                    style={{
+                      color: '#bdbdbd',
+                      fontSize: 25,
+                      paddingVertical: 10,
+                      paddingHorizontal: 10
+                    }}
+                    type="MaterialIcons"
+                    name="edit"
+                  />
+                </TouchableHighlight>
+              </Right>
+            </View>
 
-          </View>
-        </TouchableOpacity>
+            <View style={styles.infoContainerAddress}>
+              <View
+                style={{
+                  width: '90%',
+                  justifyContent: 'flex-end',
+                  paddingLeft: 10,
+                  minHeight: 30
+                }}
+              >
+                <TouchableOpacity
+                  onPress={() => this.setContent(this.props.config.uid)}
+                >
+                  <Text style={styles.textInfo}>
+                    {`${this.props.config.uid}`.substr(0, 25)}
+                    ...
+                  </Text>
+                </TouchableOpacity>
+              </View>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  flex: 1,
+                  alignItems: 'center'
+                }}
+              >
+                <TouchableHighlight
+                  style={styles.touchable}
+                  underlayColor="#eeeeee"
+                  onPress={() => {
+                    this.setState({ viewQR: true });
+                  }}
+                >
+                  <Icon
+                    style={{
+                      color: '#bdbdbd',
+                      fontSize: 25
+                    }}
+                    type="FontAwesome5"
+                    name="qrcode"
+                  />
+                </TouchableHighlight>
+              </View>
+            </View>
+
+            <View style={styles.infoContainerAddress}>
+              <Left>
+                <Icon style={{ color: '#fbc233' }} name="globe" />
+              </Left>
+              <View
+                style={{
+                  width: '70%',
+                  alignContent: 'flex-start',
+                  paddingLeft: 10
+                }}
+              >
+                <Text style={styles.textLabel}>
+                  {screenProps.t('Settings:language')}
+                </Text>
+                <Text style={styles.textInfo}>
+                  {' '}
+                  {screenProps.t(`Languages:${i18n.language}`)}
+                </Text>
+              </View>
+              <Right
+                style={{
+                  top: 5
+                }}
+              >
+                <TouchableOpacity
+                  style={styles.touchable}
+                  underlayColor="#eeeeee"
+                  onPress={() => {
+                    this.setState({ language: true });
+                  }}
+                >
+                  <Icon
+                    style={{
+                      color: '#bdbdbd',
+                      fontSize: 25,
+                      paddingVertical: 10,
+                      paddingHorizontal: 10
+                    }}
+                    name="arrow-dropright"
+                  />
+                </TouchableOpacity>
+              </Right>
+
+            </View>
+            <TouchableOpacity onPress={() => this.setState({ pin: true })}>
+              <View style={styles.infoContainerAddress}>
+                <Left>
+                  <Icon type="FontAwesome5" style={{ color: '#fbc233' }} name="file-export" />
+                </Left>
+                <View
+                  style={{
+                    width: '70%',
+                    alignContent: 'flex-start',
+                    paddingLeft: 10
+                  }}
+                >
+                  <Text style={styles.textInfo}>
+                    {screenProps.t('Settings:createBackup')}
+                  </Text>
+                </View>
+                <Right
+                  style={{
+                    top: 5
+                  }}
+                >
+                  <TouchableOpacity
+                    style={styles.touchable}
+                    underlayColor="#eeeeee"
+                  >
+                    <Icon
+                      style={{
+                        color: '#bdbdbd',
+                        fontSize: 25,
+                        paddingVertical: 10,
+                        paddingHorizontal: 10
+                      }}
+                      name="arrow-dropright"
+                    />
+                  </TouchableOpacity>
+                </Right>
+
+              </View>
+            </TouchableOpacity>
+
+
+            <TouchableOpacity onPress={() => this.setState({ network: true })}>
+              <View style={styles.infoContainerAddress}>
+                <Left>
+                  <Icon type="FontAwesome5" style={{ color: '#fbc233' }} name="server" />
+                </Left>
+                <View
+                  style={{
+                    width: '70%',
+                    alignContent: 'flex-start',
+                    paddingLeft: 10
+                  }}
+                >
+                  <Text style={styles.textInfo}>
+                    Network settings
+                  </Text>
+                </View>
+                <Right
+                  style={{
+                    top: 5
+                  }}
+                >
+                  <Icon
+                    style={{
+                      color: '#bdbdbd',
+                      fontSize: 25,
+                      paddingVertical: 10,
+                      paddingHorizontal: 10
+                    }}
+                    name="arrow-dropright"
+                  />
+                </Right>
+
+              </View>
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={() => this.navigate()}>
+              <View style={styles.infoContainerAddress}>
+                <Left>
+                  <Icon style={{ color: '#fbc233' }} name="settings" />
+                </Left>
+                <View
+                  style={{
+                    width: '70%',
+                    alignContent: 'flex-start',
+                    paddingLeft: 10
+                  }}
+                >
+                  <Text style={styles.textInfo}>
+                    Device Settings
+                  </Text>
+                </View>
+                <Right
+                  style={{
+                    top: 5
+                  }}
+                >
+                  <Icon
+                    style={{
+                      color: '#bdbdbd',
+                      fontSize: 25,
+                      paddingVertical: 10,
+                      paddingHorizontal: 10
+                    }}
+                    name="arrow-dropright"
+                  />
+                </Right>
+
+              </View>
+            </TouchableOpacity>
+          </ScrollView>
+        </View>
       </Container>
     );
   }

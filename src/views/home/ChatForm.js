@@ -18,6 +18,7 @@ import * as Animatable from 'react-native-animatable';
 import moment from 'moment';
 import { FileDirectory } from '../../utils/utils';
 import Draggable from '../../components/Draggable';
+import { messageType } from '../../utils/constans';
 
 /**
  *
@@ -101,12 +102,13 @@ export default class ChatForm extends Component {
                   typeFile: 'audio'
                 },
                 timestamp: new Date().getTime(),
-                type: 'msg'
+                type: messageType.MESSAGE
               };
 
               const id = sha256(
-                `${sha256(user.uid)} + ${toUID}  +  ${
-                  sendObject.msg.text
+                `${sha256(user.uid)} + ${toUID}  +  
+                ${
+                sendObject.msg.text
                 }  + ${new Date().getTime()}`
               );
 
@@ -162,7 +164,7 @@ export default class ChatForm extends Component {
         text: this.state.message
       },
       timestamp: new Date().getTime(),
-      type: 'msg'
+      type: messageType.MESSAGE
     };
 
     const id = sha256(

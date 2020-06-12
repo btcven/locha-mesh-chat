@@ -104,6 +104,9 @@ class HeaderComponent extends Component {
                   <Title style={{ color: '#fff' }}>Locha Mesh</Title>
                 )}
 
+                {this.props.name
+                  && <Title style={{ color: '#fff' }}>{this.props.name}</Title>}
+
                 {router.routeName === 'contacts' && (
                   <Title style={{ color: '#fff' }}>
                     {screenProps.t('Header:contacts')}

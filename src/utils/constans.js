@@ -1,11 +1,4 @@
 /* eslint-disable global-require */
-// import { NativeModules, Platform } from 'react-native';
-
-// export const deviceModel = Platform.select({
-//   ios: () => NativeModules.RNDeviceInfo.deviceInfo.id.replace('iPhone', '').trim(),
-//   android: () => 'Android',
-// })();
-
 
 export const chats = [{
   idChat: '1',
@@ -38,4 +31,12 @@ export const IntialUser = {
   name: undefined,
   image: null,
   contacts: []
+};
+
+
+export const messageType = {
+  HANDSHAKE: 0,
+  MESSAGE: 1,
+  STATUS: 2,
+  ACTION: 3
 };

@@ -90,6 +90,10 @@ jest.mock('react-native-audio', () => {
   // code here
 });
 
+jest.mock(('react-native-permissions'), () => {
+  // code here
+});
+
 jest.mock('@react-native-community/slider', () => {
   const data = () => null;
   return data;
@@ -113,6 +117,12 @@ jest.mock('react-navigation', () => ({
 jest.mock('react-native-background-timer', () => {
   // code here
 });
+
+jest.mock('rn-fetch-blob', () => ({
+  config: jest.fn().mockReturnValue(() => {
+    jest.fn().mockReturnValue(() => new Promise());
+  })
+}));
 
 jest.mock('NativeEventEmitter', () => class MockNativeEventEmitter {
   addListener = () => jest.fn()

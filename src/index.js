@@ -6,9 +6,9 @@ import { route } from './store/aplication/aplicationAction';
 import Home from './views/home';
 import LoadWallet from './views/LoadWallet';
 import RestoreWithPing from './views/LoadWallet/RestoreWithPin';
-import Spinner from './components/Spinner';
 import { clearAll } from './store/aplication';
 import { selectedChat } from './store/chats';
+import Spinner from './components/Spinner';
 
 // import locale from "react-native-locale-detector";
 
