@@ -9,7 +9,6 @@ import ImagesView from './imagesView';
 
 /**
  *
- *
  * @export
  * @class ChatBody
  * @description component where messages sent and received are displayed

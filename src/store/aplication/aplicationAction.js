@@ -52,7 +52,7 @@ export const restoreAccountWithPin = (pin, callback) => async (dispatch) => {
   database.restoreWithPin(sha256(pin)).then(async (res) => {
     dispatch(writeAction(JSON.parse(JSON.stringify(res[0]))));
     // const url = await AsyncStorage.getItem('@APP:URL_KEY');
-    new UdpServer(store);
+    new UdpServer();
     dispatch({ type: ActionTypes.URL_CONNECTION, payload: ws.url });
   }).catch(() => {
     callback();
@@ -76,7 +76,7 @@ export const createNewAccount = (obj) => async (dispatch) => {
       await AsyncStorage.setItem('@APP:status', 'created');
     }
     dispatch(writeAction(res));
-    new UdpServer(store);
+    new UdpServer();
     dispatch({ type: ActionTypes.URL_CONNECTION, payload: ws.url });
   });
 };
@@ -98,7 +98,7 @@ export const restoreWithPhrase = (pin, phrase, name) => async (dispatch) => {
       if (!process.env.JEST_WORKER_ID) {
         await AsyncStorage.setItem('@APP:status', 'created');
       }
-      new UdpServer(store);
+      new UdpServer();
       dispatch({ type: ActionTypes.URL_CONNECTION, payload: ws.url });
     });
   });
@@ -176,7 +176,7 @@ export const restoreWithFile = (pin, data) => (dispatch) => {
   database.restoreWithFile(pin, data).then(async () => {
     await AsyncStorage.setItem('@APP:status', 'created');
     await createFolder();
-    ws = new Socket(store, database);
+    new UdpServer();
     dispatch({
       type: ActionTypes.INITIAL_STATE,
       payload: data.user
@@ -202,7 +202,7 @@ export const changeNetworkEndPoint = (url) => async () => {
 export const manualConnection = () => async (dispatch) => {
   dispatch({ type: ActionTypes.MANUAL_CONNECTION });
   const url = await AsyncStorage.getItem('@APP:URL_KEY');
-  ws = new Socket(store, database, url);
+  // ws = new Socket(store, database, url);
   ws.init();
 };
 
@@ -219,7 +219,7 @@ export const newPin = (obj) => (dispatch) => {
     database.newPin(obj.pin, obj.phrases).then(async (userData) => {
       dispatch(writeAction(JSON.parse(JSON.stringify(userData[0]))));
       const url = await AsyncStorage.getItem('@APP:URL_KEY');
-      ws = new Socket(store, database, url);
+      // ws = new Socket(store, database, url);
       dispatch({ type: ActionTypes.URL_CONNECTION, payload: ws.url });
     });
   });

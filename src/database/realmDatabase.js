@@ -144,6 +144,8 @@ export default class CoreDatabase {
     this.db.write(() => {
       try {
         const chat = this.db.objectForPrimaryKey('Chat', id);
+        console.log('here in the chat', chat);
+
         const time = new Date().getTime();
         const file = obj.msg.typeFile
           ? {
@@ -164,7 +166,7 @@ export default class CoreDatabase {
       } catch (err) {
         // eslint-disable-next-line no-console
         console.warn(['en el setFile', err]);
-        reject(err);
+        // reject(err);
       }
     });
   });

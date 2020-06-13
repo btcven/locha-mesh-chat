@@ -1,16 +1,17 @@
+/* eslint-disable global-require */
 import { NativeModules, NativeEventEmitter } from 'react-native';
 import { messageType } from './constans';
 import { getChat, setStatusMessage } from '../store/chats';
 import { requestImageStatus, sentImageStatus, verifyHashImageStatus } from '../store/contacts/contactsActions';
 
+
 export default class UdpServer {
-  constructor(store) {
+  constructor() {
     if (UdpServer.instance instanceof UdpServer) {
       return UdpServer.instance;
     }
     this.udp = NativeModules.RBUdpServer;
     this.event = new NativeEventEmitter(this.udp);
-    this.store = store;
     this.startServer();
 
     this.onReceive();
@@ -27,8 +28,9 @@ export default class UdpServer {
 
   onReceive = () => {
     this.event.addListener('onMessage', ((data) => {
+      const store = require('../store').default;
       const parse = JSON.parse(data);
-      const { dispatch } = this.store;
+      const { dispatch } = store;
       switch (parse.type) {
         case messageType.MESSAGE: dispatch(getChat(parse));
           break;

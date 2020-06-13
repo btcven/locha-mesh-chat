@@ -16,6 +16,8 @@ import java.net.UnknownHostException;
 
 import javax.annotation.Nonnull;
 
+import DeviceInfo.DeviceInfoModule;
+
 public class RNUdpServerModule  extends ReactContextBaseJavaModule  {
 
     private final static int port = 8888;
@@ -83,7 +85,10 @@ public class RNUdpServerModule  extends ReactContextBaseJavaModule  {
     }
 
     public void start() {
-        final String url = "[2001:db8::8d55:c1dd:1210:5097]";
+
+        DeviceInfoModule device = new DeviceInfoModule(context);
+
+        final String url = device.getIpv6();
 
         try {
 
@@ -124,14 +129,36 @@ public class RNUdpServerModule  extends ReactContextBaseJavaModule  {
 
 
     @ReactMethod
-    public void send(String message ,  String url ) throws IOException {
-        DatagramPacket datagramPacket = new DatagramPacket(
-                message.getBytes(),
-                message.length(),
-                InetAddress.getByName(url),
-                port
-        );
+    public void send(String message ,  String url ) {
+        Thread UDPSendThread = new Thread(new Runnable() {
+            public void run() {
+                try {
 
-        udpServer.send(datagramPacket);
+                    DatagramPacket datagramPacket = null;
+                    System.out.println("Send a  packet:[IP Address=" + url
+                            + ", port=" + port + ", message=" + message + "]");
+                    try {
+                        datagramPacket = new DatagramPacket(
+                                message.getBytes(),
+                                message.length(),
+                                InetAddress.getByName(url),
+                                port
+                        );
+
+                        udpServer.send(datagramPacket);
+                    } catch (UnknownHostException e) {
+                        Log.e("Error", e.toString());
+                    } catch (IOException e) {
+                        Log.e("Error", e.toString());
+                    }
+                } catch (Exception e) {
+                    Log.i("UDP", "no longer listening for UDP broadcasts cause of error " + e.getMessage());
+                }
+            }
+        });
+        if(!UDPSendThread.isAlive()){
+            UDPSendThread.start();
+        }
+
     }
 }

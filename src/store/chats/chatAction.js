@@ -28,10 +28,10 @@ import { messageType } from '../../utils/constans';
  */
 
 export const initialChat = (data, status) => async (dispatch) => {
-  // const udp = new UdpServer();
+  const udp = new UdpServer();
   database.setMessage(data.toUID, { ...data }, status).then((res) => {
     if (!process.env.JEST_WORKER_ID) {
-      // udp.send(JSON.stringify(data), data.toUID);
+      udp.send(JSON.stringify(data), data.toUID);
     }
     dispatch({
       type: ActionTypes.NEW_MESSAGE,
@@ -68,8 +68,9 @@ export const getChat = (parse) => async (dispatch) => {
   if (parse.msg.file) {
     parse.msg.file = await saveFile(parse.msg);
   }
-  const uidChat = parse.toUID ? parse.fromUID : 'broadcast';
+  const uidChat = parse.fromUID;
   const name = infoMensagge ? infoMensagge.name : undefined;
+  console.log("parseeeeeeeeeX2222222!!!", parse);
   database.setMessage(uidChat, { ...parse, name }, 'delivered').then((res) => {
     dispatch({
       type: ActionTypes.NEW_MESSAGE,
