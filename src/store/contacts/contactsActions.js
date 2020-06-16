@@ -3,7 +3,6 @@ import { sha256 } from 'js-sha256';
 import { ActionTypes } from '../constants';
 import { FileDirectory, getPhotoBase64, saveImageBase64 } from '../../utils/utils';
 import { database } from '../../../App';
-import { socket } from '../../utils/socket';
 import { messageType } from '../../utils/constans';
 /**
  * here are all the actions references to contacts
