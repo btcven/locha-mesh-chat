@@ -200,10 +200,11 @@ export const cleanAllChat = (id) => async (dispatch) => {
 export const sendMessageWithFile = (data, path, base64) => (dispatch) => {
   const uidChat = data.toUID ? data.toUID : 'broadcast';
   const saveDatabase = { ...data };
+  const udp = new UdpServer();
   saveDatabase.msg.file = path;
   database.setMessage(uidChat, { ...saveDatabase }, 'pending').then((res) => {
     saveDatabase.msg.file = base64;
-    // socket.sendSocket(JSON.stringify(saveDatabase));
+    udp.send(JSON.stringify(saveDatabase), uidChat);
     dispatch({
       type: ActionTypes.NEW_MESSAGE,
       payload: {

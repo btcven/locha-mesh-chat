@@ -70,7 +70,7 @@ export default class ChatForm extends Component {
 
   _record = async () => {
     const { user, navigation } = this.props;
-    const toUID = navigation.params ? navigation.params.hashUID : null;
+    const toUID = navigation.params ? navigation.params.uid : null;
 
     if (this.state.hasPermission) {
       this.prepareRecordingPath(this.state.audioPath);

@@ -220,7 +220,7 @@ class Chat extends Component {
   sendFileWithImage = (data, callback) => {
     const { userData, navigation } = this.props;
     const toUID = navigation.state.params
-      ? navigation.state.params.hashUID
+      ? navigation.state.params.uid
       : null;
     const sendObject = {
       fromUID: userData.uid,

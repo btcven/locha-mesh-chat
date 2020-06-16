@@ -6,7 +6,7 @@ import RouteContainer from './src/routes';
 import store from './src/store';
 import { verifyAplicationState } from './src/store/aplication';
 import NativationService from './src/utils/navigationService';
-import Bitcoin from './src/utils/Bitcoin';ss
+import Bitcoin from './src/utils/Bitcoin';
 import Database from './src/database';
 
 
