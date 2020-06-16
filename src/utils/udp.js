@@ -55,7 +55,8 @@ export default class UdpServer {
   */
 
   setStatus = async (statusData) => {
-    const { dispatch } = this.store;
+    const store = require('../store').default;
+    const { dispatch } = store;
     switch (statusData.data.status) {
       // execute function that is in contact actions
       case 'RequestImage': dispatch(requestImageStatus(statusData));

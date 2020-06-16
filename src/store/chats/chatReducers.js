@@ -132,7 +132,7 @@ export const chatReducer = (state = AplicationState, action) => {
         const index = Object.values(
           state.chat
         ).findIndex(
-          (chat) => chat.toUID === sha256(action.payload.fromUID)
+          (chat) => chat.toUID === action.payload.fromUID
         );
 
         if (Array.isArray(action.payload.data.msgID)) {

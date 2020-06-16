@@ -223,7 +223,7 @@ class Chat extends Component {
       ? navigation.state.params.hashUID
       : null;
     const sendObject = {
-      fromUID: sha256(userData.uid),
+      fromUID: userData.uid,
       toUID,
       msg: {
         text: ''
@@ -233,7 +233,7 @@ class Chat extends Component {
     };
     data.images.forEach((image, key) => {
       const id = sha256(
-        `${sha256(userData.uid)} + ${toUID}  +  ${sendObject.msg.text
+        `${userData.uid} + ${toUID}  +  ${sendObject.msg.text
         + sendObject.msg.file}  + ${new Date().getTime()}`
       );
       if (data.position === key) {

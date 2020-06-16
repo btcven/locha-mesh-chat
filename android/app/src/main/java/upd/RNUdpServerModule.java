@@ -147,7 +147,7 @@ public class RNUdpServerModule  extends ReactContextBaseJavaModule  {
 
                         udpServer.send(datagramPacket);
                     } catch (UnknownHostException e) {
-                        Log.e("Error", e.toString());
+                        Log.e("Error ", e.toString());
                     } catch (IOException e) {
                         Log.e("Error", e.toString());
                     }

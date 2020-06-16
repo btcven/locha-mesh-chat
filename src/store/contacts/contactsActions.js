@@ -107,7 +107,7 @@ export const requestImage = (uidContact) => async (dispatch, getState) => {
     imageBase64 = await getPhotoBase64(state.config.image);
   }
   const sendStatus = {
-    fromUID: sha256(state.config.uid),
+    fromUID: state.config.uid,
     timestamp: new Date().getTime(),
     type: messageType.STATUS,
     data: {
@@ -117,7 +117,7 @@ export const requestImage = (uidContact) => async (dispatch, getState) => {
     },
     toUID: uidContact
   };
-  socket.sendSocket(JSON.stringify(sendStatus));
+  // socket.sendSocket(JSON.stringify(sendStatus));
 };
 
 
@@ -143,7 +143,7 @@ export const requestImage = (uidContact) => async (dispatch, getState) => {
 export const verifyImage = (contact) => (dispatch, getState) => {
   const state = getState();
   const sendStatus = {
-    fromUID: sha256(state.config.uid),
+    fromUID: state.config.uid,
     timestamp: new Date().getTime(),
     type: messageType.STATUS,
     data: {
@@ -153,7 +153,7 @@ export const verifyImage = (contact) => (dispatch, getState) => {
     toUID: contact.hashUID
   };
 
-  socket.sendSocket(JSON.stringify(sendStatus));
+  // socket.sendSocket(JSON.stringify(sendStatus));
 };
 
 /**
@@ -199,7 +199,7 @@ export const requestImageStatus = (statusData) => (dispatch, getState) => {
           imageHash: state.config.imageHash
         }
       };
-      socket.sendSocket(JSON.stringify(obj));
+      // socket.sendSocket(JSON.stringify(obj));
     }
   });
 };
@@ -253,6 +253,6 @@ export const verifyHashImageStatus = (statusData) => async (getState) => {
         imageHash: state.config.imageHash
       }
     };
-    socket.sendSocket(JSON.stringify(obj));
+    // socket.sendSocket(JSON.stringify(obj));
   }
 };

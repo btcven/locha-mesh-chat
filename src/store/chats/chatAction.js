@@ -1,4 +1,4 @@
-import { sha256 } from 'js-sha256';
+
 import RNFS from 'react-native-fs';
 import { Platform } from 'react-native';
 import { ActionTypes } from '../constants';
@@ -6,8 +6,6 @@ import { notification, FileDirectory } from '../../utils/utils';
 import { database } from '../../../App';
 import UdpServer from '../../utils/udp';
 import { messageType } from '../../utils/constans';
-
-
 
 
 /**
@@ -62,15 +60,14 @@ export const initialChat = (data, status) => async (dispatch) => {
  */
 export const getChat = (parse) => async (dispatch) => {
   let infoMensagge;
-  // if (!process.env.JEST_WORKER_ID) {
-  //   sendStatus(parse);
-  // }
+  if (!process.env.JEST_WORKER_ID) {
+    sendStatus(parse);
+  }
   if (parse.msg.file) {
     parse.msg.file = await saveFile(parse.msg);
   }
   const uidChat = parse.fromUID;
   const name = infoMensagge ? infoMensagge.name : undefined;
-  console.log("parseeeeeeeeeX2222222!!!", parse);
   database.setMessage(uidChat, { ...parse, name }, 'delivered').then((res) => {
     dispatch({
       type: ActionTypes.NEW_MESSAGE,
@@ -254,10 +251,11 @@ export const messageQueue = (index, id, view) => async (dispatch) => {
 export const sendStatus = (data) => {
   // eslint-disable-next-line global-require
   const store = require('..');
+  const udp = new UdpServer();
   const state = store.default.getState();
   // eslint-disable-next-line no-shadow
   const sendStatus = {
-    fromUID: sha256(state.config.uid),
+    fromUID: state.config.uid,
     timestamp: new Date().getTime(),
     data: {
       status: 'delivered',
@@ -266,24 +264,17 @@ export const sendStatus = (data) => {
     type: messageType.STATUS
   };
 
-  if (!data.toUID) {
-    sendStatus.toUID = null;
-    // socket.sendSocket(JSON.stringify(sendStatus));
-  } else {
-    try {
-      const contacts = Object.values(state.contacts.contacts);
-
-      contacts.forEach((contact) => {
-        if (data.fromUID === contact.hashUID) {
-          sendStatus.toUID = contact.hashUID;
-
-          // socket.sendSocket(JSON.stringify(sendStatus));
-        }
-      });
-    } catch (err) {
-      // eslint-disable-next-line no-console
-      console.log('entro en el catch', err);
-    }
+  try {
+    const contacts = Object.values(state.contacts.contacts);
+    contacts.forEach((contact) => {
+      if (data.fromUID === contact.uid) {
+        sendStatus.toUID = contact.uid;
+        udp.send(JSON.stringify(sendStatus), sendStatus.toUID);
+      }
+    });
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.log('entro en el catch', err);
   }
 };
 
@@ -296,6 +287,7 @@ export const sendStatus = (data) => {
 
 export const setView = (idChat) => async (dispatch) => {
   database.cancelUnreadMessages(idChat).then((res) => {
+    const udp = new UdpServer();
     if (!process.env.JEST_WORKER_ID) {
       // eslint-disable-next-line global-require
       const store = require('..');
@@ -314,7 +306,7 @@ export const setView = (idChat) => async (dispatch) => {
           },
           type: messageType.STATUS
         };
-        // socket.sendSocket(JSON.stringify(sendStatus));
+        udp.send(JSON.stringify(sendStatus), chat.toUID);
       }
     }
     dispatch({
@@ -324,12 +316,18 @@ export const setView = (idChat) => async (dispatch) => {
   });
 };
 
+/**
+ * function executed enter the chat  view its function es to send a read status
+ * @param {Object} data;
+ */
 export const sendReadMessageStatus = (data) => () => {
-  // socket.sendSocket(JSON.stringify(data));
+  const udp = new UdpServer();
+  udp.send(JSON.stringify(sendStatus), data.toUID);
 };
 
 export const sendAgain = (message) => (dispatch) => {
   database.updateMessage(message).then((res) => {
+    const udp = new UdpServer();
     const sendObject = {
       fromUID: res.fromUID,
       toUID: res.toUID,
@@ -342,7 +340,7 @@ export const sendAgain = (message) => (dispatch) => {
       shippingTime: res.shippingTime
     };
 
-    // socket.sendSocket(JSON.stringify(sendObject));
+    udp.send(JSON.stringify(sendObject), res.toUID);
     dispatch({
       type: ActionTypes.SEND_AGAIN,
       payload: message

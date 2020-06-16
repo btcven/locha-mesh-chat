@@ -3,7 +3,6 @@ import { ToastAndroid, PermissionsAndroid, Platform } from 'react-native';
 import { Toast } from 'native-base';
 import Identicon from 'identicon.js';
 import BackgroundTimer from 'react-native-background-timer';
-import { sha256 } from 'js-sha256';
 import { database } from '../../App';
 import {
   realoadBroadcastChat,

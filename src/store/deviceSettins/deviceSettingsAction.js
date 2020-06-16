@@ -95,22 +95,22 @@ export const changeCredentials = (credentials, callback) => async (dispatch, get
     password: value.password,
     'Content-Type': 'application/json',
   },
-    JSON.stringify(credentials)).then(async (res) => {
-      const { status } = res.info();
-      if (status === 200) {
-        const ciphertext = CryptoJS.AES.encrypt(
-          JSON.stringify(credentials),
-          sha256(JSON.stringify(credentials))
-        ).toString();
+  JSON.stringify(credentials)).then(async (res) => {
+    const { status } = res.info();
+    if (status === 200) {
+      const ciphertext = CryptoJS.AES.encrypt(
+        JSON.stringify(credentials),
+        sha256(JSON.stringify(credentials))
+      ).toString();
 
-        await AsyncStorage.setItem('credentials', ciphertext);
-        dispatch({
-          type: ActionTypes.CHANGE_CREDENTIAL,
-          payload: credentials
-        });
-        callback();
-      }
-    });
+      await AsyncStorage.setItem('credentials', ciphertext);
+      dispatch({
+        type: ActionTypes.CHANGE_CREDENTIAL,
+        payload: credentials
+      });
+      callback();
+    }
+  });
 };
 
 const errorConnection = () => ({

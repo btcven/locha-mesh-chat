@@ -77,11 +77,9 @@ export default class CoreDatabase {
   cancelUnreadMessages = (id) => new Promise((resolve) => {
     this.db.write(() => {
       try {
-        // const chat = this.db.objectForPrimaryKey('Chat', id);
-        // const notRead = this.converToString(chat.queue);
-        // chat.queue = [];
-
-        const notRead = [];
+        const chat = this.db.objectForPrimaryKey('Chat', id);
+        const notRead = this.converToString(chat.queue);
+        chat.queue = [];
         resolve(notRead);
       } catch (err) {
         console.log('cancel unread', err);
