@@ -3,7 +3,7 @@ import '../__Mocks__';
 import { sha256 } from 'js-sha256';
 import MockData from '../__Mocks__/dataMock';
 import {
-  generateName, hashGenerateColort, getIcon, unSelect
+  hashGenerateColort, getIcon, unSelect
 } from '../src/utils/utils';
 
 describe('generate hexadecimal color', () => {

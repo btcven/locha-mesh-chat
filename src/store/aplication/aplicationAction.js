@@ -62,10 +62,12 @@ export const createNewAccount = (obj) => async (dispatch) => {
   await database.getRealm(sha256(obj.pin), sha256(obj.seed));
   await database.setDataSeed(obj.seed);
   await createFolder();
-  // const result = await bitcoin.generateAddress(obj.seed);
+  const result = await bitcoin.generateAddress(obj.seed);
+  const ivp6 = !process.env.JEST_WORKER_ID ? '::1'
+    : NativeModules.RNDeviceInfo.globalIpv6;
   database.writteUser({
-    uid: NativeModules.RNDeviceInfo.globalIpv6,
-    ipv6Address: NativeModules.RNDeviceInfo.globalIpv6,
+    uid: ivp6,
+    ipv6Address: ivp6,
     name: obj.name,
     image: null,
     contacts: [],

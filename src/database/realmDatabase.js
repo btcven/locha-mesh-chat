@@ -22,7 +22,6 @@ export default class CoreDatabase {
 
   writteUser = (obj) => new Promise((resolve, reject) => {
     try {
-      console.warn(obj.ipv6Address);
       this.db.write(() => {
         const userData = {
           uid: obj.uid,
