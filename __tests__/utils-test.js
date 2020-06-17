@@ -3,15 +3,10 @@ import '../__Mocks__';
 import { sha256 } from 'js-sha256';
 import MockData from '../__Mocks__/dataMock';
 import {
-  generateName, hashGenerateColort, getIcon, unSelect
+  hashGenerateColort, getIcon, unSelect
 } from '../src/utils/utils';
 
 describe('reusable functions of utils.js', () => {
-  test('function of generating name', () => {
-    const name = generateName();
-    expect(typeof (name)).toBe('string');
-  });
-
   describe('generate hexadecimal color', () => {
     test('return string color', () => {
       expect(typeof hashGenerateColort('hello')).toBe('string');
