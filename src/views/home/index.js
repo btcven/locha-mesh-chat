@@ -1,3 +1,4 @@
+/* eslint-disable react/sort-comp */
 /* eslint-disable consistent-return */
 /* eslint-disable array-callback-return */
 import React, { Component } from 'react';
@@ -176,7 +177,6 @@ class index extends Component {
 
   render() {
     const result = this.state.search
-
       ? Object.values(this.props.chats).filter((chat) => (
         chat.toUID.toLowerCase().includes(this.state.search)
         || this.getContactInformation(chat)
@@ -216,7 +216,7 @@ class index extends Component {
               ? Number(messages[messages.length - 1].timestamp)
               : new Date();
 
-            if (messages.length !== 0 || chat.toUID === 'broadcast') {
+            if (messages.length !== 0) {
               return (
                 <List key={chat.toUID} style={{ backgroundColor }}>
                   <ListItem
@@ -228,11 +228,7 @@ class index extends Component {
                     onLongPress={() => this.seleted(chat)}
                   >
                     <Left>
-                      {chat.toUID === 'broadcast' && (
-                        <Thumbnail source={chats[0].picture} />
-                      )}
-
-                      {!infoData.picture && chat.toUID !== 'broadcast' && (
+                      {!infoData.picture && (
                         <Thumbnail source={{
                           uri: `${getIcon(infoData.hashUID)}`
                         }}

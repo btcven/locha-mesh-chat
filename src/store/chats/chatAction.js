@@ -2,9 +2,7 @@ import { sha256 } from 'js-sha256';
 import RNFS from 'react-native-fs';
 import { Platform } from 'react-native';
 import { ActionTypes } from '../constants';
-import {
-  generateName, notification, FileDirectory,
-} from '../../utils/utils';
+import { notification, FileDirectory } from '../../utils/utils';
 import { database } from '../../../App';
 import { socket } from '../../utils/socket';
 import { messageType } from '../../utils/constans';
@@ -27,12 +25,10 @@ import { messageType } from '../../utils/constans';
  */
 
 export const initialChat = (data, status) => async (dispatch) => {
-  const uidChat = data.toUID ? data.toUID : 'broadcast';
-  database.setMessage(uidChat, { ...data }, status).then((res) => {
+  database.setMessage(data.toUID, { ...data }, status).then((res) => {
     if (!process.env.JEST_WORKER_ID) {
       socket.sendSocket(JSON.stringify(data));
     }
-
     dispatch({
       type: ActionTypes.NEW_MESSAGE,
       payload: {
@@ -50,51 +46,6 @@ export const initialChat = (data, status) => async (dispatch) => {
 
 /**
  * @function
- * @description function to save random name or contact name (if it exists)
- *  to be shown on public channels
- * @param {object} parse Information about the message
- * @param {string} parse.toUID address where the message will be sent
- * @param {string} parse.fromUID uid who is sending the message
- * @param {object} parse.msg  message content
- * @param {number} parse.timestamp sent date
- * @param  {string}parse.type type message
- * @param {string} id id user
- * @returns {object}
- */
-
-export const broadcastRandomData = async (parse, id) => new Promise((resolve) => {
-  // eslint-disable-next-line global-require
-  const store = require('../../store');
-  const userData = id || store.default.getState().config.uid;
-  if (sha256(userData) !== parse.fromUID) {
-    database.verifyContact(parse.fromUID).then((res) => {
-      if (res) {
-        resolve(res);
-      } else {
-        database.getTemporalContact(parse.fromUID).then((temporal) => {
-          if (temporal) {
-            resolve(temporal);
-          } else {
-            const randomName = generateName();
-            const obj = {
-              hashUID: parse.fromUID,
-              name: randomName,
-              timestamp: parse.timestamp
-            };
-            database.addTemporalInfo(obj).then((data) => {
-              resolve(data);
-            });
-          }
-        });
-      }
-    });
-  } else {
-    resolve({ name: undefined });
-  }
-});
-
-/**
- * @function
  * @description This function is executed every time a new message arrives
  * from the socket and saves it in the database.
  * @param {object} data Information about the message
@@ -107,12 +58,9 @@ export const broadcastRandomData = async (parse, id) => new Promise((resolve) =>
  */
 export const getChat = (parse) => async (dispatch) => {
   let infoMensagge;
-  if (!process.env.JEST_WORKER_ID) {
-    sendStatus(parse);
-  }
-  if (!parse.toUID) {
-    infoMensagge = await broadcastRandomData(parse);
-  }
+  // if (!process.env.JEST_WORKER_ID) {
+  //   sendStatus(parse);
+  // }
   if (parse.msg.file) {
     parse.msg.file = await saveFile(parse.msg);
   }
@@ -300,7 +248,7 @@ export const messageQueue = (index, id, view) => async (dispatch) => {
 
 export const sendStatus = (data) => {
   // eslint-disable-next-line global-require
-  const store = require('../../store');
+  const store = require('..');
   const state = store.default.getState();
   // eslint-disable-next-line no-shadow
   const sendStatus = {
@@ -345,7 +293,7 @@ export const setView = (idChat) => async (dispatch) => {
   database.cancelUnreadMessages(idChat).then((res) => {
     if (!process.env.JEST_WORKER_ID) {
       // eslint-disable-next-line global-require
-      const store = require('../../store');
+      const store = require('..');
       const state = store.default.getState();
 
       if (idChat && res.length > 0) {

@@ -5,6 +5,7 @@ import android.util.Log;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.modules.core.DeviceEventManagerModule;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -14,6 +15,8 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 
 import javax.annotation.Nonnull;
+
+import DeviceInfo.DeviceInfoModule;
 
 public class RNUdpServerModule  extends ReactContextBaseJavaModule  {
 
@@ -56,7 +59,7 @@ public class RNUdpServerModule  extends ReactContextBaseJavaModule  {
         UDPBroadcastThread.start();
     }
 
-    public static void displayPacketDetails(DatagramPacket packet) {
+    public void displayPacketDetails(DatagramPacket packet) {
         byte[] msgBuffer = packet.getData();
         int length = packet.getLength();
         int offset = packet.getOffset();
@@ -67,11 +70,25 @@ public class RNUdpServerModule  extends ReactContextBaseJavaModule  {
 
         System.out.println("Received a  packet:[IP Address=" + remoteAddr
                 + ", port=" + remotePort + ", message=" + msg + "]");
+
+        sendEvent("onMessage", msg);
     }
 
 
+    private void sendEvent (String eventName , Object params) {
+      Log.i("execute event", "HEREEEEEEEEEEEE");
+      if (context.hasActiveCatalystInstance()) {
+          context
+                  .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                  .emit(eventName, params);
+      }
+    }
+
     public void start() {
-        final String url = "[2001:db8::8d55:c1dd:1210:5097]";
+
+        DeviceInfoModule device = new DeviceInfoModule(context);
+
+        final String url = device.getIpv6();
 
         try {
 
@@ -84,25 +101,23 @@ public class RNUdpServerModule  extends ReactContextBaseJavaModule  {
 
             Log.i(TAG, "Created UDP  server socket at " + udpServer.getLocalSocketAddress());
 
-                Log.i(TAG, "Waiting for a UDP packet...");
-                DatagramPacket packet = new DatagramPacket(new byte[1024], 1024);
-                udpServer.receive(packet);
-
-
-                udpServer.setBroadcast(true);
-                displayPacketDetails(packet);
-
-
-                udpServer.close();
-
+            Log.i(TAG, "Waiting for a UDP packet...");
+            DatagramPacket packet = new DatagramPacket(new byte[1024], 1024);
+            udpServer.receive(packet);
+          
+    
+            udpServer.setBroadcast(true);
+            displayPacketDetails(packet);
+            udpServer.close();
 
         } catch (SocketException e) {
-            Log.e(TAG, "Error: "+ e.toString());
+            Log.e(TAG, "Error: " + e.toString());
         } catch (UnknownHostException e) {
-            Log.e(TAG, "Error: "+ e.toString());
+            Log.e(TAG, "Error: " + e.toString());
         } catch (IOException e) {
             e.printStackTrace();
         }
+
 
     }
 
@@ -114,16 +129,37 @@ public class RNUdpServerModule  extends ReactContextBaseJavaModule  {
 
 
     @ReactMethod
-    public void send(String message ,  String url ) throws IOException {
-        Log.i(TAG, "EXECUTE EL SEND");
-        String aqui = "el webo mio";
-        DatagramPacket datagramPacket = new DatagramPacket(
-                message.getBytes(),
-                message.length(),
-                InetAddress.getByName(url),
-                port
-        );
+    public void send(String message ,  String url ) {
+        Thread UDPSendThread = new Thread(new Runnable() {
+            public void run() {
+                try {
 
-        udpServer.send(datagramPacket);
+                    DatagramPacket datagramPacket = null;
+                    System.out.println("Send a  packet:[IP Address=" + url
+                            + ", port=" + port + ", message=" + message + "]");
+                    try {
+                        datagramPacket = new DatagramPacket(
+                                message.getBytes(),
+                                message.length(),
+                                InetAddress.getByName(url),
+                                port
+                        );
+
+                        udpServer.send(datagramPacket);
+                    } catch (UnknownHostException e) {
+                        Log.e("Error ", e.toString());
+                    } catch (IOException e) {
+                        Log.e("Error", e.toString());
+                    }
+                } catch (Exception e) {
+                    Log.i("UDP", "no longer listening for UDP broadcasts cause of error " + e.getMessage());
+                }
+            }
+        });
+        if(!UDPSendThread.isAlive()){
+            UDPSendThread.start();
+        }
+
     }
+
 }

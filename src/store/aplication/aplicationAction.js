@@ -1,3 +1,4 @@
+/* eslint-disable no-new */
 import { AsyncStorage } from 'react-native';
 import { sha256 } from 'js-sha256';
 import RNSF from 'react-native-fs';
@@ -6,6 +7,7 @@ import { STORAGE_KEY } from '../../utils/constans';
 import { createFolder } from '../../utils/utils';
 import { bitcoin, database } from '../../../App';
 import Socket from '../../utils/socket';
+import UdpServer from '../../utils/udp';
 import store from '..';
 
 /**
@@ -49,8 +51,8 @@ export const verifyAplicationState = () => async (dispatch) => {
 export const restoreAccountWithPin = (pin, callback) => async (dispatch) => {
   database.restoreWithPin(sha256(pin)).then(async (res) => {
     dispatch(writeAction(JSON.parse(JSON.stringify(res[0]))));
-    const url = await AsyncStorage.getItem('@APP:URL_KEY');
-    ws = new Socket(store, database, url);
+    // const url = await AsyncStorage.getItem('@APP:URL_KEY');
+    new UdpServer(store);
     dispatch({ type: ActionTypes.URL_CONNECTION, payload: ws.url });
   }).catch(() => {
     callback();
@@ -67,19 +69,13 @@ export const createNewAccount = (obj) => async (dispatch) => {
     name: obj.name,
     image: null,
     contacts: [],
-    chats: [
-      {
-        fromUID: result.publicKey.toString(),
-        toUID: 'broadcast',
-        messages: []
-      }
-    ]
+    chats: []
   }).then(async (res) => {
     if (!process.env.JEST_WORKER_ID) {
       await AsyncStorage.setItem('@APP:status', 'created');
     }
     dispatch(writeAction(res));
-    ws = new Socket(store, database);
+    new UdpServer(store);
     dispatch({ type: ActionTypes.URL_CONNECTION, payload: ws.url });
   });
 };
@@ -94,20 +90,13 @@ export const restoreWithPhrase = (pin, phrase, name) => async (dispatch) => {
       name,
       image: null,
       contacts: [],
-      chats: [
-        {
-          fromUID: result.publicKey.toString(),
-          toUID: 'broadcast',
-          messages: []
-        }
-      ]
+      chats: []
     }).then(async (res) => {
       dispatch(writeAction(res));
       if (!process.env.JEST_WORKER_ID) {
         await AsyncStorage.setItem('@APP:status', 'created');
       }
-      await AsyncStorage.setItem('@APP:status', 'created');
-      ws = new Socket(store, database);
+      new UdpServer(store);
       dispatch({ type: ActionTypes.URL_CONNECTION, payload: ws.url });
     });
   });
