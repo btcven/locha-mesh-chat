@@ -17,6 +17,7 @@ import UdpServer from '../../utils/udp';
 // eslint-disable-next-line import/no-mutable-exports
 export let ws;
 
+
 /**
  *@function
  *@description executes when starting the application verifying that the user
@@ -84,9 +85,11 @@ export const restoreWithPhrase = (pin, phrase, name) => async (dispatch) => {
   database.restoreWithPhrase(pin, phrase).then(async () => {
     await createFolder();
     // const result = await bitcoin.generateAddress(phrase);
+    const ivp6 = !process.env.JEST_WORKER_ID ? '::1'
+      : NativeModules.RNDeviceInfo.globalIpv6;
     database.writteUser({
-      uid: NativeModules.RNDeviceInfo.globalIpv6,
-      ipv6Address: NativeModules.RNDeviceInfo.globalIpv6,
+      uid: ivp6,
+      ipv6Address: ivp6,
       name,
       image: null,
       contacts: [],

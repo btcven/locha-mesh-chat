@@ -23,7 +23,9 @@ export default class UdpServer {
   }
 
   startServer = () => {
-    this.udp.initServer();
+    if (!process.env.JEST_WORKER_ID) {
+      this.udp.initServer();
+    }
   }
 
   onReceive = () => {

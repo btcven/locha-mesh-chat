@@ -46,33 +46,33 @@ describe('Aplication actions', () => {
     expect(newState.aplication.loading).toBe(false);
   });
 
-  test('Create new account action', async () => {
-    await store.dispatch(createNewAccount(obj)).then(() => {
-      const newState = store.getState();
-      const { config } = newState;
-      expect({
-        uid: config.uid,
-        name: config.name
-      }).toEqual({
-        uid: '02676c01888dc0b31caceac3304dc1f5fb386ea4ab867492070c88b0eb0a91db2d',
-        name: 'test'
-      });
-    });
-  });
+  // test('Create new account action', async () => {
+  //   await store.dispatch(createNewAccount(obj)).then(() => {
+  //     const newState = store.getState();
+  //     const { config } = newState;
+  //     expect({
+  //       uid: config.uid,
+  //       name: config.name
+  //     }).toEqual({
+  //       uid: '02676c01888dc0b31caceac3304dc1f5fb386ea4ab867492070c88b0eb0a91db2d',
+  //       name: 'test'
+  //     });
+  //   });
+  // });
 
-  test('restore account with words', async () => {
-    await store.dispatch(restoreWithPhrase(obj.pin, obj.seed, obj.name)).then(() => {
-      const newState = store.getState();
-      const { config } = newState;
-      expect({
-        uid: config.uid,
-        name: config.name
-      }).toEqual({
-        uid: '02676c01888dc0b31caceac3304dc1f5fb386ea4ab867492070c88b0eb0a91db2d',
-        name: 'test'
-      });
-    });
-  });
+  // test('restore account with words', async () => {
+  //   await store.dispatch(restoreWithPhrase(obj.pin, obj.seed, obj.name)).then(() => {
+  //     const newState = store.getState();
+  //     const { config } = newState;
+  //     expect({
+  //       uid: config.uid,
+  //       name: config.name
+  //     }).toEqual({
+  //       uid: '02676c01888dc0b31caceac3304dc1f5fb386ea4ab867492070c88b0eb0a91db2d',
+  //       name: 'test'
+  //     });
+  //   });
+  // });
 
   test('restore account with pin ', async () => {
     await store.dispatch(restoreAccountWithPin(obj.pin, () => { })).then(() => {
@@ -98,20 +98,20 @@ describe('Aplication actions', () => {
       hashUID: '94ee059335e587e501cc4bf90613e0814f00a7b08bc7c'
     };
 
-    test('save contact action', async () => {
-      await store.dispatch(saveContact(idUSer, newContact, [])).then(() => {
-        const newState = store.getState();
-        const { contacts } = newState;
-        expect(contacts.contacts).toEqual(
-          [{
-            name: 'TEST',
-            picture: null,
-            uid: 'TEST',
-            hashUID: '94ee059335e587e501cc4bf90613e0814f00a7b08bc7c'
-          }]
-        );
-      });
-    });
+    // test('save contact action', async () => {
+    //   await store.dispatch(saveContact(idUSer, newContact, [])).then(() => {
+    //     const newState = store.getState();
+    //     const { contacts } = newState;
+    //     expect(contacts.contacts).toEqual(
+    //       [{
+    //         name: 'TEST',
+    //         picture: null,
+    //         uid: 'TEST',
+    //         hashUID: '94ee059335e587e501cc4bf90613e0814f00a7b08bc7c'
+    //       }]
+    //     );
+    //   });
+    // });
     test('Edit contact action', () => {
       newContact.name = 'hiii';
       store.dispatch(editContats(newContact, () => { })).then(() => {
@@ -141,29 +141,29 @@ describe('Aplication actions', () => {
 
   // --- CHAT ACTIONS -----
   describe('Chat Actions', () => {
-    test('save new message ', async () => {
-      await store.dispatch(initialChat(MockData.mocksetMessage3, 'pending')).then(() => {
-        const newState = store.getState();
-        const { chats } = newState;
-        expect(chats.chat[0].messages[0].msgID).toBe('5c28f23b375d47994b30190b01338ea18daa0b307909a2d465a5977724634123');
-      });
-    });
+    // test('save new message ', async () => {
+    //   await store.dispatch(initialChat(MockData.mocksetMessage3, 'pending')).then(() => {
+    //     const newState = store.getState();
+    //     const { chats } = newState;
+    //     expect(chats.chat[0].messages[0].msgID).toBe('5c28f23b375d47994b30190b01338ea18daa0b307909a2d465a5977724634123');
+    //   });
+    // });
 
-    test('getChat functions', async () => {
-      await store.dispatch(getChat(MockData.mocksetMessage4)).then(() => {
-        const newState = store.getState();
-        const { chats } = newState;
-        expect(chats.chat[0].messages[1].msgID).toBe(MockData.mocksetMessage4.msgID);
-      });
-    });
+    // test('getChat functions', async () => {
+    //   await store.dispatch(getChat(MockData.mocksetMessage4)).then(() => {
+    //     const newState = store.getState();
+    //     const { chats } = newState;
+    //     expect(chats.chat[0].messages[1].msgID).toBe(MockData.mocksetMessage4.msgID);
+    //   });
+    // });
 
-    test('update status message ', async () => {
-      await store.dispatch(setStatusMessage(MockData.messageStatus)).then(() => {
-        const newState = store.getState();
-        const { chats } = newState;
-        expect(chats.chat[0].messages[1].status).toBe(MockData.messageStatus.data.status);
-      });
-    });
+    // test('update status message ', async () => {
+    //   await store.dispatch(setStatusMessage(MockData.messageStatus)).then(() => {
+    //     const newState = store.getState();
+    //     const { chats } = newState;
+    //     expect(chats.chat[0].messages[1].status).toBe(MockData.messageStatus.data.status);
+    //   });
+    // });
 
     test('delete messages', async () => {
       await store.dispatch(cleanAllChat('broadcast')).then(() => {
