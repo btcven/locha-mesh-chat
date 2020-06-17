@@ -3,7 +3,6 @@ import { ToastAndroid, PermissionsAndroid, Platform } from 'react-native';
 import { Toast } from 'native-base';
 import Identicon from 'identicon.js';
 import BackgroundTimer from 'react-native-background-timer';
-import { sha256 } from 'js-sha256';
 import { database } from '../../App';
 import {
   realoadBroadcastChat,
@@ -111,8 +110,8 @@ export const onNotification = (res) => {
   const view = res.toUID ? res.fromUID : 'broadcast';
   const rule = state.aplication.view !== view;
   unreadMessages(rule, state, view, res);
-  if (sha256(state.config.uid) !== res.fromUID && rule) {
-    const id = parseInt(sha256(view), 16);
+  if (state.config.uid !== res.fromUID && rule) {
+    const id = parseInt((view), 16);
 
     const result = getInfoMessage(String(id).substr(2, 10));
     const allData = result.toUID === 'broadcast'
@@ -182,7 +181,7 @@ export const getSelectedColor = (selected, id) => {
 const getInfoMessage = (id) => {
   const state = store.getState();
   const result = Object.values(state.chats.chat).find((data) => {
-    const sub = String(parseInt(sha256(data.toUID), 16)).substr(2, 10);
+    const sub = String(parseInt((data.toUID), 16)).substr(2, 10);
     return sub === id;
   });
   const contact = Object.values(
@@ -207,32 +206,6 @@ export const saveImageBase64 = (base64File) => new Promise((resolve, reject) => 
   });
 });
 
-/**
- * This function is used as an observable that runs from time
- * to time verifies the messages of the public chat and eliminates them
- * @function
- */
-export const backgroundTimer = () => {
-  BackgroundTimer.runBackgroundTimer(() => {
-    const state = store.getState();
-    const broadCast = state.chats.chat[0].messages
-      ? Object.values(state.chats.chat[0].messages)
-      : [];
-    if (broadCast) {
-      database.getMessageByTime().then((data) => {
-        const result = data ? Object.values(data) : [];
-        if (broadCast.length !== result.length) {
-          const newData = state.chats.chat[0];
-          newData.messages = result;
-          const obj = state.chats.chat.slice();
-          obj.shift();
-          obj.unshift(newData);
-          store.dispatch(realoadBroadcastChat(obj));
-        }
-      });
-    }
-  }, 60000);
-};
 /**
  *
  * function to display a message on the phone works only for android

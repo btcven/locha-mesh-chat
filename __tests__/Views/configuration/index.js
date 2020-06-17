@@ -55,10 +55,5 @@ describe('main component of configurations', () => {
       wrapper.find('TouchableOpacity').at(3).props().onPress();
       expect(wrapper.instance().state.pin).toBe(true);
     });
-
-    test('open modal pin', () => {
-      wrapper.find('TouchableOpacity').at(5).props().onPress();
-      expect(wrapper.instance().state.network).toBe(true);
-    });
   });
 });

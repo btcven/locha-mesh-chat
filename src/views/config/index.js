@@ -21,7 +21,6 @@ import { toast } from '../../utils/utils';
 import i18n from '../../i18n';
 import { database } from '../../../App';
 import AddPin from '../LoadWallet/RestoreWithPin';
-import NetWorkSettings from './NetWorkSettings';
 
 /**
  * @class Config
@@ -109,12 +108,6 @@ class Config extends Component {
         <Languajes
           open={this.state.language}
           {...this.props}
-          close={this.close}
-        />
-
-        <NetWorkSettings
-          {...this.props}
-          open={this.state.network}
           close={this.close}
         />
 
@@ -354,42 +347,6 @@ class Config extends Component {
                       name="arrow-dropright"
                     />
                   </TouchableOpacity>
-                </Right>
-
-              </View>
-            </TouchableOpacity>
-
-
-            <TouchableOpacity onPress={() => this.setState({ network: true })}>
-              <View style={styles.infoContainerAddress}>
-                <Left>
-                  <Icon type="FontAwesome5" style={{ color: '#fbc233' }} name="server" />
-                </Left>
-                <View
-                  style={{
-                    width: '70%',
-                    alignContent: 'flex-start',
-                    paddingLeft: 10
-                  }}
-                >
-                  <Text style={styles.textInfo}>
-                    Network settings
-                  </Text>
-                </View>
-                <Right
-                  style={{
-                    top: 5
-                  }}
-                >
-                  <Icon
-                    style={{
-                      color: '#bdbdbd',
-                      fontSize: 25,
-                      paddingVertical: 10,
-                      paddingHorizontal: 10
-                    }}
-                    name="arrow-dropright"
-                  />
                 </Right>
 
               </View>

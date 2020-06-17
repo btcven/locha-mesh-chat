@@ -1,30 +1,38 @@
+/* eslint-disable global-require */
 import { NativeModules, NativeEventEmitter } from 'react-native';
 import { messageType } from './constans';
 import { getChat, setStatusMessage } from '../store/chats';
 import { requestImageStatus, sentImageStatus, verifyHashImageStatus } from '../store/contacts/contactsActions';
 
+
 export default class UdpServer {
-  constructor(store) {
+  constructor() {
     if (UdpServer.instance instanceof UdpServer) {
       return UdpServer.instance;
     }
     this.udp = NativeModules.RBUdpServer;
     this.event = new NativeEventEmitter(this.udp);
-    this.store = store;
     this.startServer();
 
     this.onReceive();
   }
 
+
+  send = (message, url) => {
+    this.udp.send(message, url);
+  }
+
   startServer = () => {
-    console.warn('init sercvcer');
-    this.udp.initServer();
+    if (!process.env.JEST_WORKER_ID) {
+      this.udp.initServer();
+    }
   }
 
   onReceive = () => {
     this.event.addListener('onMessage', ((data) => {
+      const store = require('../store').default;
       const parse = JSON.parse(data);
-      const { dispatch } = this.store;
+      const { dispatch } = store;
       switch (parse.type) {
         case messageType.MESSAGE: dispatch(getChat(parse));
           break;
@@ -49,7 +57,8 @@ export default class UdpServer {
   */
 
   setStatus = async (statusData) => {
-    const { dispatch } = this.store;
+    const store = require('../store').default;
+    const { dispatch } = store;
     switch (statusData.data.status) {
       // execute function that is in contact actions
       case 'RequestImage': dispatch(requestImageStatus(statusData));

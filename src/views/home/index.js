@@ -100,7 +100,7 @@ class index extends Component {
   };
 
   getContactInformation = (data) => {
-    const result = this.props.contacts.find((contact) => data.toUID === contact.hashUID);
+    const result = this.props.contacts.find((contact) => data.toUID === contact.uid);
 
     return result || { ...chats[0], picture: null };
   };
@@ -196,7 +196,8 @@ class index extends Component {
 
         <Content>
           {this.orderChats(result).map((chat) => {
-            const queue = chat.queue ? Object.values(chat.queue) : [];
+            const queue = [];
+            // chat.queue ? Object.values(chat.queue) : [];
 
             const backgroundColor = getSelectedColor(
               this.state.selected,

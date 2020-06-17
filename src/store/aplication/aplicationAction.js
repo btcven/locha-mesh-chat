@@ -6,9 +6,7 @@ import { ActionTypes } from '../constants';
 import { STORAGE_KEY } from '../../utils/constans';
 import { createFolder } from '../../utils/utils';
 import { bitcoin, database } from '../../../App';
-import Socket from '../../utils/socket';
 import UdpServer from '../../utils/udp';
-import store from '..';
 
 /**
  * in this module are the global actions of the application
@@ -19,10 +17,11 @@ import store from '..';
 // eslint-disable-next-line import/no-mutable-exports
 export let ws;
 
+
 /**
  *@function
  *@description executes when starting the application verifying that the user
-  exists and if it exists initiates the connection with the socket
+  exists
  *@returns {object}
  */
 
@@ -52,7 +51,7 @@ export const restoreAccountWithPin = (pin, callback) => async (dispatch) => {
   database.restoreWithPin(sha256(pin)).then(async (res) => {
     dispatch(writeAction(JSON.parse(JSON.stringify(res[0]))));
     // const url = await AsyncStorage.getItem('@APP:URL_KEY');
-    new UdpServer(store);
+    new UdpServer();
     dispatch({ type: ActionTypes.URL_CONNECTION, payload: ws.url });
   }).catch(() => {
     callback();
@@ -78,7 +77,7 @@ export const createNewAccount = (obj) => async (dispatch) => {
       await AsyncStorage.setItem('@APP:status', 'created');
     }
     dispatch(writeAction(res));
-    new UdpServer(store);
+    new UdpServer();
     dispatch({ type: ActionTypes.URL_CONNECTION, payload: ws.url });
   });
 };
@@ -87,7 +86,7 @@ export const createNewAccount = (obj) => async (dispatch) => {
 export const restoreWithPhrase = (pin, phrase, name) => async (dispatch) => {
   database.restoreWithPhrase(pin, phrase).then(async () => {
     await createFolder();
-    const result = await bitcoin.generateAddress(phrase);
+    // const result = await bitcoin.generateAddress(phrase);
     const ivp6 = !process.env.JEST_WORKER_ID ? '::1'
       : NativeModules.RNDeviceInfo.globalIpv6;
     database.writteUser({
@@ -102,7 +101,7 @@ export const restoreWithPhrase = (pin, phrase, name) => async (dispatch) => {
       if (!process.env.JEST_WORKER_ID) {
         await AsyncStorage.setItem('@APP:status', 'created');
       }
-      new UdpServer(store);
+      new UdpServer();
       dispatch({ type: ActionTypes.URL_CONNECTION, payload: ws.url });
     });
   });
@@ -142,72 +141,10 @@ export const loaded = () => ({
   type: ActionTypes.LOADING_OFF
 });
 
-/**
- * @function
- * @description open the connection to the socket again
- */
-
-export const reestarConnection = async ({ dispatch, getState }) => {
-  const applicationState = getState().aplication;
-  const url = await AsyncStorage.getItem('@APP:URL_KEY');
-  if (applicationState.retryConnection < 3) {
-    ws = new Socket(store, database, url);
-    ws.init();
-  } else {
-    dispatch(loaded);
-  }
-  dispatch({
-    type: ActionTypes.CONNECTION_ATTEMPT,
-  });
-};
-
 export const clearAll = () => (dispatch) => {
   dispatch({
     type: ActionTypes.CLEAR_ALL
   });
-};
-
-/**
- * @function
- * @description restore account with a file
- * @param {String}  pin file unlock pin
- * @param {obj} data database data
- * @return {obj}
- */
-
-export const restoreWithFile = (pin, data) => (dispatch) => {
-  dispatch(loading());
-  database.restoreWithFile(pin, data).then(async () => {
-    await AsyncStorage.setItem('@APP:status', 'created');
-    await createFolder();
-    ws = new Socket(store, database);
-    dispatch({
-      type: ActionTypes.INITIAL_STATE,
-      payload: data.user
-    });
-  });
-};
-
-/**
- * @function
- * @description change socket connection address
- * @param {String}  url  connection url
- */
-
-export const changeNetworkEndPoint = (url) => async () => {
-  await AsyncStorage.setItem('@APP:URL_KEY', url);
-  ws.socket.close();
-};
-
-/**
- * @function
- * @description function to reconnect manually
- */
-export const manualConnection = () => async (dispatch) => {
-  dispatch({ type: ActionTypes.MANUAL_CONNECTION });
-  const url = await AsyncStorage.getItem('@APP:URL_KEY');
-  ws = new Socket(store, database, url);
-  ws.init();
 };
 
 /**
@@ -222,9 +159,6 @@ export const newPin = (obj) => (dispatch) => {
   RNSF.unlink(obj.path).then(() => {
     database.newPin(obj.pin, obj.phrases).then(async (userData) => {
       dispatch(writeAction(JSON.parse(JSON.stringify(userData[0]))));
-      const url = await AsyncStorage.getItem('@APP:URL_KEY');
-      ws = new Socket(store, database, url);
-      dispatch({ type: ActionTypes.URL_CONNECTION, payload: ws.url });
     });
   });
 };

@@ -59,6 +59,7 @@ class Contacts extends Component {
 
   onSelect = (contact, chat) => {
     if (this.state.selected.length === 0) {
+      console.log('hiiiiii', chat);
       this.props.selectedChat(chat);
       this.props.navigation.push('chat', {
         ...contact
@@ -78,7 +79,7 @@ class Contacts extends Component {
   };
 
   getContactChat = (contact) => {
-    const result = Object.values(this.props.chat).find((chat) => chat.toUID === contact.hashUID);
+    const result = Object.values(this.props.chat).find((chat) => chat.toUID === contact.uid);
 
     return result;
   };
