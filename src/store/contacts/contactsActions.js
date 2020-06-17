@@ -40,6 +40,8 @@ export const saveContact = (
     }
   ];
 
+  console.warn('en la accions', obj);
+
   database.addContacts(id, obj).then((res) => {
     obj.push(...lastContact);
     dispatch({

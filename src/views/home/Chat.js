@@ -58,9 +58,9 @@ class Chat extends Component {
 
   componentDidMount = () => {
     this.props.setView(this.props.chat[this.props.chatSelected.index].toUID);
-    if (this.props.navigation.state.params) {
-      this.props.verifyImage(this.props.navigation.state.params);
-    }
+    // if (this.props.navigation.state.params) {
+    //   this.props.verifyImage(this.props.navigation.state.params);
+    // }
   };
 
   /**
@@ -100,17 +100,6 @@ class Chat extends Component {
     );
   };
 
-  /**
-   * @typedef {Object} Message
-   * @property {string} item.fromUID uid of who sends the message
-   * @property {string} item.id message id
-   * @property {string} item.msg  message text
-   * @property {string | null}  item.name name of who send the message
-   * @property {number} item.timestamp message timestamp
-   * @property {string | null} item.toUID  uid of who receive the message
-   * @property {string} item.type type message
-   * @property {object} item.file path where the file is saved and file type
-   */
 
   /**
    * function executes when pressing a message

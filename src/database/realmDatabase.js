@@ -25,6 +25,7 @@ export default class CoreDatabase {
       this.db.write(() => {
         const userData = {
           uid: obj.uid,
+          ipv6Address: obj.ipv6Address,
           name: obj.name,
           picture: obj.picture,
           chats: obj.chats,
