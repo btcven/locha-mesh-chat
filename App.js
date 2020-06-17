@@ -8,9 +8,6 @@ import { verifyAplicationState } from './src/store/aplication';
 import NativationService from './src/utils/navigationService';
 import Bitcoin from './src/utils/Bitcoin';
 import Database from './src/database';
-import { NativeModules } from 'react-native'
-
-console.warn("ipv6", NativeModules.RNDeviceInfo.localIpv6);
 
 const WrappedStack = ({ t }) => (
   <RouteContainer

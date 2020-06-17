@@ -64,9 +64,11 @@ export const createNewAccount = (obj) => async (dispatch) => {
   await database.setDataSeed(obj.seed);
   await createFolder();
   const result = await bitcoin.generateAddress(obj.seed);
+  const ivp6 = !process.env.JEST_WORKER_ID ? '::1'
+    : NativeModules.RNDeviceInfo.globalIpv6;
   database.writteUser({
-    uid: result.publicKey.toString(),
-    ipv6Address: NativeModules.RNDeviceInfo.globalIpv6,
+    uid: ivp6,
+    ipv6Address: ivp6,
     name: obj.name,
     image: null,
     contacts: [],
@@ -86,9 +88,11 @@ export const restoreWithPhrase = (pin, phrase, name) => async (dispatch) => {
   database.restoreWithPhrase(pin, phrase).then(async () => {
     await createFolder();
     const result = await bitcoin.generateAddress(phrase);
+    const ivp6 = !process.env.JEST_WORKER_ID ? '::1'
+      : NativeModules.RNDeviceInfo.globalIpv6;
     database.writteUser({
-      uid: result.publicKey.toString(),
-      ipv6Address: NativeModules.RNDeviceInfo.globalIpv6,
+      uid: ivp6,
+      ipv6Address: ivp6,
       name,
       image: null,
       contacts: [],

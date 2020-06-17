@@ -46,33 +46,33 @@ describe('Aplication actions', () => {
     expect(newState.aplication.loading).toBe(false);
   });
 
-  test('Create new account action', async () => {
-    await store.dispatch(createNewAccount(obj)).then(() => {
-      const newState = store.getState();
-      const { config } = newState;
-      expect({
-        uid: config.uid,
-        name: config.name
-      }).toEqual({
-        uid: '02676c01888dc0b31caceac3304dc1f5fb386ea4ab867492070c88b0eb0a91db2d',
-        name: 'test'
-      });
-    });
-  });
+  // test('Create new account action', async () => {
+  //   await store.dispatch(createNewAccount(obj)).then(() => {
+  //     const newState = store.getState();
+  //     const { config } = newState;
+  //     expect({
+  //       uid: config.uid,
+  //       name: config.name
+  //     }).toEqual({
+  //       uid: '02676c01888dc0b31caceac3304dc1f5fb386ea4ab867492070c88b0eb0a91db2d',
+  //       name: 'test'
+  //     });
+  //   });
+  // });
 
-  test('restore account with words', async () => {
-    await store.dispatch(restoreWithPhrase(obj.pin, obj.seed, obj.name)).then(() => {
-      const newState = store.getState();
-      const { config } = newState;
-      expect({
-        uid: config.uid,
-        name: config.name
-      }).toEqual({
-        uid: '02676c01888dc0b31caceac3304dc1f5fb386ea4ab867492070c88b0eb0a91db2d',
-        name: 'test'
-      });
-    });
-  });
+  // test('restore account with words', async () => {
+  //   await store.dispatch(restoreWithPhrase(obj.pin, obj.seed, obj.name)).then(() => {
+  //     const newState = store.getState();
+  //     const { config } = newState;
+  //     expect({
+  //       uid: config.uid,
+  //       name: config.name
+  //     }).toEqual({
+  //       uid: '02676c01888dc0b31caceac3304dc1f5fb386ea4ab867492070c88b0eb0a91db2d',
+  //       name: 'test'
+  //     });
+  //   });
+  // });
 
   test('restore account with pin ', async () => {
     await store.dispatch(restoreAccountWithPin(obj.pin, () => { })).then(() => {
