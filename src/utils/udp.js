@@ -10,11 +10,15 @@ export default class UdpServer {
     if (UdpServer.instance instanceof UdpServer) {
       return UdpServer.instance;
     }
+    this.interval = null;
     this.udp = NativeModules.RBUdpServer;
     this.event = new NativeEventEmitter(this.udp);
     this.startServer();
 
     this.onReceive();
+    this.observable();
+
+    this.isStarted = false;
   }
 
 
@@ -24,8 +28,35 @@ export default class UdpServer {
 
   startServer = () => {
     if (!process.env.JEST_WORKER_ID) {
-      this.udp.initServer();
+      const { globalIpv6 } = NativeModules.RNDeviceInfo;
+
+      if (globalIpv6) {
+        this.udp.initServer();
+      }
     }
+  }
+
+  observable = () => {
+    const device = NativeModules.RNDeviceInfo;
+    this.interval = setInterval(() => {
+      device.getIpv6().then((ipv6) => {
+        if (!this.isStarted) {
+          this.udp.initServer(ipv6);
+        }
+        this.isStarted = true;
+      }).catch((err) => {
+        alert('ipv6 is not defined');
+        if (this.isStarted) {
+          this.stopServer();
+        }
+      });
+    }, 1000);
+  }
+
+
+  stopServer = () => {
+    this.udp.stopListen();
+    this.isStarted = false;
   }
 
   onReceive = () => {

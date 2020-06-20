@@ -52,7 +52,6 @@ export const restoreAccountWithPin = (pin, callback) => async (dispatch) => {
     dispatch(writeAction(JSON.parse(JSON.stringify(res[0]))));
     // const url = await AsyncStorage.getItem('@APP:URL_KEY');
     new UdpServer();
-    dispatch({ type: ActionTypes.URL_CONNECTION, payload: ws.url });
   }).catch(() => {
     callback();
   });
@@ -78,7 +77,6 @@ export const createNewAccount = (obj) => async (dispatch) => {
     }
     dispatch(writeAction(res));
     new UdpServer();
-    dispatch({ type: ActionTypes.URL_CONNECTION, payload: ws.url });
   });
 };
 
@@ -102,7 +100,6 @@ export const restoreWithPhrase = (pin, phrase, name) => async (dispatch) => {
         await AsyncStorage.setItem('@APP:status', 'created');
       }
       new UdpServer();
-      dispatch({ type: ActionTypes.URL_CONNECTION, payload: ws.url });
     });
   });
 };

@@ -16,8 +16,6 @@ import java.net.UnknownHostException;
 
 import javax.annotation.Nonnull;
 
-import DeviceInfo.DeviceInfoModule;
-
 public class RNUdpServerModule  extends ReactContextBaseJavaModule  {
 
     private final static int port = 8888;
@@ -41,14 +39,14 @@ public class RNUdpServerModule  extends ReactContextBaseJavaModule  {
 
 
     @ReactMethod
-    public void initServer(){
+    public void initServer(String url){
         shouldRestartSocketListen = true;
         UDPBroadcastThread = new Thread(new Runnable() {
             public void run() {
                 try {
 
                     while (shouldRestartSocketListen) {
-                        start();
+                        start(url);
                     }
                     //if (!shouldListenForUDPBroadcast) throw new ThreadDeath();
                 } catch (Exception e) {
@@ -84,11 +82,7 @@ public class RNUdpServerModule  extends ReactContextBaseJavaModule  {
       }
     }
 
-    public void start() {
-
-        DeviceInfoModule device = new DeviceInfoModule(context);
-
-        final String url = device.getIpv6();
+    public void start(String url) {
 
         try {
 
@@ -121,7 +115,7 @@ public class RNUdpServerModule  extends ReactContextBaseJavaModule  {
 
     }
 
-
+    @ReactMethod
     void stopListen() {
         shouldRestartSocketListen = false;
         udpServer.close();
