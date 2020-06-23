@@ -36,6 +36,7 @@ import DeviceInfo.DeviceInfoPackage;
 import LocalNotification.LocalNotificationPackage;
 import RNCoapClient.CoapClientPackage;
 import RNWebSocket.RNWebsocketPakage;
+import WiFiModule.WifiPackage;
 import cl.json.RNSharePackage;
 import io.github.elyx0.reactnativedocumentpicker.DocumentPickerPackage;
 import io.realm.react.RealmReactPackage;
@@ -79,7 +80,8 @@ public class MainApplication extends Application implements ReactApplication {
             new DeviceInfoPackage(),
             new RNWebsocketPakage(),
             new CoapClientPackage(),
-            new RNUdpServerPackage()
+            new RNUdpServerPackage(),
+            new WifiPackage()
       );
     }
 

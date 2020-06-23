@@ -3,7 +3,7 @@ import { NativeModules, NativeEventEmitter } from 'react-native';
 import { messageType } from './constans';
 import { getChat, setStatusMessage } from '../store/chats';
 import { requestImageStatus, sentImageStatus, verifyHashImageStatus } from '../store/contacts/contactsActions';
-
+import { notConnectedValidAp } from '../store/aplication/aplicationAction';
 
 export default class UdpServer {
   constructor() {
@@ -17,7 +17,7 @@ export default class UdpServer {
 
     this.onReceive();
     this.observable();
-
+    this.store = require('../store').default;
     this.isStarted = false;
   }
 
@@ -40,12 +40,13 @@ export default class UdpServer {
     const device = NativeModules.RNDeviceInfo;
     this.interval = setInterval(() => {
       device.getIpv6().then((ipv6) => {
+        this.store.dispatch(notConnectedValidAp(false));
         if (!this.isStarted) {
           this.udp.initServer(ipv6);
         }
         this.isStarted = true;
       }).catch((err) => {
-        alert('ipv6 is not defined');
+        this.store.dispatch(notConnectedValidAp(true));
         if (this.isStarted) {
           this.stopServer();
         }
@@ -61,9 +62,8 @@ export default class UdpServer {
 
   onReceive = () => {
     this.event.addListener('onMessage', ((data) => {
-      const store = require('../store').default;
       const parse = JSON.parse(data);
-      const { dispatch } = store;
+      const { dispatch } = this.store;
       switch (parse.type) {
         case messageType.MESSAGE: dispatch(getChat(parse));
           break;
@@ -88,8 +88,7 @@ export default class UdpServer {
   */
 
   setStatus = async (statusData) => {
-    const store = require('../store').default;
-    const { dispatch } = store;
+    const { dispatch } = this.store;
     switch (statusData.data.status) {
       // execute function that is in contact actions
       case 'RequestImage': dispatch(requestImageStatus(statusData));

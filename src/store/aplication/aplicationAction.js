@@ -159,3 +159,15 @@ export const newPin = (obj) => (dispatch) => {
     });
   });
 };
+
+
+export const notConnectedValidAp = (notValid) => (dispatch, getState) => {
+  const { aplication } = getState();
+  console.log(aplication.notConnectedValidAp, notValid);
+  if (aplication.notConnectedValidAp !== notValid) {
+    dispatch({
+      type: ActionTypes.NOT_CONNECTED_VALID_AP,
+      payload: notValid
+    });
+  }
+};
