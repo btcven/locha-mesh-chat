@@ -42,6 +42,10 @@ export default class UdpServer {
   }
 
   observable = () => {
+    if (process.env.JEST_WORKER_ID) {
+      return;
+    }
+
     const device = NativeModules.RNDeviceInfo;
     this.interval = setInterval(() => {
       device.getIpv6().then((ipv6) => {

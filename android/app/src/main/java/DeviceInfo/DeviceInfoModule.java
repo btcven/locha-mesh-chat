@@ -49,7 +49,6 @@ public class DeviceInfoModule  extends ReactContextBaseJavaModule {
     public Map<String, Object> getConstants() {
         final Map<String, Object> constants = new HashMap<>();
         constants.put("VersionInfo", getVersionInfo());
-//        constants.put("globalIpv6", getIpv6());
         return constants;
     }
 
