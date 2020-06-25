@@ -7,9 +7,11 @@ import { notConnectedValidAp } from '../store/aplication/aplicationAction';
 
 export default class UdpServer {
   constructor() {
-    if (UdpServer.instance instanceof UdpServer) {
+    if (UdpServer.instance) {
       return UdpServer.instance;
     }
+
+    UdpServer.instance = this;
     this.interval = null;
     this.udp = NativeModules.RBUdpServer;
     this.event = new NativeEventEmitter(this.udp);
@@ -19,6 +21,8 @@ export default class UdpServer {
     this.observable();
     this.store = require('../store').default;
     this.isStarted = false;
+    this.globalIpv6 = null;
+    return this;
   }
 
 
@@ -31,6 +35,7 @@ export default class UdpServer {
       const { globalIpv6 } = NativeModules.RNDeviceInfo;
 
       if (globalIpv6) {
+        this.globalIpv6 = globalIpv6;
         this.udp.initServer();
       }
     }
@@ -42,6 +47,7 @@ export default class UdpServer {
       device.getIpv6().then((ipv6) => {
         this.store.dispatch(notConnectedValidAp(false));
         if (!this.isStarted) {
+          this.globalIpv6 = ipv6;
           this.udp.initServer(ipv6);
         }
         this.isStarted = true;

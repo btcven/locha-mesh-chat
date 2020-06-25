@@ -9,6 +9,7 @@ import RestoreWithPing from './views/LoadWallet/RestoreWithPin';
 import { clearAll } from './store/aplication';
 import { selectedChat } from './store/chats';
 import WifiConnect from './WifiConnect'
+import UdpServer from './utils/udp';
 // import locale from "react-native-locale-detector";
 
 /**
@@ -26,6 +27,9 @@ class DualComponent extends Component {
     };
   }
 
+  componentDidMount = () => {
+    new UdpServer();
+  }
 
   verifyState = (nextAppState) => {
     this.setState({

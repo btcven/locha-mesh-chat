@@ -82,7 +82,7 @@ public class DeviceInfoModule  extends ReactContextBaseJavaModule {
                     InetAddress inetAddress = enumIpAddr.nextElement();
                     if (!inetAddress.isLoopbackAddress() && inetAddress instanceof Inet6Address) {
                         String ipaddress = inetAddress.getHostAddress().toString();
-                        if(ipaddress.startsWith("2001")){
+                        if(ipaddress.startsWith("2001") || ipaddress.startsWith("fc00") ){
                             promise.resolve(ipaddress); ;
                         }
                     }

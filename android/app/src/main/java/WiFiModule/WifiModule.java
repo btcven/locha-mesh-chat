@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -11,13 +12,16 @@ import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Process;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.modules.core.PermissionAwareActivity;
 import com.facebook.react.modules.core.PermissionListener;
 
@@ -93,41 +97,55 @@ public class WifiModule  extends ReactContextBaseJavaModule  implements Permissi
 
 
     @ReactMethod
-    public void connect(){
+    public void connect(ReadableMap credentials){
         wifiPermision();
         wifiIsEnabled();
 
-        String networkSSID = "RIOT_AP";
-        String networkPass = "";
+
+        Bundle bundle = Arguments.toBundle(credentials);
+
+        String ssid = bundle.getString("ssid");
+        String password = bundle.getString("password");
+
+        Log.i(TAG, "the ssid is: " + ssid);
+        Log.i(TAG, "the password is: " + password.length());
+
+        String networkSSID = ssid;
+        String networkPass = password;
+
 
         WifiConfiguration wc = new WifiConfiguration();
         wc.SSID = "\"" + networkSSID + "\"";
         wc.priority = 40;
         wc.status = WifiConfiguration.Status.ENABLED;
-        wc.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
 
+        if(password.length() > 0){
+            wc.preSharedKey = "\"" + networkPass + "\"";
+        }else{
+            wc.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
+        }
 
         try {
             setStaticIpConfiguration(wifi, wc,
                     InetAddress.getByName("192.168.0.100"),
                     24,
                     InetAddress.getByName("10.0.0.2"),
-                    new InetAddress[]{InetAddress.getByName("10.0.0.3"), InetAddress.getByName("10.0.0.4")});
+                    new InetAddress[]{InetAddress.getByName("8.8.8.8"), InetAddress.getByName("8.8.4.4")});
 
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-//        int netId = wifi.addNetwork(wc);
-//        wifi.disconnect();
-//       if( wifi.enableNetwork(netId, true)){
-//           wifi.reconnect();
-//           IntentFilter intentFilter = new IntentFilter();
-//           intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
-//           intentFilter.addAction(WifiManager.SUPPLICANT_STATE_CHANGED_ACTION);
-//
-//           context.registerReceiver(connectedToLocalWifiReceiver, intentFilter);
-//       }
+        int netId = wifi.addNetwork(wc);
+        wifi.disconnect();
+       if( wifi.enableNetwork(netId, true)){
+           wifi.reconnect();
+           IntentFilter intentFilter = new IntentFilter();
+           intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+           intentFilter.addAction(WifiManager.SUPPLICANT_STATE_CHANGED_ACTION);
+
+           context.registerReceiver(connectedToLocalWifiReceiver, intentFilter);
+       }
 
     }
 
