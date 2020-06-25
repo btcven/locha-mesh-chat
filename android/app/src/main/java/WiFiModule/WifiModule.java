@@ -55,7 +55,10 @@ public class WifiModule  extends ReactContextBaseJavaModule  implements Permissi
         return "RNwifiModule";
     }
 
-
+    /**
+     * Verify that WiFi is disabled
+     *
+     */
     public void wifiIsEnabled () {
         System.out.println("is enabled?:"+ wifi.isWifiEnabled());
 
@@ -74,7 +77,10 @@ public class WifiModule  extends ReactContextBaseJavaModule  implements Permissi
 
     }
 
-
+    /**
+     * function used to check WiFi permissions
+     *
+     */
     public void wifiPermision () {
         int permission;
         String[] arg = new String[]{Manifest.permission.ACCESS_WIFI_STATE, Manifest.permission.CHANGE_WIFI_STATE };
@@ -95,9 +101,11 @@ public class WifiModule  extends ReactContextBaseJavaModule  implements Permissi
         }
     }
 
-
-    @ReactMethod
-    public void connect(ReadableMap credentials){
+    /**
+     *  function used to activate the phone's wifi and make the connection
+     * @param credentials
+     */
+    @ReactMethod public void connect(ReadableMap credentials){
         wifiPermision();
         wifiIsEnabled();
 
@@ -136,20 +144,31 @@ public class WifiModule  extends ReactContextBaseJavaModule  implements Permissi
             e.printStackTrace();
         }
 
-        int netId = wifi.addNetwork(wc);
-        wifi.disconnect();
-       if( wifi.enableNetwork(netId, true)){
-           wifi.reconnect();
            IntentFilter intentFilter = new IntentFilter();
            intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
            intentFilter.addAction(WifiManager.SUPPLICANT_STATE_CHANGED_ACTION);
 
            context.registerReceiver(connectedToLocalWifiReceiver, intentFilter);
-       }
 
     }
 
-
+    /**
+     *
+     * this method adds the static ip configuration
+     * @param manager
+     * @param config
+     * @param ipAddress
+     * @param prefixLength
+     * @param gateway
+     * @param dns
+     * @throws ClassNotFoundException
+     * @throws IllegalAccessException
+     * @throws IllegalArgumentException
+     * @throws InvocationTargetException
+     * @throws NoSuchMethodException
+     * @throws NoSuchFieldException
+     * @throws InstantiationException
+     */
     @SuppressWarnings("unchecked")
     public static void setStaticIpConfiguration(WifiManager manager, WifiConfiguration config, InetAddress ipAddress, int prefixLength, InetAddress gateway, InetAddress[] dns) throws ClassNotFoundException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, NoSuchFieldException, InstantiationException {
         // First set up IpAssignment to STATIC.
@@ -181,7 +200,11 @@ public class WifiModule  extends ReactContextBaseJavaModule  implements Permissi
     }
 
 
-
+    /**
+     * this function has the wifi configuration once it is connected
+     * @param context
+     * @return WifiConfiguration
+     */
     public static WifiConfiguration getCurrentWiFiConfiguration(Context context) {
         WifiConfiguration wifiConf = null;
         ConnectivityManager connManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -203,6 +226,7 @@ public class WifiModule  extends ReactContextBaseJavaModule  implements Permissi
         }
         return wifiConf;
     }
+
 
     private static Object newInstance(String className) throws ClassNotFoundException, InstantiationException, IllegalAccessException, NoSuchMethodException, IllegalArgumentException, InvocationTargetException {
         return newInstance(className, new Class<?>[0], new Object[0]);
@@ -245,7 +269,9 @@ public class WifiModule  extends ReactContextBaseJavaModule  implements Permissi
     }
 
 
-
+    /**
+     * event that runs when starting a new connection
+     */
     BroadcastReceiver connectedToLocalWifiReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {

@@ -5,6 +5,7 @@ import { getChat, setStatusMessage } from '../store/chats';
 import { requestImageStatus, sentImageStatus, verifyHashImageStatus } from '../store/contacts/contactsActions';
 import { notConnectedValidAp } from '../store/aplication/aplicationAction';
 
+
 export default class UdpServer {
   constructor() {
     if (UdpServer.instance) {
@@ -25,11 +26,19 @@ export default class UdpServer {
     return this;
   }
 
-
+  /**
+   * function used to send messages
+   * 
+   * @param {object} message message to send
+   * @param {string} url address where the message will be sent
+   */
   send = (message, url) => {
     this.udp.send(message, url);
   }
 
+  /**
+   * start server
+   */
   startServer = () => {
     if (!process.env.JEST_WORKER_ID) {
       const { globalIpv6 } = NativeModules.RNDeviceInfo;
@@ -41,6 +50,10 @@ export default class UdpServer {
     }
   }
 
+  /**
+  *  its function is to observe the changes in the network
+  *  and verify that it is connected to a valid network
+  */
   observable = () => {
     if (process.env.JEST_WORKER_ID) {
       return;
@@ -55,7 +68,7 @@ export default class UdpServer {
           this.udp.initServer(ipv6);
         }
         this.isStarted = true;
-      }).catch((err) => {
+      }).catch(() => {
         this.store.dispatch(notConnectedValidAp(true));
         if (this.isStarted) {
           this.stopServer();
@@ -64,12 +77,17 @@ export default class UdpServer {
     }, 1000);
   }
 
-
+  /**
+   * function used for stop server udp
+   */
   stopServer = () => {
     this.udp.stopListen();
     this.isStarted = false;
   }
 
+  /**
+   * has a functionality of listen the message incoming in the udp server
+   */
   onReceive = () => {
     this.event.addListener('onMessage', ((data) => {
       const parse = JSON.parse(data);

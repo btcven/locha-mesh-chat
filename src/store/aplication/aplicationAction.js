@@ -63,7 +63,7 @@ export const createNewAccount = (obj) => async (dispatch) => {
   await database.setDataSeed(obj.seed);
   await createFolder();
   const result = await bitcoin.generateAddress(obj.seed);
-  const ivp6 = udp.globalIpv6 ? udp.globalIpv6 : '::1'
+  const ivp6 = udp.globalIpv6 ? udp.globalIpv6 : '::1';
   database.writteUser({
     uid: ivp6,
     ipv6Address: ivp6,
