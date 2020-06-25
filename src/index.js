@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, Text } from 'react-native';
 import moment from 'moment';
 import { route } from './store/aplication/aplicationAction';
 import Home from './views/home';
@@ -8,7 +8,8 @@ import LoadWallet from './views/LoadWallet';
 import RestoreWithPing from './views/LoadWallet/RestoreWithPin';
 import { clearAll } from './store/aplication';
 import { selectedChat } from './store/chats';
-
+import WifiConnect from './WifiConnect';
+import UdpServer from './utils/udp';
 // import locale from "react-native-locale-detector";
 
 /**
@@ -26,6 +27,9 @@ class DualComponent extends Component {
     };
   }
 
+  componentDidMount = () => {
+    new UdpServer();
+  }
 
   verifyState = (nextAppState) => {
     this.setState({
@@ -63,7 +67,7 @@ class DualComponent extends Component {
     const open = !!(!this.props.user && this.props.status);
     return (
       <View style={styles.container}>
-        {/* {this.props.loading && (this.props.retryConnection !== 4) && <Spinner />} */}
+        <WifiConnect open={this.props.notConnectedValidAp} />
         {this.props.user && (
           <View style={styles.container}>
             {this.props.tabPosition === 1 && <Home {...this.props} />}
@@ -92,7 +96,8 @@ const mapStateToProps = (state) => ({
   loading: state.aplication.loading,
   view: state.aplication.view,
   status: state.aplication.appStatus,
-  retryConnection: state.aplication.retryConnection
+  retryConnection: state.aplication.retryConnection,
+  notConnectedValidAp: state.aplication.notConnectedValidAp
 });
 
 export default connect(mapStateToProps, { route, selectedChat, clearAll })(DualComponent);

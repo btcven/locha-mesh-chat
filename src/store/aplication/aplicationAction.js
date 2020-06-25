@@ -52,19 +52,18 @@ export const restoreAccountWithPin = (pin, callback) => async (dispatch) => {
     dispatch(writeAction(JSON.parse(JSON.stringify(res[0]))));
     // const url = await AsyncStorage.getItem('@APP:URL_KEY');
     new UdpServer();
-    dispatch({ type: ActionTypes.URL_CONNECTION, payload: ws.url });
   }).catch(() => {
     callback();
   });
 };
 
 export const createNewAccount = (obj) => async (dispatch) => {
+  const udp = new UdpServer();
   await database.getRealm(sha256(obj.pin), sha256(obj.seed));
   await database.setDataSeed(obj.seed);
   await createFolder();
   const result = await bitcoin.generateAddress(obj.seed);
-  const ivp6 = !process.env.JEST_WORKER_ID ? '::1'
-    : NativeModules.RNDeviceInfo.globalIpv6;
+  const ivp6 = udp.globalIpv6 ? udp.globalIpv6 : '::1';
   database.writteUser({
     uid: ivp6,
     ipv6Address: ivp6,
@@ -77,18 +76,16 @@ export const createNewAccount = (obj) => async (dispatch) => {
       await AsyncStorage.setItem('@APP:status', 'created');
     }
     dispatch(writeAction(res));
-    new UdpServer();
-    dispatch({ type: ActionTypes.URL_CONNECTION, payload: ws.url });
   });
 };
 
 
 export const restoreWithPhrase = (pin, phrase, name) => async (dispatch) => {
   database.restoreWithPhrase(pin, phrase).then(async () => {
+    const udp = new UdpServer();
     await createFolder();
     // const result = await bitcoin.generateAddress(phrase);
-    const ivp6 = !process.env.JEST_WORKER_ID ? '::1'
-      : NativeModules.RNDeviceInfo.globalIpv6;
+    const ivp6 = udp.globalIpv6 ? udp.globalIpv6 : '::1';
     database.writteUser({
       uid: ivp6,
       ipv6Address: ivp6,
@@ -101,8 +98,6 @@ export const restoreWithPhrase = (pin, phrase, name) => async (dispatch) => {
       if (!process.env.JEST_WORKER_ID) {
         await AsyncStorage.setItem('@APP:status', 'created');
       }
-      new UdpServer();
-      dispatch({ type: ActionTypes.URL_CONNECTION, payload: ws.url });
     });
   });
 };
@@ -161,4 +156,21 @@ export const newPin = (obj) => (dispatch) => {
       dispatch(writeAction(JSON.parse(JSON.stringify(userData[0]))));
     });
   });
+};
+
+
+export const notConnectedValidAp = (notValid) => (dispatch, getState) => {
+  const { aplication } = getState();
+  if (aplication.notConnectedValidAp !== notValid) {
+    dispatch({
+      type: ActionTypes.NOT_CONNECTED_VALID_AP,
+      payload: notValid
+    });
+  }
+};
+
+
+export const wifiConnect = (credentials, callback) => (dispatch) => {
+  NativeModules.RNwifiModule.connect(credentials);
+  callback();
 };

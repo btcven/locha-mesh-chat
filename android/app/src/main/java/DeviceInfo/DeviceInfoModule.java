@@ -4,8 +4,10 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.util.Log;
 
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
+import com.facebook.react.bridge.ReactMethod;
 
 import java.net.Inet6Address;
 import java.net.InetAddress;
@@ -47,7 +49,6 @@ public class DeviceInfoModule  extends ReactContextBaseJavaModule {
     public Map<String, Object> getConstants() {
         final Map<String, Object> constants = new HashMap<>();
         constants.put("VersionInfo", getVersionInfo());
-        constants.put("globalIpv6", getIpv6());
         return constants;
     }
 
@@ -68,8 +69,8 @@ public class DeviceInfoModule  extends ReactContextBaseJavaModule {
         return version;
     }
 
-
-    public String getIpv6() {
+    @ReactMethod
+    public void getIpv6(Promise promise) {
         try {
             for (Enumeration<NetworkInterface> en = NetworkInterface
                     .getNetworkInterfaces(); en.hasMoreElements(); ) {
@@ -78,15 +79,10 @@ public class DeviceInfoModule  extends ReactContextBaseJavaModule {
                 for (Enumeration<InetAddress> enumIpAddr = intf
                         .getInetAddresses(); enumIpAddr.hasMoreElements(); ) {
                     InetAddress inetAddress = enumIpAddr.nextElement();
-
-                    System.out.println("ip1--:" + inetAddress);
-                    System.out.println("ip2--:" + inetAddress.getHostAddress());
-
-
                     if (!inetAddress.isLoopbackAddress() && inetAddress instanceof Inet6Address) {
                         String ipaddress = inetAddress.getHostAddress().toString();
-                        if(ipaddress.startsWith("2001")){
-                            return ipaddress;
+                        if(ipaddress.startsWith("2001") || ipaddress.startsWith("fc00") ){
+                            promise.resolve(ipaddress); ;
                         }
                     }
 
@@ -94,9 +90,11 @@ public class DeviceInfoModule  extends ReactContextBaseJavaModule {
 
             }
         } catch (Exception ex) {
+            promise.reject("Error", ex.toString());
             Log.e("IP Address", ex.toString());
         }
-        return null;
+
+        promise.reject("Error", "error");
 
     }
 

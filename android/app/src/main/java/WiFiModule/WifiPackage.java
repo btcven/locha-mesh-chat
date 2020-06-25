@@ -1,16 +1,15 @@
-package LocalNotification;
+package WiFiModule;
 
 import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.NativeModule;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.uimanager.ViewManager;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-
-public class LocalNotificationPackage implements ReactPackage {
-
+public class WifiPackage implements ReactPackage {
     @Override
     public List<ViewManager> createViewManagers(ReactApplicationContext reactContext) {
         return Collections.emptyList();
@@ -21,10 +20,8 @@ public class LocalNotificationPackage implements ReactPackage {
             ReactApplicationContext reactContext) {
         List<NativeModule> modules = new ArrayList<>();
 
-        modules.add(new LocalNotificationModule(reactContext));
+        modules.add(new WifiModule(reactContext));
 
         return modules;
     }
-
-
 }
