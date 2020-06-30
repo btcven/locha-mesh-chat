@@ -37,16 +37,16 @@ describe('test add contacts component', () => {
   });
 
   test('simulate closeButton', () => {
-    wrapper.find('TouchableOpacity').first().props().onPress();
+    wrapper.find('ForwardRef').first().props().onPress();
     expect(closeFunction.mock.calls.length).toBe(1);
   });
 
   test('save button must be disabled', () => {
-    expect(wrapper.find('TouchableOpacity').at(1).props().disabled).toBeTruthy();
+    expect(wrapper.find('ForwardRef').at(1).props().disabled).toBeTruthy();
   });
 
   test('open view for qr code', () => {
-    wrapper.find('TouchableOpacity').at(2).props().onPress();
+    wrapper.find('ForwardRef').at(2).props().onPress();
 
     expect(wrapper.find('QRCodeScanner').exists()).toBeTruthy();
     wrapper.setState({ openQrCode: false });
@@ -59,11 +59,11 @@ describe('test add contacts component', () => {
       picture: null
     });
 
-    expect(wrapper.find('TouchableOpacity').at(1).props().disabled).not.toBeTruthy();
+    expect(wrapper.find('ForwardRef').at(1).props().disabled).not.toBeTruthy();
   });
 
   test('simulate save function', () => {
-    expect(wrapper.find('TouchableOpacity').at(1).props().onPress());
+    expect(wrapper.find('ForwardRef').at(1).props().onPress());
 
     expect(saveContact.mock.calls.length).toBe(1);
   });

@@ -22,9 +22,3 @@ module.exports = {
     "fetch": false
   }
 }
-
-
-module.exports = {
-  root: true,
-  extends: '@react-native-community',
-};

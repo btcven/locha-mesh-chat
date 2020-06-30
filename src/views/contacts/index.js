@@ -59,7 +59,6 @@ class Contacts extends Component {
 
   onSelect = (contact, chat) => {
     if (this.state.selected.length === 0) {
-      console.log('hiiiiii', chat);
       this.props.selectedChat(chat);
       this.props.navigation.push('chat', {
         ...contact

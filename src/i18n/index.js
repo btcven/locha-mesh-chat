@@ -12,7 +12,7 @@ const languageDetector = {
   init: Function.prototype,
   type: 'languageDetector',
   async: true, // flags below detection to be async
-  detect: async (callback) => {
+  detect: async callback => {
     const savedDataJSON = await AsyncStorage.getItem(STORAGE_KEY);
     const lng = savedDataJSON || 'en';
     callback(lng);

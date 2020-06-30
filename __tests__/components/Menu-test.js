@@ -2,7 +2,6 @@
 import '../../__Mocks__';
 import React from 'react';
 import { shallow } from 'enzyme';
-import renderer from 'react-test-renderer';
 import Menu from '../../src/components/Menu';
 
 const item = [
@@ -11,12 +10,6 @@ const item = [
     action: jest.fn()
   }
 ];
-
-it('Menu component rendering', () => {
-  const rendered = renderer.create(<Menu menu={item} />).toJSON();
-  expect(rendered).toBeTruthy();
-});
-
 
 describe('testing the functionality of the menu component', () => {
   const wrapper = shallow(<Menu menu={item} />);

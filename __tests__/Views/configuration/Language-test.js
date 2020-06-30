@@ -8,12 +8,6 @@ const screenProps = {
   t: (data) => data
 };
 
-test('render the component', () => {
-  const rendered = renderer.create(
-    <Language screenProps={screenProps} />
-  ).toJSON();
-  expect(rendered).toBeTruthy();
-});
 
 describe('Language component', () => {
   const wrapper = shallow(<Language screenProps={screenProps} open />);

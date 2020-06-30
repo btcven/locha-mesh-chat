@@ -1,11 +1,13 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable max-classes-per-file */
 /* eslint-disable import/no-extraneous-dependencies */
 // eslint-disable-next-line no-unused-vars
-import { View, Text } from 'react-native';
+import * as ReactNative from 'react-native';
 import enzyme from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 
-enzyme.configure({ adapter: new Adapter() });
+
+// enzyme.configure({ adapter: new Adapter() });
 jest.mock('react-native-fs', () => ({
   mkdir: jest.fn(),
   moveFile: jest.fn(),
@@ -124,13 +126,18 @@ jest.mock('rn-fetch-blob', () => ({
   })
 }));
 
-jest.mock('NativeEventEmitter', () => class MockNativeEventEmitter {
-  addListener = () => jest.fn()
+// jest.mock('NativeEventEmitter', () => class MockNativeEventEmitter {
+//   addListener = () => jest.fn()
 
-  removeListener = () => jest.fn()
+//   removeListener = () => jest.fn()
 
-  removeAllListeners = () => jest.fn()
-});
+//   removeAllListeners = () => jest.fn()
+// });
+
+
+jest.mock(
+  '../node_modules/react-native/Libraries/EventEmitter/NativeEventEmitter',
+);
 
 
 // jest.mock('LocalNotification', () => ({
@@ -141,18 +148,44 @@ jest.mock('NativeEventEmitter', () => class MockNativeEventEmitter {
 //   LocalNotification: { requestPermission: jest.fn() }
 // }));
 
-jest.mock('Platform', () => {
-  const Platform = require.requireActual('Platform');
-  Platform.OS = 'android';
-  return Platform;
+jest.mock('native-base/dist/src/basic/Icon', () => jest.genMockFromModule('native-base/dist/src/basic/Icon'));
+
+
+jest.mock('react-native/Libraries/Utilities/Platform', () => ({
+  OS: 'ios',
+  select: jest.fn((selector) => selector.ios),
+}));
+
+
+jest.doMock('react-native', () => {
+  // Extend ReactNative
+  return Object.setPrototypeOf(
+    {
+      // Mock a native module
+      NativeModules: {
+        ...ReactNative.NativeModules,
+        Override: { great: 'success' },
+        LocalNotification: { requestPermission: jest.fn() }
+      },
+      StyleSheet: {
+        create: () => ({}),
+        flatten: () => ({})
+      },
+      Platform: {
+        OS: 'ios',
+        select: jest.fn((selector) => selector.ios),
+      }
+    },
+    ReactNative,
+  );
 });
 
 
-jest.mock('PermissionsAndroid', () => {
-  const PermissionsAndroid = require.requireActual('PermissionsAndroid');
+// jest.mock('PermissionsAndroid', () => {
+//   const PermissionsAndroid = require.requireActual('PermissionsAndroid');
 
-  return {
-    ...PermissionsAndroid,
-    request: () => jest.fn()
-  };
-});
+//   return {
+//     ...PermissionsAndroid,
+//     request: () => jest.fn()
+//   };
+// });
