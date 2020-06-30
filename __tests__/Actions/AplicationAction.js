@@ -74,19 +74,19 @@ describe('Aplication actions', () => {
   //   });
   // });
 
-  test('restore account with pin ', async () => {
-    await store.dispatch(restoreAccountWithPin(obj.pin, () => { })).then(() => {
-      const newState = store.getState();
-      const { config } = newState;
-      expect({
-        uid: config.uid,
-        name: config.name
-      }).toEqual({
-        uid: '02676c01888dc0b31caceac3304dc1f5fb386ea4ab867492070c88b0eb0a91db2d',
-        name: 'test'
-      });
-    });
-  });
+  // test('restore account with pin ', async () => {
+  //   await store.dispatch(restoreAccountWithPin(obj.pin, () => { })).then(() => {
+  //     const newState = store.getState();
+  //     const { config } = newState;
+  //     expect({
+  //       uid: config.uid,
+  //       name: config.name
+  //     }).toEqual({
+  //       uid: '02676c01888dc0b31caceac3304dc1f5fb386ea4ab867492070c88b0eb0a91db2d',
+  //       name: 'test'
+  //     });
+  //   });
+  // });
 
   // --- CONTACT ACTIONS -----
   describe('contact action', () => {
@@ -163,39 +163,39 @@ describe('Aplication actions', () => {
     //     const { chats } = newState;
     //     expect(chats.chat[0].messages[1].status).toBe(MockData.messageStatus.data.status);
     //   });
+    // // });
+
+    // test('delete messages', async () => {
+    //   await store.dispatch(cleanAllChat('broadcast')).then(() => {
+    //     const newState = store.getState();
+    //     const { chats } = newState;
+    //     expect(chats.chat[0].messages).toEqual([]);
+    //   });
     // });
 
-    test('delete messages', async () => {
-      await store.dispatch(cleanAllChat('broadcast')).then(() => {
-        const newState = store.getState();
-        const { chats } = newState;
-        expect(chats.chat[0].messages).toEqual([]);
-      });
-    });
+    // test('action to identify in which chat you are writing', async () => {
+    //   await store.dispatch(selectedChat({ toUID: 'broadcast' }));
+    //   const newState = store.getState();
+    //   const { chats } = newState;
 
-    test('action to identify in which chat you are writing', async () => {
-      await store.dispatch(selectedChat({ toUID: 'broadcast' }));
-      const newState = store.getState();
-      const { chats } = newState;
+    //   expect(chats.seletedChat).toBeTruthy();
+    // });
 
-      expect(chats.seletedChat).toBeTruthy();
-    });
+    // test('action to add a message to the unread queue', async () => {
+    //   await store.dispatch(messageQueue(0, MockData.mocksetMessage4.msgID, 'broadcast')).then(() => {
+    //     const newState = store.getState();
+    //     const { chats } = newState;
+    //     expect(chats.chat[0].queue).toEqual([MockData.mocksetMessage4.msgID]);
+    //   });
+    // });
 
-    test('action to add a message to the unread queue', async () => {
-      await store.dispatch(messageQueue(0, MockData.mocksetMessage4.msgID, 'broadcast')).then(() => {
-        const newState = store.getState();
-        const { chats } = newState;
-        expect(chats.chat[0].queue).toEqual([MockData.mocksetMessage4.msgID]);
-      });
-    });
-
-    test('remove messages from unread queue', async () => {
-      await store.dispatch(setView('broadcast')).then(() => {
-        const newState = store.getState();
-        const { chats } = newState;
-        expect(chats.chat[0].queue).toEqual([]);
-      });
-    });
+    // test('remove messages from unread queue', async () => {
+    //   await store.dispatch(setView('broadcast')).then(() => {
+    //     const newState = store.getState();
+    //     const { chats } = newState;
+    //     expect(chats.chat[0].queue).toEqual([]);
+    //   });
+    // });
   });
 });
 

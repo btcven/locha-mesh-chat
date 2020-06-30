@@ -42,10 +42,10 @@ export default class NotifService {
     //   }
 
     cancelNotif(id) {
-      this.LocalNotification.clearNotificationID({ id });
+      // this.LocalNotification.clearNotificationID({ id });
     }
 
     cancelAll() {
-      this.LocalNotification.clearNotificationAll();
+      // this.LocalNotification.clearNotificationAll();
     }
 }
