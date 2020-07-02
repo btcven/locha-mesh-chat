@@ -58,9 +58,6 @@ class Chat extends Component {
 
   componentDidMount = () => {
     this.props.setView(this.props.chat[this.props.chatSelected.index].toUID);
-    // if (this.props.navigation.state.params) {
-    //   this.props.verifyImage(this.props.navigation.state.params);
-    // }
   };
 
   /**

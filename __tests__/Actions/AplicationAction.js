@@ -9,7 +9,7 @@ import {
   restoreWithPhrase,
   restoreAccountWithPin
 } from '../../src/store/aplication/aplicationAction';
-import { saveContact, editContats, deleteContactAction } from '../../src/store/contacts';
+import { saveContact, editContacts, deleteContactAction } from '../../src/store/contacts';
 import {
   initialChat, getChat, setStatusMessage, cleanAllChat, selectedChat, messageQueue, setView
 } from '../../src/store/chats/chatAction';
@@ -114,7 +114,7 @@ describe('Aplication actions', () => {
     // });
     test('Edit contact action', () => {
       newContact.name = 'hiii';
-      store.dispatch(editContats(newContact, () => { })).then(() => {
+      store.dispatch(editContacts(newContact, () => { })).then(() => {
         const newState = store.getState();
         const { contacts } = newState;
         expect(contacts.contacts).toEqual(

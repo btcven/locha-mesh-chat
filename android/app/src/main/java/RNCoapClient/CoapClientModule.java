@@ -82,18 +82,22 @@ public class CoapClientModule extends ReactContextBaseJavaModule {
         client.setURI(uri);
 
 
+        Thread threadRequest =  new Thread(new Runnable() {
+            public void run() {
+                if (type.compareTo(typeGet) == 0) {
+                    Log.i(TAG, "!!!!!!in the get: ");
+                    getRequest(client, promise);
+                } else if (type.compareTo(typePost) == 0) {
+                    Log.i(TAG, "in the post: ");
+                    postRequest(client, promise);
+                } else {
+                    Log.i(TAG, "invalid request type: ");
+                    promise.reject("Error", "invalid request type");
+                }
+            }
+        });
 
-        if(type.compareTo(typeGet) == 0){
-            Log.i(TAG, "!!!!!!in the get: ");
-            getRequest(client, promise);
-        }else if(type.compareTo(typePost)== 0){
-            Log.i(TAG, "in the post: ");
-            postRequest(client, promise);
-        }else{
-            Log.i(TAG, "invalid request type: ");
-            promise.reject("Error", "invalid request type" );
-        }
-
+        threadRequest.start();
     }
 
 
@@ -110,6 +114,7 @@ public class CoapClientModule extends ReactContextBaseJavaModule {
         request.setType(CoAP.Type.CON);
         // sends an uni-cast request
         CoapResponse response = null;
+        client.setTimeout((long) 5000);
         try {
             response = client.advanced(request);
         } catch (ConnectorException e) {

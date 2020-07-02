@@ -67,9 +67,8 @@ class Contacts extends Component {
     }
 
     const selected = unSelect(this.state.selected, contact);
-
     if (selected.found) {
-      this.setStaste({ selected: selected.data });
+      this.setState({ selected: selected.data });
     } else {
       this.setState({
         selected: this.state.selected.concat(contact)

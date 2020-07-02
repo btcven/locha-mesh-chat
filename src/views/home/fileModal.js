@@ -65,20 +65,20 @@ export default class FileModal extends Component {
       cropping: true,
       includeBase64: true
     }).then((image) => {
-      const newPath = `${FileDirectory}/Pictures/IMG_${new Date().getTime()} `;
-      RNFS.moveFile(image.path, newPath).then(() => {
-        setTimeout(() => {
-          const imagesView = [
-            {
-              url: newPath,
-              base64: image.data,
-              width: Dimensions.get('window').width
-            }
-          ];
-          this.props.setImageView(imagesView);
-          this.props.close();
-        }, 200);
-      });
+      const newPath = `${FileDirectory}/Pictures/IMG_${new Date().getTime()}.jpg `;
+      // RNFS.moveFile(image.path, newPath).then(() => {
+      setTimeout(() => {
+        const imagesView = [
+          {
+            url: image.path,
+            base64: image.data,
+            width: Dimensions.get('window').width
+          }
+        ];
+        this.props.setImageView(imagesView);
+        this.props.close();
+      }, 200);
+      // });
     });
   };
 

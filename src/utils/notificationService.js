@@ -16,36 +16,36 @@ export default class NotifService {
     Platform.OS !== 'android' ? NativeModules.LocalNotification.requestPermission() : null;
   }
 
-    onNotification = () => {
-      const eventEmitter = new NativeEventEmitter(this.LocalNotification);
-      eventEmitter.addListener('NoticationReceiver', (event) => {
-        const notification = Platform.OS === 'android' ? JSON.parse(event.dataJSON) : event;
-        notifyRedirect(notification);
-      });
-    }
+  onNotification = () => {
+    const eventEmitter = new NativeEventEmitter(this.LocalNotification);
+    eventEmitter.addListener('NoticationReceiver', (event) => {
+      const notification = Platform.OS === 'android' ? JSON.parse(event.dataJSON) : event;
+      notifyRedirect(notification);
+    });
+  }
 
-    localNotif = (data, id) => {
-      this.LocalNotification.createNotification(
-        {
-          id: id.toString(),
-          title: data.name,
-          message: data.msg
-        }
-      );
-    }
+  localNotif = (data, id) => {
+    this.LocalNotification.createNotification(
+      {
+        id: id.toString(),
+        title: data.name,
+        message: data.msg
+      }
+    );
+  }
 
 
-    //   checkPermission(cbk) {
-    //     return PushNotification.checkPermissions(res => {
-    //       console.log(res);
-    //     });
-    //   }
+  //   checkPermission(cbk) {
+  //     return PushNotification.checkPermissions(res => {
+  //       console.log(res);
+  //     });
+  //   }
 
-    cancelNotif(id) {
-      // this.LocalNotification.clearNotificationID({ id });
-    }
+  cancelNotif(id) {
+    this.LocalNotification.clearNotificationID({ id });
+  }
 
-    cancelAll() {
-      // this.LocalNotification.clearNotificationAll();
-    }
+  cancelAll() {
+    this.LocalNotification.clearNotificationAll();
+  }
 }
