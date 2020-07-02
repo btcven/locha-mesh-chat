@@ -17,9 +17,10 @@ export default class Draggable extends Component {
       // eslint-disable-next-line react/no-unused-state
       opacity: new Animated.Value(1)
     };
+    this.init();
   }
 
-  componentWillMount() {
+  init() {
     this._val = { x: 0, y: 0 };
     this.state.pan.addListener((value) => (this._val = value));
 

@@ -196,8 +196,7 @@ class index extends Component {
 
         <Content>
           {this.orderChats(result).map((chat) => {
-            const queue = [];
-            // chat.queue ? Object.values(chat.queue) : [];
+            const queue = chat.queue ? Object.values(chat.queue) : [];
 
             const backgroundColor = getSelectedColor(
               this.state.selected,

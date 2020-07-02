@@ -64,6 +64,7 @@ public class MainApplication extends Application implements ReactApplication {
            packages.add(new RNWebsocketPakage());
            packages.add(new CoapClientPackage());
            packages.add(new RNUdpServerPackage());
+           packages.add(new LocalNotificationPackage());
            packages.add(new WifiPackage());
 
           return packages;

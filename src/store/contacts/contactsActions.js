@@ -77,11 +77,11 @@ export const deleteContactAction = (data, callback) => async (dispatch) => {
  * function used to edit contacts
  * @param {Object} contact information to edit
  * @function
- * @param {callback} callback
+  * @param {callback} callback
  * @returns {{type:String  , payload: Object }}
  */
 
-export const editContats = (obj, callback) => async (dispatch) => {
+export const editContacts = (obj, callback) => async (dispatch) => {
   database.editContact(obj).then((res) => {
     callback();
     dispatch({
