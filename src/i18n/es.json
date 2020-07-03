@@ -45,12 +45,14 @@
     "buttonFile": "Restaurar con archivo",
     "textBackup": "Ingrese su codigo pin para continuar",
     "erroPin": "pin incorrecto",
-    "createBackup": "Crear archivo de respaldo"
+    "createBackup": "Crear archivo de respaldo",
+    "deviceSettings": "configurar dispositivo"
   },
   "Contacts": {
     "addContact": "Agregar contacto",
     "editContact": "Editar contacto",
     "name": "Nombre del contacto",
+    "uid": "direccion ipv6",
     "wait": "Por favor espere",
     "existName": "ya existe un contacto con ese nombre",
     "existContact": "Contacto existente",
@@ -59,7 +61,8 @@
   },
   "Header": {
     "contacts": "Contactos",
-    "settings": "Configuración"
+    "settings": "Configuración",
+    "search": "Buscar"
   },
   "Chats": {
     "message": "Mensaje",
@@ -67,6 +70,7 @@
     "commentImage": "Agregar comentario",
     "titleDelete": "Eliminar chat",
     "deleteBody": "¿Esta seguro de eliminar todos los mensajes?",
+    "copyingMessage": "Mensaje copiado",
     "clean": "Limpiar chat",
     "voice": "Audio",
     "photo": "Foto"
@@ -76,6 +80,8 @@
     "es": "Español"
   },
   "DeviceSettings": {
+    "retryButton": "reintentar",
+    "headerTitle": "Configuracion del dispositvo",
     "errorInfo": "falló la conexión, verifique que esté conectada al dispositivo turpial",
     "deviceTitle": "Características del dispositivo",
     "bateryStatus": "Estado de la batería",
@@ -99,6 +105,6 @@
     "ChangePassword": "Cambiar contraseña",
     "usernameError": "Este campo no debe estar vacio",
     "passwordError": "Este campo no debe estar vacio",
-    "confirmPassword":"Las contraseñas no coinciden"
+    "confirmPassword": "Las contraseñas no coinciden"
   }
 }

@@ -57,7 +57,7 @@ class DeviceSettings extends React.Component {
     const { deviceInfo, screenProps, authDevice } = this.props;
     return (
       <Container>
-        <Header {...this.props} name="Settings Device" />
+        <Header {...this.props} name={`${screenProps.t('DeviceSettings:headerTitle')}`} />
         {/* <AlertMessage close={this.closeAlert} open={this.state.visibleAlert} screenProps={screenProps} /> */}
         {/* {deviceInfo.status === 'auth' && <Auth screenProps={screenProps} authDevice={authDevice} />} */}
         {deviceInfo.status === 'waiting' && <Spinner />}

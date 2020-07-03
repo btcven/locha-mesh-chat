@@ -5,8 +5,9 @@
   "scripts": {
     "android": "react-native run-android",
     "ios": "react-native run-ios",
+    "languajes": "node languages.js",
     "start": "react-native start",
-    "postinstall": "./node_modules/.bin/rn-nodeify  --install stream,crypto,vm  --hack  --yarn",
+    "postinstall": "./node_modules/.bin/rn-nodeify  --install stream,crypto,vm,fs  --hack  --yarn",
     "docs": "./node_modules/.bin/jsdoc -c jsdoc.json",
     "lint": "eslint '**/*.{js,jsx}' --quiet",
     "test": "jest --verbose --runInBand --detectOpenHandles"
@@ -34,6 +35,7 @@
     "domain-browser": "^1.1.1",
     "events": "^1.0.0",
     "formik": "^1.4.3",
+    "glob": "^7.1.6",
     "https-browserify": "~0.0.0",
     "i18next": "^19.0.0",
     "identicon.js": "^2.3.3",
@@ -63,6 +65,7 @@
     "react-native-image-view": "^2.1.6",
     "react-native-image-zoom-viewer": "^2.2.26",
     "react-native-language-detector": "https://github.com/xkevin190/react-native-language-detector.git#master",
+    "react-native-level-fs": "^3.0.0",
     "react-native-material-menu": "^1.0.0",
     "react-native-modal": "^11.3.1",
     "react-native-os": "^1.0.1",
@@ -105,7 +108,6 @@
     "@babel/runtime": "^7.6.2",
     "@react-native-community/eslint-config": "^0.0.5",
     "babel-jest": "^24.9.0",
-    "metro-react-native-babel-preset": "^0.58.0",
     "better-docs": "^1.3.3",
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.2",
@@ -119,6 +121,7 @@
     "jest-environment-enzyme": "^7.1.2",
     "jest-enzyme": "^7.1.2",
     "jsdoc": "^3.6.3",
+    "metro-react-native-babel-preset": "^0.58.0",
     "pre-commit": "^1.2.2",
     "react-test-renderer": "16.8.3",
     "rn-nodeify": "tradle/rn-nodeify"
@@ -170,7 +173,8 @@
     "_stream_readable": "readable-stream/readable",
     "_stream_writable": "readable-stream/writable",
     "_stream_duplex": "readable-stream/duplex",
-    "_stream_passthrough": "readable-stream/passthrough"
+    "_stream_passthrough": "readable-stream/passthrough",
+    "fs": "react-native-level-fs"
   },
   "browser": {
     "zlib": "browserify-zlib",
@@ -195,6 +199,7 @@
     "_stream_readable": "readable-stream/readable",
     "_stream_writable": "readable-stream/writable",
     "_stream_duplex": "readable-stream/duplex",
-    "_stream_passthrough": "readable-stream/passthrough"
+    "_stream_passthrough": "readable-stream/passthrough",
+    "fs": "react-native-level-fs"
   }
 }
