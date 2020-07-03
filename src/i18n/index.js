@@ -2,9 +2,15 @@ import i18n from 'i18next';
 import { reactI18nextModule } from 'react-i18next';
 // import locale from "react-native-language-detector";
 import { AsyncStorage } from 'react-native';
+import glob from 'glob';
 
 import en from './en.json';
 import es from './es.json';
+
+glob('** / *. json', options, (er, files) => {
+  console.log(files);
+});
+
 
 const STORAGE_KEY = '@APP:languageCode';
 
@@ -12,12 +18,12 @@ const languageDetector = {
   init: Function.prototype,
   type: 'languageDetector',
   async: true, // flags below detection to be async
-  detect: async callback => {
+  detect: async (callback) => {
     const savedDataJSON = await AsyncStorage.getItem(STORAGE_KEY);
     const lng = savedDataJSON || 'en';
     callback(lng);
   },
-  cacheUserLanguage: () => {}
+  cacheUserLanguage: () => { }
 };
 
 i18n
