@@ -67,7 +67,7 @@ class DualComponent extends Component {
     const open = !!(!this.props.user && this.props.status);
     return (
       <View style={styles.container}>
-        <WifiConnect open={this.props.notConnectedValidAp} />
+        {/* <WifiConnect open={this.props.notConnectedValidAp} /> */}
         {this.props.user && (
           <View style={styles.container}>
             {this.props.tabPosition === 1 && <Home {...this.props} />}

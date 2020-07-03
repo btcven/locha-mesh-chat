@@ -1,15 +1,22 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable global-require */
 import i18n from 'i18next';
 import { reactI18nextModule } from 'react-i18next';
 // import locale from "react-native-language-detector";
 import { AsyncStorage } from 'react-native';
-import glob from 'glob';
+import { esp, eng, hld, fra } from './languages';
 
-import en from './en.json';
-import es from './es.json';
+const en = require('./en.json');
+const es = require('./es.json');
+const fr = require('./fr.json');
+const nl = require('./nl.json');
 
-glob('** / *. json', options, (er, files) => {
-  console.log(files);
-});
+const languagesAllowed = {
+  en: { ...en, ...eng },
+  es: { ...es, ...esp },
+  fr: { ...fr, ...fra },
+  nl: { ...nl, ...hld }
+};
 
 
 const STORAGE_KEY = '@APP:languageCode';
@@ -35,10 +42,7 @@ i18n
     preload: ['en', 'es'],
     fallbackLng: 'en',
     lng: 'en',
-    resources: {
-      en,
-      es
-    },
+    resources: languagesAllowed,
     // have a common namespace used around the full app
     ns: ['common'],
     defaultNS: 'common',

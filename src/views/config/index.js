@@ -365,7 +365,7 @@ class Config extends Component {
                   }}
                 >
                   <Text style={styles.textInfo}>
-                    Device Settings
+                    {screenProps.t('Settings:deviceSettings')}
                   </Text>
                 </View>
                 <Right

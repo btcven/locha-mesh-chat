@@ -63,7 +63,13 @@ export default class Lenguajes extends Component {
         label: screenProps.t('Languages:en')
       },
 
-      { key: 'es', label: screenProps.t('Languages:es') }
+      { key: 'es', label: screenProps.t('Languages:es') },
+      {
+        key: 'fr', label: screenProps.t('Languages:fr')
+      },
+      {
+        key: 'nl', label: screenProps.t('Languages:nl')
+      }
     ];
 
     return (

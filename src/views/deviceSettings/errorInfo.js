@@ -14,7 +14,7 @@ const ErrorInfo = ({ getDeviceInfo, screenProps }) => (
     <Icon type="MaterialIcons" name="error" style={styles.iconStyle} />
     <Text style={styles.textStyle}>{screenProps.t('DeviceSettings:errorInfo')}</Text>
     <View style={styles.buttonStyle}>
-      <Button color="#fbc233" title="Retry" onPress={getDeviceInfo} />
+      <Button color="#fbc233" title={screenProps.t('DeviceSettings:retryButton')} onPress={getDeviceInfo} />
     </View>
   </Container>
 );

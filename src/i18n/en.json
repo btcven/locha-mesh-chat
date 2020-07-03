@@ -35,6 +35,7 @@
     "setting": "Settings"
   },
   "Settings": {
+    "deviceSettings": "device Settings",
     "name": "Name",
     "editName": "Edit nickname",
     "enterName": "Nickname",
@@ -81,6 +82,8 @@
     "es": "Spanish"
   },
   "DeviceSettings": {
+    "retryButton": "retry",
+    "headerTitle": "device settings",
     "errorInfo": "Connection failed. Please verify that you are connected to a Turpial device's WiFi hotspot.",
     "deviceTitle": "Device Characteristics",
     "bateryStatus": "Battery status",
