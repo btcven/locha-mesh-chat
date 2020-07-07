@@ -7,7 +7,7 @@ import {
   Item, Form, Input, Button, Spinner
 } from 'native-base';
 import { connect } from 'react-redux';
-import { wifiConnect } from './store/aplication/aplicationAction';
+import { wifiConnect, manualConnection } from './store/aplication/aplicationAction';
 import { toast } from './utils/utils';
 
 class WifiConnect extends Component {
@@ -31,22 +31,22 @@ class WifiConnect extends Component {
     }, () => {
       this.interval = setInterval(() => {
         this.contador += 1;
-        if (this.contador > 20) {
+        if (this.contador > 15) {
           clearInterval(this.interval);
           this.contador = 0;
           this.setState({ loading: false });
-          toast('connection error');
+          toast(`${this.props.screenProps.t('WifiConnect:connectionError')}`);
         } else if (!this.props.open) {
           clearInterval(this.interval);
           this.setState({ loading: false });
-          toast('successful connection');
+          toast('WifiConnect:successfulConnection');
         }
-      }, 1000);
+      }, 2000);
     });
   }
 
   render() {
-    const { open } = this.props;
+    const { open, screenProps } = this.props;
     const openModal = isNull(open) ? false : open;
     return (
       <Modal
@@ -61,14 +61,14 @@ class WifiConnect extends Component {
           && (
             <View style={{ width: '100%', minHeight: '50%', backgroundColor: 'white' }}>
               <View>
-                <Text style={styles.titleModal}>connect to a valid AP </Text>
+                <Text style={styles.titleModal}>{screenProps.t('WifiConnect:title')}</Text>
               </View>
-              <Text style={styles.subtitle}>This application to work correctly it is necessary to connect to a network compatible with ipv6, please connect to a valid network.</Text>
+              <Text style={styles.subtitle}>{screenProps.t('WifiConnect:subtitle')}</Text>
               <View>
                 <Form>
                   <Item stackedLabel>
                     <Input
-                      placeholder="Enter SSID"
+                      placeholder={`${screenProps.t('WifiConnect:inputSSID')}`}
                       value={this.state.ssid}
                       onChangeText={(text) => this.setState({ ssid: text })}
                     />
@@ -76,7 +76,7 @@ class WifiConnect extends Component {
 
                   <Item stackedLabel>
                     <Input
-                      placeholder="Enter Password"
+                      placeholder={`${screenProps.t('WifiConnect:inputPasword')}`}
                       value={this.state.password}
                       secureTextEntry
                       onChangeText={(text) => this.setState({ password: text })}
@@ -86,30 +86,35 @@ class WifiConnect extends Component {
                 </Form>
               </View>
               <View style={styles.footerContainer}>
+
+                <Button transparent style={{ width: '25%' }} onPress={() => this.props.manualConnection()}>
+                  <Text style={{ color: 'blue', fontWeight: '400', fontSize: 15 }}>{screenProps.t('WifiConnect:buttonCancel')}</Text>
+                </Button>
+
                 <Button transparent style={{ width: '25%' }} onPress={() => this.connect()}>
-                  <Text style={{ color: 'blue', fontWeight: '400', fontSize: 15 }}>CONNECT</Text>
+                  <Text style={{ color: 'blue', fontWeight: '400', fontSize: 15 }}>{screenProps.t('WifiConnect:buttonConnect')}</Text>
                 </Button>
               </View>
             </View>
           )}
         {this.state.loading
           && (
-          <View style={{
-            width: '100%',
-            minHeight: '50%',
-            backgroundColor: 'white',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}
-          >
-            <Spinner color="#FAB300" />
-          </View>
+            <View style={{
+              width: '100%',
+              minHeight: '50%',
+              backgroundColor: 'white',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
+            >
+              <Spinner color="#FAB300" />
+            </View>
           )}
       </Modal>
     );
   }
 }
-export default connect(null, { wifiConnect })(WifiConnect);
+export default connect(null, { wifiConnect, manualConnection })(WifiConnect);
 
 const styles = StyleSheet.create({
   styleTextButton: {
@@ -122,7 +127,8 @@ const styles = StyleSheet.create({
   footerContainer: {
     padding: 20,
     width: '100%',
-    alignItems: 'flex-end',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   subtitle: {
     paddingHorizontal: 10,

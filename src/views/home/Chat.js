@@ -57,6 +57,7 @@ class Chat extends Component {
   }
 
   componentDidMount = () => {
+    console.warn("in the component chat", this.props.chat[this.props.chatSelected.index].toUID);
     this.props.setView(this.props.chat[this.props.chatSelected.index].toUID);
   };
 
@@ -220,7 +221,7 @@ class Chat extends Component {
       ? navigation.state.params.uid
       : null;
     const sendObject = {
-      fromUID: userData.uid,
+      fromUID: userData.ipv6Address,
       toUID,
       msg: {
         text: ''
@@ -230,7 +231,7 @@ class Chat extends Component {
     };
     data.images.forEach((image, key) => {
       const id = sha256(
-        `${userData.uid} + ${toUID}  +  ${sendObject.msg.text
+        `${userData.ipv6Address} + ${toUID}  +  ${sendObject.msg.text
         + sendObject.msg.file}  + ${new Date().getTime()}`
       );
       if (data.position === key) {

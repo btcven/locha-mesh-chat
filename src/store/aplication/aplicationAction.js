@@ -48,10 +48,9 @@ export const verifyAplicationState = () => async (dispatch) => {
  */
 
 export const restoreAccountWithPin = (pin, callback) => async (dispatch) => {
+  new UdpServer();
   database.restoreWithPin(sha256(pin)).then(async (res) => {
     dispatch(writeAction(JSON.parse(JSON.stringify(res[0]))));
-    // const url = await AsyncStorage.getItem('@APP:URL_KEY');
-    new UdpServer();
   }).catch(() => {
     callback();
   });
@@ -65,7 +64,7 @@ export const createNewAccount = (obj) => async (dispatch) => {
   const result = await bitcoin.generateAddress(obj.seed);
   const ivp6 = udp.globalIpv6 ? udp.globalIpv6 : '::1';
   database.writteUser({
-    uid: ivp6,
+    uid: result.toString(),
     ipv6Address: ivp6,
     name: obj.name,
     image: null,
@@ -84,10 +83,10 @@ export const restoreWithPhrase = (pin, phrase, name) => async (dispatch) => {
   database.restoreWithPhrase(pin, phrase).then(async () => {
     const udp = new UdpServer();
     await createFolder();
-    // const result = await bitcoin.generateAddress(phrase);
+    const result = await bitcoin.generateAddress(phrase);
     const ivp6 = udp.globalIpv6 ? udp.globalIpv6 : '::1';
     database.writteUser({
-      uid: ivp6,
+      uid: result,
       ipv6Address: ivp6,
       name,
       image: null,
@@ -166,11 +165,25 @@ export const notConnectedValidAp = (notValid) => (dispatch, getState) => {
       type: ActionTypes.NOT_CONNECTED_VALID_AP,
       payload: notValid
     });
+
+    dispatch({
+      type: ActionTypes.MANUAL_CONNECTION,
+      payload: notValid
+    });
   }
 };
 
-
+/**
+ * function used for connect the WiFi inside app
+ * @param {Object} credentials  ssid and password of the wifi ap
+ * @param {*} callback
+ */
 export const wifiConnect = (credentials, callback) => (dispatch) => {
   NativeModules.RNwifiModule.connect(credentials);
   callback();
 };
+
+
+export const manualConnection = () => ({
+  type: ActionTypes.MANUAL_CONNECTION
+});

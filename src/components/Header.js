@@ -50,7 +50,7 @@ class HeaderComponent extends Component {
   };
 
   render() {
-    const { screenProps, retryConnection, navigation } = this.props;
+    const { screenProps, navigation, aplication } = this.props;
     const router = this.getNameContact(navigation);
     const selected = this.props.selected
       ? this.props.selected.length < 1
@@ -79,7 +79,7 @@ class HeaderComponent extends Component {
                     <Icon style={styles.iconStyle} name="arrow-back" />
                   </TouchableHighlight>
                 </Left>
-            )}
+              )}
             {router.routeName === 'initial' && (
               <Left>
                 <TouchableHighlight
@@ -194,12 +194,14 @@ class HeaderComponent extends Component {
               </Animatable.View>
             )}
           </Header>
-          {retryConnection === 4
+          {aplication.notConnectedValidAp
             && (
               <View style={styles.notConnectedContainer}>
-                <Text>not connected</Text>
+                <Text>{screenProps.t('Header:notConnected')}</Text>
                 <TouchableOpacity onPress={this.props.manualConnection}>
-                  <Text style={{ textDecorationLine: 'underline' }}>RETRY</Text>
+                  <Text style={{ textDecorationLine: 'underline' }}>
+                    {`${screenProps.t('DeviceSettings:retryButton')}`.toLocaleUpperCase()}
+                  </Text>
                 </TouchableOpacity>
               </View>
             )}
@@ -228,8 +230,8 @@ class HeaderComponent extends Component {
           {this.props.selected.length === 1 ? (
             <Title>{this.props.selected[0].name}</Title>
           ) : (
-            <Title>{this.props.selected.length}</Title>
-          )}
+              <Title>{this.props.selected.length}</Title>
+            )}
         </Body>
         <Right>
           {this.props.copy && (
@@ -286,6 +288,7 @@ class HeaderComponent extends Component {
 const mapStateToProps = (state) => ({
   aplication: state.aplication,
   other: state.nav
+
 });
 
 export default connect(mapStateToProps, { openMenu, manualConnection })(HeaderComponent);

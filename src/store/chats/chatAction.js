@@ -295,10 +295,9 @@ export const setView = (idChat) => async (dispatch) => {
       const state = store.default.getState();
       if (idChat && res.length > 0) {
         const chat = Object.values(state.chats.chat).find((itemChat) => itemChat.toUID === idChat);
-
         // eslint-disable-next-line no-shadow
         const sendStatus = {
-          fromUID: state.config.uid,
+          fromUID: state.config.ipv6Address,
           toUID: chat.toUID,
           timestamp: new Date().getTime(),
           data: {
