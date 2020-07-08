@@ -63,7 +63,8 @@
   "Header": {
     "contacts": "Contactos",
     "settings": "Configuración",
-    "search": "Buscar"
+    "search": "Buscar",
+    "notConnected": "No connectado"
   },
   "Chats": {
     "message": "Mensaje",
@@ -107,5 +108,15 @@
     "usernameError": "Este campo no debe estar vacio",
     "passwordError": "Este campo no debe estar vacio",
     "confirmPassword": "Las contraseñas no coinciden"
+  },
+  "WifiConnect": {
+    "title": "Conecte un AP valido",
+    "subtitle": "Para que esta aplicación funcione correctamente es necesario conectarse a una red compatible con ipv6, conéctese a una red válida.",
+    "buttonConnect": "Connectar",
+    "buttonCancel": "Cancelar",
+    "connectionError": "Error de conexion",
+    "successfulConnection": "Conexion satisfactoria",
+    "inputSSID":"Ingrese SSID",
+    "inputPasword":"Ingrese Contraseña"
   }
 }

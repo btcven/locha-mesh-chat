@@ -56,7 +56,7 @@ class Config extends Component {
 
   setContent = async (data) => {
     Clipboard.setString(data);
-    toast(this.props.screenProps.t('Settings:uidCody'));
+    toast(this.props.screenProps.t('Settings:uidCopy'));
   };
 
 

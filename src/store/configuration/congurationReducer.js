@@ -24,6 +24,12 @@ export const configurationReducer = (state = AplicationState, action) => {
     case ActionTypes.CLEAR_ALL: {
       return { ...AplicationState };
     }
+    case ActionTypes.SET_NEW_IPV6: {
+      return {
+        ...state,
+        ipv6Address: action.payload
+      };
+    }
     case ActionTypes.GET_PHOTO_USER: {
       return { ...state, image: action.payload, imageHash: action.imageHash };
     }

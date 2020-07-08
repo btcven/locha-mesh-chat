@@ -44,6 +44,30 @@ export default class CoreDatabase {
     }
   });
 
+  /**
+   * save new ipv6 in the database
+   * @param {*} uid  uid user
+   * @param {*} ipv6 new ipv6 address
+   */
+  setNewIpv6 = (uid, ipv6) => new Promise((resolve, reject) => {
+    try {
+      this.db.write(() => {
+        const userData = {
+          uid,
+          ipv6Address: ipv6,
+        };
+        this.db.create(
+          'user',
+          userData,
+          true
+        );
+        resolve(userData);
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+
   saveUserPhoto = (obj) => new Promise((resolve, reject) => {
     try {
       this.db.write(() => {

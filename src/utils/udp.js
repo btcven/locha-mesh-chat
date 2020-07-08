@@ -4,7 +4,7 @@ import { messageType } from './constans';
 import { getChat, setStatusMessage } from '../store/chats';
 import { requestImageStatus, sentImageStatus, verifyHashImageStatus } from '../store/contacts/contactsActions';
 import { notConnectedValidAp } from '../store/aplication/aplicationAction';
-
+import { setNewIpv6 } from '../store/configuration/congurationAction'
 
 export default class UdpServer {
   constructor() {
@@ -67,6 +67,7 @@ export default class UdpServer {
           this.globalIpv6 = ipv6;
           this.udp.initServer(ipv6);
         }
+        this.store.dispatch(setNewIpv6(ipv6));
         this.isStarted = true;
       }).catch(() => {
         this.store.dispatch(notConnectedValidAp(true));

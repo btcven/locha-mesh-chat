@@ -20,6 +20,7 @@ public class RNUdpServerModule  extends ReactContextBaseJavaModule  {
 
     private final static int port = 8888;
     private final static String TAG = "upd server";
+    private static final int DEFAULT_MAX_RESOURCE_SIZE = 5 * 1024 * 1024;
     Thread UDPBroadcastThread;
     DatagramSocket udpServer;
     Boolean shouldRestartSocketListen = false;
@@ -96,10 +97,10 @@ public class RNUdpServerModule  extends ReactContextBaseJavaModule  {
             Log.i(TAG, "Created UDP  server socket at " + udpServer.getLocalSocketAddress());
 
             Log.i(TAG, "Waiting for a UDP packet...");
-            DatagramPacket packet = new DatagramPacket(new byte[1024], 1024);
+            DatagramPacket packet = new DatagramPacket(new byte[DEFAULT_MAX_RESOURCE_SIZE], DEFAULT_MAX_RESOURCE_SIZE);
             udpServer.receive(packet);
-          
-    
+
+
             udpServer.setBroadcast(true);
             displayPacketDetails(packet);
             udpServer.close();

@@ -5,7 +5,6 @@ import Identicon from 'identicon.js';
 import BackgroundTimer from 'react-native-background-timer';
 import { database } from '../../App';
 import {
-  realoadBroadcastChat,
   selectedChat,
   messageQueue,
   updateState
@@ -107,16 +106,14 @@ export const notifyRedirect = (data) => {
 
 export const onNotification = (res) => {
   const state = store.getState();
-  const view = res.toUID ? res.fromUID : 'broadcast';
+  const view = res.fromUID;
   const rule = state.aplication.view !== view;
   unreadMessages(rule, state, view, res);
-  if (state.config.uid !== res.fromUID && rule) {
+  if (state.config.ipv6Address !== res.fromUID && rule) {
     const id = parseInt((view), 16);
 
     const result = getInfoMessage(String(id).substr(2, 10));
-    const allData = result.toUID === 'broadcast'
-      ? { ...res, name: result.toUID }
-      : { ...res, name: result.name };
+    const allData = { ...res, name: result.name };
     notification.localNotif(allData, String(id).substr(2, 10));
   }
 };
