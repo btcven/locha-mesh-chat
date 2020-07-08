@@ -18,7 +18,7 @@ describe('spinner component', () => {
 
   describe('test when the player is activated', () => {
     test('play button simulation', () => {
-      wrapper.find('TouchableOpacity').at(0).props().onPress();
+      wrapper.find('ForwardRef').at(0).props().onPress();
       expect(wrapper.instance().state.play).toBe(true);
     });
 
@@ -33,7 +33,7 @@ describe('spinner component', () => {
 
   describe('leisurely player', () => {
     test('mock pause button', () => {
-      wrapper.find('TouchableOpacity').at(0).props().onPress();
+      wrapper.find('ForwardRef').at(0).props().onPress();
       expect(wrapper.instance().state.play).toBe(false);
     });
 

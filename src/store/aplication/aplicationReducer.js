@@ -10,7 +10,8 @@ const AplicationState = {
   view: undefined,
   appStatus: undefined,
   wsUrl: undefined,
-  retryConnection: 0
+  retryConnection: false,
+  notConnectedValidAp: null
 };
 
 export const AplicationReducer = (state = AplicationState, action) => {
@@ -58,12 +59,17 @@ export const AplicationReducer = (state = AplicationState, action) => {
       return { ...state, wsUrl: action.payload, retryConnection: 0 };
     }
 
-    case ActionTypes.CONNECTION_ATTEMPT: {
-      return { ...state, retryConnection: state.retryConnection + 1 };
+    case ActionTypes.MANUAL_CONNECTION: {
+      return {
+        ...state,
+        retryConnection: action.payload !== undefined
+          ? action.payload
+          : !state.retryConnection
+      };
     }
 
-    case ActionTypes.MANUAL_CONNECTION: {
-      return { ...state, retryConnection: 0 };
+    case ActionTypes.NOT_CONNECTED_VALID_AP: {
+      return { ...state, notConnectedValidAp: action.payload };
     }
     default: {
       return state;

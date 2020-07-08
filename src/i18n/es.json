@@ -1,5 +1,6 @@
 {
   "Initial": {
+    "buy": "Comprar dispositivo",
     "title": "Bienvenido",
     "subtitle": "Gracias por usar Locha Mesh, es una red de radio para comunicaciones y transacciones de Bitcoin sin internet o incluso red eléctrica. Estamos trabajando no solo en un protocolo, sino también en el firmware para dispositivos asequibles como Turpial o Harpia.",
     "text": "Para continuar por favor ingrese su alias y su contraseña de seguridad",
@@ -39,18 +40,20 @@
     "saveButton": "guardar",
     "gallery": "Galeria",
     "camera": "Camara",
-    "uidCody": "uid copiado",
+    "uidCody": "ip copiado",
     "language": "Idioma",
     "qrText": "Escanee el código QR para agregarlo como contacto",
     "buttonFile": "Restaurar con archivo",
     "textBackup": "Ingrese su codigo pin para continuar",
     "erroPin": "pin incorrecto",
-    "createBackup": "Crear archivo de respaldo"
+    "createBackup": "Crear archivo de respaldo",
+    "deviceSettings": "configurar dispositivo"
   },
   "Contacts": {
     "addContact": "Agregar contacto",
     "editContact": "Editar contacto",
     "name": "Nombre del contacto",
+    "uid": "direccion ipv6",
     "wait": "Por favor espere",
     "existName": "ya existe un contacto con ese nombre",
     "existContact": "Contacto existente",
@@ -59,7 +62,9 @@
   },
   "Header": {
     "contacts": "Contactos",
-    "settings": "Configuración"
+    "settings": "Configuración",
+    "search": "Buscar",
+    "notConnected": "No connectado"
   },
   "Chats": {
     "message": "Mensaje",
@@ -67,6 +72,7 @@
     "commentImage": "Agregar comentario",
     "titleDelete": "Eliminar chat",
     "deleteBody": "¿Esta seguro de eliminar todos los mensajes?",
+    "copyingMessage": "Mensaje copiado",
     "clean": "Limpiar chat",
     "voice": "Audio",
     "photo": "Foto"
@@ -76,6 +82,8 @@
     "es": "Español"
   },
   "DeviceSettings": {
+    "retryButton": "reintentar",
+    "headerTitle": "Configuracion del dispositvo",
     "errorInfo": "falló la conexión, verifique que esté conectada al dispositivo turpial",
     "deviceTitle": "Características del dispositivo",
     "bateryStatus": "Estado de la batería",
@@ -99,6 +107,16 @@
     "ChangePassword": "Cambiar contraseña",
     "usernameError": "Este campo no debe estar vacio",
     "passwordError": "Este campo no debe estar vacio",
-    "confirmPassword":"Las contraseñas no coinciden"
+    "confirmPassword": "Las contraseñas no coinciden"
+  },
+  "WifiConnect": {
+    "title": "Conecte un AP valido",
+    "subtitle": "Para que esta aplicación funcione correctamente es necesario conectarse a una red compatible con ipv6, conéctese a una red válida.",
+    "buttonConnect": "Connectar",
+    "buttonCancel": "Cancelar",
+    "connectionError": "Error de conexion",
+    "successfulConnection": "Conexion satisfactoria",
+    "inputSSID":"Ingrese SSID",
+    "inputPasword":"Ingrese Contraseña"
   }
 }

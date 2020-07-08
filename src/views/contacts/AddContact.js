@@ -94,7 +94,7 @@ export default class AddContact extends Component {
               this.props.screenProps.t('Contacts:contactSuccessfully')
             );
             this.props.close();
-            this.props.requestImage(sha256(this.state.uid));
+            // this.props.requestImage(sha256(this.state.uid));
           }
         );
       } else {
@@ -225,7 +225,7 @@ export default class AddContact extends Component {
               >
                 <View>
                   <View style={styles.inputStyle}>
-                    <Text>UID</Text>
+                    <Text>Ipv6 adress</Text>
 
                     <TouchableOpacity
                       style={{

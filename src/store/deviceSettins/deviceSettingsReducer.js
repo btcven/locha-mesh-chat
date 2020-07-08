@@ -15,7 +15,7 @@ const AplicationState = {
     ssid: '',
     enabled: false
   },
-  status: 'auth',
+  status: 'waiting',
   user: {
     username: null,
     password: null,

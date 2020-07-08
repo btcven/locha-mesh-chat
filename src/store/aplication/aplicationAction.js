@@ -1,12 +1,12 @@
-import { AsyncStorage } from 'react-native';
+/* eslint-disable no-new */
+import { AsyncStorage, NativeModules } from 'react-native';
 import { sha256 } from 'js-sha256';
 import RNSF from 'react-native-fs';
 import { ActionTypes } from '../constants';
 import { STORAGE_KEY } from '../../utils/constans';
 import { createFolder } from '../../utils/utils';
 import { bitcoin, database } from '../../../App';
-import Socket from '../../utils/socket';
-import store from '..';
+import UdpServer from '../../utils/udp';
 
 /**
  * in this module are the global actions of the application
@@ -17,10 +17,11 @@ import store from '..';
 // eslint-disable-next-line import/no-mutable-exports
 export let ws;
 
+
 /**
  *@function
  *@description executes when starting the application verifying that the user
-  exists and if it exists initiates the connection with the socket
+  exists
  *@returns {object}
  */
 
@@ -47,68 +48,55 @@ export const verifyAplicationState = () => async (dispatch) => {
  */
 
 export const restoreAccountWithPin = (pin, callback) => async (dispatch) => {
+  new UdpServer();
   database.restoreWithPin(sha256(pin)).then(async (res) => {
     dispatch(writeAction(JSON.parse(JSON.stringify(res[0]))));
-    const url = await AsyncStorage.getItem('@APP:URL_KEY');
-    ws = new Socket(store, database, url);
-    dispatch({ type: ActionTypes.URL_CONNECTION, payload: ws.url });
   }).catch(() => {
     callback();
   });
 };
 
 export const createNewAccount = (obj) => async (dispatch) => {
+  const udp = new UdpServer();
   await database.getRealm(sha256(obj.pin), sha256(obj.seed));
   await database.setDataSeed(obj.seed);
   await createFolder();
   const result = await bitcoin.generateAddress(obj.seed);
+  const ivp6 = udp.globalIpv6 ? udp.globalIpv6 : '::1';
   database.writteUser({
-    uid: result.publicKey.toString(),
+    uid: result.toString(),
+    ipv6Address: ivp6,
     name: obj.name,
     image: null,
     contacts: [],
-    chats: [
-      {
-        fromUID: result.publicKey.toString(),
-        toUID: 'broadcast',
-        messages: []
-      }
-    ]
+    chats: []
   }).then(async (res) => {
     if (!process.env.JEST_WORKER_ID) {
       await AsyncStorage.setItem('@APP:status', 'created');
     }
     dispatch(writeAction(res));
-    ws = new Socket(store, database);
-    dispatch({ type: ActionTypes.URL_CONNECTION, payload: ws.url });
   });
 };
 
 
 export const restoreWithPhrase = (pin, phrase, name) => async (dispatch) => {
   database.restoreWithPhrase(pin, phrase).then(async () => {
+    const udp = new UdpServer();
     await createFolder();
     const result = await bitcoin.generateAddress(phrase);
+    const ivp6 = udp.globalIpv6 ? udp.globalIpv6 : '::1';
     database.writteUser({
-      uid: result.publicKey.toString(),
+      uid: result,
+      ipv6Address: ivp6,
       name,
       image: null,
       contacts: [],
-      chats: [
-        {
-          fromUID: result.publicKey.toString(),
-          toUID: 'broadcast',
-          messages: []
-        }
-      ]
+      chats: []
     }).then(async (res) => {
       dispatch(writeAction(res));
       if (!process.env.JEST_WORKER_ID) {
         await AsyncStorage.setItem('@APP:status', 'created');
       }
-      await AsyncStorage.setItem('@APP:status', 'created');
-      ws = new Socket(store, database);
-      dispatch({ type: ActionTypes.URL_CONNECTION, payload: ws.url });
     });
   });
 };
@@ -147,72 +135,10 @@ export const loaded = () => ({
   type: ActionTypes.LOADING_OFF
 });
 
-/**
- * @function
- * @description open the connection to the socket again
- */
-
-export const reestarConnection = async ({ dispatch, getState }) => {
-  const applicationState = getState().aplication;
-  const url = await AsyncStorage.getItem('@APP:URL_KEY');
-  if (applicationState.retryConnection < 3) {
-    ws = new Socket(store, database, url);
-    ws.init();
-  } else {
-    dispatch(loaded);
-  }
-  dispatch({
-    type: ActionTypes.CONNECTION_ATTEMPT,
-  });
-};
-
 export const clearAll = () => (dispatch) => {
   dispatch({
     type: ActionTypes.CLEAR_ALL
   });
-};
-
-/**
- * @function
- * @description restore account with a file
- * @param {String}  pin file unlock pin
- * @param {obj} data database data
- * @return {obj}
- */
-
-export const restoreWithFile = (pin, data) => (dispatch) => {
-  dispatch(loading());
-  database.restoreWithFile(pin, data).then(async () => {
-    await AsyncStorage.setItem('@APP:status', 'created');
-    await createFolder();
-    ws = new Socket(store, database);
-    dispatch({
-      type: ActionTypes.INITIAL_STATE,
-      payload: data.user
-    });
-  });
-};
-
-/**
- * @function
- * @description change socket connection address
- * @param {String}  url  connection url
- */
-
-export const changeNetworkEndPoint = (url) => async () => {
-  await AsyncStorage.setItem('@APP:URL_KEY', url);
-  ws.socket.close();
-};
-
-/**
- * @function
- * @description function to reconnect manually
- */
-export const manualConnection = () => async (dispatch) => {
-  dispatch({ type: ActionTypes.MANUAL_CONNECTION });
-  const url = await AsyncStorage.getItem('@APP:URL_KEY');
-  ws = new Socket(store, database, url);
-  ws.init();
 };
 
 /**
@@ -227,9 +153,37 @@ export const newPin = (obj) => (dispatch) => {
   RNSF.unlink(obj.path).then(() => {
     database.newPin(obj.pin, obj.phrases).then(async (userData) => {
       dispatch(writeAction(JSON.parse(JSON.stringify(userData[0]))));
-      const url = await AsyncStorage.getItem('@APP:URL_KEY');
-      ws = new Socket(store, database, url);
-      dispatch({ type: ActionTypes.URL_CONNECTION, payload: ws.url });
     });
   });
 };
+
+
+export const notConnectedValidAp = (notValid) => (dispatch, getState) => {
+  const { aplication } = getState();
+  if (aplication.notConnectedValidAp !== notValid) {
+    dispatch({
+      type: ActionTypes.NOT_CONNECTED_VALID_AP,
+      payload: notValid
+    });
+
+    dispatch({
+      type: ActionTypes.MANUAL_CONNECTION,
+      payload: notValid
+    });
+  }
+};
+
+/**
+ * function used for connect the WiFi inside app
+ * @param {Object} credentials  ssid and password of the wifi ap
+ * @param {*} callback
+ */
+export const wifiConnect = (credentials, callback) => (dispatch) => {
+  NativeModules.RNwifiModule.connect(credentials);
+  callback();
+};
+
+
+export const manualConnection = () => ({
+  type: ActionTypes.MANUAL_CONNECTION
+});

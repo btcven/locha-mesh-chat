@@ -57,10 +57,8 @@ class Chat extends Component {
   }
 
   componentDidMount = () => {
+    console.warn("in the component chat", this.props.chat[this.props.chatSelected.index].toUID);
     this.props.setView(this.props.chat[this.props.chatSelected.index].toUID);
-    if (this.props.navigation.state.params) {
-      this.props.verifyImage(this.props.navigation.state.params);
-    }
   };
 
   /**
@@ -100,17 +98,6 @@ class Chat extends Component {
     );
   };
 
-  /**
-   * @typedef {Object} Message
-   * @property {string} item.fromUID uid of who sends the message
-   * @property {string} item.id message id
-   * @property {string} item.msg  message text
-   * @property {string | null}  item.name name of who send the message
-   * @property {number} item.timestamp message timestamp
-   * @property {string | null} item.toUID  uid of who receive the message
-   * @property {string} item.type type message
-   * @property {object} item.file path where the file is saved and file type
-   */
 
   /**
    * function executes when pressing a message
@@ -231,10 +218,10 @@ class Chat extends Component {
   sendFileWithImage = (data, callback) => {
     const { userData, navigation } = this.props;
     const toUID = navigation.state.params
-      ? navigation.state.params.hashUID
+      ? navigation.state.params.uid
       : null;
     const sendObject = {
-      fromUID: sha256(userData.uid),
+      fromUID: userData.ipv6Address,
       toUID,
       msg: {
         text: ''
@@ -244,7 +231,7 @@ class Chat extends Component {
     };
     data.images.forEach((image, key) => {
       const id = sha256(
-        `${sha256(userData.uid)} + ${toUID}  +  ${sendObject.msg.text
+        `${userData.ipv6Address} + ${toUID}  +  ${sendObject.msg.text
         + sendObject.msg.file}  + ${new Date().getTime()}`
       );
       if (data.position === key) {

@@ -2,11 +2,20 @@ package DeviceInfo;
 
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.widget.Toast;
+import android.util.Log;
+
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
+import com.facebook.react.bridge.ReactMethod;
+
+import java.net.Inet6Address;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.annotation.Nonnull;
 
 /**
@@ -59,5 +68,35 @@ public class DeviceInfoModule  extends ReactContextBaseJavaModule {
 
         return version;
     }
+
+    @ReactMethod
+    public void getIpv6(Promise promise) {
+        try {
+            for (Enumeration<NetworkInterface> en = NetworkInterface
+                    .getNetworkInterfaces(); en.hasMoreElements(); ) {
+
+                NetworkInterface intf = en.nextElement();
+                for (Enumeration<InetAddress> enumIpAddr = intf
+                        .getInetAddresses(); enumIpAddr.hasMoreElements(); ) {
+                    InetAddress inetAddress = enumIpAddr.nextElement();
+                    if (!inetAddress.isLoopbackAddress() && inetAddress instanceof Inet6Address) {
+                        String ipaddress = inetAddress.getHostAddress().toString();
+                        if(ipaddress.startsWith("2001") || ipaddress.startsWith("fc00") ){
+                            promise.resolve(ipaddress); ;
+                        }
+                    }
+
+                }
+
+            }
+        } catch (Exception ex) {
+            promise.reject("Error", ex.toString());
+            Log.e("IP Address", ex.toString());
+        }
+
+        promise.reject("Error", "error");
+
+    }
+
 
 }

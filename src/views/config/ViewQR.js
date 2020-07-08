@@ -48,7 +48,7 @@ export default class ViewQR extends Component {
               <QRCode
                 value={JSON.stringify({
                   name: this.props.config.name,
-                  uid: this.props.config.uid
+                  uid: this.props.config.ipv6Address
                 })}
                 color="#424242"
                 size={150}

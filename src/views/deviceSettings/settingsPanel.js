@@ -1,12 +1,13 @@
+/* eslint-disable no-alert */
+/* eslint-disable no-undef */
 import React, { Component } from 'react';
-import { Text, TouchableHighlight, StyleSheet } from 'react-native';
+import {
+  Text, TouchableHighlight, StyleSheet, View
+} from 'react-native';
 import {
   Container, Content, List, ListItem, Left, Right, Icon, Switch
 } from 'native-base';
-import { toast } from '../../utils/utils';
 
-import InputModal from '../../components/inputModal';
-import AddNewCredentials from './addNewCredentials';
 /**
  * component where is the views of the esp32 configuration panel
  */
@@ -132,6 +133,18 @@ export default class settingsPanel extends Component {
     }
   }
 
+  componentDidUpdate = () => {
+    if (this.state.open === true) {
+      alert('not avaliable');
+      this.setState({ open: false });
+    }
+
+    if (this.state.openCredential === true) {
+      alert('not avaliable');
+      this.setState({ openCredential: false });
+    }
+  }
+
   closeModalCredential = () => {
     this.setState({
       openCredential: false
@@ -140,13 +153,13 @@ export default class settingsPanel extends Component {
 
   render() {
     const { deviceInfo, screenProps, changeCredentials } = this.props;
-    const {
-      open, title, placeholder, secureText, openCredential
-    } = this.state;
-    const action = this.getActionFunction();
+    // const {
+    //   open, title, placeholder, secureText, openCredential
+    // } = this.state;
+    // const action = this.getActionFunction();
     return (
       <Container>
-        <InputModal
+        {/* <InputModal
           open={open}
           screenProps={screenProps}
           close={this.close}
@@ -156,7 +169,7 @@ export default class settingsPanel extends Component {
           secureText={secureText}
           action={action}
         />
-        <AddNewCredentials open={openCredential} changeCredentials={changeCredentials} close={this.closeModalCredential} />
+        <AddNewCredentials open={openCredential} changeCredentials={changeCredentials} close={this.closeModalCredential} /> */}
         <Content>
           <List>
             <ListItem itemDivider>
@@ -177,19 +190,19 @@ export default class settingsPanel extends Component {
               <Left>
                 <Text>{screenProps.t('DeviceSettings:devicename')}</Text>
               </Left>
-              <Right>
+              <View>
                 <Text>{deviceInfo.device_name}</Text>
-              </Right>
+              </View>
             </ListItem>
             <ListItem>
               <Left>
                 <Text>{screenProps.t('DeviceSettings:compilationVersion')}</Text>
               </Left>
-              <Right>
+              <View>
                 <Text>
                   {deviceInfo.device_version}
                 </Text>
-              </Right>
+              </View>
             </ListItem>
             <ListItem>
               <Left>
@@ -273,82 +286,6 @@ export default class settingsPanel extends Component {
                       placeholder: screenProps.t('DeviceSettings:placeholderPWapPassword'),
                       secureText: true
                     });
-                  }}
-                  style={styles.touchable}
-                  underlayColor="#eeeeee"
-                >
-                  <Icon
-                    style={styles.editButtonStyle}
-                    type="MaterialIcons"
-                    name="edit"
-                  />
-                </TouchableHighlight>
-              </Right>
-            </ListItem>
-            <ListItem itemDivider>
-              <Text>{screenProps.t('DeviceSettings:wstTitle')}</Text>
-            </ListItem>
-            <ListItem>
-              <Left>
-                <Text>
-                  name:
-                  {deviceInfo.sta.ssid}
-                </Text>
-              </Left>
-              <Right>
-                <TouchableHighlight
-                  onPress={() => {
-                    if (deviceInfo.sta.enabled) {
-                      this.setState({
-                        open: true,
-                        title: screenProps.t('DeviceSettings:changeNameSta'),
-                        placeholder: screenProps.t('DeviceSettings:placeholderSta'),
-                        secureText: false
-                      });
-                    } else {
-                      toast('sta is not active');
-                    }
-                  }}
-                  style={styles.touchable}
-                  underlayColor="#eeeeee"
-                >
-                  <Icon
-                    style={styles.editButtonStyle}
-                    type="MaterialIcons"
-                    name="edit"
-                  />
-                </TouchableHighlight>
-              </Right>
-            </ListItem>
-            <ListItem>
-              <Left>
-                <Text>
-                  {screenProps.t('DeviceSettings:active')}
-                </Text>
-              </Left>
-              <Right>
-                <Switch value={deviceInfo.sta.enabled} onTouchEnd={this.activeOrDesactivateSta} />
-              </Right>
-            </ListItem>
-            <ListItem>
-              <Left>
-                <Text>
-                  {screenProps.t('DeviceSettings:changePasswordSta')}
-                </Text>
-              </Left>
-              <Right>
-                <TouchableHighlight
-                  onPress={() => {
-                    if (deviceInfo.sta.enabled) {
-                      this.setState({
-                        open: true,
-                        title: screenProps.t('DeviceSettings:changePasswordSta'),
-                        placeholder: screenProps.t('DeviceSettings:placeholderPStaPassword'),
-                        secureText: true
-                      });
-                    } else {
-                      toast('sta is not active');
-                    }
                   }}
                   style={styles.touchable}
                   underlayColor="#eeeeee"

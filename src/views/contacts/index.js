@@ -67,9 +67,8 @@ class Contacts extends Component {
     }
 
     const selected = unSelect(this.state.selected, contact);
-
     if (selected.found) {
-      this.setStaste({ selected: selected.data });
+      this.setState({ selected: selected.data });
     } else {
       this.setState({
         selected: this.state.selected.concat(contact)
@@ -78,7 +77,7 @@ class Contacts extends Component {
   };
 
   getContactChat = (contact) => {
-    const result = Object.values(this.props.chat).find((chat) => chat.toUID === contact.hashUID);
+    const result = Object.values(this.props.chat).find((chat) => chat.toUID === contact.uid);
 
     return result;
   };

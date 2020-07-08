@@ -25,11 +25,36 @@ export default class CoreDatabase {
       this.db.write(() => {
         const userData = {
           uid: obj.uid,
+          ipv6Address: obj.ipv6Address,
           name: obj.name,
           picture: obj.picture,
           chats: obj.chats,
           contacts: [],
           imageHash: obj.picture ? sha256(obj.picture) : null
+        };
+        this.db.create(
+          'user',
+          userData,
+          true
+        );
+        resolve(userData);
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+
+  /**
+   * save new ipv6 in the database
+   * @param {*} uid  uid user
+   * @param {*} ipv6 new ipv6 address
+   */
+  setNewIpv6 = (uid, ipv6) => new Promise((resolve, reject) => {
+    try {
+      this.db.write(() => {
+        const userData = {
+          uid,
+          ipv6Address: ipv6,
         };
         this.db.create(
           'user',
@@ -119,14 +144,14 @@ export default class CoreDatabase {
         if (!update) {
           user.chats.push({
             fromUID: uid,
-            toUID: obj[0].hashUID,
+            toUID: obj[0].uid,
             messages: [],
             queue: []
           });
         }
         resolve({
           fromUID: uid,
-          toUID: obj[0].hashUID,
+          toUID: obj[0].uid,
           messages: {},
           queue: []
         });
@@ -136,39 +161,12 @@ export default class CoreDatabase {
     });
   });
 
-
-  malditaSeaNojoda = (uid, obj, update) => new Promise((resolve) => {
-    this.db.write(() => {
-      const user = this.db.objectForPrimaryKey('user', uid);
-      user.contacts.push({
-        uid: obj[0].uid,
-        name: obj[0].name,
-        picture: obj[0].picture,
-        hashUID: obj[0].hashUID
-      });
-
-      if (!update) {
-        user.chats.push({
-          fromUID: uid,
-          toUID: obj[0].hashUID,
-          messages: [],
-          queue: []
-        });
-      }
-
-      resolve({
-        fromUID: uid,
-        toUID: obj[0].hashUID,
-        messages: {},
-        queue: []
-      });
-    });
-  })
-
   setMessage = (id, obj, status) => new Promise((resolve, reject) => {
     this.db.write(() => {
       try {
         const chat = this.db.objectForPrimaryKey('Chat', id);
+        console.log('here in the chat', chat);
+
         const time = new Date().getTime();
         const file = obj.msg.typeFile
           ? {
@@ -188,8 +186,8 @@ export default class CoreDatabase {
         resolve({ file, time });
       } catch (err) {
         // eslint-disable-next-line no-console
-        console.ward(['en el setFile', err]);
-        reject(err);
+        console.warn(['en el setFile', err]);
+        // reject(err);
       }
     });
   });

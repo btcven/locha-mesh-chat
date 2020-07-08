@@ -12,15 +12,6 @@ const screenProps = {
 };
 
 describe('main component of configurations', () => {
-  test('render the main component', () => {
-    const rendered = renderer.create(
-      <Provider store={store}>
-        <Configuration screenProps={screenProps} navigation={navigationPops} />
-      </Provider>
-    ).toJSON();
-    expect(rendered).toBeTruthy();
-  });
-
   describe('testing the main configuration functions', () => {
     const wrapper = shallow(
       <Configuration
@@ -30,35 +21,32 @@ describe('main component of configurations', () => {
       />
     ).childAt(0).dive();
 
+      
+
     test('open modal photo', () => {
-      wrapper.find('TouchableHighlight').first().props().onPress();
+      wrapper.find('ForwardRef').first().props().onPress();
       expect(wrapper.instance().state.openModalPhoto).toBe(true);
       wrapper.instance().setState({ openModalPhoto: false });
     });
 
     test('open modal name', () => {
-      wrapper.find('TouchableHighlight').at(1).props().onPress();
+      wrapper.find('ForwardRef').at(2).props().onPress();
       expect(wrapper.instance().state.openModalName).toBe(true);
     });
 
     test('open modal Qr Information', () => {
-      wrapper.find('TouchableHighlight').at(2).props().onPress();
+      wrapper.find('ForwardRef').at(4).props().onPress();
       expect(wrapper.instance().state.viewQR).toBe(true);
     });
 
     test('open modal language', () => {
-      wrapper.find('TouchableOpacity').at(2).props().onPress();
+      wrapper.find('ForwardRef').at(5).props().onPress();
       expect(wrapper.instance().state.language).toBe(true);
     });
 
     test('open modal pin', () => {
-      wrapper.find('TouchableOpacity').at(3).props().onPress();
+      wrapper.find('ForwardRef').at(6).props().onPress();
       expect(wrapper.instance().state.pin).toBe(true);
-    });
-
-    test('open modal pin', () => {
-      wrapper.find('TouchableOpacity').at(5).props().onPress();
-      expect(wrapper.instance().state.network).toBe(true);
     });
   });
 });

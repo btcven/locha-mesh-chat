@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { View, StyleSheet, FlatList } from 'react-native';
-import { sha256 } from 'js-sha256';
 import Sound from 'react-native-sound';
 import FileModal from './fileModal';
 import { ReceiveMessage, SenderMessage, SoundMessage } from './Messages';
@@ -9,7 +8,6 @@ import ImagesView from './imagesView';
 
 
 /**
- *
  *
  * @export
  * @class ChatBody
@@ -43,11 +41,11 @@ export default class ChatBody extends Component {
 
       const lastMessage = this.props.chats[0];
       if (rule1) {
-        if (sha256(this.props.user.uid) !== lastMessage.fromUID) {
+        if (this.props.user.ipv6Address !== lastMessage.fromUID) {
           this.sound.setVolume(0.1).play();
 
           const sendStatus = {
-            fromUID: this.props.user.uid,
+            fromUID: this.props.user.ipv6Address,
             toUID: lastMessage.fromUID,
             timestamp: new Date().getTime(),
             data: {
@@ -66,7 +64,7 @@ export default class ChatBody extends Component {
   };
 
   getContactInfo = (infoItem) => {
-    const result = this.props.contacts.find((contact) => infoItem.fromUID === contact.hashUID);
+    const result = this.props.contacts.find((contact) => infoItem.fromUID === contact.uid);
 
     return result;
   };
@@ -138,7 +136,7 @@ export default class ChatBody extends Component {
             const userInfo = contactInfo || item;
             const file = item.file ? item.file.fileType : undefined;
 
-            const rule = sha256(this.props.user.uid) === item.fromUID;
+            const rule = this.props.user.ipv6Address === item.fromUID;
 
             if (!rule && file !== 'audio') {
               return (

@@ -88,6 +88,7 @@ public class LocalNotificationModule extends ReactContextBaseJavaModule implemen
 
     private void createLocalNotify(Bundle bundle){
 
+
         int notifyID = Integer.parseInt(bundle.getString("id"));
         Intent intent = new Intent(reactContext, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);

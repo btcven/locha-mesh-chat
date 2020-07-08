@@ -119,3 +119,20 @@ export const editName = (obj, callback) => async (dispatch) => {
     });
   });
 };
+
+
+/**
+ *  save new ipv6 and update the state
+ * @param {String} ipv6 new address ivp6
+ */
+export const setNewIpv6 = (ipv6) => (dispatch, getState) => {
+  const state = getState();
+  if (state.config.ipv6Address !== ipv6) {
+    database.setNewIpv6(state.config.uid, ipv6,).then(() => {
+      dispatch({
+        type: ActionTypes.SET_NEW_IPV6,
+        payload: ipv6
+      });
+    });
+  }
+};

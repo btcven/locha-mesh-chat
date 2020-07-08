@@ -14,7 +14,8 @@ export const ActionTypes = {
   URL_CONNECTION: '@@aplication/URL_CONNECTION',
   CONNECTION_ATTEMPT: '@@aplication/CONNECTION_ATTEMPT',
   MANUAL_CONNECTION: '@@aplication/MANUAL_CONNECTION',
-
+  NOT_CONNECTED_VALID_AP: '@@aplication/NOT_CONNECTED_VALID_AP',
+  SET_NEW_IPV6:'@@aplication/SET_NEW_IPV6',
 
   // CONFIGURATION
   GET_PHOTO_USER: '@@configuration/GET_PHOTO',

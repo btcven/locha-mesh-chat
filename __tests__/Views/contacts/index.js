@@ -48,7 +48,7 @@ describe('tests to the main component of contacts', () => {
 
   test('', () => {
     const fbWrapper = wrapper.find('FloatButtons').dive();
-    fbWrapper.find('TouchableOpacity').first().props().onPress();
+    fbWrapper.find('ForwardRef').first().props().onPress();
     expect(wrapper.find('AddContact').exists()).toBeTruthy();
   });
 });

@@ -49,25 +49,27 @@ export default class CreateAccount extends Component {
   }
 
   continue = (values) => {
+    const seed = this.props.phrases.slice();
     if (!this.props.restore) {
-      const seed = this.props.phrases.slice();
-      while (seed.reduce((prev, curr) => prev + +(curr === ''), 0) < 6) {
-        const k = Math.floor(Math.random() * (seed.length - 1));
-        seed[k] = '';
-      }
+      // while (seed.reduce((prev, curr) => prev + +(curr === ''), 0) < 6) {
+      //   const k = Math.floor(Math.random() * (seed.length - 1));
+      //   seed[k] = '';
+      // }
       if (this.state.step === 3) {
         this.setState({ step: 5 });
       } else {
         this.setState({ seed, step: 2 });
       }
-    } else {
+    } else if (this.state.step !== 3) {
       for (let index = 0; index < values.length; index += 1) {
         if (values[index] === '') {
           toast(this.props.screenProps.t('Initial:error2'));
           return;
         }
       }
-      this.setState({ step: 3 });
+      this.setState({ step: 3, seed });
+    } else if (this.state.step === 3) {
+      this.setState({ step: 5 });
     }
   }
 

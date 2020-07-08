@@ -53,18 +53,18 @@ describe('header Component', () => {
     });
 
     test('simulate open the menu', () => {
-      wrapper.find('TouchableHighlight').first().props().onPress();
+      wrapper.find('ForwardRef').first().props().onPress();
       expect(navigationPops.openDrawer.mock.calls.length).toBe(1);
     });
 
     test('render the search button', () => {
       wrapper.setProps({ search: true });
-      expect(wrapper.find('TouchableHighlight').at(1).exists()).toBe(true);
+      expect(wrapper.find('ForwardRef').at(1).exists()).toBe(true);
       wrapper.setProps({ search: seachMockFunction });
     });
 
     test('simulate open search', () => {
-      wrapper.find('TouchableHighlight').at(1).props().onPress();
+      wrapper.find('ForwardRef').at(1).props().onPress();
       expect(wrapper.instance().state.search).toBe(true);
     });
 
@@ -90,12 +90,12 @@ describe('header Component', () => {
     });
 
     test('simulate back button', () => {
-      wrapper.find('TouchableHighlight').first().props().onPress();
+      wrapper.find('ForwardRef').first().props().onPress();
       expect(mockBack.mock.calls.length).toBe(1);
     });
 
     test('simulate back delete', () => {
-      wrapper.find('TouchableHighlight').at(1).props().onPress();
+      wrapper.find('ForwardRef').at(1).props().onPress();
       expect(deleteMock.mock.calls.length).toBe(1);
     });
   });

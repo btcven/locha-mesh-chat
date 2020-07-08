@@ -1,9 +1,7 @@
 import RNFS from 'react-native-fs';
-import { sha256 } from 'js-sha256';
 import { ActionTypes } from '../constants';
 import { FileDirectory, getPhotoBase64, saveImageBase64 } from '../../utils/utils';
 import { database } from '../../../App';
-import { socket } from '../../utils/socket';
 import { messageType } from '../../utils/constans';
 /**
  * here are all the actions references to contacts
@@ -79,11 +77,11 @@ export const deleteContactAction = (data, callback) => async (dispatch) => {
  * function used to edit contacts
  * @param {Object} contact information to edit
  * @function
- * @param {callback} callback
+  * @param {callback} callback
  * @returns {{type:String  , payload: Object }}
  */
 
-export const editContats = (obj, callback) => async (dispatch) => {
+export const editContacts = (obj, callback) => async (dispatch) => {
   database.editContact(obj).then((res) => {
     callback();
     dispatch({
@@ -107,7 +105,7 @@ export const requestImage = (uidContact) => async (dispatch, getState) => {
     imageBase64 = await getPhotoBase64(state.config.image);
   }
   const sendStatus = {
-    fromUID: sha256(state.config.uid),
+    fromUID: state.config.uid,
     timestamp: new Date().getTime(),
     type: messageType.STATUS,
     data: {
@@ -117,7 +115,7 @@ export const requestImage = (uidContact) => async (dispatch, getState) => {
     },
     toUID: uidContact
   };
-  socket.sendSocket(JSON.stringify(sendStatus));
+  // socket.sendSocket(JSON.stringify(sendStatus));
 };
 
 
@@ -143,7 +141,7 @@ export const requestImage = (uidContact) => async (dispatch, getState) => {
 export const verifyImage = (contact) => (dispatch, getState) => {
   const state = getState();
   const sendStatus = {
-    fromUID: sha256(state.config.uid),
+    fromUID: state.config.uid,
     timestamp: new Date().getTime(),
     type: messageType.STATUS,
     data: {
@@ -153,7 +151,7 @@ export const verifyImage = (contact) => (dispatch, getState) => {
     toUID: contact.hashUID
   };
 
-  socket.sendSocket(JSON.stringify(sendStatus));
+  // socket.sendSocket(JSON.stringify(sendStatus));
 };
 
 /**
@@ -199,7 +197,7 @@ export const requestImageStatus = (statusData) => (dispatch, getState) => {
           imageHash: state.config.imageHash
         }
       };
-      socket.sendSocket(JSON.stringify(obj));
+      // socket.sendSocket(JSON.stringify(obj));
     }
   });
 };
@@ -253,6 +251,6 @@ export const verifyHashImageStatus = (statusData) => async (getState) => {
         imageHash: state.config.imageHash
       }
     };
-    socket.sendSocket(JSON.stringify(obj));
+    // socket.sendSocket(JSON.stringify(obj));
   }
 };
