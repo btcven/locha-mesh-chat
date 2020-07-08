@@ -28,7 +28,8 @@
     "titleUsername": "Add nickname",
     "textUsername": "Please enter a nickname",
     "restorePinTitle": "Restore PIN",
-    "restorePinText": "Enter the backup phrase to restore your PIN"
+    "restorePinText": "Enter the backup phrase to restore your PIN",
+    "buy": "Buy turpial device"
   },
   "Drawer": {
     "contacts": "Contacts",

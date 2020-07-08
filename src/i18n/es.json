@@ -1,5 +1,6 @@
 {
   "Initial": {
+    "buy": "Comprar dispositivo",
     "title": "Bienvenido",
     "subtitle": "Gracias por usar Locha Mesh, es una red de radio para comunicaciones y transacciones de Bitcoin sin internet o incluso red eléctrica. Estamos trabajando no solo en un protocolo, sino también en el firmware para dispositivos asequibles como Turpial o Harpia.",
     "text": "Para continuar por favor ingrese su alias y su contraseña de seguridad",

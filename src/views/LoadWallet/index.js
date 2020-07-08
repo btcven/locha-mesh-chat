@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {
   View,
   StyleSheet,
+  Linking,
 } from 'react-native';
 import { Button, Text, Thumbnail } from 'native-base';
 import { connect } from 'react-redux';
@@ -94,7 +95,13 @@ class InitialStep extends Component {
               {screenProps.t('Initial:text')}
             </Text>
           </View>
-
+          <View style={{ padding: 30, }}>
+            <Button onPress={() => Linking.openURL('https://locha.io/buy/')} transparent>
+              <Text style={{ color: '#fbc233', fontWeight: 'bold' }}>
+                {screenProps.t('Initial:buy')}
+              </Text>
+            </Button>
+          </View>
           <View
             style={{
               width: '100%',
