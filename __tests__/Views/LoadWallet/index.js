@@ -43,7 +43,7 @@ describe(' testing the main  createWallet', () => {
   });
 
   test('simulate restore  button', () => {
-    wrapper.find('Styled(Button)').first().props().onPress();
+    wrapper.find('Styled(Button)').at(1).props().onPress();
     expect(wrapper.find('CreateAccount').exists()).toBeTruthy();
   });
 });
