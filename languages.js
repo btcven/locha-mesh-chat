@@ -15,7 +15,13 @@ axios.get(url, { headers })
           axios.get(language.data[0].url, { headers }).then(async (json) => {
             const payload = Buffer.from(json.data.content, 'base64').toString();
             fs.writeFileSync(`./src/i18n/${element.name}.json`, payload, 'utf8');
+          }).catch(err => {
+            console.log('fail last request', err.toString());
           });
+        }).catch((err) => {
+          console.log('fail second request', err.toString());
         });
     });
+  }).catch((err) => {
+    console.log('fail first request', err.toString());
   });

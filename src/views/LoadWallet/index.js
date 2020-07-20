@@ -85,7 +85,16 @@ class InitialStep extends Component {
             >
               {screenProps.t('Initial:subtitle')}
             </Text>
+          </View>
+          <View style={{ padding: 30, }}>
+            <Button onPress={() => Linking.openURL('https://locha.io/buy/')} transparent>
+              <Text style={{ color: '#fbc233', fontWeight: 'bold' }}>
+                {screenProps.t('Initial:buy')}
+              </Text>
+            </Button>
+          </View>
 
+          <View style={{ paddingTop: 20 }}>
             <Text
               style={{
                 color: '#424242',
@@ -95,13 +104,7 @@ class InitialStep extends Component {
               {screenProps.t('Initial:text')}
             </Text>
           </View>
-          <View style={{ padding: 30, }}>
-            <Button onPress={() => Linking.openURL('https://locha.io/buy/')} transparent>
-              <Text style={{ color: '#fbc233', fontWeight: 'bold' }}>
-                {screenProps.t('Initial:buy')}
-              </Text>
-            </Button>
-          </View>
+
           <View
             style={{
               width: '100%',
@@ -150,6 +153,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     alignItems: 'center',
+    backgroundColor: 'white',
     padding: 20,
     paddingBottom: 0
   },
