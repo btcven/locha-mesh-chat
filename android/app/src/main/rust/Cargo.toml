@@ -1,0 +1,21 @@
+[package]
+name = "locha-p2p"
+version = "0.1.0"
+authors = ["Locha Mesh Developers <contact@locha.io>"]
+edition = "2018"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+async-std = { version = "1", features = ["unstable"] }
+futures = "0.3"
+jni = "0.17"
+lazy_static = "1"
+libp2p = "0.23"
+log = "0.4"
+parking_lot = "0.11"
+
+[features]
+default = ["runtime-typecheck"]
+runtime-typecheck = []

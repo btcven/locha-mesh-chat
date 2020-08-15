@@ -4,7 +4,7 @@ import { Platform } from 'react-native';
 import { ActionTypes } from '../constants';
 import { notification, FileDirectory } from '../../utils/utils';
 import { database } from '../../../App';
-import UdpServer from '../../utils/udp';
+import ChatService from '../../utils/chatService';
 import { messageType } from '../../utils/constans';
 
 
@@ -26,10 +26,10 @@ import { messageType } from '../../utils/constans';
  */
 
 export const initialChat = (data, status) => async (dispatch) => {
-  const udp = new UdpServer();
+  const chatService = new ChatService();
   database.setMessage(data.toUID, { ...data }, status).then((res) => {
     if (!process.env.JEST_WORKER_ID) {
-      udp.send(JSON.stringify(data), data.toUID);
+      chatService.send(JSON.stringify(data));
     }
     dispatch({
       type: ActionTypes.NEW_MESSAGE,
@@ -200,11 +200,11 @@ export const cleanAllChat = (id) => async (dispatch) => {
 export const sendMessageWithFile = (data, path, base64) => (dispatch) => {
   const uidChat = data.toUID ? data.toUID : 'broadcast';
   const saveDatabase = { ...data };
-  const udp = new UdpServer();
+  const chatService = new ChatService();
   saveDatabase.msg.file = path;
   database.setMessage(uidChat, { ...saveDatabase }, 'pending').then((res) => {
     saveDatabase.msg.file = base64;
-    udp.send(JSON.stringify(saveDatabase), uidChat);
+    chatService.send(JSON.stringify(saveDatabase));
     dispatch({
       type: ActionTypes.NEW_MESSAGE,
       payload: {
@@ -252,7 +252,7 @@ export const messageQueue = (index, id, view) => async (dispatch) => {
 export const sendStatus = (data) => {
   // eslint-disable-next-line global-require
   const store = require('..');
-  const udp = new UdpServer();
+  const chatService = new ChatService();
   const state = store.default.getState();
   // eslint-disable-next-line no-shadow
   const sendStatus = {
@@ -270,7 +270,7 @@ export const sendStatus = (data) => {
     contacts.forEach((contact) => {
       if (data.fromUID === contact.uid) {
         sendStatus.toUID = contact.uid;
-        udp.send(JSON.stringify(sendStatus), sendStatus.toUID);
+        chatService.send(JSON.stringify(sendStatus));
       }
     });
   } catch (err) {
@@ -288,7 +288,7 @@ export const sendStatus = (data) => {
 
 export const setView = (idChat) => async (dispatch) => {
   database.cancelUnreadMessages(idChat).then((res) => {
-    const udp = new UdpServer();
+    const chatService = new ChatService();
     if (!process.env.JEST_WORKER_ID) {
       // eslint-disable-next-line global-require
       const store = require('..');
@@ -306,7 +306,7 @@ export const setView = (idChat) => async (dispatch) => {
           },
           type: messageType.STATUS
         };
-        udp.send(JSON.stringify(sendStatus), chat.toUID);
+        chatService.send(JSON.stringify(sendStatus));
       }
     }
     dispatch({
@@ -321,13 +321,13 @@ export const setView = (idChat) => async (dispatch) => {
  * @param {Object} data;
  */
 export const sendReadMessageStatus = (data) => () => {
-  const udp = new UdpServer();
-  udp.send(JSON.stringify(sendStatus), data.toUID);
+  const chatService = new ChatService();
+  chatService.send(JSON.stringify(sendStatus));
 };
 
 export const sendAgain = (message) => (dispatch) => {
   database.updateMessage(message).then((res) => {
-    const udp = new UdpServer();
+    const chatService = new ChatService();
     const sendObject = {
       fromUID: res.fromUID,
       toUID: res.toUID,
@@ -340,7 +340,7 @@ export const sendAgain = (message) => (dispatch) => {
       shippingTime: res.shippingTime
     };
 
-    udp.send(JSON.stringify(sendObject), res.toUID);
+    chatService.send(JSON.stringify(sendObject));
     dispatch({
       type: ActionTypes.SEND_AGAIN,
       payload: message
