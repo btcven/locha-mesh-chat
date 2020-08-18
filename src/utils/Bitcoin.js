@@ -2,6 +2,8 @@
 import crypto from 'crypto';
 import Bitcore from 'bitcore-lib';
 import Mnemonic from 'bitcore-mnemonic';
+import { NativeModules } from 'react-native';
+
 
 const networkConfiguration = {
   network_data: 'mainnet',
@@ -19,6 +21,10 @@ export default class Bitcoin {
   constructor() {
     this.WalletInfo = {};
     this.initialIndex = 0;
+    this.bitcoinModule = NativeModules.bitcoinModule;
+    this.getNewMnemonic();
+    const mnemonic = 'cactus spatial damp canvas coach income wool doll mail radio senior mixed';
+    NativeModules.bitcoinModule.createWallet(mnemonic);
   }
   /**
    *
@@ -45,4 +51,10 @@ export default class Bitcoin {
 
     return this.WalletInfo;
   };
+
+
+  getNewMnemonic = async () => {
+    const stringMnemonic = await this.bitcoinModule.generateMnemonic();
+    return stringMnemonic;
+  }
 }

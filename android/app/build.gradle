@@ -216,6 +216,8 @@ android {
 }
 
 dependencies {
+
+    compile ('org.bitcoinj:bitcoinj-core:0.14.4')
     implementation project(':react-native-permissions')
     implementation project(':rn-fetch-blob')
     implementation project(':@react-native-community_async-storage')

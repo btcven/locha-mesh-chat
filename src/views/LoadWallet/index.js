@@ -6,15 +6,12 @@ import {
 } from 'react-native';
 import { Button, Text, Thumbnail } from 'native-base';
 import { connect } from 'react-redux';
-// eslint-disable-next-line no-unused-vars
-import crypto from 'crypto';
-import Mnemonic from 'bitcore-mnemonic';
 import {
   setInitialUser, createNewAccount, restoreWithPhrase, restoreWithFile
 } from '../../store/aplication/aplicationAction';
 import { images } from '../../utils/constans';
 import CreateAccount from './CreateAccount';
-
+import { bitcoin } from '../../../App';
 /**
  *
  * @description Welcome component when the application is first opened
@@ -35,8 +32,8 @@ class InitialStep extends Component {
     this.setState({ open: false, restore: false });
   };
 
-  handleSubmit = () => {
-    const code = new Mnemonic();
+  handleSubmit = async () => {
+    const code = await bitcoin.getNewMnemonic();
     this.setState({ phrases: code.toString().split(' '), open: true, stringPhrases: code.toString() });
   };
 
