@@ -6,10 +6,12 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.WritableMap;
 import com.google.common.base.Joiner;
 
 import org.bitcoinj.core.ECKey;
@@ -38,6 +40,7 @@ public class BitcoinModule extends ReactContextBaseJavaModule {
     ReactApplicationContext reactContext;
     public static final String TAG = "Bitcoin_Module";
     private static final int ENTROPY_BITS = 128;
+    private  boolean walletIscreated = false;
     Wallet wallet;
 
     public BitcoinModule(@NonNull ReactApplicationContext context){
@@ -50,7 +53,6 @@ public class BitcoinModule extends ReactContextBaseJavaModule {
     public String getName() {
         return "bitcoinModule";
     }
-
 
 
     @ReactMethod public void generateMnemonic(Promise promise)  {
@@ -75,21 +77,6 @@ public class BitcoinModule extends ReactContextBaseJavaModule {
     }
 
 
-//    @ReactMethod public void generateMnemonic(Promise promise){
-//        NetworkParameters params = TestNet3Params.get();
-//
-//        wallet =  new Wallet(params);
-//        DeterministicKey key = wallet.getWatchingKey();
-//
-//        DeterministicSeed seed = wallet.getKeyChainSeed();
-//
-//        Log.i(TAG, "pubKey:"+ key.getPublicKeyAsHex());
-//        Log.i(TAG, "prvKey" + key.getPrivateKeyAsHex());
-//
-//        promise.resolve( Joiner.on(" ").join(seed.getMnemonicCode()));
-//
-//    }
-
 
     @ReactMethod public void createWallet(String mnemonic , Promise promise){
         NetworkParameters params = TestNet3Params.get();
@@ -103,6 +90,8 @@ public class BitcoinModule extends ReactContextBaseJavaModule {
                 seed
         );
 
+         walletIscreated = true;
+
 
         DeterministicKeyChain deterministicKeyChain = wallet.getActiveKeyChain();
         DeterministicKey account = deterministicKeyChain.getWatchingKey();
@@ -110,28 +99,38 @@ public class BitcoinModule extends ReactContextBaseJavaModule {
         Log.i(TAG, "private: " + account.getPrivateKeyAsHex());
         Log.i(TAG, "public: " + account.getPublicKeyAsHex());
 
+
+        WritableMap map = Arguments.createMap();
+        map.putString("privKey" ,account.getPrivateKeyAsHex());
+        map.putString("pubKey", account.getPublicKeyAsHex());
+
+        promise.resolve(map);
+
     }
 
 
     @ReactMethod void getPrivateKey(Promise promise){
-        DeterministicKey key = wallet.getWatchingKey();
-         byte[] xpriv = key.getPrivKeyBytes();
-
-         promise.resolve(xpriv);
+        if(walletIscreated) {
+            DeterministicKey key = wallet.getWatchingKey();
+            String xpriv = key.getPrivateKeyAsHex();
+            promise.resolve(xpriv);
+        }else{
+           promise.reject("Error", "wallet don't created" );
+        }
     }
 
 
 
     @ReactMethod void getPublicKey(Promise promise){
-        DeterministicKey key = wallet.getWatchingKey();
-        byte[] xpubkey = key.getPubKey();
+        if(walletIscreated) {
+            DeterministicKey key = wallet.getWatchingKey();
+            String xpubkey = key.getPublicKeyAsHex();
 
-        promise.resolve(xpubkey);
+            promise.resolve(xpubkey);
+        }else{
+            promise.reject("Error", "wallet don't created" );
+        }
     }
 
-
-    @ReactMethod public void RestoreWallet () {
-
-    }
 
 }

@@ -104,7 +104,7 @@ export default class Database extends CoreDatabase {
       this.db = new Realm(optionsDatabase);
       this.listener = new Realm(optionsDatabase);
       const userData = await this.getUserData();
-      resolve(userData);
+      resolve({ user: userData, seed: this.seed.objects('Seed') });
     } catch (err) {
       reject(err);
     }

@@ -48,9 +48,10 @@ export const verifyAplicationState = () => async (dispatch) => {
  */
 
 export const restoreAccountWithPin = (pin, callback) => async (dispatch) => {
-  new UdpServer();
-  database.restoreWithPin(sha256(pin)).then(async (res) => {
-    dispatch(writeAction(JSON.parse(JSON.stringify(res[0]))));
+  database.restoreWithPin(sha256(pin)).then(async (data) => {
+    new UdpServer();
+    bitcoin.createWallet(data.seed[0].seed);
+    dispatch(writeAction(JSON.parse(JSON.stringify(data.user[0]))));
   }).catch(() => {
     callback();
   });
@@ -61,10 +62,10 @@ export const createNewAccount = (obj) => async (dispatch) => {
   await database.getRealm(sha256(obj.pin), sha256(obj.seed));
   await database.setDataSeed(obj.seed);
   await createFolder();
-  const result = await bitcoin.generateAddress(obj.seed);
+  const result = await bitcoin.createWallet(obj.seed);
   const ivp6 = udp.globalIpv6 ? udp.globalIpv6 : '::1';
   database.writteUser({
-    uid: result.toString(),
+    uid: result.pubKey,
     ipv6Address: ivp6,
     name: obj.name,
     image: null,
@@ -83,10 +84,10 @@ export const restoreWithPhrase = (pin, phrase, name) => async (dispatch) => {
   database.restoreWithPhrase(pin, phrase).then(async () => {
     const udp = new UdpServer();
     await createFolder();
-    const result = await bitcoin.generateAddress(phrase);
+    const result = await bitcoin.createWallet(phrase);
     const ivp6 = udp.globalIpv6 ? udp.globalIpv6 : '::1';
     database.writteUser({
-      uid: result,
+      uid: result.pubKey,
       ipv6Address: ivp6,
       name,
       image: null,
