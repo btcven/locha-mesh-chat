@@ -1,11 +1,10 @@
 import '../../../__Mocks__';
 import React from 'react';
 import renderer from 'react-test-renderer';
-import Mnemonic from 'bitcore-mnemonic';
 import Phrases from '../../../src/views/LoadWallet/Phrases';
 
-const mnemonic = new Mnemonic();
-const words = mnemonic.toString().split(' ');
+
+const words = 'cactus spatial damp canvas coach income wool doll mail radio senior mixed'.split(' ');
 
 test('render component phrases', () => {
   const rendered = renderer.create(

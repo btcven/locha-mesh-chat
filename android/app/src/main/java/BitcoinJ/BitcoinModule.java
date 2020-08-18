@@ -54,7 +54,10 @@ public class BitcoinModule extends ReactContextBaseJavaModule {
         return "bitcoinModule";
     }
 
-
+    /**
+     * this function generates the words used when creating the wallet
+     * @param promise
+     */
     @ReactMethod public void generateMnemonic(Promise promise)  {
         try {
             int entropyLen = ENTROPY_BITS / 8;
@@ -69,6 +72,11 @@ public class BitcoinModule extends ReactContextBaseJavaModule {
         }
     }
 
+    /**
+     * returns the secure random used to generate the mnemonic
+     * @param entropyLen
+     * @return byte[]
+     */
     private static byte[] generateEntropy(int entropyLen) {
         byte[] entropy = new byte[entropyLen];
         SecureRandom random = new SecureRandom();
@@ -77,7 +85,11 @@ public class BitcoinModule extends ReactContextBaseJavaModule {
     }
 
 
-
+    /**
+     * create the wallet and return the private and public keys
+     * @param mnemonic
+     * @param promise ReactNative promise
+     */
     @ReactMethod public void createWallet(String mnemonic , Promise promise){
         NetworkParameters params = TestNet3Params.get();
         List<String> list = new ArrayList<String>();
@@ -108,7 +120,10 @@ public class BitcoinModule extends ReactContextBaseJavaModule {
 
     }
 
-
+    /**
+     *  used to get the privateKey once the wallet has already been created
+     * @param promise ReactNative promise
+     */
     @ReactMethod void getPrivateKey(Promise promise){
         if(walletIscreated) {
             DeterministicKey key = wallet.getWatchingKey();
@@ -120,7 +135,10 @@ public class BitcoinModule extends ReactContextBaseJavaModule {
     }
 
 
-
+    /**
+     * used to get the publickey once the wallet has already been created
+     * @param promise
+     */
     @ReactMethod void getPublicKey(Promise promise){
         if(walletIscreated) {
             DeterministicKey key = wallet.getWatchingKey();
