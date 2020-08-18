@@ -217,7 +217,7 @@ android {
 
 dependencies {
 
-    compile ('org.bitcoinj:bitcoinj-core:0.14.4')
+    compile ('org.bitcoinj:bitcoinj-core:0.15.7')
     implementation project(':react-native-permissions')
     implementation project(':rn-fetch-blob')
     implementation project(':@react-native-community_async-storage')
@@ -244,6 +244,7 @@ dependencies {
     implementation project(':react-native-vector-icons')
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "com.facebook.react:react-native:+"  // From node_modules
+    implementation group: 'com.google.guava', name: 'guava', version: 'r05'
 
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {

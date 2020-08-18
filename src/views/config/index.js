@@ -6,7 +6,6 @@ import {
   Text, View, StyleSheet, TouchableHighlight, TouchableOpacity, Clipboard, ScrollView
 } from 'react-native';
 import { connect } from 'react-redux';
-import CryptoJS from 'crypto-js';
 import { sha256 } from 'js-sha256';
 import Share from 'react-native-share';
 import { images } from '../../utils/constans';
@@ -19,7 +18,7 @@ import ViewQR from './ViewQR';
 import Languajes from './Language';
 import { toast } from '../../utils/utils';
 import i18n from '../../i18n';
-import { database } from '../../../App';
+import { database, bitcoin } from '../../../App';
 import AddPin from '../LoadWallet/RestoreWithPin';
 
 /**
@@ -63,7 +62,7 @@ class Config extends Component {
   createBackupFile = async (pin) => {
     database.verifyPin(pin).then(async () => {
       const data = await database.getAllData();
-      const ciphertext = CryptoJS.AES.encrypt(JSON.stringify(data), sha256(pin)).toString();
+      const ciphertext = await bitcoin.encrypt(JSON.stringify(data), sha256(pin)).toString();
       let base64 = Buffer.from(ciphertext).toString('base64');
       base64 = `data:text/plain;base64,${base64}`;
 

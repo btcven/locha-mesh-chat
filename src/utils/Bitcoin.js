@@ -1,6 +1,5 @@
 
 import { NativeModules } from 'react-native';
-
 /**
  *
  * @export
@@ -50,4 +49,25 @@ export default class Bitcoin {
     const stringMnemonic = await this.bitcoinModule.generateMnemonic();
     return stringMnemonic;
   }
+
+  /**
+   * function converts strings from string to sha256 format
+   * @param {String} data  text to convert
+   */
+  sha256 = async (data) => {
+    const sha256 = await this.bitcoinModule.sha256(data);
+    return sha256;
+  }
+
+  
+  encrypt = async (message, key) => {
+    const secureText = await this.bitcoinModule.encrypt(message, key);
+    return secureText;
+  }
+
+  decrypt = async (secureText, key) => {
+    const message = await this.bitcoinModule.decrypt(secureText, key);
+    return message;
+  }
+
 }

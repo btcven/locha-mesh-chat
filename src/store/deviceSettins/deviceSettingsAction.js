@@ -1,10 +1,10 @@
 /* eslint-disable import/prefer-default-export */
 import RNFetchBlob from 'rn-fetch-blob';
 import { AsyncStorage, NativeModules } from 'react-native';
-import CryptoJS from 'crypto-js';
 import { sha256 } from 'js-sha256';
 import { ActionTypes } from '../constants';
 import { toast } from '../../utils/utils';
+import { bitcoin } from '../../../App';
 
 /**
  *here are all the actions of sending and receiving messages
@@ -71,8 +71,8 @@ const getCredentials = async (auth) => {
   const value = await AsyncStorage.getItem('credentials');
   if (value) {
     try {
-      const bytes = CryptoJS.AES.decrypt(value, sha256(JSON.stringify(auth)));
-      const decryptedData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+      const bytes = await bitcoin.decrypt(value, sha256(JSON.stringify(auth)));
+      const decryptedData = JSON.parse(bytes);
       storageCredentials = decryptedData;
     } catch (err) {
       storageCredentials = undefined;
@@ -98,7 +98,7 @@ export const changeCredentials = (credentials, callback) => async (dispatch, get
   JSON.stringify(credentials)).then(async (res) => {
     const { status } = res.info();
     if (status === 200) {
-      const ciphertext = CryptoJS.AES.encrypt(
+      const ciphertext =  await bitcoin.encrypt(
         JSON.stringify(credentials),
         sha256(JSON.stringify(credentials))
       ).toString();

@@ -1,12 +1,14 @@
 package BitcoinJ;
 
 import android.os.Build;
+import android.os.Handler;
 import android.util.Base64;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 
 import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
@@ -16,6 +18,7 @@ import com.google.common.base.Joiner;
 
 import org.bitcoinj.core.ECKey;
 import org.bitcoinj.core.NetworkParameters;
+import org.bitcoinj.core.Sha256Hash;
 import org.bitcoinj.core.Utils;
 import org.bitcoinj.crypto.DeterministicKey;
 import org.bitcoinj.crypto.MnemonicCode;
@@ -28,11 +31,23 @@ import org.bitcoinj.wallet.DeterministicSeed;
 import org.bitcoinj.wallet.DeterministicSeed;
 import org.bitcoinj.wallet.Wallet;
 
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.InvalidParameterSpecException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 
 
 public class BitcoinModule extends ReactContextBaseJavaModule {
@@ -43,8 +58,11 @@ public class BitcoinModule extends ReactContextBaseJavaModule {
     private  boolean walletIscreated = false;
     Wallet wallet;
 
+    EncryptorAES encryptorAES;
+
     public BitcoinModule(@NonNull ReactApplicationContext context){
         reactContext = context;
+        encryptorAES = new EncryptorAES();
     }
 
 
@@ -98,8 +116,9 @@ public class BitcoinModule extends ReactContextBaseJavaModule {
         DeterministicSeed seed = new DeterministicSeed(list, null, "", System.currentTimeMillis());
 
          wallet = Wallet.fromSeed(
-                params,
-                seed
+                 params,
+                 seed,
+                 Script.ScriptType.P2PKH
         );
 
          walletIscreated = true;
@@ -137,7 +156,7 @@ public class BitcoinModule extends ReactContextBaseJavaModule {
 
     /**
      * used to get the publickey once the wallet has already been created
-     * @param promise
+     * @param promise ReactNative promise
      */
     @ReactMethod void getPublicKey(Promise promise){
         if(walletIscreated) {
@@ -150,5 +169,67 @@ public class BitcoinModule extends ReactContextBaseJavaModule {
         }
     }
 
+
+    /**
+     *  function converts strings from string to sha256 format
+     * @param data text to convert
+     * @param promise ReactNative promise
+     */
+    @ReactMethod public void sha256(String data, Promise promise){
+        try {
+            byte[] b = data.getBytes();
+
+            Sha256Hash sha256Hash =  Sha256Hash.of(b);
+
+            Log.i(TAG, "sha256"+  sha256Hash.toString());
+
+            promise.resolve(sha256Hash.toString());
+        } catch (Exception e){
+            promise.reject("Error", e.toString());
+        }
+
+    }
+
+    /**
+     * function used to encrypt a text string
+     *
+     * @param message  text to encrypt
+     * @param key  key
+     * @param promise ReactNative promise
+     */
+    @ReactMethod public void encrypt(String message, String key, Promise promise)  {
+    try{
+        byte[] _message  = message.getBytes("UTF-16LE");
+        byte [] _key = key.getBytes("UTF-16LE");
+
+        byte[] encData = encryptorAES.encrypt(_key,_message);
+        String stringEnData = Base64.encodeToString(encData,Base64.DEFAULT);
+        promise.resolve(stringEnData);
+    }catch (Exception e){
+        promise.reject("Error", e.toString());
+    }
+
+
+    }
+
+    /**
+     * function used to decrypt a text string
+     * @param secureText text ecrypted
+     * @param key key
+     * @param promise ReactNative promise
+     */
+    @ReactMethod public void decrypt(String secureText, String key, Promise promise )  {
+        try {
+            String result = encryptorAES.decrypt(key,
+                    Base64.decode(secureText.getBytes(
+                            "UTF-16LE"),
+                            Base64.DEFAULT
+                    ));
+
+            promise.resolve(result);
+        }catch (Exception e){
+            promise.reject("Error", e.toString());
+        }
+    }
 
 }
