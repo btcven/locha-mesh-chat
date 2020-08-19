@@ -77,13 +77,16 @@ export default class AddContact extends Component {
   save = async () => {
     const update = this.props.selected.length > 0;
     const verify = this.verifyContacts(update);
+
+    const hashUID = await bitcoin.sha256(this.state.uid);
     if (verify) {
       const obj = {
         name: this.state.name,
         picture: this.state.image,
         uid: this.state.uid,
-        hashUID: await bitcoin.sha256(this.state.uid)
+        hashUID
       };
+
       if (!update) {
         this.props.saveContact(
           this.props.userData.uid,
