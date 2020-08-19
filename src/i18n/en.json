@@ -105,5 +105,15 @@
       "usernameError": "This field can't be empty",
       "passwordError": "This field can't be empty",
       "confirmPassword": "Passwords don't match"
+  },
+  "WifiConnect": {
+      "connectionError": "Connection to the Wi-Fi network failed",
+      "successfulConnection": "Successful conenction to the Wi-Fi network",
+      "title": "Connect to your Turpial device",
+      "subtitle": "Enter your credentials",
+      "inputSSID": "SSID",
+      "inputPassword": "Password",
+      "buttonCancel": "Cancel",
+      "buttonConnect": "Connect"
   }
 }
