@@ -5,7 +5,6 @@ import MockData from '../__Mocks__/dataMock';
 import {
   hashGenerateColort, getIcon, unSelect
 } from '../src/utils/utils';
-import { bitcoin } from '../App';
 
 describe('generate hexadecimal color', () => {
   test('return string color', () => {
@@ -21,9 +20,9 @@ describe('generate hexadecimal color', () => {
 
 describe('generate icon with a string', () => {
   test('generate icon', () => {
-    const icon = getIcon('hash');
+    const icon = getIcon(MockData.mockContact.hashUID);
 
-    expect(getIcon('hash')).toBe(icon);
+    expect(getIcon(MockData.mockContact.hashUID)).toBe(icon);
   });
 });
 

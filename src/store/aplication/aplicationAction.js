@@ -58,10 +58,8 @@ export const restoreAccountWithPin = (pin, callback) => async (dispatch) => {
 };
 
 export const createNewAccount = (obj) => async (dispatch) => {
-
   const shaPing = await bitcoin.sha256(obj.pin);
   const shaSeed = await bitcoin.sha256(obj.seed);
-  console.log("shaPing", shaPing, shaSeed);
   await database.getRealm(shaPing, shaSeed);
   await database.setDataSeed(obj.seed);
   await createFolder();

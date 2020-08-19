@@ -80,8 +80,11 @@ export default class Database extends CoreDatabase {
 
     try {
       this.seed = new Realm(options);
+      console.log("paso en 1");
       this.db = new Realm(optionsDatabase);
+      console.log("paso en 2")
       this.listener = new Realm(optionsDatabase);
+      console.log("paso en 3");
       resolve(this.db);
     } catch (err) {
       // eslint-disable-next-line no-console
@@ -117,11 +120,13 @@ export default class Database extends CoreDatabase {
    * @param {String} phrases account phrases
    * @return {Promise}
    */
-  setDataSeed = (phrases) => new Promise((resolve) => {
+  setDataSeed = (phrases) => new Promise(async (resolve) => {
+    id = await bitcoin.sha256(phrases);
+    console.log(id);
     try {
-      this.seed.write(async () => {
+      this.seed.write(() => {
         this.seed.create('Seed', {
-          id: await bitcoin.sha256(phrases),
+          id: id,
           seed: phrases
         }, true);
 
@@ -129,7 +134,7 @@ export default class Database extends CoreDatabase {
       });
     } catch (err) {
       // eslint-disable-next-line no-console
-      console.log('2', err);
+      console.log('dios mio de mi vida', err);
     }
   })
 

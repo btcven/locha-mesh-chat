@@ -274,17 +274,14 @@ export const getSha256 = (data, callback) => {
 };
 
 export const getIcon = (data) => {
-  const result = getSha256(data, (res) => {
-    try {
-      const icon = new Identicon(res, {
-        background: [255, 255, 255, 255],
-        size: 100
-      }).toString();
+  try {
+    const icon = new Identicon(data, {
+      background: [255, 255, 255, 255],
+      size: 100
+    }).toString();
 
-      return `data:image/png;base64,${icon}`;
-    } catch (error) {
-      throw new Error(error);
-    }
-  });
-  return result;
+    return `data:image/png;base64,${icon}`;
+  } catch (error) {
+    throw new Error(error);
+  }
 };
