@@ -3,7 +3,7 @@ import { ToastAndroid, PermissionsAndroid, Platform } from 'react-native';
 import { Toast } from 'native-base';
 import Identicon from 'identicon.js';
 import BackgroundTimer from 'react-native-background-timer';
-import { database } from '../../App';
+import { database, bitcoin } from '../../App';
 import {
   selectedChat,
   messageQueue,
@@ -267,15 +267,24 @@ export const hashGenerateColort = (str) => {
  * @param {string} data string received to generate the icon
  */
 
-export const getIcon = (data) => {
-  try {
-    const icon = new Identicon(data, {
-      background: [255, 255, 255, 255],
-      size: 100
-    }).toString();
+export const getSha256 = (data, callback) => {
+  bitcoin.sha256(data).then((res) => {
+    callback(res);
+  });
+};
 
-    return `data:image/png;base64,${icon}`;
-  } catch (error) {
-    throw new Error(error);
-  }
+export const getIcon = (data) => {
+  const result = getSha256(data, (res) => {
+    try {
+      const icon = new Identicon(res, {
+        background: [255, 255, 255, 255],
+        size: 100
+      }).toString();
+
+      return `data:image/png;base64,${icon}`;
+    } catch (error) {
+      throw new Error(error);
+    }
+  });
+  return result;
 };

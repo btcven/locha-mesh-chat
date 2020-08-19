@@ -3,7 +3,6 @@
 import React from 'react';
 import { Container } from 'native-base';
 import { connect } from 'react-redux';
-import { AsyncStorage } from 'react-native';
 import SettingsPanel from './settingsPanel';
 import Header from '../../components/Header';
 import {
@@ -14,8 +13,6 @@ import {
   from '../../store/deviceSettins/deviceSettingsAction';
 import Spinner from '../../components/Spinner';
 import ErrorInfo from './errorInfo';
-import AlertMessage from './alertMessage';
-import Auth from './Auth';
 /**
  * main device panel component
  */

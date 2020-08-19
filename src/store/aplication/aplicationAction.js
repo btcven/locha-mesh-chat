@@ -1,6 +1,5 @@
 /* eslint-disable no-new */
 import { AsyncStorage, NativeModules } from 'react-native';
-import { sha256 } from 'js-sha256';
 import RNSF from 'react-native-fs';
 import { ActionTypes } from '../constants';
 import { STORAGE_KEY } from '../../utils/constans';
@@ -48,7 +47,8 @@ export const verifyAplicationState = () => async (dispatch) => {
  */
 
 export const restoreAccountWithPin = (pin, callback) => async (dispatch) => {
-  database.restoreWithPin(sha256(pin)).then(async (data) => {
+  const shaPing = await bitcoin.sha256(pin);
+  database.restoreWithPin(shaPing).then(async (data) => {
     new UdpServer();
     bitcoin.createWallet(data.seed[0].seed);
     dispatch(writeAction(JSON.parse(JSON.stringify(data.user[0]))));
@@ -58,10 +58,14 @@ export const restoreAccountWithPin = (pin, callback) => async (dispatch) => {
 };
 
 export const createNewAccount = (obj) => async (dispatch) => {
-  const udp = new UdpServer();
-  await database.getRealm(sha256(obj.pin), sha256(obj.seed));
+
+  const shaPing = await bitcoin.sha256(obj.pin);
+  const shaSeed = await bitcoin.sha256(obj.seed);
+  console.log("shaPing", shaPing, shaSeed);
+  await database.getRealm(shaPing, shaSeed);
   await database.setDataSeed(obj.seed);
   await createFolder();
+  const udp = new UdpServer();
   const result = await bitcoin.createWallet(obj.seed);
   const ivp6 = udp.globalIpv6 ? udp.globalIpv6 : '::1';
   database.writteUser({

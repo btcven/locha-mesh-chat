@@ -7,7 +7,6 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import * as Animatable from 'react-native-animatable';
-import { sha256 } from 'js-sha256';
 import Menu from './Menu';
 import { getIcon } from '../utils/utils';
 import { openMenu, manualConnection } from '../store/aplication';
@@ -49,6 +48,7 @@ class HeaderComponent extends Component {
     this.props.search(undefined);
   };
 
+
   render() {
     const { screenProps, navigation, aplication } = this.props;
     const router = this.getNameContact(navigation);
@@ -79,7 +79,7 @@ class HeaderComponent extends Component {
                     <Icon style={styles.iconStyle} name="arrow-back" />
                   </TouchableHighlight>
                 </Left>
-              )}
+            )}
             {router.routeName === 'initial' && (
               <Left>
                 <TouchableHighlight
@@ -125,7 +125,7 @@ class HeaderComponent extends Component {
                       <Thumbnail
                         style={{ marginRight: 10, width: 45, height: 40 }}
                         source={{
-                          uri: `${getIcon(sha256(router.params.uid))}`
+                          uri: `${getIcon(router.params.uid)}`
                         }}
                       />
                     )}
@@ -230,8 +230,8 @@ class HeaderComponent extends Component {
           {this.props.selected.length === 1 ? (
             <Title>{this.props.selected[0].name}</Title>
           ) : (
-              <Title>{this.props.selected.length}</Title>
-            )}
+            <Title>{this.props.selected.length}</Title>
+          )}
         </Body>
         <Right>
           {this.props.copy && (

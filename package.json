@@ -38,7 +38,6 @@
     "identicon.js": "^2.3.3",
     "install": "^0.13.0",
     "jetifier": "^1.6.5",
-    "js-sha256": "^0.9.0",
     "moment": "^2.24.0",
     "native-base": "^2.13.8",
     "path-browserify": "0.0.0",
@@ -115,6 +114,7 @@
     "jest": "^25.1.0",
     "jest-environment-enzyme": "^7.1.2",
     "jest-enzyme": "^7.1.2",
+    "js-sha256": "^0.9.0",
     "jsdoc": "^3.6.3",
     "metro-react-native-babel-preset": "^0.58.0",
     "pre-commit": "^1.2.2",
@@ -149,7 +149,6 @@
     "zlib": "browserify-zlib",
     "console": "console-browserify",
     "constants": "constants-browserify",
-
     "net": "react-native-tcp",
     "domain": "domain-browser",
     "http": "@tradle/react-native-http",

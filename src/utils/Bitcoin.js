@@ -1,5 +1,6 @@
 
 import { NativeModules } from 'react-native';
+import Sha256 from 'js-sha256';
 /**
  *
  * @export
@@ -55,11 +56,15 @@ export default class Bitcoin {
    * @param {String} data  text to convert
    */
   sha256 = async (data) => {
-    const sha256 = await this.bitcoinModule.sha256(data);
-    return sha256;
+    if (!process.env.JEST_WORKER_ID) {
+      const sha256 = await this.bitcoinModule.sha256(data);
+      return sha256;
+    }
+    const shajs = await Sha256(data);
+    return shajs;
   }
 
-  
+
   encrypt = async (message, key) => {
     const secureText = await this.bitcoinModule.encrypt(message, key);
     return secureText;
@@ -69,5 +74,4 @@ export default class Bitcoin {
     const message = await this.bitcoinModule.decrypt(secureText, key);
     return message;
   }
-
 }

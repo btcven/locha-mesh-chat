@@ -4,7 +4,7 @@ import { messageType } from './constans';
 import { getChat, setStatusMessage } from '../store/chats';
 import { requestImageStatus, sentImageStatus, verifyHashImageStatus } from '../store/contacts/contactsActions';
 import { notConnectedValidAp } from '../store/aplication/aplicationAction';
-import { setNewIpv6 } from '../store/configuration/congurationAction'
+import { setNewIpv6 } from '../store/configuration/congurationAction';
 
 export default class UdpServer {
   constructor() {
@@ -28,7 +28,7 @@ export default class UdpServer {
 
   /**
    * function used to send messages
-   * 
+   *
    * @param {object} message message to send
    * @param {string} url address where the message will be sent
    */
