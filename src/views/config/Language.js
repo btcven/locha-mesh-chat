@@ -3,8 +3,8 @@ import Modal from 'react-native-modal';
 import {
   View,
   StyleSheet,
-  AsyncStorage
 } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import {
   Text,
   Left,

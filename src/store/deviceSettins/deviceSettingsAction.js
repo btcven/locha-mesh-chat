@@ -1,6 +1,7 @@
 /* eslint-disable import/prefer-default-export */
 import RNFetchBlob from 'rn-fetch-blob';
-import { AsyncStorage, NativeModules } from 'react-native';
+import NativeModules from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import { ActionTypes } from '../constants';
 import { toast } from '../../utils/utils';
 import { bitcoin } from '../../../App';

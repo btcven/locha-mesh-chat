@@ -3,7 +3,7 @@
 import i18n from 'i18next';
 import { reactI18nextModule } from 'react-i18next';
 // import locale from "react-native-language-detector";
-import { AsyncStorage } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import {
   esp, eng, hld, fra
 } from './languages';
