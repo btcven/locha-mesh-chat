@@ -22,7 +22,7 @@ public class EncryptorAES {
 
     public static byte[] encrypt(byte[] key, byte[] clear) throws Exception
     {
-        MessageDigest md = MessageDigest.getInstance("md5");
+        MessageDigest md = MessageDigest.getInstance("SHA-256");
         byte[] digestOfPassword = md.digest(key);
 
         SecretKeySpec skeySpec = new SecretKeySpec(digestOfPassword, "AES");
@@ -36,7 +36,7 @@ public class EncryptorAES {
 
     public static String decrypt(String key, byte[] encrypted) throws Exception
     {
-        MessageDigest md = MessageDigest.getInstance("md5");
+        MessageDigest md = MessageDigest.getInstance("SHA-256");
         byte[] digestOfPassword = md.digest(key.getBytes("UTF-16LE"));
 
         SecretKeySpec skeySpec = new SecretKeySpec(digestOfPassword, "AES");
