@@ -43,14 +43,16 @@ use libp2p::{
     self,
     core::{Multiaddr, PeerId},
     gossipsub::{
-        protocol::MessageId, Gossipsub, GossipsubConfigBuilder, GossipsubEvent, GossipsubMessage,
-        Topic,
+        protocol::MessageId, Gossipsub, GossipsubConfigBuilder, GossipsubEvent,
+        GossipsubMessage, Topic,
     },
     identity::{secp256k1, Keypair},
     swarm::{Swarm, SwarmEvent},
 };
 
-use crate::util::{jni_cache::chat_service_events, unwrap_exc_or_default, unwrap_jni};
+use crate::util::{
+    jni_cache::chat_service_events, unwrap_exc_or_default, unwrap_jni,
+};
 use parking_lot::{Condvar, Mutex, RwLock};
 
 use log::{debug, error};
@@ -75,7 +77,8 @@ pub struct Message {
 const CHANNEL_SIZE: usize = 25;
 const HEARTBEAT_INTERVAL: Duration = Duration::from_secs(25);
 
-const CHAT_SERVICE_EVENTS_HANDLER_FIELD_TYPE: &str = "Lio/locha/p2p/runtime/ChatServiceEvents;";
+const CHAT_SERVICE_EVENTS_HANDLER_FIELD_TYPE: &str =
+    "Lio/locha/p2p/runtime/ChatServiceEvents;";
 
 lazy_static! {
     static ref CHANNEL: RwLock<Option<Sender<Action>>> = RwLock::new(None);
@@ -96,7 +99,10 @@ struct SyncStartCond {
 impl SyncStartCond {
     fn new() -> SyncStartCond {
         SyncStartCond {
-            inner: Arc::new((Mutex::new(StartStatus::NotStarted), Condvar::new())),
+            inner: Arc::new((
+                Mutex::new(StartStatus::NotStarted),
+                Condvar::new(),
+            )),
         }
     }
 
@@ -141,8 +147,8 @@ pub extern "system" fn Java_io_locha_p2p_runtime_ChatService_nativeStart(
         }
 
         let bytes = env.convert_byte_array(secret_key)?;
-        let secret_key =
-            secp256k1::SecretKey::from_bytes(bytes).expect("Couldn't decode secret key bytes");
+        let secret_key = secp256k1::SecretKey::from_bytes(bytes)
+            .expect("Couldn't decode secret key bytes");
         let keypair = Keypair::Secp256k1(secret_key.into());
 
         let vm = Arc::new(env.get_java_vm().expect("Couldn't get Java VM"));
@@ -155,15 +161,25 @@ pub extern "system" fn Java_io_locha_p2p_runtime_ChatService_nativeStart(
             )
             .and_then(JValue::l)?;
 
+        if events.clone().into_inner() == 0 as jni::sys::jobject {
+            panic!(
+                "eventsHandler variable is null. Maybe you need\
+                to set the handler before starting the service"
+            );
+        }
+
         let events = env.new_global_ref(events)?;
-        let events_proxy = ChatServiceEventsProxy::new(Executor::new(vm.clone()), events);
+        let events_proxy =
+            ChatServiceEventsProxy::new(Executor::new(vm.clone()), events);
 
         let start_cond = SyncStartCond::new();
 
         // Spawn a thread for ChatService. Note: we can't use task::spawn
         // here because some jni-rs types are not Send safe.
         let start_cond_thread = start_cond.clone();
-        thread::spawn(move || chat_service_thread(vm, start_cond_thread, events_proxy, keypair));
+        thread::spawn(move || {
+            chat_service_thread(vm, start_cond_thread, events_proxy, keypair)
+        });
 
         // Wait for the start status of the thread we spaned.
         match start_cond.wait_for_start_status() {
@@ -178,7 +194,10 @@ pub extern "system" fn Java_io_locha_p2p_runtime_ChatService_nativeStart(
 }
 
 #[no_mangle]
-pub extern "system" fn Java_io_locha_p2p_runtime_ChatService_nativeStop(env: JNIEnv, _: JClass) {
+pub extern "system" fn Java_io_locha_p2p_runtime_ChatService_nativeStop(
+    env: JNIEnv,
+    _: JClass,
+) {
     let res = panic::catch_unwind(|| {
         send_action(Action::Stop);
         Ok(())
@@ -209,7 +228,8 @@ pub extern "system" fn Java_io_locha_p2p_runtime_ChatService_nativeDial(
 ) {
     let res = panic::catch_unwind(|| {
         let multiaddr: String = env.get_string(multiaddr)?.into();
-        let multiaddr = Multiaddr::from_str(&multiaddr).expect("Invalid Multiaddr!");
+        let multiaddr =
+            Multiaddr::from_str(&multiaddr).expect("Invalid Multiaddr!");
         send_action(Action::Dial(multiaddr));
         Ok(())
     });
@@ -250,12 +270,14 @@ fn chat_service_thread(
     let _guard = vm.attach_current_thread().expect("Coudln't attach thread");
 
     // Run the ChatService task, handles the libp2p events and Java events.
-    task::block_on(async move { chat_service_task(events, start_cond, keypair).await });
+    task::block_on(async move {
+        chat_service_task(events, start_cond, keypair).await
+    });
 }
 
 #[allow(unreachable_code)]
 async fn chat_service_task<'a>(
-    _events: ChatServiceEventsProxy,
+    events: ChatServiceEventsProxy,
     start_cond: SyncStartCond,
     keypair: Keypair,
 ) {
@@ -299,7 +321,7 @@ async fn chat_service_task<'a>(
 
     let mut swarm = Swarm::new(transport, gossipsub, peer_id.clone());
 
-    let listen_addr: Multiaddr = "/ip6/::/tcp/0".parse().unwrap();
+    let listen_addr: Multiaddr = "/ip6/::/tcp/45293".parse().unwrap();
     match Swarm::listen_on(&mut swarm, listen_addr.clone()) {
         Ok(_) => (),
         Err(e) => {
@@ -345,12 +367,12 @@ async fn chat_service_task<'a>(
                         match behaviour {
                             GossipsubEvent::Message(_peer_id, _id, message) => {
                                 let contents = String::from_utf8_lossy(message.data.as_slice()).into_owned();
-                                /*events.on_new_messsage(contents)*/;
+                                events.on_new_messsage(contents);
                             }
                             _ => (),
                         }
                     },
-                    SwarmEvent::NewListenAddr(_multiaddr) => ()/*events.on_new_listen_addr(multiaddr)*/,
+                    SwarmEvent::NewListenAddr(multiaddr) => events.on_new_listen_addr(multiaddr),
                     // TODO: implement other variants and handle them on the Java side
                     _ => (),
                 }

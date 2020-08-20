@@ -62,10 +62,6 @@ public class ChatService {
     public void setEventsHandler(ChatServiceEvents eventsHandler) {
         Log.i("LochaP2P", "Setting events handler");
 
-        if (!isStarted()) {
-            throw new IllegalStateException("ChatService hasn't been started");
-        }
-
         this.eventsHandler = eventsHandler;
     }
 
