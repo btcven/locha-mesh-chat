@@ -76,7 +76,7 @@ class WifiConnect extends Component {
 
                   <Item stackedLabel>
                     <Input
-                      placeholder={`${screenProps.t('WifiConnect:inputPasword')}`}
+                      placeholder={`${screenProps.t('WifiConnect:inputPassword')}`}
                       value={this.state.password}
                       secureTextEntry
                       onChangeText={(text) => this.setState({ password: text })}

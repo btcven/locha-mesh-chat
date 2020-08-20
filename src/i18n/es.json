@@ -103,5 +103,15 @@
       "usernameError": "Este campo no debe estar vacío",
       "passwordError": "Este campo no debe estar vacío",
       "confirmPassword": "Las contraseñas no coinciden"
+  },
+  "WifiConnect": {
+      "connectionError": "La conexión a la red Wi-Fi falló",
+      "successfulConnection": "Conectado correctamente a la red Wi-Fi",
+      "title": "Conectate a tu dispositivo Turpial",
+      "subtitle": "Ingresa tus credenciales",
+      "inputSSID": "SSID",
+      "inputPassword": "Contraseña",
+      "buttonCancel": "Cancelar",
+      "buttonConnect": "Conectar"
   }
 }
