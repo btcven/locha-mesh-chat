@@ -16,6 +16,9 @@
 
 package io.locha.p2p.runtime;
 
+import android.util.Log;
+
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
@@ -26,15 +29,20 @@ import com.facebook.react.bridge.ReactContext;
 
 import androidx.annotation.Nullable;
 
+import DeviceInfo.Utils;
+
 /**
  * React Native interface to ChatService class.
  */
 public class ChatServiceModule extends ReactContextBaseJavaModule implements ChatServiceEvents {
     public ReactApplicationContext reactContext;
+    private static final String TAG = "CHAT_SERVICE_MODULE";
+    private ChatService service;
 
     public ChatServiceModule(ReactApplicationContext reactContext) {
         super(reactContext);
         this.reactContext = reactContext;
+        this.service = ChatService.get();
     }
 
     @Override
@@ -47,42 +55,49 @@ public class ChatServiceModule extends ReactContextBaseJavaModule implements Cha
      * characters (32-bytes).
      */
     @ReactMethod
-    public void start(String privateKey) {
-        ChatService service = ChatService.get();
-        service.setEventsHandler(this);
+    public void start(String privateKey, Promise promise) {
+        this.service.setEventsHandler(this);
 
-        byte[] privateKeyBytes = hexStringToByteArray(privateKey);
-        service.start(privateKeyBytes);
+        byte[] privateKeyBytes = Utils.hexStringToByteArray(privateKey);
+        this.service.start(privateKeyBytes, promise);
     }
 
     @ReactMethod
     public void stop() {
-        ChatService service = ChatService.get();
-        service.stop();
+        this.service.stop();
     }
 
     @ReactMethod
     public boolean isStarted() {
-        ChatService service = ChatService.get();
-        return service.isStarted();
+        return this.service.isStarted();
     }
 
+    /**
+     * method used for get perrID and send it to React native
+     * @param promise
+     */
     @ReactMethod
-    public String getPeerId() {
-        ChatService service = ChatService.get();
-        return service.getPeerId();
+    public void getPeerId(Promise promise) {
+        try {
+            promise.resolve(service.getPeerId());
+        } catch (Exception e) {
+            promise.reject(e);
+        }
     }
 
     @ReactMethod
     public void dial(String multiaddr) {
-        ChatService service = ChatService.get();
-        service.dial(multiaddr);
+        this.service.dial(multiaddr);
     }
 
     @ReactMethod
     public void sendMessage(String contents) {
-        ChatService service =  ChatService.get();
-        service.sendMessage(contents);
+        try {
+            Log.i(TAG, "sendMessage: " + contents);
+            this.service.sendMessage(contents);
+        } catch (Exception e) {
+            Log.e(TAG, e.toString());
+        }
     }
 
     @Override
@@ -107,16 +122,4 @@ public class ChatServiceModule extends ReactContextBaseJavaModule implements Cha
             .emit(eventName, params);
     }
 
-    /**
-     * @see https://stackoverflow.com/questions/140131/convert-a-string-representation-of-a-hex-dump-to-a-byte-array-using-java
-     */
-    private static byte[] hexStringToByteArray(String s) {
-        int len = s.length();
-        byte[] data = new byte[len / 2];
-        for (int i = 0; i < len; i += 2) {
-            data[i / 2] = (byte)((Character.digit(s.charAt(i), 16) << 4)
-                                + Character.digit(s.charAt(i + 1), 16));
-        }
-        return data;
-    }
 }

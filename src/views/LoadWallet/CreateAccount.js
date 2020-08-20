@@ -50,7 +50,7 @@ export default class CreateAccount extends Component {
   continue = (values) => {
     const seed = this.props.phrases.slice();
     if (!this.props.restore) {
-      while (seed.reduce((prev, curr) => prev + +(curr === ''), 6) < 0) {
+      while (seed.reduce((prev, curr) => prev + +(curr === ''), 0) < 0) {
         const k = Math.floor(Math.random() * (seed.length - 1));
         seed[k] = '';
       }

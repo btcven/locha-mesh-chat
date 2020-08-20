@@ -3,8 +3,7 @@ import RNFS from 'react-native-fs';
 import { Platform } from 'react-native';
 import { ActionTypes } from '../constants';
 import { notification, FileDirectory } from '../../utils/utils';
-import { database } from '../../../App';
-import ChatService from '../../utils/chatService';
+import { database, chatService } from '../../../App';
 import { messageType } from '../../utils/constans';
 
 
@@ -26,9 +25,9 @@ import { messageType } from '../../utils/constans';
  */
 
 export const initialChat = (data, status) => async (dispatch) => {
-  const chatService = new ChatService();
   database.setMessage(data.toUID, { ...data }, status).then((res) => {
     if (!process.env.JEST_WORKER_ID) {
+      console.warn("initialChat");
       chatService.send(JSON.stringify(data));
     }
     dispatch({
@@ -200,10 +199,10 @@ export const cleanAllChat = (id) => async (dispatch) => {
 export const sendMessageWithFile = (data, path, base64) => (dispatch) => {
   const uidChat = data.toUID ? data.toUID : 'broadcast';
   const saveDatabase = { ...data };
-  const chatService = new ChatService();
   saveDatabase.msg.file = path;
   database.setMessage(uidChat, { ...saveDatabase }, 'pending').then((res) => {
     saveDatabase.msg.file = base64;
+    console.warn("sendMessageWithFile")
     chatService.send(JSON.stringify(saveDatabase));
     dispatch({
       type: ActionTypes.NEW_MESSAGE,
@@ -252,7 +251,6 @@ export const messageQueue = (index, id, view) => async (dispatch) => {
 export const sendStatus = (data) => {
   // eslint-disable-next-line global-require
   const store = require('..');
-  const chatService = new ChatService();
   const state = store.default.getState();
   // eslint-disable-next-line no-shadow
   const sendStatus = {
@@ -288,7 +286,6 @@ export const sendStatus = (data) => {
 
 export const setView = (idChat) => async (dispatch) => {
   database.cancelUnreadMessages(idChat).then((res) => {
-    const chatService = new ChatService();
     if (!process.env.JEST_WORKER_ID) {
       // eslint-disable-next-line global-require
       const store = require('..');
@@ -297,7 +294,7 @@ export const setView = (idChat) => async (dispatch) => {
         const chat = Object.values(state.chats.chat).find((itemChat) => itemChat.toUID === idChat);
         // eslint-disable-next-line no-shadow
         const sendStatus = {
-          fromUID: state.config.ipv6Address,
+          fromUID: state.config.peerID,
           toUID: chat.toUID,
           timestamp: new Date().getTime(),
           data: {
@@ -306,6 +303,7 @@ export const setView = (idChat) => async (dispatch) => {
           },
           type: messageType.STATUS
         };
+        console.warn("setView");
         chatService.send(JSON.stringify(sendStatus));
       }
     }
@@ -321,13 +319,12 @@ export const setView = (idChat) => async (dispatch) => {
  * @param {Object} data;
  */
 export const sendReadMessageStatus = (data) => () => {
-  const chatService = new ChatService();
+  console.warn("sendReadMessageStatus")
   chatService.send(JSON.stringify(sendStatus));
 };
 
 export const sendAgain = (message) => (dispatch) => {
   database.updateMessage(message).then((res) => {
-    const chatService = new ChatService();
     const sendObject = {
       fromUID: res.fromUID,
       toUID: res.toUID,
@@ -339,7 +336,7 @@ export const sendAgain = (message) => (dispatch) => {
       msgID: res.id,
       shippingTime: res.shippingTime
     };
-
+    console.warn("sendAgain");
     chatService.send(JSON.stringify(sendObject));
     dispatch({
       type: ActionTypes.SEND_AGAIN,
