@@ -1,4 +1,3 @@
-
 import { NativeModules } from 'react-native';
 import Sha256 from 'js-sha256';
 /**
