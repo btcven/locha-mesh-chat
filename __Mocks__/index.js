@@ -6,7 +6,6 @@ import * as ReactNative from 'react-native';
 import enzyme from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 
-
 // enzyme.configure({ adapter: new Adapter() });
 jest.mock('react-native-fs', () => ({
   mkdir: jest.fn(),
@@ -157,9 +156,9 @@ jest.mock('react-native/Libraries/Utilities/Platform', () => ({
 }));
 
 
-jest.doMock('react-native', () => {
+jest.doMock('react-native', () =>
   // Extend ReactNative
-  return Object.setPrototypeOf(
+  Object.setPrototypeOf(
     {
       // Mock a native module
       NativeModules: {
@@ -177,8 +176,7 @@ jest.doMock('react-native', () => {
       }
     },
     ReactNative,
-  );
-});
+  ));
 
 
 // jest.mock('PermissionsAndroid', () => {

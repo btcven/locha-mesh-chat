@@ -5,7 +5,7 @@ import {
   Text, TouchableHighlight, StyleSheet, View
 } from 'react-native';
 import {
-  Container, Content, List, ListItem, Left, Right, Icon, Switch
+  Container, Content, List, ListItem, Left, Right, Icon,
 } from 'native-base';
 
 /**
@@ -152,24 +152,9 @@ export default class settingsPanel extends Component {
   }
 
   render() {
-    const { deviceInfo, screenProps, changeCredentials } = this.props;
-    // const {
-    //   open, title, placeholder, secureText, openCredential
-    // } = this.state;
-    // const action = this.getActionFunction();
+    const { deviceInfo, screenProps } = this.props;
     return (
       <Container>
-        {/* <InputModal
-          open={open}
-          screenProps={screenProps}
-          close={this.close}
-          title={title}
-          placeholder={placeholder}
-          size={32}
-          secureText={secureText}
-          action={action}
-        />
-        <AddNewCredentials open={openCredential} changeCredentials={changeCredentials} close={this.closeModalCredential} /> */}
         <Content>
           <List>
             <ListItem itemDivider>

@@ -1,9 +1,8 @@
 import ImagePicker from 'react-native-image-crop-picker';
 import RNFS from 'react-native-fs';
-import { sha256 } from 'js-sha256';
 import { ActionTypes } from '../constants';
 import { FileDirectory } from '../../utils/utils';
-import { database } from '../../../App';
+import { database, bitcoin } from '../../../App';
 
 /**
  * in this module are the configuration actions
@@ -31,7 +30,7 @@ export const getPhotosFromUser = (id, callback) => async (dispatch) => {
         dispatch({
           type: ActionTypes.GET_PHOTO_USER,
           payload: newPath,
-          imageHash: sha256(newPath)
+          imageHash: await bitcoin.sha256(newPath)
         });
       });
     });
@@ -93,7 +92,7 @@ export const openCamera = (id, callback) => async (dispatch) => {
         dispatch({
           type: ActionTypes.GET_PHOTO_USER,
           payload: res.picture,
-          imageHash: sha256(newPath)
+          imageHash: await bitcoin.sha256(newPath)
         });
       });
     });

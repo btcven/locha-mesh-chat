@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import BitcoinJ.BitcoinModule;
 import LocalNotification.LocalNotificationModule;
 
 /**
@@ -26,6 +27,7 @@ public class DeviceInfoPackage implements ReactPackage {
         List<NativeModule> modules = new ArrayList<>();
 
         modules.add(new DeviceInfoModule(reactContext));
+        modules.add(new BitcoinModule(reactContext));
 
         return modules;
     }

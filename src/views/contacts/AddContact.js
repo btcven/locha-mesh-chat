@@ -12,10 +12,10 @@ import {
 } from 'native-base';
 import ImagePicker from 'react-native-image-crop-picker';
 import QRCodeScanner from 'react-native-qrcode-scanner';
-import { sha256 } from 'js-sha256';
 import EditPhoto from '../config/EditPhoto';
 import { toast } from '../../utils/utils';
 import { images } from '../../utils/constans';
+import { bitcoin } from '../../../App';
 /**
  *
  * @export
@@ -74,16 +74,19 @@ export default class AddContact extends Component {
     });
   };
 
-  save = () => {
+  save = async () => {
     const update = this.props.selected.length > 0;
     const verify = this.verifyContacts(update);
+
+    const hashUID = await bitcoin.sha256(this.state.uid);
     if (verify) {
       const obj = {
         name: this.state.name,
         picture: this.state.image,
         uid: this.state.uid,
-        hashUID: sha256(this.state.uid)
+        hashUID
       };
+
       if (!update) {
         this.props.saveContact(
           this.props.userData.uid,

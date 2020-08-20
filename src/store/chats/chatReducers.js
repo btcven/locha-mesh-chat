@@ -1,6 +1,5 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable import/prefer-default-export */
-import { sha256 } from 'js-sha256';
 import { ActionTypes } from '../constants';
 
 const AplicationState = {

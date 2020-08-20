@@ -2,7 +2,7 @@
 /* eslint-disable consistent-return */
 
 import moment from 'moment';
-import { sha256 } from 'js-sha256';
+import { bitcoin } from '../../App';
 
 let utilsFuntions;
 if (!process.env.JEST_WORKER_ID) {
@@ -22,7 +22,7 @@ export default class CoreDatabase {
 
   writteUser = (obj) => new Promise((resolve, reject) => {
     try {
-      this.db.write(() => {
+      this.db.write(async () => {
         const userData = {
           uid: obj.uid,
           ipv6Address: obj.ipv6Address,
@@ -30,7 +30,7 @@ export default class CoreDatabase {
           picture: obj.picture,
           chats: obj.chats,
           contacts: [],
-          imageHash: obj.picture ? sha256(obj.picture) : null
+          imageHash: obj.picture ? await bitcoin.sha256(obj.picture) : null
         };
         this.db.create(
           'user',
@@ -70,12 +70,12 @@ export default class CoreDatabase {
 
   saveUserPhoto = (obj) => new Promise((resolve, reject) => {
     try {
-      this.db.write(() => {
+      this.db.write(async () => {
         this.db.create(
           'user',
           {
             ...obj,
-            imageHash: obj.picture ? sha256(obj.picture) : null
+            imageHash: obj.picture ? await bitcoin.sha256(obj.picture) : null
           },
           true
         );

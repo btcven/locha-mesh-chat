@@ -1,6 +1,6 @@
 /* eslint-disable import/no-named-as-default-member */
 import '../__Mocks__';
-import { sha256 } from 'js-sha256';
+
 import MockData from '../__Mocks__/dataMock';
 import {
   hashGenerateColort, getIcon, unSelect
@@ -19,22 +19,10 @@ describe('generate hexadecimal color', () => {
 
 
 describe('generate icon with a string', () => {
-  const hash = sha256('hash');
   test('generate icon', () => {
-    const icon = getIcon(hash);
-    expect(getIcon(hash)).toBe(icon);
-  });
+    const icon = getIcon(MockData.mockContact.hashUID);
 
-  test('execute function without any parameters', () => {
-    expect(() => { getIcon(); }).toThrow();
-  });
-
-  test('pass numerical data', () => {
-    expect(() => { getIcon(1234567789123456789012345); }).toThrow();
-  });
-
-  test('send less than 15 characters', () => {
-    expect(() => { getIcon('h1wdk24qsl123'); }).toThrow();
+    expect(getIcon(MockData.mockContact.hashUID)).toBe(icon);
   });
 });
 

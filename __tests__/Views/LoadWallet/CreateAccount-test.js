@@ -3,7 +3,6 @@ import React from 'react';
 import renderer from 'react-test-renderer';
 import { shallow } from 'enzyme';
 import { Provider } from 'react-redux';
-import Mnemonic from 'bitcore-mnemonic';
 import CreateAccount from '../../../src/views/LoadWallet/CreateAccount';
 import store from '../../../src/store';
 import { navigationPops } from '../../components/heder-test';
@@ -12,9 +11,8 @@ const screenProps = {
   t: (data) => data
 };
 
-const mnemonic = new Mnemonic();
-const words = mnemonic.toString().split(' ');
-const stringWords = mnemonic.toString();
+const words = 'cactus spatial damp canvas coach income wool doll mail radio senior mixed'.split(' ');
+const stringWords = 'cactus spatial damp canvas coach income wool doll mail radio senior mixed';
 const back = jest.fn();
 test('render component create account', () => {
   const rendered = renderer.create(

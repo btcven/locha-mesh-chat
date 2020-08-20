@@ -1,7 +1,7 @@
+/* eslint-disable no-async-promise-executor */
 /* eslint-disable no-undef */
 /* eslint-disable global-require */
 /* eslint-disable no-unused-vars */
-import { sha256 } from 'js-sha256';
 import Realm from 'realm';
 import {
   userSchema,
@@ -13,6 +13,7 @@ import {
   seed
 } from './schemas';
 import CoreDatabase from './realmDatabase';
+import { bitcoin } from '../../App';
 
 let pathDefault;
 let pathSeed;
@@ -79,8 +80,11 @@ export default class Database extends CoreDatabase {
 
     try {
       this.seed = new Realm(options);
+      console.log("paso en 1");
       this.db = new Realm(optionsDatabase);
+      console.log("paso en 2")
       this.listener = new Realm(optionsDatabase);
+      console.log("paso en 3");
       resolve(this.db);
     } catch (err) {
       // eslint-disable-next-line no-console
@@ -104,7 +108,7 @@ export default class Database extends CoreDatabase {
       this.db = new Realm(optionsDatabase);
       this.listener = new Realm(optionsDatabase);
       const userData = await this.getUserData();
-      resolve(userData);
+      resolve({ user: userData, seed: this.seed.objects('Seed') });
     } catch (err) {
       reject(err);
     }
@@ -116,11 +120,12 @@ export default class Database extends CoreDatabase {
    * @param {String} phrases account phrases
    * @return {Promise}
    */
-  setDataSeed = (phrases) => new Promise((resolve) => {
+  setDataSeed = (phrases) => new Promise(async (resolve) => {
+    id = await bitcoin.sha256(phrases);
     try {
       this.seed.write(() => {
         this.seed.create('Seed', {
-          id: sha256(phrases),
+          id: id,
           seed: phrases
         }, true);
 
@@ -128,7 +133,7 @@ export default class Database extends CoreDatabase {
       });
     } catch (err) {
       // eslint-disable-next-line no-console
-      console.log('2', err);
+      console.log('dios mio de mi vida', err);
     }
   })
 
@@ -139,8 +144,8 @@ export default class Database extends CoreDatabase {
    * @param {String} pin  New pin
    * @return {Promise}
    */
-  restoreWithPhrase = (pin, phrase) => new Promise((resolve) => {
-    this.getRealm(sha256(pin), sha256(phrase)).then(() => {
+  restoreWithPhrase = (pin, phrase) => new Promise(async (resolve) => {
+    this.getRealm(await bitcoin.sha256(pin), await bitcoin.sha256(phrase)).then(() => {
       this.setDataSeed(phrase).then(() => {
         resolve();
       });
@@ -153,9 +158,9 @@ export default class Database extends CoreDatabase {
    * @param {String} phrases account phrases
    * @return {Promise}
    */
-  verifyPin = (pin) => new Promise((resolve, reject) => {
+  verifyPin = (pin) => new Promise(async (resolve, reject) => {
     try {
-      options.encryptionKey = this.toByteArray(sha256(pin));
+      options.encryptionKey = this.toByteArray(await bitcoin.sha256(pin));
       // eslint-disable-next-line no-new
       new Realm(options);
       resolve();
@@ -183,8 +188,8 @@ export default class Database extends CoreDatabase {
    * @param {String} pin  New pin
    * @return {Promise}
    */
-  restoreWithFile = (pin, data) => new Promise((resolve) => {
-    this.getRealm(sha256(pin), sha256(data.seed.seed)).then(async () => {
+  restoreWithFile = (pin, data) => new Promise(async (resolve) => {
+    this.getRealm(await bitcoin.sha256(pin), await bitcoin.sha256(data.seed.seed)).then(async () => {
       const chats = Object.values(data.user.chats);
       const contacts = Object.values(data.user.contacts);
 
@@ -214,9 +219,9 @@ export default class Database extends CoreDatabase {
    * @param {String} phrases account phrases
    * @return {Promise}
    */
-  verifyPhrases = (phrases) => new Promise((resolve, reject) => {
+  verifyPhrases = (phrases) => new Promise(async (resolve, reject) => {
     try {
-      optionsDatabase.encryptionKey = this.toByteArray(sha256(phrases));
+      optionsDatabase.encryptionKey = this.toByteArray(await bitcoin.sha256(phrases));
       // eslint-disable-next-line no-new
       new Realm(optionsDatabase);
       const deletePath = `${Realm.defaultPath.substring(0, Realm.defaultPath.lastIndexOf('/'))}/${options.path}`;
@@ -233,8 +238,8 @@ export default class Database extends CoreDatabase {
    * @param {String} phrases account phrases
    * @return {Promise}
    */
-  newPin = (pin, phrase) => new Promise((resolve) => {
-    this.getRealm(sha256(pin), sha256(phrase)).then(() => {
+  newPin = (pin, phrase) => new Promise(async (resolve) => {
+    this.getRealm(await bitcoin.sha256(pin), await bitcoin.sha256(phrase)).then(() => {
       this.setDataSeed(phrase).then(async () => {
         const userData = await this.getUserData();
         resolve(userData);

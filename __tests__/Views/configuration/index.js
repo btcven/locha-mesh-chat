@@ -21,7 +21,6 @@ describe('main component of configurations', () => {
       />
     ).childAt(0).dive();
 
-      
 
     test('open modal photo', () => {
       wrapper.find('ForwardRef').first().props().onPress();
