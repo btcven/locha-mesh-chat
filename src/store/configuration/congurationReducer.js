@@ -13,11 +13,7 @@ export const configurationReducer = (state = AplicationState, action) => {
   switch (action.type) {
     case ActionTypes.INITIAL_STATE: {
       return {
-        ipv6Address: action.payload.ipv6Address,
-        uid: action.payload.uid,
-        name: action.payload.name,
-        image: action.payload.picture,
-        imageHash: action.payload.imageHash
+        ...action.payload
       };
     }
 

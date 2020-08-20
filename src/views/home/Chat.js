@@ -220,7 +220,7 @@ class Chat extends Component {
       ? navigation.state.params.uid
       : null;
     const sendObject = {
-      fromUID: userData.ipv6Address,
+      fromUID: userData.peerID,
       toUID,
       msg: {
         text: ''
@@ -230,7 +230,7 @@ class Chat extends Component {
     };
     data.images.forEach(async (image, key) => {
       const id = bitcoin.sha256(
-        `${userData.ipv6Address} + ${toUID}  +  ${sendObject.msg.text
+        `${userData.peerID} + ${toUID}  +  ${sendObject.msg.text
         + sendObject.msg.file}  + ${new Date().getTime()}`
       );
       if (data.position === key) {

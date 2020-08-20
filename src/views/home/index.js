@@ -29,7 +29,7 @@ import {
 import Header from '../../components/Header';
 import { selectedChat, deleteChat } from '../../store/chats';
 import FloatButton from '../../components/FloatButton';
-import { database } from '../../../App';
+import { database, chatService } from '../../../App';
 
 
 /**
@@ -207,10 +207,10 @@ class index extends Component {
             const lastmessage = messages.length ? (
               this.getDataTypeMessage(messages[messages.length - 1])
             ) : (
-              <Text note>
-                {chats[0].lastMessage}
-              </Text>
-            );
+                <Text note>
+                  {chats[0].lastMessage}
+                </Text>
+              );
 
             const lasTime = messages.length
               ? Number(messages[messages.length - 1].timestamp)

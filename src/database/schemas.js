@@ -63,7 +63,7 @@ export const userSchema = {
   primaryKey: 'uid',
   properties: {
     uid: { type: 'string', indexed: true },
-    ipv6Address: 'string?',
+    peerID: 'string?',
     name: 'string',
     picture: 'string?',
     imageHash: 'string?',

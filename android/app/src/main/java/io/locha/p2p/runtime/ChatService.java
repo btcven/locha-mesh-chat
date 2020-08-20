@@ -19,6 +19,8 @@ package io.locha.p2p.runtime;
 import io.locha.p2p.util.LibraryLoader;
 import android.util.Log;
 
+import com.facebook.react.bridge.Promise;
+
 /**
  * Chat service. This class manages the chat logic, such as starting and
  * stopping the server.
@@ -68,9 +70,14 @@ public class ChatService {
      *
      * @throws RuntimeException if the server is already started.
      */
-    public void start(byte[] privateKey) {
+    public void start(byte[] privateKey, Promise promise) {
         Log.i(TAG, "Starting ChatService");
+        if (isStarted()) {
+            promise.reject("Error", "The chat service is already active");
+            return;
+        }
         nativeStart(privateKey);
+        promise.resolve(getPeerId());
     }
 
     /**
