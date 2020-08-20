@@ -34,7 +34,7 @@ use futures::{prelude::*, select};
 use jni::{
     objects::{GlobalRef, JClass, JString, JValue},
     signature::{JavaType, Primitive},
-    sys::{jboolean, jbyteArray, JNI_FALSE, JNI_TRUE},
+    sys::{jboolean, jbyteArray, jstring, JNI_FALSE, JNI_TRUE},
     Executor, JNIEnv, JavaVM,
 };
 use lazy_static::lazy_static;
@@ -51,7 +51,8 @@ use libp2p::{
 };
 
 use crate::util::{
-    jni_cache::chat_service_events, unwrap_exc_or_default, unwrap_jni,
+    jni_cache::chat_service_events, unwrap_exc_or, unwrap_exc_or_default,
+    unwrap_jni,
 };
 use parking_lot::{Condvar, Mutex, RwLock};
 
@@ -137,19 +138,20 @@ pub extern "system" fn Java_io_locha_p2p_runtime_ChatService_nativeStart(
     env: JNIEnv,
     class: JClass,
     secret_key: jbyteArray,
-) {
+) -> jstring {
     debug!("nativeStart");
 
-    let res = panic::catch_unwind(|| {
+    let res = panic::catch_unwind(|| -> Result<JString, jni::errors::Error> {
         if CHANNEL.read().is_some() {
-            error!("ChatService is already started");
-            return Ok(());
+            panic!("ChatService is already started");
         }
 
         let bytes = env.convert_byte_array(secret_key)?;
         let secret_key = secp256k1::SecretKey::from_bytes(bytes)
             .expect("Couldn't decode secret key bytes");
         let keypair = Keypair::Secp256k1(secret_key.into());
+        let peer_id = PeerId::from_public_key(keypair.public());
+        let output = env.new_string(peer_id.to_string())?;
 
         let vm = Arc::new(env.get_java_vm().expect("Couldn't get Java VM"));
 
@@ -187,10 +189,10 @@ pub extern "system" fn Java_io_locha_p2p_runtime_ChatService_nativeStart(
             StartStatus::Failed => {
                 panic!("Couldn't start ChatService thread!");
             }
-            StartStatus::Started => Ok(()),
+            StartStatus::Started => Ok(output),
         }
     });
-    unwrap_exc_or_default(&env, res)
+    unwrap_exc_or(&env, res, env.new_string("").unwrap()).into_inner()
 }
 
 #[no_mangle]
