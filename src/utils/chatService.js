@@ -8,9 +8,6 @@ export default class ChatService {
 
     this.service = NativeModules.ChatService;
     this.event = new NativeEventEmitter(this.service);
-
-    this.service.start("aabbccddeeff00112233445566778899aabbccddeeff00112233445566778899");
-
     this.onNewMessage();
     this.onNewListenAddr();
 
@@ -40,5 +37,9 @@ export default class ChatService {
     this.event.addListener('newListenAddr', ((multiaddr) => {
       console.log(multiaddr);
     }))
+  }
+
+  startService = () => {
+    this.service.start("aabbccddeeff00112233445566778899aabbccddeeff00112233445566778899");
   }
 }

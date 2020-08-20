@@ -3,8 +3,7 @@ import RNFS from 'react-native-fs';
 import { Platform } from 'react-native';
 import { ActionTypes } from '../constants';
 import { notification, FileDirectory } from '../../utils/utils';
-import { database } from '../../../App';
-import ChatService from '../../utils/chatService';
+import { database, chatService } from '../../../App';
 import { messageType } from '../../utils/constans';
 
 
@@ -26,7 +25,6 @@ import { messageType } from '../../utils/constans';
  */
 
 export const initialChat = (data, status) => async (dispatch) => {
-  const chatService = new ChatService();
   database.setMessage(data.toUID, { ...data }, status).then((res) => {
     if (!process.env.JEST_WORKER_ID) {
       chatService.send(JSON.stringify(data));
@@ -200,7 +198,6 @@ export const cleanAllChat = (id) => async (dispatch) => {
 export const sendMessageWithFile = (data, path, base64) => (dispatch) => {
   const uidChat = data.toUID ? data.toUID : 'broadcast';
   const saveDatabase = { ...data };
-  const chatService = new ChatService();
   saveDatabase.msg.file = path;
   database.setMessage(uidChat, { ...saveDatabase }, 'pending').then((res) => {
     saveDatabase.msg.file = base64;
@@ -252,7 +249,6 @@ export const messageQueue = (index, id, view) => async (dispatch) => {
 export const sendStatus = (data) => {
   // eslint-disable-next-line global-require
   const store = require('..');
-  const chatService = new ChatService();
   const state = store.default.getState();
   // eslint-disable-next-line no-shadow
   const sendStatus = {
@@ -288,7 +284,6 @@ export const sendStatus = (data) => {
 
 export const setView = (idChat) => async (dispatch) => {
   database.cancelUnreadMessages(idChat).then((res) => {
-    const chatService = new ChatService();
     if (!process.env.JEST_WORKER_ID) {
       // eslint-disable-next-line global-require
       const store = require('..');
@@ -321,13 +316,11 @@ export const setView = (idChat) => async (dispatch) => {
  * @param {Object} data;
  */
 export const sendReadMessageStatus = (data) => () => {
-  const chatService = new ChatService();
   chatService.send(JSON.stringify(sendStatus));
 };
 
 export const sendAgain = (message) => (dispatch) => {
   database.updateMessage(message).then((res) => {
-    const chatService = new ChatService();
     const sendObject = {
       fromUID: res.fromUID,
       toUID: res.toUID,
