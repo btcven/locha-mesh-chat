@@ -153,10 +153,6 @@ export default class settingsPanel extends Component {
 
   render() {
     const { deviceInfo, screenProps } = this.props;
-    // const {
-    //   open, title, placeholder, secureText, openCredential
-    // } = this.state;
-    // const action = this.getActionFunction();
     return (
       <Container>
         <Content>
