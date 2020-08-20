@@ -122,7 +122,6 @@ export default class Database extends CoreDatabase {
    */
   setDataSeed = (phrases) => new Promise(async (resolve) => {
     id = await bitcoin.sha256(phrases);
-    console.log(id);
     try {
       this.seed.write(() => {
         this.seed.create('Seed', {
