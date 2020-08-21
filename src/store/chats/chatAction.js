@@ -6,7 +6,7 @@ import { notification, FileDirectory } from '../../utils/utils';
 import { database, chatService } from '../../../App';
 import { messageType } from '../../utils/constans';
 
-
+ 
 /**
  *here are all the actions of sending and receiving messages
  *@module ChatAction

@@ -23,7 +23,7 @@ use std::{
     str::FromStr,
     sync::Arc,
     thread,
-    time::{Duration, SystemTime, UNIX_EPOCH},
+    time::Duration,
 };
 
 use async_std::{
@@ -60,18 +60,9 @@ use log::{debug, error};
 
 /// Chat service action
 enum Action {
-    SendMessage(Message),
+    SendMessage(String),
     Dial(Multiaddr),
     Stop,
-}
-
-/// A chat message
-#[derive(Debug, Clone, Eq, PartialEq)]
-pub struct Message {
-    /// Message contents.
-    pub contents: String,
-    /// Timestamp of the message since `UNIX_EPOCH`
-    pub timestamp: u64,
 }
 
 // TODO: adjust
@@ -192,7 +183,12 @@ pub extern "system" fn Java_io_locha_p2p_runtime_ChatService_nativeStart(
             StartStatus::Started => Ok(output),
         }
     });
-    unwrap_exc_or(&env, res, env.new_string("").unwrap()).into_inner()
+    unwrap_exc_or(
+        &env,
+        res,
+        env.new_string("").expect("Could not create JNI string"),
+    )
+    .into_inner()
 }
 
 #[no_mangle]
@@ -250,14 +246,7 @@ pub extern "system" fn Java_io_locha_p2p_runtime_ChatService_nativeSendMessage(
             return Ok(());
         }
         let contents: String = env.get_string(contents)?.into();
-        let message = Message {
-            contents,
-            timestamp: SystemTime::now()
-                .duration_since(UNIX_EPOCH)
-                .unwrap()
-                .as_secs(),
-        };
-        send_action(Action::SendMessage(message));
+        send_action(Action::SendMessage(contents));
         Ok(())
     });
     unwrap_exc_or_default(&env, res)
@@ -323,7 +312,9 @@ async fn chat_service_task<'a>(
 
     let mut swarm = Swarm::new(transport, gossipsub, peer_id.clone());
 
-    let listen_addr: Multiaddr = "/ip6/::/tcp/45293".parse().unwrap();
+    let listen_addr: Multiaddr = "/ip4/127.0.0.1/tcp/45293"
+        .parse()
+        .expect("Invalid listening Multiaddr");
     match Swarm::listen_on(&mut swarm, listen_addr.clone()) {
         Ok(_) => (),
         Err(e) => {
@@ -359,7 +350,7 @@ async fn chat_service_task<'a>(
                         }
                     }
                     Action::SendMessage(message) => {
-                        swarm.publish(&topic, message.contents.as_bytes());
+                        swarm.publish(&topic, message.as_bytes());
                     }
                 }
             },
@@ -402,7 +393,13 @@ fn craft_message_id(message: &GossipsubMessage) -> MessageId {
 }
 
 fn send_action(action: Action) {
-    task::block_on(CHANNEL.read().as_ref().unwrap().send(action))
+    task::block_on(
+        CHANNEL
+            .read()
+            .as_ref()
+            .expect("ChatService is not running")
+            .send(action),
+    )
 }
 
 // An interface to the ChatService class

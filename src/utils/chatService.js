@@ -42,8 +42,7 @@ export default class ChatService {
 
   startService = async () => {
     const xpriv = await bitcoin.getPrivKey();
-    const shaXprv = await bitcoin.sha256(xpriv);
-    const PeerID = await this.service.start(shaXprv);
+    const PeerID = await this.service.start(xpriv);
     // this.service.dial('/ip4/192.168.0.25/tcp/41381');
 
     return PeerID;
