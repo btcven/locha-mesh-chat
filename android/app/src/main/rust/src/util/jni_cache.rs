@@ -54,6 +54,12 @@ static mut CHAT_SERVICE_EVENTS_ON_NEW_LISTEN_ADDR: Option<JMethodID> = None;
 #[allow(non_snake_case)]
 #[no_mangle]
 pub extern "system" fn JNI_OnLoad(vm: JavaVM, _: *mut c_void) -> jint {
+    android_logger::init_once(
+        android_logger::Config::default()
+            .with_min_level(log::Level::Trace)
+            .with_tag("LochaP2P"),
+    );
+
     let env = vm.get_env().expect("Cannot get reference to the JNIEnv");
 
     catch_unwind(|| {
