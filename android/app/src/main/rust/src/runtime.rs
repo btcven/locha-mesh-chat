@@ -54,9 +54,12 @@ use crate::util::{
     jni_cache::chat_service_events, unwrap_exc_or, unwrap_exc_or_default,
     unwrap_jni,
 };
-use parking_lot::{Condvar, Mutex, RwLock};
 
 use log::{debug, error};
+use parking_lot::RwLock;
+
+mod sync_start_cond;
+use sync_start_cond::SyncStartCond;
 
 /// Chat service action
 enum Action {
@@ -76,54 +79,6 @@ lazy_static! {
     static ref CHANNEL: RwLock<Option<Sender<Action>>> = RwLock::new(None);
 }
 
-#[derive(Debug, Clone, Copy, Eq, PartialEq)]
-enum StartStatus {
-    NotStarted,
-    Started,
-    Failed,
-}
-
-#[derive(Debug, Clone)]
-struct SyncStartCond {
-    inner: Arc<(Mutex<StartStatus>, Condvar)>,
-}
-
-impl SyncStartCond {
-    fn new() -> SyncStartCond {
-        SyncStartCond {
-            inner: Arc::new((
-                Mutex::new(StartStatus::NotStarted),
-                Condvar::new(),
-            )),
-        }
-    }
-
-    fn signal_start(&self, v: StartStatus) {
-        let &(ref lock, ref cvar) = &*self.inner;
-        let mut started = lock.lock();
-        match v {
-            StartStatus::NotStarted => panic!("Can't send \"not started\" ;-)"),
-            v => *started = v,
-        }
-        cvar.notify_one();
-    }
-
-    fn wait_for_start_status(self) -> StartStatus {
-        let &(ref lock, ref cvar) = &*self.inner;
-        let mut started = lock.lock();
-        match &*started {
-            StartStatus::NotStarted => {
-                cvar.wait(&mut started);
-                match &*started {
-                    StartStatus::NotStarted => unreachable!(),
-                    s => *s,
-                }
-            }
-            s => *s,
-        }
-    }
-}
-
 #[no_mangle]
 pub extern "system" fn Java_io_locha_p2p_runtime_ChatService_nativeStart(
     env: JNIEnv,
@@ -140,6 +95,7 @@ pub extern "system" fn Java_io_locha_p2p_runtime_ChatService_nativeStart(
         let bytes = env.convert_byte_array(secret_key)?;
         let secret_key = secp256k1::SecretKey::from_bytes(bytes)
             .expect("Couldn't decode secret key bytes");
+
         let keypair = Keypair::Secp256k1(secret_key.into());
         let peer_id = PeerId::from_public_key(keypair.public());
         let output = env.new_string(peer_id.to_string())?;
@@ -169,20 +125,19 @@ pub extern "system" fn Java_io_locha_p2p_runtime_ChatService_nativeStart(
 
         // Spawn a thread for ChatService. Note: we can't use task::spawn
         // here because some jni-rs types are not Send safe.
-        let start_cond_thread = start_cond.clone();
-        thread::spawn(move || {
-            chat_service_thread(vm, start_cond_thread, events_proxy, keypair)
+        thread::spawn({
+            let start_cond = start_cond.clone();
+            move || chat_service_thread(vm, start_cond, events_proxy, keypair)
         });
 
         // Wait for the start status of the thread we spaned.
-        match start_cond.wait_for_start_status() {
-            StartStatus::NotStarted => unreachable!(),
-            StartStatus::Failed => {
-                panic!("Couldn't start ChatService thread!");
-            }
-            StartStatus::Started => Ok(output),
-        }
+        start_cond
+            .wait()
+            .expect("ChatService thread initialization");
+
+        Ok(output)
     });
+
     unwrap_exc_or(
         &env,
         res,
@@ -293,7 +248,7 @@ async fn chat_service_task<'a>(
         Ok(t) => t,
         Err(e) => {
             error!("Could not create development transport for libp2p: {}", e);
-            start_cond.signal_start(StartStatus::Failed);
+            start_cond.notify_failure(e);
             return;
         }
     };
@@ -319,14 +274,14 @@ async fn chat_service_task<'a>(
         Ok(_) => (),
         Err(e) => {
             error!("Could not listen on {}: {}", listen_addr, e);
-            start_cond.signal_start(StartStatus::Failed);
+            start_cond.notify_failure(e);
             return;
         }
     }
 
     // Signal the thread that spawned us that initialization is done
     // and we're ready to receive events from Java and/or the network.
-    start_cond.signal_start(StartStatus::Started);
+    start_cond.notify_start();
 
     loop {
         select! {
