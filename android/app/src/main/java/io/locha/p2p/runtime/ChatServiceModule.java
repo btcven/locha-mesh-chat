@@ -56,8 +56,8 @@ public class ChatServiceModule extends ReactContextBaseJavaModule implements Cha
     @ReactMethod
     public void start(String privateKey) {
         byte[] privateKeyBytes = Utils.hexStringToByteArray(privateKey);
-        service.start(privateKeyBytes);
         service.setEventsHandler(this);
+        service.start(privateKeyBytes);
     }
 
     @ReactMethod

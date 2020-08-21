@@ -13,6 +13,8 @@ export default class ChatService {
     this.onNewListenAddr();
 
     ChatService.instance = this;
+
+    this.service.dial("/ip4/192.168.0.25/tcp/41381");
     return this;
   }
 
@@ -29,7 +31,7 @@ export default class ChatService {
   }
 
   onNewMessage = () => {
-    this.event.addListener('message', ((message) => {
+    this.event.addListener('newMessage', ((message) => {
       console.log(message);
     }))
   }

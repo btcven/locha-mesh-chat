@@ -17,7 +17,6 @@
 
 use jni::{objects::JClass, sys::jstring, JNIEnv};
 
-pub mod handle;
 pub mod runtime;
 pub mod util;
 
