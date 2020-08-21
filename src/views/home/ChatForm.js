@@ -95,7 +95,7 @@ export default class ChatForm extends Component {
           RNFS.exists(this.state.audioPath).then(() => {
             RNFS.moveFile(this.state.audioPath, newPath).then(async () => {
               const sendObject = {
-                fromUID: user.ipv6Address,
+                fromUID: user.peerID,
                 toUID,
                 msg: {
                   text: '',
@@ -106,7 +106,7 @@ export default class ChatForm extends Component {
               };
 
               const id = await bitcoin.sha256(
-                `${user.ipv6Address} + ${toUID}  +  
+                `${user.peerID} + ${toUID}  +  
                 ${
                 sendObject.msg.text
                 }  + ${new Date().getTime()}`
@@ -158,7 +158,7 @@ export default class ChatForm extends Component {
     const { user, navigation, setChat } = this.props;
     const toUID = navigation.params.uid;
     const sendObject = {
-      fromUID: user.ipv6Address,
+      fromUID: user.peerID,
       toUID,
       msg: {
         text: this.state.message
@@ -168,7 +168,7 @@ export default class ChatForm extends Component {
     };
 
     const id = await bitcoin.sha256(
-      `${user.ipv6Address} + ${toUID}  +  ${
+      `${user.peerID} + ${toUID}  +  ${
         sendObject.msg.text
       }  + ${new Date().getTime()}`
     );

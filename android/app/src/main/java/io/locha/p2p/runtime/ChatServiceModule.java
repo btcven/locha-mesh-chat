@@ -74,7 +74,7 @@ public class ChatServiceModule extends ReactContextBaseJavaModule implements Cha
     @ReactMethod
     public void sendMessage(String contents) {
         Log.i(TAG, "sendMessage: "+ contents);
-        service.sendMessage(contents);
+//        service.sendMessage(contents);
     }
 
     /**

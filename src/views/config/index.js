@@ -232,7 +232,7 @@ class Config extends Component {
                 }}
               >
                 <TouchableOpacity
-                  onPress={() => this.setContent(this.props.config.ipv6Address)}
+                  onPress={() => this.setContent(this.props.config.peerID)}
                 >
                   <Text style={styles.textInfo}>
                     {`${this.props.config.peerID}`.substr(0, 25)}
