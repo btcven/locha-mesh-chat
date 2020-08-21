@@ -127,7 +127,7 @@ public class ChatService {
         Log.i("LochaP2P", String.format("Message sent"));
     }
 
-    public native void nativeStart(byte[] privateKey);
+    public native String nativeStart(byte[] privateKey);
     public native void nativeStop();
     public native boolean nativeIsRunning();
     public native void nativeDial(String multiaddr);

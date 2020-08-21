@@ -1,4 +1,5 @@
 import { NativeModules, NativeEventEmitter } from 'react-native';
+import { bitcoin } from '../../App';
 
 export default class ChatService {
   constructor() {
@@ -24,7 +25,7 @@ export default class ChatService {
   }
 
   send = (message) => {
-    this.service.send(message);
+    this.service.sendMessage(message);
   }
 
   onNewMessage = () => {
@@ -39,7 +40,10 @@ export default class ChatService {
     }))
   }
 
-  startService = () => {
-    this.service.start("aabbccddeeff00112233445566778899aabbccddeeff00112233445566778899");
+  startService = async () => {
+    const xpriv = await bitcoin.getPrivKey();
+
+    const shaXprv = await bitcoin.sha256(xpriv);
+    this.service.start(shaXprv);
   }
 }
