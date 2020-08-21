@@ -138,6 +138,7 @@ android {
         versionName "1.0"
         missingDimensionStrategy ('react-native-camera','general')
         multiDexEnabled true
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     signingConfigs {
@@ -262,6 +263,40 @@ dependencies {
         releaseImplementation files(hermesPath + "hermes-release.aar")
     } else {
         implementation jscFlavor
+    }
+
+    testImplementation 'junit:junit:4.12'
+
+    androidTestImplementation 'androidx.test:core:' + rootProject.coreVersion;
+    androidTestImplementation 'androidx.test.ext:junit:' + rootProject.extJUnitVersion;
+    androidTestImplementation 'androidx.test:runner:' + rootProject.runnerVersion;
+    androidTestImplementation 'com.google.truth:truth:' + rootProject.truthVersion
+}
+
+apply plugin: 'org.mozilla.rust-android-gradle.rust-android'
+
+cargo {
+    module = "src/main/rust"
+    libname = "locha_p2p"
+    targets = ["arm64", "arm", "x86", "x86_64"]
+    apiLevel = 21
+}
+
+tasks.whenTaskAdded { task ->
+    if ((task.name == 'compileDebugJavaWithJavac' || task.name == 'compileReleaseJavaWithJavac')) {
+        task.dependsOn 'cargoBuild'
+    }
+}
+
+afterEvaluate {
+    // The `cargoBuild` task isn't available until after evaluation.
+    android.applicationVariants.all { variant ->
+        def productFlavor = ""
+        variant.productFlavors.each {
+            productFlavor += "${it.name.capitalize()}"
+        }
+        def buildType = "${variant.buildType.name.capitalize()}"
+        tasks["generate${productFlavor}${buildType}Assets"].dependsOn(tasks["cargoBuild"])
     }
 }
 

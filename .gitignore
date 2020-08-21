@@ -4,6 +4,7 @@
 
 # VSCode
 *.code-workspace
+.vscode
 
 # Xcode
 #
@@ -62,3 +63,6 @@ buck-out/
 
 # CocoaPods
 /ios/Pods/
+
+# Rust
+android/app/src/main/rust/target
