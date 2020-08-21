@@ -4,7 +4,7 @@ import RNSF from 'react-native-fs';
 import { ActionTypes } from '../constants';
 import { STORAGE_KEY } from '../../utils/constans';
 import { createFolder } from '../../utils/utils';
-import { bitcoin, database } from '../../../App';
+import { bitcoin, database, chatService } from '../../../App';
 import UdpServer from '../../utils/udp';
 
 /**
@@ -49,7 +49,6 @@ export const verifyAplicationState = () => async (dispatch) => {
 export const restoreAccountWithPin = (pin, callback) => async (dispatch) => {
   const shaPing = await bitcoin.sha256(pin);
   database.restoreWithPin(shaPing).then(async (data) => {
-    new UdpServer();
     bitcoin.createWallet(data.seed[0].seed);
     dispatch(writeAction(JSON.parse(JSON.stringify(data.user[0]))));
   }).catch(() => {
@@ -57,18 +56,19 @@ export const restoreAccountWithPin = (pin, callback) => async (dispatch) => {
   });
 };
 
+
+
 export const createNewAccount = (obj) => async (dispatch) => {
   const shaPing = await bitcoin.sha256(obj.pin);
   const shaSeed = await bitcoin.sha256(obj.seed);
   await database.getRealm(shaPing, shaSeed);
   await database.setDataSeed(obj.seed);
   await createFolder();
-  const udp = new UdpServer();
   const result = await bitcoin.createWallet(obj.seed);
-  const ivp6 = udp.globalIpv6 ? udp.globalIpv6 : '::1';
+  const peerID = await chatService.startService();
   database.writteUser({
     uid: result.pubKey,
-    ipv6Address: ivp6,
+    peerID,
     name: obj.name,
     image: null,
     contacts: [],

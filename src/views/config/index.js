@@ -64,7 +64,6 @@ class Config extends Component {
       const ciphertext = await bitcoin.encrypt(JSON.stringify(data), await bitcoin.sha256(pin)).toString();
       let base64 = Buffer.from(ciphertext).toString('base64');
       base64 = `data:text/plain;base64,${base64}`;
-
       await Share.open({
         url: base64,
         filename: 'Backup'
@@ -86,6 +85,7 @@ class Config extends Component {
 
   render() {
     const { screenProps } = this.props;
+    console.log(this.props.config);
     return (
       <Container>
         <Header {...this.props} />
@@ -235,7 +235,7 @@ class Config extends Component {
                   onPress={() => this.setContent(this.props.config.ipv6Address)}
                 >
                   <Text style={styles.textInfo}>
-                    {`${this.props.config.ipv6Address}`.substr(0, 25)}
+                    {`${this.props.config.peerID}`.substr(0, 25)}
                     ...
                   </Text>
                 </TouchableOpacity>

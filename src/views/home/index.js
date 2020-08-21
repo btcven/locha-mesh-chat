@@ -54,7 +54,6 @@ class index extends Component {
 
   componentDidMount = () => {
     database.realmObservable();
-    chatService.startService();
     pendingObservable();
   };
 

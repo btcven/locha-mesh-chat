@@ -18,6 +18,7 @@ package io.locha.p2p.runtime;
 
 import android.util.Log;
 
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
@@ -54,10 +55,10 @@ public class ChatServiceModule extends ReactContextBaseJavaModule implements Cha
      * characters (32-bytes).
      */
     @ReactMethod
-    public void start(String privateKey) {
+    public void start(String privateKey, Promise promise) {
         byte[] privateKeyBytes = Utils.hexStringToByteArray(privateKey);
         service.setEventsHandler(this);
-        service.start(privateKeyBytes);
+        service.start(privateKeyBytes, promise);
     }
 
     @ReactMethod
@@ -75,6 +76,21 @@ public class ChatServiceModule extends ReactContextBaseJavaModule implements Cha
         Log.i(TAG, "sendMessage: "+ contents);
         service.sendMessage(contents);
     }
+
+    /**
+     * method used for get perrID and send it to React native
+     * @param promise
+     */
+    @ReactMethod public void getPeerID(Promise promise){
+
+        if(!service.isRunning()){
+            promise.reject("Error", "Chat server is not active");
+            return;
+        }
+        String peerID = service.getPeerID();
+        promise.resolve(peerID);
+    }
+
 
     @Override
     public void onNewMessage(String contents) {
