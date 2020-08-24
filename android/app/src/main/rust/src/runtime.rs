@@ -241,7 +241,7 @@ pub extern "system" fn Java_io_locha_p2p_runtime_ChatService_nativeSendMessage(
     contents: JString,
 ) {
     let res = panic::catch_unwind(|| {
-        if CHANNEL.read().is_some() {
+        if CHANNEL.read().is_none() {
             error!("ChatService has not been started!");
             return Ok(());
         }
@@ -312,7 +312,7 @@ async fn chat_service_task<'a>(
 
     let mut swarm = Swarm::new(transport, gossipsub, peer_id.clone());
 
-    let listen_addr: Multiaddr = "/ip4/127.0.0.1/tcp/45293"
+    let listen_addr: Multiaddr = "/ip4/0.0.0.0/tcp/45293"
         .parse()
         .expect("Invalid listening Multiaddr");
     match Swarm::listen_on(&mut swarm, listen_addr.clone()) {

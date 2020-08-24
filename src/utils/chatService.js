@@ -25,6 +25,7 @@ export default class ChatService {
   }
 
   send = (message) => {
+    console.log("mardita sea el guevo", message);
     this.service.sendMessage(message);
   }
 

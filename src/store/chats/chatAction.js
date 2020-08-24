@@ -6,7 +6,7 @@ import { notification, FileDirectory } from '../../utils/utils';
 import { database, chatService } from '../../../App';
 import { messageType } from '../../utils/constans';
 
- 
+
 /**
  *here are all the actions of sending and receiving messages
  *@module ChatAction
@@ -27,7 +27,8 @@ import { messageType } from '../../utils/constans';
 export const initialChat = (data, status) => async (dispatch) => {
   database.setMessage(data.toUID, { ...data }, status).then((res) => {
     if (!process.env.JEST_WORKER_ID) {
-      // chatService.send(JSON.stringify(data));
+      console.warn("initialChat");
+      chatService.send(JSON.stringify(data));
     }
     dispatch({
       type: ActionTypes.NEW_MESSAGE,
@@ -201,6 +202,7 @@ export const sendMessageWithFile = (data, path, base64) => (dispatch) => {
   saveDatabase.msg.file = path;
   database.setMessage(uidChat, { ...saveDatabase }, 'pending').then((res) => {
     saveDatabase.msg.file = base64;
+    console.warn("sendMessageWithFile")
     chatService.send(JSON.stringify(saveDatabase));
     dispatch({
       type: ActionTypes.NEW_MESSAGE,
@@ -292,7 +294,7 @@ export const setView = (idChat) => async (dispatch) => {
         const chat = Object.values(state.chats.chat).find((itemChat) => itemChat.toUID === idChat);
         // eslint-disable-next-line no-shadow
         const sendStatus = {
-          fromUID: state.config.ipv6Address,
+          fromUID: state.config.peerID,
           toUID: chat.toUID,
           timestamp: new Date().getTime(),
           data: {
@@ -301,6 +303,7 @@ export const setView = (idChat) => async (dispatch) => {
           },
           type: messageType.STATUS
         };
+        console.warn("setView");
         chatService.send(JSON.stringify(sendStatus));
       }
     }
@@ -316,6 +319,7 @@ export const setView = (idChat) => async (dispatch) => {
  * @param {Object} data;
  */
 export const sendReadMessageStatus = (data) => () => {
+  console.warn("sendReadMessageStatus")
   chatService.send(JSON.stringify(sendStatus));
 };
 
@@ -332,7 +336,7 @@ export const sendAgain = (message) => (dispatch) => {
       msgID: res.id,
       shippingTime: res.shippingTime
     };
-
+    console.warn("sendAgain");
     chatService.send(JSON.stringify(sendObject));
     dispatch({
       type: ActionTypes.SEND_AGAIN,
