@@ -6,6 +6,8 @@ import * as ReactNative from 'react-native';
 import enzyme from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 
+import mock from 'react-native-permissions/mock';
+
 // enzyme.configure({ adapter: new Adapter() });
 jest.mock('react-native-fs', () => ({
   mkdir: jest.fn(),
@@ -57,6 +59,7 @@ jest.mock('react-native-fs', () => ({
 jest.mock('@react-native-community/async-storage', () => {
   // code here
 });
+jest.mock('react-native-permissions', () => mock);
 
 
 jest.mock('react-native-share', () => {
@@ -88,10 +91,6 @@ jest.mock('react-navigation-stack', () => {
 
 
 jest.mock('react-native-audio', () => {
-  // code here
-});
-
-jest.mock(('react-native-permissions'), () => {
   // code here
 });
 
@@ -164,7 +163,10 @@ jest.doMock('react-native', () =>
       NativeModules: {
         ...ReactNative.NativeModules,
         Override: { great: 'success' },
-        LocalNotification: { requestPermission: jest.fn() }
+        LocalNotification: { requestPermission: jest.fn() },
+        RNPermissions:{
+          ...mock
+        }
       },
       StyleSheet: {
         create: () => ({}),

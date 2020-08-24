@@ -5,9 +5,6 @@ import {
   verifyAplicationState,
   loading,
   loaded,
-  createNewAccount,
-  restoreWithPhrase,
-  restoreAccountWithPin
 } from '../../src/store/aplication/aplicationAction';
 import { saveContact, editContacts, deleteContactAction } from '../../src/store/contacts';
 import {
