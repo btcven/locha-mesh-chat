@@ -38,6 +38,7 @@ public class ChatService {
     private static ChatService INSTANCE = null;
 
     private ChatServiceEvents eventsHandler;
+    private String peerId;
 
     private ChatService() {
         this.eventsHandler = null;
@@ -63,6 +64,7 @@ public class ChatService {
         Log.i(TAG, "Setting events handler");
 
         this.eventsHandler = eventsHandler;
+        this.peerId = null;
     }
 
     /**
@@ -77,7 +79,8 @@ public class ChatService {
             return;
         }
         nativeStart(privateKey);
-        promise.resolve(getPeerId());
+        this.peerId = nativeGetPeerId();
+        promise.resolve(this.peerId);
     }
 
     /**
@@ -99,7 +102,7 @@ public class ChatService {
      * Return the peer ID 
      */
     public String getPeerId() {
-        return nativeGetPeerId();
+        return this.peerId;
     }
 
     /**

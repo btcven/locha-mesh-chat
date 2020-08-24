@@ -228,7 +228,6 @@ impl ChatService {
 
         let mut hasher = Keccak384::default();
         hasher.input(message.data.as_slice());
-        hasher.input(message.key.as_ref().unwrap().as_slice());
 
         MessageId::from(hasher.result().into_bytes())
     }

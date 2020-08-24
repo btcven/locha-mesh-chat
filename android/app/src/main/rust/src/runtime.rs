@@ -196,6 +196,8 @@ pub extern "system" fn Java_io_locha_p2p_runtime_ChatService_nativeSendMessage(
     _: JClass,
     contents: JString,
 ) {
+    trace!("nativeSendMessage");
+
     let res = panic::catch_unwind(|| {
         let chat_service = CHAT_SERVICE.read();
         let contents: String = env.get_string(contents)?.into();
