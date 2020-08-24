@@ -12,40 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use std::error::Error;
 use std::sync::Arc;
 
 use parking_lot::{Condvar, Mutex};
 
 use log::trace;
 
-/// Error type that can be sent between threads
-pub type StartError = Box<dyn Error + Send + 'static>;
-
 /// Status of the thread start
-enum StartStatus {
-    /// Thread has not been started
-    NotStarted,
+#[derive(Debug, Clone, Copy, Eq, PartialEq)]
+pub enum StartStatus {
     /// Thread started successfully
     Started,
-    /// Thread initialization faileds
-    Failed(StartError),
-}
-
-impl StartStatus {
-    /// Unwrap `StartStatus::Failed(_)` variant.
-    ///
-    /// # Panics
-    ///
-    /// This function panics if the value is not `StartStatus::Failed`.
-    fn unwrap_failed(self) -> StartError {
-        match self {
-            StartStatus::NotStarted | StartStatus::Started => panic!(
-                "called `unwrap_failed` on non `StartStatus::Failed()` value"
-            ),
-            StartStatus::Failed(e) => e,
-        }
-    }
+    /// Thread initialization failed
+    Failed,
 }
 
 /// Syncrhonized start condition
@@ -72,7 +51,7 @@ impl StartStatus {
 /// thread::spawn(move || {
 ///     let cond = cond2;
 ///     cond.notify_start();
-///     // or cond.notify_failure(error); if failed;
+///     // or cond.notify_failure(); if failed;
 ///
 ///     loop {
 ///         // Event loop ...
@@ -87,7 +66,7 @@ impl StartStatus {
 /// ```
 #[derive(Clone)]
 pub struct SyncStartCond {
-    inner: Arc<(Mutex<StartStatus>, Condvar)>,
+    inner: Arc<(Mutex<Option<StartStatus>>, Condvar)>,
 }
 
 impl SyncStartCond {
@@ -102,10 +81,7 @@ impl SyncStartCond {
     /// ```
     pub fn new() -> SyncStartCond {
         SyncStartCond {
-            inner: Arc::new((
-                Mutex::new(StartStatus::NotStarted),
-                Condvar::new(),
-            )),
+            inner: Arc::new((Mutex::new(None), Condvar::new())),
         }
     }
 
@@ -115,20 +91,17 @@ impl SyncStartCond {
 
         let &(ref lock, ref cvar) = &*self.inner;
         let mut started = lock.lock();
-        *started = StartStatus::Started;
+        *started = Some(StartStatus::Started);
         cvar.notify_one();
     }
 
     /// Notify start failure.
-    pub fn notify_failure<E>(&self, e: E)
-    where
-        E: Error + Send + 'static,
-    {
+    pub fn notify_failure(&self) {
         trace!("notifying failure");
 
         let &(ref lock, ref cvar) = &*self.inner;
         let mut started = lock.lock();
-        *started = StartStatus::Failed(Box::new(e));
+        *started = Some(StartStatus::Failed);
         cvar.notify_one();
     }
 
@@ -139,7 +112,7 @@ impl SyncStartCond {
     /// The thread can notify a failure or a successful using
     /// [`notify_failure`](fn.notify_failure.html) or with
     /// [`notify_start`](fn.notify_start.html) respectively.
-    pub fn wait(self) -> Result<(), StartError> {
+    pub fn wait(self) -> StartStatus {
         use std::mem::replace;
 
         trace!("waiting for thread to start");
@@ -148,29 +121,16 @@ impl SyncStartCond {
         let mut started = lock.lock();
         match &*started {
             // Thread has not started, let's wait for a notification.
-            StartStatus::NotStarted => {
+            None => {
                 trace!("thread has not been started yet");
 
                 cvar.wait(&mut started);
                 match &*started {
-                    // NotStarted SHOULD not be signaled.
-                    StartStatus::NotStarted => unreachable!(),
-                    StartStatus::Started => Ok(()),
-                    StartStatus::Failed(_) => {
-                        Err(replace(&mut *started, StartStatus::NotStarted)
-                            .unwrap_failed())
-                    }
+                    None => unreachable!(),
+                    Some(_) => replace(&mut *started, None).unwrap(),
                 }
             }
-            // Thread started, return the appropiate values. We replace the
-            // value in the StartStatus::Failed variant as we can't take
-            // ownership of the value contained there, as it's shared between
-            // threads.
-            StartStatus::Started => Ok(()),
-            StartStatus::Failed(_) => {
-                Err(replace(&mut *started, StartStatus::NotStarted)
-                    .unwrap_failed())
-            }
+            Some(_) => replace(&mut *started, None).unwrap(),
         }
     }
 }
@@ -192,36 +152,22 @@ pub mod tests {
             }
         });
 
-        cond.wait().expect("Thread failed initialization");
+        assert_eq!(cond.wait(), StartStatus::Started);
     }
 
     #[test]
-    #[should_panic]
     fn start_status_err() {
-        use std::error::Error;
-        use std::fmt;
         use std::thread;
-
-        #[derive(Debug)]
-        struct DummyError;
-
-        impl fmt::Display for DummyError {
-            fn fmt(&self, f: &mut fmt::Formatter<'_>) -> std::fmt::Result {
-                write!(f, "DummyError")
-            }
-        }
-
-        impl Error for DummyError {}
 
         let cond = SyncStartCond::new();
         thread::spawn({
             let cond = cond.clone();
 
             move || {
-                cond.notify_failure(DummyError);
+                cond.notify_failure();
             }
         });
 
-        cond.wait().unwrap();
+        assert_eq!(cond.wait(), StartStatus::Failed);
     }
 }

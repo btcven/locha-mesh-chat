@@ -20,6 +20,9 @@ package io.locha.p2p.runtime;
  * Events of the Chat service.
  */
 public interface ChatServiceEvents {
+    /**
+     * @param contents Message contents
+     */
     public void onNewMessage(String contents);
 
     /**

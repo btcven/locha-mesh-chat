@@ -62,6 +62,18 @@ public class ChatServiceModule extends ReactContextBaseJavaModule implements Cha
     }
 
     @ReactMethod
+    public boolean isStarted() {
+        ChatService service = ChatService.get();
+        return service.isStarted();
+    }
+
+    @ReactMethod
+    public String getPeerId() {
+        ChatService service = ChatService.get();
+        return service.getPeerId();
+    }
+
+    @ReactMethod
     public void dial(String multiaddr) {
         ChatService service = ChatService.get();
         service.dial(multiaddr);

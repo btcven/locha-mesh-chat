@@ -16,67 +16,72 @@
 //!
 //! This module contains the ChatService class JNI interface.
 
-use std::{
-    collections::hash_map::DefaultHasher,
-    hash::{Hash, Hasher},
-    panic,
-    str::FromStr,
-    sync::Arc,
-    thread,
-    time::Duration,
-};
+mod chat_service;
+pub use chat_service::{ChatService, ChatServiceConfig, ChatServiceEvents};
 
-use async_std::{
-    sync::{channel, Sender},
-    task,
-};
-use futures::{prelude::*, select};
+use std::{panic, sync::Arc};
+
 use jni::{
     objects::{GlobalRef, JClass, JString, JValue},
     signature::{JavaType, Primitive},
     sys::{jboolean, jbyteArray, jstring, JNI_FALSE, JNI_TRUE},
-    Executor, JNIEnv, JavaVM,
+    Executor, JNIEnv,
 };
+
 use lazy_static::lazy_static;
 
-use libp2p::{
-    self,
-    core::{Multiaddr, PeerId},
-    gossipsub::{
-        protocol::MessageId, Gossipsub, GossipsubConfigBuilder, GossipsubEvent,
-        GossipsubMessage, Topic,
-    },
-    identity::{secp256k1, Keypair},
-    swarm::{Swarm, SwarmEvent},
-};
-
-use crate::util::{
-    jni_cache::chat_service_events, unwrap_exc_or, unwrap_exc_or_default,
-    unwrap_jni,
-};
-
-use log::{debug, error};
+use log::trace;
 use parking_lot::RwLock;
 
-mod sync_start_cond;
-use sync_start_cond::SyncStartCond;
+use libp2p::identity::{secp256k1, Keypair};
+use libp2p::{Multiaddr, PeerId};
 
-/// Chat service action
-enum Action {
-    SendMessage(String),
-    Dial(Multiaddr),
-    Stop,
-}
-
-// TODO: adjust
-const CHANNEL_SIZE: usize = 25;
-const HEARTBEAT_INTERVAL: Duration = Duration::from_secs(25);
+use crate::util::{
+    jni_cache::chat_service_events, unwrap_exc_or_default, unwrap_exc_or, unwrap_jni,
+};
+use crate::{JniError, JniErrorKind};
 
 const CHAT_SERVICE_EVENTS_HANDLER_FIELD_TYPE: &str =
     "Lio/locha/p2p/runtime/ChatServiceEvents;";
 
 lazy_static! {
-    static ref CHANNEL: RwLock<Option<Sender<Action>>> = RwLock::new(None);
+    static ref CHAT_SERVICE: RwLock<ChatService> =
+        RwLock::new(ChatService::new());
+}
+
+#[inline(always)]
+fn java_msg_error<S: Into<String>>(msg: S) -> JniError {
+    JniError::from_kind(JniErrorKind::Msg(msg.into()))
+}
+
+fn java_bytearray_to_secretkey(
+    env: &JNIEnv<'_>,
+    bytes: jbyteArray,
+) -> Result<secp256k1::SecretKey, JniError> {
+    env.convert_byte_array(bytes).and_then(|bytes| {
+        secp256k1::SecretKey::from_bytes(bytes)
+            .map_err(|e| java_msg_error(e.to_string()))
+    })
+}
+
+fn java_get_events_handler_field(
+    env: &JNIEnv<'_>,
+    class: JClass,
+) -> Result<GlobalRef, JniError> {
+    let events_handler = env
+        .get_field(
+            class,
+            "eventsHandler",
+            CHAT_SERVICE_EVENTS_HANDLER_FIELD_TYPE,
+        )
+        .and_then(JValue::l)?;
+
+    if events_handler.clone().into_inner() == 0 as jni::sys::jobject {
+        return Err(java_msg_error("eventsHandler variable is null. Maybe you need\
+                                  to set the handler before starting the service"));
+    }
+
+    env.new_global_ref(events_handler)
 }
 
 #[no_mangle]
@@ -84,66 +89,42 @@ pub extern "system" fn Java_io_locha_p2p_runtime_ChatService_nativeStart(
     env: JNIEnv,
     class: JClass,
     secret_key: jbyteArray,
-) -> jstring {
-    debug!("nativeStart");
+) {
+    trace!("nativeStart");
 
-    let res = panic::catch_unwind(|| -> Result<JString, jni::errors::Error> {
-        if CHANNEL.read().is_some() {
-            panic!("ChatService is already started");
-        }
+    let res = panic::catch_unwind(|| {
+        let mut chat_service = CHAT_SERVICE.write();
 
-        let bytes = env.convert_byte_array(secret_key)?;
-        let secret_key = secp256k1::SecretKey::from_bytes(bytes)
-            .expect("Couldn't decode secret key bytes");
-
-        let keypair = Keypair::Secp256k1(secret_key.into());
+        let secret_key = java_bytearray_to_secretkey(&env, secret_key)?;
+        let keypair =
+            Keypair::Secp256k1(secp256k1::Keypair::from(secret_key.clone()));
         let peer_id = PeerId::from_public_key(keypair.public());
-        let output = env.new_string(peer_id.to_string())?;
 
-        let vm = Arc::new(env.get_java_vm().expect("Couldn't get Java VM"));
+        let config = ChatServiceConfig {
+            secret_key,
+            listen_addr: "/ip4/0.0.0.0/tcp/0"
+                .parse()
+                .expect("invalid listen addr"),
+            channel_cap: 20,
+            heartbeat_interval: 10,
+            keypair,
+            peer_id,
+        };
 
-        let events = env
-            .get_field(
-                class,
-                "eventsHandler",
-                CHAT_SERVICE_EVENTS_HANDLER_FIELD_TYPE,
-            )
-            .and_then(JValue::l)?;
-
-        if events.clone().into_inner() == 0 as jni::sys::jobject {
-            panic!(
-                "eventsHandler variable is null. Maybe you need\
-                to set the handler before starting the service"
-            );
-        }
-
-        let events = env.new_global_ref(events)?;
+        let events_handler = java_get_events_handler_field(&env, class)?;
+        let executor =
+            env.get_java_vm().map(|vm| Executor::new(Arc::new(vm)))?;
         let events_proxy =
-            ChatServiceEventsProxy::new(Executor::new(vm.clone()), events);
+            ChatServiceEventsProxy::new(executor, events_handler);
 
-        let start_cond = SyncStartCond::new();
+        chat_service
+            .start(config, Box::new(events_proxy))
+            .expect("couldn't start chat service");
 
-        // Spawn a thread for ChatService. Note: we can't use task::spawn
-        // here because some jni-rs types are not Send safe.
-        thread::spawn({
-            let start_cond = start_cond.clone();
-            move || chat_service_thread(vm, start_cond, events_proxy, keypair)
-        });
-
-        // Wait for the start status of the thread we spaned.
-        start_cond
-            .wait()
-            .expect("ChatService thread initialization");
-
-        Ok(output)
+        Ok(())
     });
 
-    unwrap_exc_or(
-        &env,
-        res,
-        env.new_string("").expect("Could not create JNI string"),
-    )
-    .into_inner()
+    unwrap_exc_or_default(&env, res)
 }
 
 #[no_mangle]
@@ -152,25 +133,41 @@ pub extern "system" fn Java_io_locha_p2p_runtime_ChatService_nativeStop(
     _: JClass,
 ) {
     let res = panic::catch_unwind(|| {
-        send_action(Action::Stop);
+        let mut chat_service = CHAT_SERVICE.write();
+        chat_service.stop().expect("could not stop chat service");
+
         Ok(())
     });
     unwrap_exc_or_default(&env, res)
 }
 
 #[no_mangle]
-pub extern "system" fn Java_io_locha_p2p_runtime_ChatService_nativeIsRunning(
+pub extern "system" fn Java_io_locha_p2p_runtime_ChatService_nativeIsStarted(
     env: JNIEnv,
     _: JClass,
 ) -> jboolean {
     let res = panic::catch_unwind(|| {
-        Ok(if CHANNEL.read().is_some() {
+        Ok(if CHAT_SERVICE.read().is_started() {
             JNI_TRUE
         } else {
             JNI_FALSE
         })
     });
     unwrap_exc_or_default(&env, res)
+}
+
+#[no_mangle]
+pub extern "system" fn Java_io_locha_p2p_runtime_ChatService_nativeGetPeerId(
+    env: JNIEnv,
+    _: JClass,
+) -> jstring {
+    let res = panic::catch_unwind(|| {
+        let chat_service = CHAT_SERVICE.read();
+
+        env.new_string(chat_service.peer_id().to_string())
+    });
+
+    unwrap_exc_or(&env, res, env.new_string("").unwrap()).into_inner()
 }
 
 #[no_mangle]
@@ -181,9 +178,13 @@ pub extern "system" fn Java_io_locha_p2p_runtime_ChatService_nativeDial(
 ) {
     let res = panic::catch_unwind(|| {
         let multiaddr: String = env.get_string(multiaddr)?.into();
-        let multiaddr =
-            Multiaddr::from_str(&multiaddr).expect("Invalid Multiaddr!");
-        send_action(Action::Dial(multiaddr));
+        let multiaddr: Multiaddr =
+            multiaddr.parse().expect("invalid multiaddr");
+        let chat_service = CHAT_SERVICE.read();
+        chat_service
+            .dial(multiaddr)
+            .expect("could not dial address");
+
         Ok(())
     });
     unwrap_exc_or_default(&env, res)
@@ -195,166 +196,18 @@ pub extern "system" fn Java_io_locha_p2p_runtime_ChatService_nativeSendMessage(
     _: JClass,
     contents: JString,
 ) {
+    trace!("nativeSendMessage");
+
     let res = panic::catch_unwind(|| {
-        if CHANNEL.read().is_some() {
-            error!("ChatService has not been started!");
-            return Ok(());
-        }
+        let chat_service = CHAT_SERVICE.read();
         let contents: String = env.get_string(contents)?.into();
-        send_action(Action::SendMessage(contents));
+
+        chat_service
+            .send_message(contents)
+            .expect("could not send message");
         Ok(())
     });
     unwrap_exc_or_default(&env, res)
-}
-
-fn chat_service_thread(
-    vm: Arc<JavaVM>,
-    start_cond: SyncStartCond,
-    events: ChatServiceEventsProxy,
-    keypair: Keypair,
-) {
-    let _guard = vm.attach_current_thread().expect("Coudln't attach thread");
-
-    // Run the ChatService task, handles the libp2p events and Java events.
-    task::block_on(async move {
-        chat_service_task(events, start_cond, keypair).await
-    });
-}
-
-#[allow(unreachable_code)]
-async fn chat_service_task<'a>(
-    events: ChatServiceEventsProxy,
-    start_cond: SyncStartCond,
-    keypair: Keypair,
-) {
-    if CHANNEL.read().is_some() {
-        error!("Can't start the Chat Service again!");
-        return;
-    }
-
-    // Initialize the Actions channel. This tells the task what actions to
-    // take depending on what the Java code wants.
-    let (sender, receiver) = channel::<Action>(CHANNEL_SIZE);
-    *CHANNEL.write() = Some(sender);
-
-    let peer_id = PeerId::from(keypair.public());
-
-    // TODO: build our own transport, that works anywhere with anything.
-    // Also we should consider contributing to libp2p for a QUIC or UDP
-    // transport for reliability.
-    //
-    // Set up an encrypted TCP Transport over the Mplex and Yamux protocols
-    let transport = match libp2p::build_development_transport(keypair.clone()) {
-        Ok(t) => t,
-        Err(e) => {
-            error!("Could not create development transport for libp2p: {}", e);
-            start_cond.notify_failure(e);
-            return;
-        }
-    };
-
-    // Create a Gossipsub topic
-    let topic = Topic::new("locha-p2p-testnet".into());
-
-    // set custom gossipsub
-    let gossipsub_config = GossipsubConfigBuilder::new()
-        .heartbeat_interval(HEARTBEAT_INTERVAL)
-        .message_id_fn(craft_message_id)
-        .build();
-
-    let mut gossipsub = Gossipsub::new(peer_id.clone(), gossipsub_config);
-    gossipsub.subscribe(topic.clone());
-
-    let mut swarm = Swarm::new(transport, gossipsub, peer_id.clone());
-
-    let listen_addr: Multiaddr = "/ip4/127.0.0.1/tcp/45293"
-        .parse()
-        .expect("Invalid listening Multiaddr");
-    match Swarm::listen_on(&mut swarm, listen_addr.clone()) {
-        Ok(_) => (),
-        Err(e) => {
-            error!("Could not listen on {}: {}", listen_addr, e);
-            start_cond.notify_failure(e);
-            return;
-        }
-    }
-
-    // Signal the thread that spawned us that initialization is done
-    // and we're ready to receive events from Java and/or the network.
-    start_cond.notify_start();
-
-    loop {
-        select! {
-            recv = receiver.recv().fuse() => {
-                let action = match recv {
-                    Ok(v) => v,
-                    Err(_) => {
-                        // Sender has been dropped miracously, should never happen
-                        break;
-                    },
-                };
-
-                match action {
-                    Action::Stop => break,
-                    Action::Dial(to_dial) => {
-                        match Swarm::dial_addr(&mut swarm, to_dial.clone()) {
-                            Ok(_) => (),
-                            Err(e) => {
-                                error!("Dial to address {} failed: {}", to_dial, e);
-                            }
-                        }
-                    }
-                    Action::SendMessage(message) => {
-                        swarm.publish(&topic, message.as_bytes());
-                    }
-                }
-            },
-            event = swarm.next_event().fuse() => {
-                match event {
-                    SwarmEvent::Behaviour(behaviour) => {
-                        match behaviour {
-                            GossipsubEvent::Message(_peer_id, _id, message) => {
-                                let contents = String::from_utf8_lossy(message.data.as_slice()).into_owned();
-                                events.on_new_messsage(contents);
-                            }
-                            _ => (),
-                        }
-                    },
-                    SwarmEvent::NewListenAddr(multiaddr) => events.on_new_listen_addr(multiaddr),
-                    // TODO: implement other variants and handle them on the Java side
-                    _ => (),
-                }
-            }
-        }
-    }
-
-    // Cleanup the channel
-    *CHANNEL.write() = None;
-}
-
-/// Create a `MessageId` from the message content by hashing it.
-///
-/// TODO: review this code for message integrity, it is not required
-/// but should be taken in consideration.
-///
-/// TODO: Keep in mind that message IDs should be unique, so a message
-/// that is equal to another might have the same ID, although, this can
-/// collide with other peers message and might get discarded. Adding a
-/// timestamp and/or the PeerId binary value should do the trick.
-fn craft_message_id(message: &GossipsubMessage) -> MessageId {
-    let mut s = DefaultHasher::new();
-    message.data.hash(&mut s);
-    MessageId(s.finish().to_string())
-}
-
-fn send_action(action: Action) {
-    task::block_on(
-        CHANNEL
-            .read()
-            .as_ref()
-            .expect("ChatService is not running")
-            .send(action),
-    )
 }
 
 // An interface to the ChatService class
@@ -367,8 +220,10 @@ impl ChatServiceEventsProxy {
     pub fn new(exec: Executor, events: GlobalRef) -> ChatServiceEventsProxy {
         ChatServiceEventsProxy { exec, events }
     }
+}
 
-    pub fn on_new_messsage(&self, message: String) {
+impl ChatServiceEvents for ChatServiceEventsProxy {
+    fn on_new_message(&mut self, message: String) {
         unwrap_jni(self.exec.with_attached(|env| {
             let contents = env
                 .new_string(message)
@@ -384,7 +239,7 @@ impl ChatServiceEventsProxy {
         }))
     }
 
-    pub fn on_new_listen_addr(&self, multiaddr: Multiaddr) {
+    fn on_new_listen_addr(&mut self, multiaddr: Multiaddr) {
         unwrap_jni(self.exec.with_attached(|env| {
             let multiaddr = env
                 .new_string(multiaddr.to_string())
