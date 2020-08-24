@@ -27,7 +27,7 @@ import { messageType } from '../../utils/constans';
 export const initialChat = (data, status) => async (dispatch) => {
   database.setMessage(data.toUID, { ...data }, status).then((res) => {
     if (!process.env.JEST_WORKER_ID) {
-      chatService.send(JSON.stringify(data));
+      // chatService.send(JSON.stringify(data));
     }
     dispatch({
       type: ActionTypes.NEW_MESSAGE,

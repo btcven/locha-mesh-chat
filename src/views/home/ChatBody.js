@@ -136,7 +136,7 @@ export default class ChatBody extends Component {
             const userInfo = contactInfo || item;
             const file = item.file ? item.file.fileType : undefined;
 
-            const rule = this.props.user.ipv6Address === item.fromUID;
+            const rule = this.props.user.peerID === item.fromUID;
 
             if (!rule && file !== 'audio') {
               return (

@@ -109,7 +109,7 @@ export const onNotification = (res) => {
   const view = res.fromUID;
   const rule = state.aplication.view !== view;
   unreadMessages(rule, state, view, res);
-  if (state.config.ipv6Address !== res.fromUID && rule) {
+  if (state.config.peerID !== res.fromUID && rule) {
     const id = parseInt((view), 16);
 
     const result = getInfoMessage(String(id).substr(2, 10));
