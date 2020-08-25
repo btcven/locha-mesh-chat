@@ -13,6 +13,7 @@
 // limitations under the License.
 
 use std::time::{SystemTime, UNIX_EPOCH};
+use std::io::{Read, Write};
 use std::thread;
 
 use futures::select;
@@ -112,7 +113,21 @@ fn main() {
 
     let mut chat_service = ChatService::new();
 
-    let secret_key = secp256k1::SecretKey::generate();
+    let secret_key = match std::fs::File::open("secret_key") {
+        Ok(mut file) => {
+            let mut secret_key = [0u8; 32];
+            file.read(&mut secret_key).unwrap();
+            secp256k1::SecretKey::from_bytes(secret_key).unwrap()
+        },
+        Err(e) => {
+            let secret_key = secp256k1::SecretKey::generate();
+            // Save generated secret key
+            let mut file = std::fs::File::create("secret_key").unwrap();
+            file.write(&secret_key.to_bytes()).unwrap();
+            file.flush().unwrap();
+            secret_key
+        }
+    };
     let keypair = Keypair::Secp256k1(secret_key.clone().into());
     let peer_id = PeerId::from_public_key(keypair.public());
 
