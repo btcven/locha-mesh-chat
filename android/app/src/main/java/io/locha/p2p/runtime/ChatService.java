@@ -19,6 +19,8 @@ package io.locha.p2p.runtime;
 import io.locha.p2p.util.LibraryLoader;
 import android.util.Log;
 
+import com.facebook.react.bridge.Promise;
+
 /**
  * Chat service. This class manages the chat logic, such as starting and
  * stopping the server.
@@ -32,14 +34,13 @@ public class ChatService {
         LibraryLoader.load();
     }
 
+    private static String TAG = "LochaP2P";
     private static ChatService INSTANCE = null;
 
-    private boolean isStarted;
-
     private ChatServiceEvents eventsHandler;
+    private String peerId;
 
     private ChatService() {
-        this.isStarted = false;
         this.eventsHandler = null;
     }
 
@@ -60,9 +61,10 @@ public class ChatService {
      * @throws IllegalStateException if ChatService is not started.
      */
     public void setEventsHandler(ChatServiceEvents eventsHandler) {
-        Log.i("LochaP2P", "Setting events handler");
+        Log.i(TAG, "Setting events handler");
 
         this.eventsHandler = eventsHandler;
+        this.peerId = null;
     }
 
     /**
@@ -70,30 +72,37 @@ public class ChatService {
      *
      * @throws RuntimeException if the server is already started.
      */
-    public void start(byte[] privateKey) {
-        Log.i("LochaP2P", "Starting ChatService");
+    public void start(byte[] privateKey, Promise promise) {
+        Log.i(TAG, "Starting ChatService");
         if (isStarted()) {
+            promise.reject("Error", "The chat service is already active");
             return;
         }
-
         nativeStart(privateKey);
-
-        this.isStarted = true;
+        this.peerId = nativeGetPeerId();
+        promise.resolve(this.peerId);
     }
 
+    /**
+     * @throws RuntimeException if not started.
+     * @throws RuntimeException if an error ocurred while stopping ChatService.
+     */
     public void stop() {
         nativeStop();
-    }
-
-    public boolean isRunning() {
-        return nativeIsRunning();
     }
 
     /**
      * Has the Chat service already been started?
      */
     public boolean isStarted() {
-        return this.isStarted;
+        return nativeIsStarted();
+    }
+
+    /**
+     * Return the peer ID 
+     */
+    public String getPeerId() {
+        return this.peerId;
     }
 
     /**
@@ -106,7 +115,7 @@ public class ChatService {
      * @see <a href="https://multiformats.io/multiaddr/">Multiaddr</a>
      */
     public void dial(String multiaddr) {
-        Log.i("LochaP2P", String.format("Dialing '%s'", multiaddr));
+        Log.i(TAG, String.format("Dialing '%s'", multiaddr));
         nativeDial(multiaddr);
     }
 
@@ -116,16 +125,17 @@ public class ChatService {
      * @param contents The message contents.
      */
     public void sendMessage(String contents) {
-        Log.i("LochaP2P", String.format("Sending message '%s'", contents));
+        Log.i(TAG, String.format("Sending message '%s'", contents));
 
         nativeSendMessage(contents);
 
-        Log.i("LochaP2P", String.format("Message sent"));
+        Log.i(TAG, String.format("Message sent"));
     }
 
     public native void nativeStart(byte[] privateKey);
     public native void nativeStop();
-    public native boolean nativeIsRunning();
+    public native boolean nativeIsStarted();
+    public native String nativeGetPeerId();
     public native void nativeDial(String multiaddr);
     public native void nativeSendMessage(String contents);
 }

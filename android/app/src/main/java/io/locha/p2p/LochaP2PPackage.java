@@ -27,20 +27,22 @@ import io.locha.p2p.runtime.ChatServiceModule;
 import android.util.Log;
 
 public class LochaP2PPackage implements ReactPackage {
+    private static String TAG = "LochaP2P";
+
     @Override
     public List<ViewManager> createViewManagers(ReactApplicationContext reactContext) {
-        Log.i("LochaP2P", "Creating view managers");
+        Log.i(TAG, "Creating view managers");
         return Collections.emptyList();
     }
 
     @Override
     public List<NativeModule> createNativeModules(
             ReactApplicationContext reactContext) {
-        Log.i("LochaP2P", "Creating native modules");
+        Log.i(TAG, "Creating native modules");
 
         List<NativeModule> modules = new ArrayList<>();
 
-        Log.i("LochaP2P", "Adding ChatServiceModule");
+        Log.i(TAG, "Adding ChatServiceModule");
         modules.add(new ChatServiceModule(reactContext));
     
         return modules;

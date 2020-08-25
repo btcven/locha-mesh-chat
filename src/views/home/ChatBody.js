@@ -41,11 +41,11 @@ export default class ChatBody extends Component {
 
       const lastMessage = this.props.chats[0];
       if (rule1) {
-        if (this.props.user.ipv6Address !== lastMessage.fromUID) {
+        if (this.props.user.peerID !== lastMessage.fromUID) {
           this.sound.setVolume(0.1).play();
 
           const sendStatus = {
-            fromUID: this.props.user.ipv6Address,
+            fromUID: this.props.user.peerID,
             toUID: lastMessage.fromUID,
             timestamp: new Date().getTime(),
             data: {
@@ -56,6 +56,7 @@ export default class ChatBody extends Component {
           };
 
           if (lastMessage.toUID) {
+            
             this.props.sendReadMessageStatus(sendStatus);
           }
         }
@@ -136,7 +137,7 @@ export default class ChatBody extends Component {
             const userInfo = contactInfo || item;
             const file = item.file ? item.file.fileType : undefined;
 
-            const rule = this.props.user.ipv6Address === item.fromUID;
+            const rule = this.props.user.peerID === item.fromUID;
 
             if (!rule && file !== 'audio') {
               return (
