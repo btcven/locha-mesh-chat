@@ -1,5 +1,8 @@
 import { NativeModules, NativeEventEmitter } from 'react-native';
 import { bitcoin } from '../../App';
+import { getChat, setStatusMessage } from '../store/chats';
+import { messageType } from './constans';
+import { requestImageStatus, sentImageStatus, verifyHashImageStatus } from '../store/contacts';
 
 export default class ChatService {
   constructor() {
@@ -11,7 +14,7 @@ export default class ChatService {
     this.event = new NativeEventEmitter(this.service);
     this.onNewMessage();
     this.onNewListenAddr();
-
+    this.store = require('../store').default;
     ChatService.instance = this;
 
     return this;
@@ -26,15 +29,42 @@ export default class ChatService {
   }
 
   send = (message) => {
-    console.log("mardita sea el guevo", message);
     this.service.sendMessage(message);
   }
 
   onNewMessage = () => {
     this.event.addListener('newMessage', ((message) => {
-      console.log(message);
+      const parse = JSON.parse(message);
+      const { dispatch } = this.store;
+      switch (parse.type) {
+        case messageType.MESSAGE: dispatch(getChat(parse));
+          break;
+        // Execute function that is in chat actions
+        case messageType.STATUS: this.setStatus(parse);
+          break;
+        default:
+          break;
+      }
     }));
   }
+
+  setStatus = async (statusData) => {
+    const { dispatch } = this.store;
+    switch (statusData.data.status) {
+      // execute function that is in contact actions
+      case 'RequestImage': dispatch(requestImageStatus(statusData));
+        break;
+      // Execute function that is in contact actions
+      case 'sentImage': dispatch(sentImageStatus(statusData));
+        break;
+      // Execute function that is in contact actions
+      case 'verifyHashImage': dispatch(verifyHashImageStatus(statusData));
+        break;
+      // Execute function that is in chat actions
+      default: dispatch(setStatusMessage(statusData));
+        break;
+    }
+  };
 
   onNewListenAddr = () => {
     this.event.addListener('newListenAddr', ((multiaddr) => {
@@ -45,7 +75,6 @@ export default class ChatService {
   startService = async () => {
     const xpriv = await bitcoin.getPrivKey();
     const PeerID = await this.service.start(xpriv);
-    // this.service.dial('/ip4/192.168.0.25/tcp/41381');
 
     return PeerID;
   }
