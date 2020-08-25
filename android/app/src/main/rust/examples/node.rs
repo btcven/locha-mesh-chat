@@ -12,36 +12,38 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use std::time::{SystemTime, UNIX_EPOCH};
 use std::io::{Read, Write};
 use std::thread;
+use std::time::{SystemTime, UNIX_EPOCH};
 
-use futures::select;
+use clap::{crate_authors, crate_version, value_t, values_t, App, Arg};
+
 use futures::prelude::*;
+use futures::select;
 
-use async_std::task;
+use async_std::io;
 use async_std::sync::{channel, Sender};
-use async_std::io::{self, BufReader, BufRead};
+use async_std::task;
 
 use libp2p::identity::{secp256k1, Keypair};
+use libp2p::multihash::{MultihashDigest, Sha2_256};
 use libp2p::{Multiaddr, PeerId};
-use libp2p::multihash::{Sha2_256, MultihashDigest};
 
 use serde_derive::{Deserialize, Serialize};
 
 use locha_p2p::runtime::{ChatService, ChatServiceConfig, ChatServiceEvents};
 
-use log::info;
+use log::{error, info};
 
 struct EventsHandler {
-    channel: Sender<Message>
+    channel: Sender<Message>,
+    echo: bool,
 }
 
-impl ChatServiceEvents for EventsHandler {
-    fn on_new_message(&mut self, message: String) {
-        info!("new message:\n{}", message);
-
-        let mut message: Message = serde_json::from_str(message.as_str()).expect("Invalid message");
+impl EventsHandler {
+    fn send_echo(&self, message: String) {
+        let mut message: Message =
+            serde_json::from_str(message.as_str()).expect("Invalid message");
 
         let to_uid = message.from_uid.clone();
         let from_uid = message.to_uid.clone();
@@ -49,7 +51,10 @@ impl ChatServiceEvents for EventsHandler {
         message.to_uid = to_uid;
         message.from_uid = from_uid;
 
-        message.timestamp = SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs();
+        message.timestamp = SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .unwrap()
+            .as_secs();
 
         let mut hash_input = String::new();
         hash_input.push_str(message.from_uid.as_str());
@@ -61,17 +66,24 @@ impl ChatServiceEvents for EventsHandler {
         hasher.input(hash_input.as_bytes());
         message.msg_id = hex::encode(hasher.result().as_bytes());
 
+        // TODO: why i can't use block_on inside a block_on :thinking:
         let handle = thread::spawn({
             let channel = self.channel.clone();
 
-            move || {
-                task::block_on(async {
-                    channel.send(message).await
-                })
-            }
+            move || task::block_on(async { channel.send(message).await })
         });
 
         handle.join().unwrap()
+    }
+}
+
+impl ChatServiceEvents for EventsHandler {
+    fn on_new_message(&mut self, message: String) {
+        info!("new message:\n{}", message);
+
+        if self.echo {
+            self.send_echo(message);
+        }
     }
 
     fn on_new_listen_addr(&mut self, multiaddr: Multiaddr) {
@@ -82,10 +94,11 @@ impl ChatServiceEvents for EventsHandler {
 #[derive(Deserialize, Serialize)]
 enum MessageContents {
     #[serde(rename = "text")]
-    Text(String)
+    Text(String),
 }
 
 impl MessageContents {
+    #[allow(unreachable_patterns)]
     pub fn as_text(&mut self) -> &str {
         match *self {
             MessageContents::Text(ref t) => t.as_str(),
@@ -109,7 +122,33 @@ struct Message {
 }
 
 fn main() {
-    env_logger::init();
+    env_logger::Builder::new()
+        .filter_level(log::LevelFilter::Info)
+        .init();
+
+    let matches = App::new("Locha P2P Chat Node")
+        .version(crate_version!())
+        .author(crate_authors!())
+        .about("Bootstrap node for Locha P2P")
+        .arg(Arg::with_name("listen-addr")
+                .short("l")
+                .long("listen-addr")
+                .value_name("multiaddr")
+                .help("The address where the node will listen for incoming connections")
+                .default_value("/ip4/0.0.0.0/tcp/0"))
+        .arg(Arg::with_name("dial")
+                .short("d")
+                .long("dial")
+                .value_name("multiaddr")
+                .help("Dial a peer using it's multiaddr"))
+        .arg(Arg::with_name("echo")
+                .short("e")
+                .long("echo")
+                .help("Enable Locha P2P Chat echo testing"))
+        .get_matches();
+
+    let listen_addr = value_t!(matches.value_of("listen-addr"), Multiaddr)
+        .unwrap_or_else(|e| e.exit());
 
     let mut chat_service = ChatService::new();
 
@@ -118,8 +157,8 @@ fn main() {
             let mut secret_key = [0u8; 32];
             file.read(&mut secret_key).unwrap();
             secp256k1::SecretKey::from_bytes(secret_key).unwrap()
-        },
-        Err(e) => {
+        }
+        Err(_) => {
             let secret_key = secp256k1::SecretKey::generate();
             // Save generated secret key
             let mut file = std::fs::File::create("secret_key").unwrap();
@@ -137,7 +176,7 @@ fn main() {
         secret_key,
         channel_cap: 25,
         heartbeat_interval: 10,
-        listen_addr: "/ip4/0.0.0.0/tcp/0".parse().expect("invalid listen addr"),
+        listen_addr,
         keypair,
         peer_id,
     };
@@ -145,6 +184,7 @@ fn main() {
     let (sender, receiver) = channel::<Message>(10);
     let events_handler = EventsHandler {
         channel: sender,
+        echo: matches.is_present("echo"),
     };
 
     chat_service
@@ -152,12 +192,17 @@ fn main() {
         .expect("couldn't start chat service");
 
     // Reach out to another node if specified
-    if let Some(to_dial) = std::env::args().nth(1) {
-        match to_dial.parse() {
-            Ok(to_dial) => {
-                chat_service.dial(to_dial).expect("couldn't dial peer")
+    let dials = values_t!(matches.values_of("dial"), Multiaddr);
+    match dials {
+        Ok(dials) => {
+            for to_dial in dials {
+                chat_service.dial(to_dial).expect("couldn't dial peer");
             }
-            Err(err) => println!("Failed to parse address to dial: {:?}", err),
+        }
+        Err(e) if e.kind == clap::ErrorKind::ArgumentNotFound => (),
+        Err(e) => {
+            error!("falied to parse address to dial: {}", e);
+            return;
         }
     }
 
