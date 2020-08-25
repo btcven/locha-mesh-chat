@@ -12,25 +12,99 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use std::io::{self, BufRead, BufReader};
+use std::time::{SystemTime, UNIX_EPOCH};
+use std::thread;
+
+use futures::select;
+use futures::prelude::*;
+
+use async_std::task;
+use async_std::sync::{channel, Sender};
+use async_std::io::{self, BufReader, BufRead};
 
 use libp2p::identity::{secp256k1, Keypair};
 use libp2p::{Multiaddr, PeerId};
+use libp2p::multihash::{Sha2_256, MultihashDigest};
+
+use serde_derive::{Deserialize, Serialize};
 
 use locha_p2p::runtime::{ChatService, ChatServiceConfig, ChatServiceEvents};
 
 use log::info;
 
-struct EventsHandler;
+struct EventsHandler {
+    channel: Sender<Message>
+}
 
 impl ChatServiceEvents for EventsHandler {
     fn on_new_message(&mut self, message: String) {
         info!("new message:\n{}", message);
+
+        let mut message: Message = serde_json::from_str(message.as_str()).expect("Invalid message");
+
+        let to_uid = message.from_uid.clone();
+        let from_uid = message.to_uid.clone();
+
+        message.to_uid = to_uid;
+        message.from_uid = from_uid;
+
+        message.timestamp = SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs();
+
+        let mut hash_input = String::new();
+        hash_input.push_str(message.from_uid.as_str());
+        hash_input.push_str(message.to_uid.as_str());
+        hash_input.push_str(message.msg.as_text());
+        hash_input.push_str(message.timestamp.to_string().as_str());
+
+        let mut hasher = Sha2_256::default();
+        hasher.input(hash_input.as_bytes());
+        message.msg_id = hex::encode(hasher.result().as_bytes());
+
+        let handle = thread::spawn({
+            let channel = self.channel.clone();
+
+            move || {
+                task::block_on(async {
+                    channel.send(message).await
+                })
+            }
+        });
+
+        handle.join().unwrap()
     }
 
     fn on_new_listen_addr(&mut self, multiaddr: Multiaddr) {
         info!("new listen addr: {}", multiaddr)
     }
+}
+
+#[derive(Deserialize, Serialize)]
+enum MessageContents {
+    #[serde(rename = "text")]
+    Text(String)
+}
+
+impl MessageContents {
+    pub fn as_text(&mut self) -> &str {
+        match *self {
+            MessageContents::Text(ref t) => t.as_str(),
+            _ => panic!("Not text message content"),
+        }
+    }
+}
+
+#[derive(Deserialize, Serialize)]
+struct Message {
+    #[serde(rename = "fromUID")]
+    pub from_uid: String,
+    #[serde(rename = "toUID")]
+    pub to_uid: String,
+    pub msg: MessageContents,
+    pub timestamp: u64,
+    #[serde(rename = "type")]
+    pub _type: u64,
+    #[serde(rename = "msgID")]
+    pub msg_id: String,
 }
 
 fn main() {
@@ -53,8 +127,13 @@ fn main() {
         peer_id,
     };
 
+    let (sender, receiver) = channel::<Message>(10);
+    let events_handler = EventsHandler {
+        channel: sender,
+    };
+
     chat_service
-        .start(config, Box::new(EventsHandler))
+        .start(config, Box::new(events_handler))
         .expect("couldn't start chat service");
 
     // Reach out to another node if specified
@@ -67,20 +146,31 @@ fn main() {
         }
     }
 
-    let stdin = io::stdin();
-    let mut input = BufReader::new(stdin.lock());
+    let input = io::stdin();
+    let channel = receiver;
 
-    loop {
-        let mut line = String::new();
-        input.read_line(&mut line).expect("could not read line");
-        if line == "exit\n" || line == "exit\r\n" || line == "exit\r" {
-            break;
+    task::block_on(async move {
+        loop {
+            let mut line = String::new();
+            select! {
+                _ = input.read_line(&mut line).fuse() => {
+                    if line == "exit\n" || line == "exit\r\n" || line == "exit\r" {
+                        break;
+                    }
+
+                    chat_service
+                        .send_message(line)
+                        .expect("couldn't send message")
+                }
+                msg = channel.recv().fuse() => {
+                    if let Ok(ref msg) = msg {
+                        chat_service.send_message(serde_json::to_string(msg).unwrap())
+                            .expect("couldn't send message")
+                    }
+                }
+            }
         }
 
-        chat_service
-            .send_message(line)
-            .expect("couldn't send message")
-    }
-
-    chat_service.stop().expect("couldn't stop chat service")
+        chat_service.stop().expect("couldn't stop chat service")
+    })
 }
