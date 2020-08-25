@@ -14,7 +14,7 @@ export default class ChatService {
     this.event = new NativeEventEmitter(this.service);
     this.onNewMessage();
     this.onNewListenAddr();
-
+    this.store = require('../store').default;
     ChatService.instance = this;
 
     return this;
@@ -29,7 +29,6 @@ export default class ChatService {
   }
 
   send = (message) => {
-    console.log("mardita sea el guevo", message);
     this.service.sendMessage(message);
   }
 
