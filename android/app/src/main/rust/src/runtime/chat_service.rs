@@ -176,7 +176,7 @@ impl ChatService {
     /// Builds the transport we're going to use
     fn build_transport(
         keypair: Keypair,
-    ) -> impl Transport<
+    ) -> std::io::Result<impl Transport<
         Output = (
             PeerId,
             impl libp2p::core::muxing::StreamMuxer<
@@ -190,17 +190,19 @@ impl ChatService {
         Listener = impl Send,
         Dial = impl Send,
         ListenerUpgrade = impl Send,
-    > + Clone {
+    > + Clone> {
         use libp2p::core::upgrade::{SelectUpgrade, Version};
         use libp2p::noise;
         use libp2p::tcp::TcpConfig;
         use libp2p::websocket::WsConfig;
+        use libp2p::dns::DnsConfig;
 
         // Create our low level TCP transport, and on top of it create a
         // WebSockets transport. They can be used both at the same time.
-        let transport = TcpConfig::new().nodelay(true);
-        let tcp_transport = transport.clone();
-        let transport = transport.or_transport(WsConfig::new(tcp_transport));
+        let tcp = TcpConfig::new().nodelay(true);
+        let dns = DnsConfig::new(tcp)?;
+        let ws = WsConfig::new(dns.clone());
+        let transport = dns.or_transport(ws);
 
         // Use the noise protocol to handle encryption and negotiation.
         // Also we use yamux and mplex to multiplex connections to peers.
@@ -208,7 +210,7 @@ impl ChatService {
             .into_authentic(&keypair)
             .expect("Signing noise static DH keypair failed.");
 
-        transport
+        Ok(transport
             .upgrade(Version::V1)
             .authenticate(
                 noise::NoiseConfig::xx(noise_keys).into_authenticated(),
@@ -220,7 +222,7 @@ impl ChatService {
             .map(|(peer, muxer), _| {
                 (peer, libp2p::core::muxing::StreamMuxerBox::new(muxer))
             })
-            .timeout(Duration::from_secs(20))
+            .timeout(Duration::from_secs(20)))
     }
 
     fn message_id(message: &GossipsubMessage) -> MessageId {
@@ -241,7 +243,7 @@ impl ChatService {
         config: ChatServiceConfig,
         mut events_handler: Box<dyn ChatServiceEvents>,
     ) -> Result<(), Error> {
-        let transport = Self::build_transport(config.keypair.clone());
+        let transport = Self::build_transport(config.keypair.clone())?;
 
         let gossipsub_config = GossipsubConfigBuilder::new()
             .protocol_id(CHAT_SERVICE_GOSSIP_PROTCOL_NAME)
