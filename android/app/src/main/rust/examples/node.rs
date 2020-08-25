@@ -33,7 +33,7 @@ use serde_derive::{Deserialize, Serialize};
 
 use locha_p2p::runtime::{ChatService, ChatServiceConfig, ChatServiceEvents};
 
-use log::{error, info};
+use log::{error, info, trace};
 
 struct EventsHandler {
     channel: Sender<Message>,
@@ -42,8 +42,14 @@ struct EventsHandler {
 
 impl EventsHandler {
     fn send_echo(&self, message: String) {
-        let mut message: Message =
-            serde_json::from_str(message.as_str()).expect("Invalid message");
+        let mut message: Message = match serde_json::from_str(message.as_str())
+        {
+            Ok(m) => m,
+            Err(_) => {
+                trace!("not json message, --echo is enabled");
+                return;
+            }
+        };
 
         let to_uid = message.from_uid.clone();
         let from_uid = message.to_uid.clone();
