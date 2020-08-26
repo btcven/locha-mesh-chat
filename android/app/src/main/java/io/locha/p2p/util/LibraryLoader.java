@@ -29,7 +29,7 @@ import android.util.Log;
  */
 public final class LibraryLoader {
 
-    private static final String BINDING_LIB_NAME = "locha_p2p";
+    private static final String BINDING_LIB_NAME = "locha_p2p_jni";
     private static final String JAVA_LIBRARY_PATH_PROPERTY = "java.library.path";
 
     /**
