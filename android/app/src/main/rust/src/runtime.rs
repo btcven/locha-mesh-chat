@@ -16,9 +16,6 @@
 //!
 //! This module contains the ChatService class JNI interface.
 
-mod chat_service;
-pub use chat_service::{ChatService, ChatServiceConfig, ChatServiceEvents};
-
 use std::{panic, sync::Arc};
 
 use jni::{
@@ -35,9 +32,11 @@ use parking_lot::RwLock;
 
 use libp2p::identity::{secp256k1, Keypair};
 use libp2p::{Multiaddr, PeerId};
+use locha_p2p::{ChatService, ChatServiceConfig, ChatServiceEvents};
 
 use crate::util::{
-    jni_cache::chat_service_events, unwrap_exc_or_default, unwrap_exc_or, unwrap_jni,
+    jni_cache::chat_service_events, unwrap_exc_or, unwrap_exc_or_default,
+    unwrap_jni,
 };
 use crate::{JniError, JniErrorKind};
 
