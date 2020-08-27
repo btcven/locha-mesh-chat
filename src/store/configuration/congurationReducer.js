@@ -17,6 +17,11 @@ export const configurationReducer = (state = AplicationState, action) => {
       };
     }
 
+    case ActionTypes.SET_NODE_ADDRESS: {
+      return {
+        ...state, nodeAddress: action.payload
+      };
+    }
     case ActionTypes.CLEAR_ALL: {
       return { ...AplicationState };
     }

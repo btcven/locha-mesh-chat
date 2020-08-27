@@ -11,7 +11,8 @@ const AplicationState = {
   appStatus: undefined,
   wsUrl: undefined,
   retryConnection: false,
-  notConnectedValidAp: null
+  notConnectedValidAp: null,
+  nodeAddress: null
 };
 
 export const AplicationReducer = (state = AplicationState, action) => {
@@ -70,6 +71,12 @@ export const AplicationReducer = (state = AplicationState, action) => {
 
     case ActionTypes.NOT_CONNECTED_VALID_AP: {
       return { ...state, notConnectedValidAp: action.payload };
+    }
+
+    case ActionTypes.SET_NODE_ADDRESS: {
+      return {
+        ...state, nodeAddress: action.payload
+      };
     }
     default: {
       return state;

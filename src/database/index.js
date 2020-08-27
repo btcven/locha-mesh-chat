@@ -44,7 +44,7 @@ const optionsDatabase = {
     broadcastContacts,
     fileSchema
   ],
-  schemaVersion: 24
+  schemaVersion: 25
 };
 
 // CoreDatabase
@@ -80,11 +80,8 @@ export default class Database extends CoreDatabase {
 
     try {
       this.seed = new Realm(options);
-      console.log("paso en 1");
       this.db = new Realm(optionsDatabase);
-      console.log("paso en 2")
       this.listener = new Realm(optionsDatabase);
-      console.log("paso en 3");
       resolve(this.db);
     } catch (err) {
       // eslint-disable-next-line no-console

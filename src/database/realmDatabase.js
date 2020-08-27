@@ -138,7 +138,8 @@ export default class CoreDatabase {
           uid: obj[0].uid,
           name: obj[0].name,
           picture: obj[0].picture,
-          hashUID: obj[0].hashUID
+          hashUID: obj[0].hashUID,
+          nodeAddress: obj[0].nodeAddress
         });
 
         if (!update) {
@@ -252,10 +253,12 @@ export default class CoreDatabase {
       });
       // eslint-disable-next-line array-callback-return
       const chats = this.db.objects('Chat').filter((chat) => {
-        const resultContact = contact.find((cont) => cont.hashUID === chat.toUID);
+        const resultContact = contact.find((cont) => {
+          return chat.toUID === cont.uid;
+        });
 
         if (resultContact) {
-          return resultContact.hashUID === chat.toUID;
+          return resultContact.uid === chat.toUID;
         }
       });
 

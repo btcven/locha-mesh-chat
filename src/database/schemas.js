@@ -5,6 +5,7 @@ export const contactSchema = {
     uid: 'string',
     name: 'string',
     picture: 'string?',
+    nodeAddress: 'string',
     imageHash: 'string?',
     hashUID: 'string'
   }

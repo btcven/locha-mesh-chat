@@ -31,6 +31,7 @@ export default class AddContact extends Component {
       openModalPhoto: false,
       image: undefined,
       name: '',
+      nodeAddress: '',
       uid: '',
       spinner: true,
       openQrCode: false
@@ -84,6 +85,7 @@ export default class AddContact extends Component {
         name: this.state.name,
         picture: this.state.image,
         uid: this.state.uid,
+        nodeAddress: this.state.nodeAddress,
         hashUID
       };
 
@@ -115,12 +117,13 @@ export default class AddContact extends Component {
     this.setState({ spinner: false });
     try {
       const result = JSON.parse(event.data);
-      if (result.name && result.uid) {
+      if (result.name && result.uid && result.nodeAddress) {
         setTimeout(() => {
           this.setState({
             openQrCode: false,
             uid: result.uid,
-            name: result.name
+            name: result.name,
+            nodeAddress: result.nodeAddress
           });
         }, 50);
       } else {
@@ -260,6 +263,15 @@ export default class AddContact extends Component {
                   <Label>{screenProps.t('Contacts:name')}</Label>
                   <Input
                     value={this.state.name}
+                    onChangeText={(text) => this.setState({ name: text })}
+                  />
+                </Item>
+
+                <Item stackedLabel>
+                  <Label>{screenProps.t('Contacts:nodeAddress')}</Label>
+                  <Input
+                    value={this.state.nodeAddress}
+                    placeholder="/ip4/192.168.0.100/tcp/38191"
                     onChangeText={(text) => this.setState({ name: text })}
                   />
                 </Item>

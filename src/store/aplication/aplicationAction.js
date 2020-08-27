@@ -192,3 +192,15 @@ export const wifiConnect = (credentials, callback) => (dispatch) => {
 export const manualConnection = () => ({
   type: ActionTypes.MANUAL_CONNECTION
 });
+
+
+/** 
+ * set listening address of node in the state
+ * @param {String} address node address
+ */
+export const setMultiAddress = (listenAddress) => {
+  return {
+    type: ActionTypes.SET_NODE_ADDRESS,
+    payload: listenAddress
+  };
+}
