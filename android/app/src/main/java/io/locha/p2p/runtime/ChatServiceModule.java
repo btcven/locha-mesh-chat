@@ -102,9 +102,7 @@ public class ChatServiceModule extends ReactContextBaseJavaModule implements Cha
 
     @Override
     public void onNewMessage(String contents) {
-        WritableMap params = Arguments.createMap();
-        params.putString("contents", contents);
-        sendEvent(this.reactContext, "newMessage", params);
+        sendEvent(this.reactContext, "newMessage", contents);
     }
 
     @Override

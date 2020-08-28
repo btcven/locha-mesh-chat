@@ -57,7 +57,9 @@ class Chat extends Component {
   }
 
   componentDidMount = () => {
-    this.props.setView(this.props.chat[this.props.chatSelected.index].toUID);
+    const chatSelected = this.props.chat[this.props.chatSelected.index].toUID;
+    const contactNodeAddress = this.props.navigation.state.params.nodeAddress;
+    this.props.setView(chatSelected, contactNodeAddress);
   };
 
   /**

@@ -85,7 +85,7 @@ class Config extends Component {
 
   render() {
     const { screenProps } = this.props;
-    console.log(this.props.config);
+    console.log("config!!!!!!", this.props.config);
     return (
       <Container>
         <Header {...this.props} />

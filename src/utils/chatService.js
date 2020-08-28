@@ -69,14 +69,9 @@ export default class ChatService {
 
   onNewListenAddr = () => {
     this.event.addListener('newListenAddr', ((multiaddr) => {
-      const cleanAddress = multiaddr.split('/')[2];
-      const rule = cleanAddress !== addressType.localIpv4
-        && cleanAddress !== addressType.localIpv6;
-
-      if (rule) { // this avoid passing local address to the state
+      if (multiaddr.includes('192')) { // this avoid passing local address to the state
         this.store.dispatch(setMultiAddress(multiaddr));
       }
-
     }));
   }
 
@@ -90,5 +85,4 @@ export default class ChatService {
   getPeerId = async () => this.service.getPeerId()
 
   getlisteningAddress = () => this.multiaddr
-
 }

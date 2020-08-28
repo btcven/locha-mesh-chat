@@ -272,7 +272,7 @@ export default class AddContact extends Component {
                   <Input
                     value={this.state.nodeAddress}
                     placeholder="/ip4/192.168.0.100/tcp/38191"
-                    onChangeText={(text) => this.setState({ name: text })}
+                    onChangeText={(text) => this.setState({ nodeAddress: text })}
                   />
                 </Item>
               </Form>

@@ -40,6 +40,7 @@ public class LocalNotificationModule extends ReactContextBaseJavaModule implemen
 
     private final ReactApplicationContext reactContext;
     private final static String CHANNEL_ID = "NOTIFICACION";
+    private final static String TAG = "NOTIFICACION_MODULE";
     private int NOTIFICACION_ID = 0;
     private final Random mRandomNumberGenerator = new Random(System.currentTimeMillis());
     private NotificationManagerCompat notificationManager;
@@ -58,9 +59,14 @@ public class LocalNotificationModule extends ReactContextBaseJavaModule implemen
 
     @ReactMethod
     public void createNotification (ReadableMap details){
+
         Bundle bundle = Arguments.toBundle(details);
+        Log.i(TAG, "ID" + bundle.getString("id") );
+        Log.i(TAG, "TITLE" + bundle.getString("title") );
+        Log.i(TAG, "MESSAGE" + bundle.getString("message") );
         // If notification ID is not provided by the user, generate one at random
-        if (bundle.getString("id") == null) {
+        String id = bundle.getString("id");
+        if (id == null && id.length() == 0) {
             bundle.putString("id", String.valueOf(mRandomNumberGenerator.nextInt()));
         }
         createNotificationChannel();
@@ -87,7 +93,6 @@ public class LocalNotificationModule extends ReactContextBaseJavaModule implemen
     }
 
     private void createLocalNotify(Bundle bundle){
-
 
         int notifyID = Integer.parseInt(bundle.getString("id"));
         Intent intent = new Intent(reactContext, MainActivity.class);

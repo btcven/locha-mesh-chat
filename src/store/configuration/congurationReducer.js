@@ -13,10 +13,9 @@ export const configurationReducer = (state = AplicationState, action) => {
   switch (action.type) {
     case ActionTypes.INITIAL_STATE: {
       return {
-        ...action.payload
+        ...state, ...action.payload
       };
     }
-
     case ActionTypes.SET_NODE_ADDRESS: {
       return {
         ...state, nodeAddress: action.payload

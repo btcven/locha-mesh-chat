@@ -25,6 +25,7 @@ export default class NotifService {
   }
 
   localNotif = (data, id) => {
+    
     this.LocalNotification.createNotification(
       {
         id: id.toString(),

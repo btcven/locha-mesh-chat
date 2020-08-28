@@ -11,7 +11,6 @@ import UdpServer from '../../utils/udp';
 /**
  * in this module are the global actions of the application
  * @module AplicationAction
-
  */
 
 // eslint-disable-next-line import/no-mutable-exports
@@ -57,8 +56,6 @@ export const restoreAccountWithPin = (pin, callback) => async (dispatch) => {
     callback();
   });
 };
-
-
 
 export const createNewAccount = (obj) => async (dispatch) => {
   const shaPing = await bitcoin.sha256(obj.pin);
