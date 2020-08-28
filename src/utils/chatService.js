@@ -69,9 +69,7 @@ export default class ChatService {
 
   onNewListenAddr = () => {
     this.event.addListener('newListenAddr', ((multiaddr) => {
-      if (multiaddr.includes('192')) { // this avoid passing local address to the state
-        this.store.dispatch(setMultiAddress(multiaddr));
-      }
+      this.store.dispatch(setMultiAddress(multiaddr));
     }));
   }
 

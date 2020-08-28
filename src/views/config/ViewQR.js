@@ -15,7 +15,24 @@ import { Text, Form, Picker } from 'native-base';
 export default class ViewQR extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      address: ''
+    };
+  }
+
+
+  componentDidMount = () => {
+    if (this.props.config.nodeAddress) {
+      this.setState({
+        address: this.props.config.nodeAddress[0]
+      });
+    }
+  }
+
+  onValueChange = (data) => {
+    this.setState({
+      address: data
+    });
   }
 
   render() {
@@ -46,7 +63,7 @@ export default class ViewQR extends Component {
           >
             <View style={styles.infomationContainer}>
               <View style={styles.containerTitle}>
-                <Text style={styles.TitleStyle} >
+                <Text style={styles.TitleStyle}>
                   Peer id
                 </Text>
               </View>
@@ -61,14 +78,11 @@ export default class ViewQR extends Component {
               <View style={styles.dropDownStyle}>
                 <Picker
                   mode="dropdown"
-
+                  selectedValue={this.state.address}
+                  onValueChange={this.onValueChange}
                   style={{ width: '100%' }}
                 >
-                  <Picker.Item label="Wallet" value="key0" />
-                  <Picker.Item label="ATM Card" value="key1" />
-                  <Picker.Item label="Debit Card" value="key2" />
-                  <Picker.Item label="Credit Card" value="key3" />
-                  <Picker.Item label="Net Banking" value="key4" />
+                  {this.props.config.nodeAddress.map((address) => <Picker.Item label={address} value={address} />)}
                 </Picker>
               </View>
 
@@ -79,7 +93,7 @@ export default class ViewQR extends Component {
                 value={JSON.stringify({
                   name: this.props.config.name,
                   uid: this.props.config.peerID,
-                  nodeAddress: this.props.config.nodeAddress
+                  nodeAddress: this.state.address
                 })}
                 color="#424242"
                 size={150}

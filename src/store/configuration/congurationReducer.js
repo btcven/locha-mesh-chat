@@ -6,7 +6,8 @@ const AplicationState = {
   image: null,
   name: '',
   imageHash: null,
-  ipv6Address: null
+  ipv6Address: null,
+  nodeAddress: []
 };
 
 export const configurationReducer = (state = AplicationState, action) => {
@@ -18,7 +19,7 @@ export const configurationReducer = (state = AplicationState, action) => {
     }
     case ActionTypes.SET_NODE_ADDRESS: {
       return {
-        ...state, nodeAddress: action.payload
+        ...state, nodeAddress: state.nodeAddress.concat(action.payload)
       };
     }
     case ActionTypes.CLEAR_ALL: {

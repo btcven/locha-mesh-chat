@@ -154,7 +154,6 @@ jest.mock('react-native/Libraries/Utilities/Platform', () => ({
   select: jest.fn((selector) => selector.ios),
 }));
 
-
 jest.doMock('react-native', () =>
   // Extend ReactNative
   Object.setPrototypeOf(
