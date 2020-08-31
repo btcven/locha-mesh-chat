@@ -16,6 +16,9 @@
 
 package io.locha.p2p.runtime;
 
+import android.content.Intent;
+import android.os.Build;
+import android.os.Parcelable;
 import android.util.Log;
 
 import com.facebook.react.bridge.Promise;
@@ -38,6 +41,8 @@ public class ChatServiceModule extends ReactContextBaseJavaModule implements Cha
     public ReactApplicationContext reactContext;
     private static final String TAG = "CHAT_SERVICE_MODULE";
     private ChatService service;
+    private Intent intentService;
+
 
     public ChatServiceModule(ReactApplicationContext reactContext) {
         super(reactContext);
@@ -56,10 +61,23 @@ public class ChatServiceModule extends ReactContextBaseJavaModule implements Cha
      */
     @ReactMethod
     public void start(String privateKey, Promise promise) {
-        this.service.setEventsHandler(this);
 
-        byte[] privateKeyBytes = Utils.hexStringToByteArray(privateKey);
-        this.service.start(privateKeyBytes, promise);
+        boolean isConnected = Utils.isConnected(reactContext);
+
+        if(isConnected){
+            intentService = new Intent(reactContext, ChatService.class);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                Log.i(TAG, "startForegroundService");
+                intentService.putExtra("privateKey",  privateKey);
+                reactContext.startForegroundService(intentService);
+            }else{
+                Log.i(TAG, "normal service");
+                reactContext.startService(intentService);
+            }
+        }else{
+            promise.reject("Error", "it's divice is not conected" );
+        }
+
     }
 
     @ReactMethod
@@ -111,6 +129,16 @@ public class ChatServiceModule extends ReactContextBaseJavaModule implements Cha
         sendEvent(this.reactContext, "newListenAddr", multiaddr);
     }
 
+
+    /**
+     * it will send  event to the react native
+     *
+     *  this function is overloaded, it will send a string event
+     *
+     * @param reactContext  context activity
+     * @param eventName  event name
+     * @param params  pameters to send
+     */
     private static void sendEvent(ReactContext reactContext,
                                   String eventName,
                                   @Nullable String params) {
@@ -120,6 +148,15 @@ public class ChatServiceModule extends ReactContextBaseJavaModule implements Cha
     }
 
 
+    /**
+     * it will send  event to the react native
+     *
+     *  this function is overloaded, it will send a WritableMap event
+     *
+     * @param reactContext  context activity
+     * @param eventName  event name
+     * @param params  pameters to send
+     */
     private static void sendEvent(ReactContext reactContext,
                                   String eventName,
                                   @Nullable WritableMap params) {
@@ -127,4 +164,8 @@ public class ChatServiceModule extends ReactContextBaseJavaModule implements Cha
                 .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
                 .emit(eventName, params);
     }
+
+
+
+
 }

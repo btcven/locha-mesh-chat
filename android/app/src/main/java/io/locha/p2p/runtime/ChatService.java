@@ -16,8 +16,15 @@
 
 package io.locha.p2p.runtime;
 
+import DeviceInfo.Utils;
 import io.locha.p2p.util.LibraryLoader;
+
+import android.app.Service;
+import android.content.Intent;
+import android.os.IBinder;
 import android.util.Log;
+
+import androidx.annotation.Nullable;
 
 import com.facebook.react.bridge.Promise;
 
@@ -29,7 +36,7 @@ import com.facebook.react.bridge.Promise;
  * work without globals and with various servers. That can help with mocking
  * and other things.
  */
-public class ChatService {
+public class ChatService  extends Service {
     static {
         LibraryLoader.load();
     }
@@ -43,6 +50,31 @@ public class ChatService {
     private ChatService() {
         this.eventsHandler = null;
     }
+
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
+    }
+
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+    }
+
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+
+        this.service.setEventsHandler(this);
+
+        byte[] privateKeyBytes = Utils.hexStringToByteArray(privateKey);
+        start(privateKeyBytes, promise);
+
+        return START_STICKY;
+    }
+
 
     /**
      * Get instance of the Chat service.
