@@ -102,24 +102,29 @@ public class ChatServiceModule extends ReactContextBaseJavaModule implements Cha
 
     @Override
     public void onNewMessage(String contents) {
-        WritableMap params = Arguments.createMap();
-        params.putString("contents", contents);
-        sendEvent(this.reactContext, "newMessage", params);
+        sendEvent(this.reactContext, "newMessage", contents);
     }
 
     @Override
     public void onNewListenAddr(String multiaddr) {
-        WritableMap params = Arguments.createMap();
-        params.putString("multiaddr", multiaddr);
-        sendEvent(this.reactContext, "newListenAddr", params);
+
+        sendEvent(this.reactContext, "newListenAddr", multiaddr);
     }
 
     private static void sendEvent(ReactContext reactContext,
                                   String eventName,
-                                  @Nullable WritableMap params) {
+                                  @Nullable String params) {
         reactContext
             .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
             .emit(eventName, params);
     }
 
+
+    private static void sendEvent(ReactContext reactContext,
+                                  String eventName,
+                                  @Nullable WritableMap params) {
+        reactContext
+                .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                .emit(eventName, params);
+    }
 }

@@ -11,7 +11,8 @@ const AplicationState = {
   appStatus: undefined,
   wsUrl: undefined,
   retryConnection: false,
-  notConnectedValidAp: null
+  notConnectedValidAp: null,
+  nodeAddress: []
 };
 
 export const AplicationReducer = (state = AplicationState, action) => {

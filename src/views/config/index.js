@@ -85,7 +85,6 @@ class Config extends Component {
 
   render() {
     const { screenProps } = this.props;
-    console.log(this.props.config);
     return (
       <Container>
         <Header {...this.props} />
@@ -222,49 +221,50 @@ class Config extends Component {
               </Right>
             </View>
 
-            <View style={styles.infoContainerAddress}>
-              <View
-                style={{
-                  width: '90%',
-                  justifyContent: 'flex-end',
-                  paddingLeft: 10,
-                  minHeight: 30
-                }}
-              >
-                <TouchableOpacity
-                  onPress={() => this.setContent(this.props.config.peerID)}
-                >
-                  <Text style={styles.textInfo}>
-                    {`${this.props.config.peerID}`.substr(0, 25)}
-                    ...
-                  </Text>
-                </TouchableOpacity>
-              </View>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  flex: 1,
-                  alignItems: 'center'
-                }}
-              >
-                <TouchableHighlight
-                  style={styles.touchable}
-                  underlayColor="#eeeeee"
-                  onPress={() => {
-                    this.setState({ viewQR: true });
+            <TouchableOpacity onPress={() => this.setState({ viewQR: true })}>
+
+              <View style={styles.infoContainerAddress}>
+                <Left>
+                  <Icon type="MaterialIcons" style={{ color: '#fbc233' }} name="perm-device-information" />
+                </Left>
+                <View
+                  style={{
+                    width: '70%',
+                    alignContent: 'flex-start',
+                    paddingLeft: 10
                   }}
                 >
-                  <Icon
-                    style={{
-                      color: '#bdbdbd',
-                      fontSize: 25
+
+                  <Text style={styles.textInfo}>
+                    Account Info
+                  </Text>
+                </View>
+                <Right
+                  style={{
+                    top: 5
+                  }}
+                >
+                  <TouchableOpacity
+                    style={styles.touchable}
+                    underlayColor="#eeeeee"
+                    onPress={() => {
+                      this.setState({ language: true });
                     }}
-                    type="FontAwesome5"
-                    name="qrcode"
-                  />
-                </TouchableHighlight>
+                  >
+                    <Icon
+                      style={{
+                        color: '#bdbdbd',
+                        fontSize: 25,
+                        paddingVertical: 10,
+                        paddingHorizontal: 10
+                      }}
+                      name="arrow-dropright"
+                    />
+                  </TouchableOpacity>
+                </Right>
+
               </View>
-            </View>
+            </TouchableOpacity>
 
             <View style={styles.infoContainerAddress}>
               <Left>

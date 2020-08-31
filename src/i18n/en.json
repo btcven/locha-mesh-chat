@@ -55,12 +55,13 @@
       "addContact": "Add contact",
       "editContact": "Edit contact",
       "name": "Nickname",
-      "uid": "IPv6 address",
+      "uid": "PeerID address",
       "wait": "please wait",
       "existName": "there is already a contact with that nickname",
       "existContact": "existing contact",
       "invalidFormat": "Invalid format",
-      "contactSuccessfully": "Contact created successfully!"
+      "contactSuccessfully": "Contact created successfully!",
+      "nodeAddress":"Node address"
   },
   "Header": {
       "contacts": "Contacts",

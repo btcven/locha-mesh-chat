@@ -58,7 +58,8 @@
       "existName": "ya existe un contacto con ese nombre",
       "existContact": "Contacto existente",
       "invalidFormat": "Formato invalido",
-      "contactSuccessfully": "Contacto creado exitosamente!"
+      "contactSuccessfully": "Contacto creado exitosamente!",
+      "nodeAddress":"Node address"
   },
   "Header": {
       "contacts": "Contactos",

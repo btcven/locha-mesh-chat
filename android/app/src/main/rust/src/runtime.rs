@@ -101,7 +101,7 @@ pub extern "system" fn Java_io_locha_p2p_runtime_ChatService_nativeStart(
 
         let config = ChatServiceConfig {
             secret_key,
-            listen_addr: "/ip4/0.0.0.0/tcp/0"
+            listen_addr: "/ip4/0.0.0.0/tcp/4444"
                 .parse()
                 .expect("invalid listen addr"),
             channel_cap: 20,

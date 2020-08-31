@@ -1,8 +1,9 @@
 import { NativeModules, NativeEventEmitter } from 'react-native';
 import { bitcoin } from '../../App';
 import { getChat, setStatusMessage } from '../store/chats';
-import { messageType } from './constans';
+import { messageType, addressType } from './constans';
 import { requestImageStatus, sentImageStatus, verifyHashImageStatus } from '../store/contacts';
+import { setMultiAddress } from '../store/aplication';
 
 export default class ChatService {
   constructor() {
@@ -68,7 +69,7 @@ export default class ChatService {
 
   onNewListenAddr = () => {
     this.event.addListener('newListenAddr', ((multiaddr) => {
-      console.log(multiaddr);
+      this.store.dispatch(setMultiAddress(multiaddr));
     }));
   }
 
@@ -80,4 +81,6 @@ export default class ChatService {
   }
 
   getPeerId = async () => this.service.getPeerId()
+
+  getlisteningAddress = () => this.multiaddr
 }

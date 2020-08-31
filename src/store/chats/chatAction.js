@@ -27,7 +27,6 @@ import { messageType } from '../../utils/constans';
 export const initialChat = (data, status) => async (dispatch) => {
   database.setMessage(data.toUID, { ...data }, status).then((res) => {
     if (!process.env.JEST_WORKER_ID) {
-      console.warn("initialChat");
       chatService.send(JSON.stringify(data));
     }
     dispatch({
@@ -202,7 +201,6 @@ export const sendMessageWithFile = (data, path, base64) => (dispatch) => {
   saveDatabase.msg.file = path;
   database.setMessage(uidChat, { ...saveDatabase }, 'pending').then((res) => {
     saveDatabase.msg.file = base64;
-    console.warn("sendMessageWithFile")
     chatService.send(JSON.stringify(saveDatabase));
     dispatch({
       type: ActionTypes.NEW_MESSAGE,
@@ -284,7 +282,18 @@ export const sendStatus = (data) => {
  * @returns {object}
  */
 
-export const setView = (idChat) => async (dispatch) => {
+export const setView = (idChat, nodeAddress) => async (dispatch) => {
+  if (nodeAddress) {
+    await chatService.dial(nodeAddress);
+  }
+
+  if (!idChat) {
+    dispatch({
+      type: ActionTypes.IN_VIEW,
+      payload: idChat
+    });
+    return;
+  }
   database.cancelUnreadMessages(idChat).then((res) => {
     if (!process.env.JEST_WORKER_ID) {
       // eslint-disable-next-line global-require
@@ -303,7 +312,6 @@ export const setView = (idChat) => async (dispatch) => {
           },
           type: messageType.STATUS
         };
-        console.warn("setView");
         chatService.send(JSON.stringify(sendStatus));
       }
     }
@@ -316,10 +324,9 @@ export const setView = (idChat) => async (dispatch) => {
 
 /**
  * function executed enter the chat  view its function es to send a read status
- * @param {Object} data;
+ * 
  */
-export const sendReadMessageStatus = (data) => () => {
-  console.warn("sendReadMessageStatus")
+export const sendReadMessageStatus = () => () => {
   chatService.send(JSON.stringify(sendStatus));
 };
 
@@ -336,7 +343,6 @@ export const sendAgain = (message) => (dispatch) => {
       msgID: res.id,
       shippingTime: res.shippingTime
     };
-    console.warn("sendAgain");
     chatService.send(JSON.stringify(sendObject));
     dispatch({
       type: ActionTypes.SEND_AGAIN,
