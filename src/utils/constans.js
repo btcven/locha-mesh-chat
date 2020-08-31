@@ -40,9 +40,3 @@ export const messageType = {
   STATUS: 2,
   ACTION: 3
 };
-
-
-export const addressType = {
-  localIpv6: '::1',
-  localIpv4: '127.0.0.1'
-}
