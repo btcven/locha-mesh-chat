@@ -42,6 +42,7 @@ import com.facebook.react.bridge.ReactContext;
 import androidx.annotation.Nullable;
 
 import DeviceInfo.Utils;
+import io.locha.p2p.util.LibraryLoader;
 
 /**
  * React Native interface to ChatService class.
@@ -59,12 +60,12 @@ public class ChatServiceModule extends ReactContextBaseJavaModule {
     public static final String SERVICE_IS_STARTED = "com.lochameshchat.SERVICE_IS_STARTED";
     public static final String SERVICE_NOT_STARTED = "com.lochameshchat.SERVICE_NOT_STARTED";
     public static final String CLICK_FOREGRAUND_NOTIFICATION = "com.lochameshchat.CLICK_FOREGRAUND_NOTIFICATION";
-
+    private String peerID = null;
 
     public ChatServiceModule(ReactApplicationContext reactContext) {
         super(reactContext);
         this.reactContext = reactContext;
-//        this.service = ChatService.get();
+        LibraryLoader.load();
 
          intentFilter = new IntentFilter();
          intentFilter.addAction(SERVICE_IS_STARTED);
@@ -114,43 +115,70 @@ public class ChatServiceModule extends ReactContextBaseJavaModule {
 
     }
 
-//    @ReactMethod
-//    public void stop() {
-//        this.service.stop();
-//    }
-//
-//    @ReactMethod
-//    public boolean isStarted() {
-//        return this.service.isStarted();
-//    }
+    /**
+     * stop service
+     */
+    @ReactMethod public void stop() {
+        try{
+            reactContext.stopService(intentService);
+            reactContext.unregisterReceiver(_bReceiver);
+        } catch (Exception e){
+            Log.e(TAG, "stop service: "+ e.toString() );
+        }
+    }
+
+
+    @ReactMethod public void isStarted(Promise promise) {
+        try {
+            promise.resolve(nativeIsStarted());
+        }catch (Exception e){
+            Log.e(TAG, "Error: " + e.toString() );
+        }
+    }
 
     /**
      * method used for get perrID and send it to React native
      * @param promise
      */
-//    @ReactMethod
-//    public void getPeerId(Promise promise) {
-//        try {
-//            promise.resolve(service.getPeerId());
-//        } catch (Exception e) {
-//            promise.reject(e);
-//        }
-//    }
+    @ReactMethod
+    public void getPeerId(Promise promise) {
+        if(peerID == null){
+            promise.reject("Error", "peerID is null");
+        }
+            promise.resolve(peerID);
+    }
 
-//    @ReactMethod
-//    public void dial(String multiaddr) {
-//        this.service.dial(multiaddr);
-//    }
+    /**
+     * Dial (connect to) a peer.
+     *
+     * @param multiaddr The peer address in Multiaddress format.
+     *
+     * @throws RuntimeException if the address is invalid.
+     *
+     * @see <a href="https://multiformats.io/multiaddr/">Multiaddr</a>
+     */
+    @ReactMethod public void dial(String multiaddr) {
+        try {
+            nativeDial(multiaddr);
+        } catch (Exception e){
+            Log.e(TAG, "dial: " + e.toString());
+        }
 
-//    @ReactMethod
-//    public void sendMessage(String contents) {
-//        try {
-//            Log.i(TAG, "sendMessage: " + contents);
-//            this.service.sendMessage(contents);
-//        } catch (Exception e) {
-//            Log.e(TAG, e.toString());
-//        }
-//    }
+    }
+
+    /**
+     * Send a message
+     *
+     * @param contents The message contents.
+     */
+    @ReactMethod public void sendMessage(String contents) {
+        try {
+            Log.i(TAG, "sendMessage: " + contents);
+            nativeSendMessage(contents);
+        } catch (Exception e) {
+            Log.e(TAG, e.toString());
+        }
+    }
 
 
     /**
@@ -163,8 +191,9 @@ public class ChatServiceModule extends ReactContextBaseJavaModule {
         public void onReceive(Context context, Intent intent) {
             Log.i(TAG, "broadcast Receiver"+ intent.getAction());
             if(intent.getAction().equals(SERVICE_IS_STARTED)) {
-                String peerID = intent.getStringExtra("peerID");
-                mPromise.resolve(peerID);
+                String _peerID = intent.getStringExtra("peerID");
+                peerID = _peerID;
+                mPromise.resolve(_peerID);
                 mPromise = null;
             }
 
@@ -185,11 +214,13 @@ public class ChatServiceModule extends ReactContextBaseJavaModule {
                     Log.e(TAG, "onReceive: " + e.toString() );
                 }
 
-
             }
         }
     };
 
 
+    public native boolean nativeIsStarted();
+    public native void nativeDial(String multiaddr);
+    public native void nativeSendMessage(String contents);
 
 }

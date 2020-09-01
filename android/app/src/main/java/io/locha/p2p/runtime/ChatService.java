@@ -59,6 +59,7 @@ public class ChatService  extends Service {
 
     private ChatServiceEvents eventsHandler;
     private String peerId;
+    private boolean isStarted = false;
 
     public ChatService() {
         this.eventsHandler = null;
@@ -128,7 +129,7 @@ public class ChatService  extends Service {
      */
     public void start(byte[] privateKey) {
         Log.i(TAG, "Starting ChatService");
-        if (isStarted()) {
+        if (isStarted) {
             Log.i(TAG,"isStarted?");
             Intent broadCastIntent = new Intent("com.lochameshchat.SERVICE_NOT_STARTED");
             sendBroadcast(broadCastIntent);
@@ -140,6 +141,7 @@ public class ChatService  extends Service {
 
             Intent broadCastIntent = new Intent("com.lochameshchat.SERVICE_IS_STARTED");
             broadCastIntent.putExtra("peerID", peerId);
+            isStarted = true;
             sendBroadcast(broadCastIntent);
         }catch (Exception e){
             Log.e(TAG, "into the catch" + e.toString());
@@ -153,15 +155,15 @@ public class ChatService  extends Service {
      * @throws RuntimeException if an error ocurred while stopping ChatService.
      */
     public void stop() {
+
+    }
+
+
+    @Override
+    public void onDestroy(){
         nativeStop();
     }
 
-    /**
-     * Has the Chat service already been started?
-     */
-    public boolean isStarted() {
-        return nativeIsStarted();
-    }
 
     /**
      * Return the peer ID 
@@ -170,37 +172,9 @@ public class ChatService  extends Service {
         return this.peerId;
     }
 
-    /**
-     * Dial (connect to) a peer.
-     * 
-     * @param multiaddr The peer address in Multiaddress format.
-     *
-     * @throws RuntimeException if the address is invalid.
-     *
-     * @see <a href="https://multiformats.io/multiaddr/">Multiaddr</a>
-     */
-    public void dial(String multiaddr) {
-        Log.i(TAG, String.format("Dialing '%s'", multiaddr));
-        nativeDial(multiaddr);
-    }
 
-    /**
-     * Send a message
-     *
-     * @param contents The message contents.
-     */
-    public void sendMessage(String contents) {
-        Log.i(TAG, String.format("Sending message '%s'", contents));
 
-        nativeSendMessage(contents);
-
-        Log.i(TAG, String.format("Message sent"));
-    }
-
+    public native String nativeGetPeerId();
     public native void nativeStart(byte[] privateKey);
     public native void nativeStop();
-    public native boolean nativeIsStarted();
-    public native String nativeGetPeerId();
-    public native void nativeDial(String multiaddr);
-    public native void nativeSendMessage(String contents);
 }
