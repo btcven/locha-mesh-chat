@@ -138,12 +138,14 @@ public class LocalNotificationModule extends ReactContextBaseJavaModule implemen
     public void onNewIntent(Intent intent) {
         Bundle message = intent.getBundleExtra("Notification");
 
+        if(message != null){
 
-        String result =  convertJSON(message);
-        WritableMap params = Arguments.createMap();
-        params.putString("dataJSON" ,result);
+            String result =  convertJSON(message);
+            WritableMap params = Arguments.createMap();
+            params.putString("dataJSON" ,result);
 
-        sendEvent("NoticationReceiver", params);
+            sendEvent("NoticationReceiver", params);
+        }
 
     }
 

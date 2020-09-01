@@ -17,6 +17,7 @@
 package io.locha.p2p.runtime;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -96,6 +97,7 @@ public class ChatServiceModule extends ReactContextBaseJavaModule {
      */
     @ReactMethod
     public void start(String privateKey, Promise promise) {
+
         mPromise = promise;
         boolean isConnected = Utils.isConnected(reactContext);
 
@@ -218,6 +220,18 @@ public class ChatServiceModule extends ReactContextBaseJavaModule {
         }
     };
 
+
+    public boolean checkServiceRunning(Class<?> serviceClass){
+        ActivityManager manager = (ActivityManager) reactContext.getSystemService(reactContext.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE))
+        {
+            if (serviceClass.getName().equals(service.service.getClassName()))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
 
     public native boolean nativeIsStarted();
     public native void nativeDial(String multiaddr);
