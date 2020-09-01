@@ -19,14 +19,27 @@ package io.locha.p2p.runtime;
 import DeviceInfo.Utils;
 import io.locha.p2p.util.LibraryLoader;
 
+import android.app.Activity;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
 
 import com.facebook.react.bridge.Promise;
+import com.lochameshchat.MainActivity;
+import com.lochameshchat.R;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Chat service. This class manages the chat logic, such as starting and
@@ -47,7 +60,7 @@ public class ChatService  extends Service {
     private ChatServiceEvents eventsHandler;
     private String peerId;
 
-    private ChatService() {
+    public ChatService() {
         this.eventsHandler = null;
     }
 
@@ -60,59 +73,79 @@ public class ChatService  extends Service {
 
     @Override
     public void onCreate() {
+
         super.onCreate();
+
+        eventsHandler = EventReceivers.get();
+
+
+        if (Build.VERSION.SDK_INT >= 26) {
+            String CHANNEL_ID = "my_channel_01";
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID,
+                    "Channel human readable title",
+                    NotificationManager.IMPORTANCE_DEFAULT);
+
+            Intent notificationIntent = new Intent("com.lochameshchat.CLICK_FOREGRAUND_NOTIFICATION");
+
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, notificationIntent, 0);
+
+            Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
+                    .setOngoing(true)
+                    .setContentTitle("Locha Mesh  is running in the background")
+                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setContentIntent(pendingIntent)
+                    .setPriority(NotificationManager.IMPORTANCE_MIN)
+                    .setCategory(Notification.CATEGORY_SERVICE)
+                    .build();
+
+            startForeground(233, notification);
+        }
+
+
     }
 
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        this.service.setEventsHandler(this);
+        Log.i(TAG, "--------------------- onStartCommand ------------------------ ");
+
+        String privateKey  = intent.getStringExtra("privateKey");
+
+        Log.i(TAG, "privateKey" + privateKey);
 
         byte[] privateKeyBytes = Utils.hexStringToByteArray(privateKey);
-        start(privateKeyBytes, promise);
+        start(privateKeyBytes);
 
         return START_STICKY;
     }
 
 
     /**
-     * Get instance of the Chat service.
-     */
-    public static ChatService get() {
-        if (INSTANCE == null) {
-            INSTANCE = new ChatService();
-        }
-
-        return INSTANCE;
-    }
-
-    /**
-     * Sets the handler for ChatService events
-     * 
-     * @throws IllegalStateException if ChatService is not started.
-     */
-    public void setEventsHandler(ChatServiceEvents eventsHandler) {
-        Log.i(TAG, "Setting events handler");
-
-        this.eventsHandler = eventsHandler;
-        this.peerId = null;
-    }
-
-    /**
      * Start the server
      *
      * @throws RuntimeException if the server is already started.
      */
-    public void start(byte[] privateKey, Promise promise) {
+    public void start(byte[] privateKey) {
         Log.i(TAG, "Starting ChatService");
         if (isStarted()) {
-            promise.reject("Error", "The chat service is already active");
+            Log.i(TAG,"isStarted?");
+            Intent broadCastIntent = new Intent("com.lochameshchat.SERVICE_NOT_STARTED");
+            sendBroadcast(broadCastIntent);
             return;
         }
-        nativeStart(privateKey);
-        this.peerId = nativeGetPeerId();
-        promise.resolve(this.peerId);
+        try {
+            nativeStart(privateKey);
+            this.peerId = nativeGetPeerId();
+
+            Intent broadCastIntent = new Intent("com.lochameshchat.SERVICE_IS_STARTED");
+            broadCastIntent.putExtra("peerID", peerId);
+            sendBroadcast(broadCastIntent);
+        }catch (Exception e){
+            Log.e(TAG, "into the catch" + e.toString());
+            Intent broadCastIntent = new Intent("com.lochameshchat.SERVICE_NOT_STARTED");
+            sendBroadcast(broadCastIntent);
+        }
     }
 
     /**
