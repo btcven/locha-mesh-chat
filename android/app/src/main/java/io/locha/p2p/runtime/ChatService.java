@@ -27,11 +27,13 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 
 import com.facebook.react.bridge.Promise;
@@ -79,18 +81,35 @@ public class ChatService  extends Service {
 
         eventsHandler = EventReceivers.get();
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            Log.e(TAG, "entro en 1" );
+            startMyOwnForeground();
+        }
+        else{
+            Log.i(TAG, "entro en 2: ");
+            startForeground(1, new Notification());
+        }
 
-        if (Build.VERSION.SDK_INT >= 26) {
-            String CHANNEL_ID = "my_channel_01";
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID,
-                    "Channel human readable title",
-                    NotificationManager.IMPORTANCE_DEFAULT);
+
+    }
+
+
+    private void startMyOwnForeground(){
+            if (Build.VERSION.SDK_INT >= 26) {
+                String NOTIFICATION_CHANNEL_ID = "com.example.simpleapp";
+                String channelName = "My Background Service";
+                NotificationChannel chan = new NotificationChannel(NOTIFICATION_CHANNEL_ID, channelName, NotificationManager.IMPORTANCE_LOW);
+                chan.setLightColor(Color.BLUE);
+                chan.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
+                NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                assert manager != null;
+                manager.createNotificationChannel(chan);
 
             Intent notificationIntent = new Intent("com.lochameshchat.CLICK_FOREGRAUND_NOTIFICATION");
 
             PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, notificationIntent, 0);
 
-            Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
+            Notification notification = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
                     .setOngoing(true)
                     .setContentTitle("Locha Mesh  is running in the background")
                     .setSmallIcon(R.mipmap.ic_launcher)
@@ -101,8 +120,6 @@ public class ChatService  extends Service {
 
             startForeground(233, notification);
         }
-
-
     }
 
 

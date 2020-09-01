@@ -1,5 +1,7 @@
 package io.locha.p2p.runtime;
 
+import android.util.Log;
+
 import androidx.annotation.Nullable;
 
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -10,6 +12,7 @@ import com.facebook.react.modules.core.DeviceEventManagerModule;
 public class EventReceivers implements ChatServiceEvents {
     ReactApplicationContext reactContext;
     private static EventReceivers INSTANCE = null;
+    public static final String TAG = "EventReceivers";
 
 
     private EventReceivers(ReactApplicationContext context){
@@ -42,6 +45,7 @@ public class EventReceivers implements ChatServiceEvents {
 
     @Override
     public void onNewMessage(String contents) {
+        Log.e(TAG, "onNewMessage: " + contents );
         sendEvent(this.reactContext, "newMessage", contents);
     }
 
