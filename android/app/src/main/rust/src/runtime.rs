@@ -170,7 +170,7 @@ pub extern "system" fn Java_io_locha_p2p_runtime_ChatService_nativeGetPeerId(
 }
 
 #[no_mangle]
-pub extern "system" fn Java_io_locha_p2p_runtime_ChatService_nativeDial(
+pub extern "system" fn Java_io_locha_p2p_runtime_ChatServiceModule_nativeDial(
     env: JNIEnv,
     _: JClass,
     multiaddr: JString,
@@ -190,7 +190,7 @@ pub extern "system" fn Java_io_locha_p2p_runtime_ChatService_nativeDial(
 }
 
 #[no_mangle]
-pub extern "system" fn Java_io_locha_p2p_runtime_ChatService_nativeSendMessage(
+pub extern "system" fn Java_io_locha_p2p_runtime_ChatServiceModule_nativeSendMessage(
     env: JNIEnv,
     _: JClass,
     contents: JString,
