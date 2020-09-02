@@ -101,7 +101,7 @@ public class ChatServiceModule extends ReactContextBaseJavaModule {
         mPromise = promise;
         boolean isConnected = Utils.isConnected(reactContext);
 
-        if(isConnected){
+        // if(isConnected){
             intentService = new Intent(reactContext, ChatService.class);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 Log.i(TAG, "startForegroundService");
@@ -111,9 +111,9 @@ public class ChatServiceModule extends ReactContextBaseJavaModule {
                 Log.i(TAG, "normal service");
                 reactContext.startService(intentService);
             }
-        }else{
-            promise.reject("Error", "it's divice is not conected" );
-        }
+        // }else{
+        //     promise.reject("Error", "it's divice is not conected" );
+        // }
 
     }
 
