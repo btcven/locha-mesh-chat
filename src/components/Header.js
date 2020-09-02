@@ -7,7 +7,6 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import * as Animatable from 'react-native-animatable';
-import { sha256 } from 'js-sha256';
 import Menu from './Menu';
 import { getIcon } from '../utils/utils';
 import { openMenu, manualConnection } from '../store/aplication';
@@ -125,7 +124,7 @@ class HeaderComponent extends Component {
                       <Thumbnail
                         style={{ marginRight: 10, width: 45, height: 40 }}
                         source={{
-                          uri: `${getIcon(sha256(router.params.uid))}`
+                          uri: `${getIcon(router.params.hashUID)}`
                         }}
                       />
                     )}

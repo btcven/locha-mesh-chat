@@ -12,10 +12,10 @@ import {
 } from 'native-base';
 import ImagePicker from 'react-native-image-crop-picker';
 import QRCodeScanner from 'react-native-qrcode-scanner';
-import { sha256 } from 'js-sha256';
 import EditPhoto from '../config/EditPhoto';
 import { toast } from '../../utils/utils';
 import { images } from '../../utils/constans';
+import { bitcoin } from '../../../App';
 /**
  *
  * @export
@@ -31,6 +31,7 @@ export default class AddContact extends Component {
       openModalPhoto: false,
       image: undefined,
       name: '',
+      nodeAddress: '',
       uid: '',
       spinner: true,
       openQrCode: false
@@ -74,16 +75,20 @@ export default class AddContact extends Component {
     });
   };
 
-  save = () => {
+  save = async () => {
     const update = this.props.selected.length > 0;
     const verify = this.verifyContacts(update);
+
+    const hashUID = await bitcoin.sha256(this.state.uid);
     if (verify) {
       const obj = {
         name: this.state.name,
         picture: this.state.image,
         uid: this.state.uid,
-        hashUID: sha256(this.state.uid)
+        nodeAddress: this.state.nodeAddress,
+        hashUID
       };
+
       if (!update) {
         this.props.saveContact(
           this.props.userData.uid,
@@ -112,12 +117,13 @@ export default class AddContact extends Component {
     this.setState({ spinner: false });
     try {
       const result = JSON.parse(event.data);
-      if (result.name && result.uid) {
+      if (result.name && result.uid && result.nodeAddress) {
         setTimeout(() => {
           this.setState({
             openQrCode: false,
             uid: result.uid,
-            name: result.name
+            name: result.name,
+            nodeAddress: result.nodeAddress
           });
         }, 50);
       } else {
@@ -258,6 +264,15 @@ export default class AddContact extends Component {
                   <Input
                     value={this.state.name}
                     onChangeText={(text) => this.setState({ name: text })}
+                  />
+                </Item>
+
+                <Item stackedLabel>
+                  <Label>{screenProps.t('Contacts:nodeAddress')}</Label>
+                  <Input
+                    value={this.state.nodeAddress}
+                    placeholder="/ip4/192.168.0.100/tcp/38191"
+                    onChangeText={(text) => this.setState({ nodeAddress: text })}
                   />
                 </Item>
               </Form>

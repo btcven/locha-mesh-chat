@@ -62,8 +62,9 @@ describe('test add contacts component', () => {
     expect(wrapper.find('ForwardRef').at(1).props().disabled).not.toBeTruthy();
   });
 
-  test('simulate save function', () => {
-    expect(wrapper.find('ForwardRef').at(1).props().onPress());
+  test('simulate save function', async () => {
+    await wrapper.find('ForwardRef').at(1).props().onPress();
+    await Promise.resolve();
 
     expect(saveContact.mock.calls.length).toBe(1);
   });

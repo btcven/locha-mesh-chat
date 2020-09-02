@@ -3,7 +3,7 @@ import { ToastAndroid, PermissionsAndroid, Platform } from 'react-native';
 import { Toast } from 'native-base';
 import Identicon from 'identicon.js';
 import BackgroundTimer from 'react-native-background-timer';
-import { database } from '../../App';
+import { database, bitcoin } from '../../App';
 import {
   selectedChat,
   messageQueue,
@@ -87,9 +87,9 @@ export const createFolder = async () => {
  */
 
 export const notifyRedirect = (data) => {
-  const result = getInfoMessage(data.id);
+  const result = getInfoMessage(Number(data.id));
   store.dispatch(selectedChat({ toUID: result.toUID }));
-  const contact = result.toUID === 'broadcast' ? undefined : {
+  const contact = {
     hashUID: result.hashUID,
     name: result.name,
     picture: result.picture,
@@ -109,12 +109,13 @@ export const onNotification = (res) => {
   const view = res.fromUID;
   const rule = state.aplication.view !== view;
   unreadMessages(rule, state, view, res);
-  if (state.config.ipv6Address !== res.fromUID && rule) {
+  if (state.config.peerID !== res.fromUID && rule) {
+
     const id = parseInt((view), 16);
 
-    const result = getInfoMessage(String(id).substr(2, 10));
+    const result = getInfoMessage(id);
     const allData = { ...res, name: result.name };
-    notification.localNotif(allData, String(id).substr(2, 10));
+    notification.localNotif(allData, id);
   }
 };
 
@@ -178,12 +179,12 @@ export const getSelectedColor = (selected, id) => {
 const getInfoMessage = (id) => {
   const state = store.getState();
   const result = Object.values(state.chats.chat).find((data) => {
-    const sub = String(parseInt((data.toUID), 16)).substr(2, 10);
+    const sub = parseInt((data.toUID), 16);
     return sub === id;
   });
   const contact = Object.values(
     state.contacts.contacts
-  ).find((itemContact) => itemContact.hashUID === result.toUID);
+  ).find((itemContact) => itemContact.uid === result.toUID);
 
   return { toUID: result.toUID, ...contact };
 };
@@ -266,6 +267,12 @@ export const hashGenerateColort = (str) => {
  * function to generate an icon with a hash
  * @param {string} data string received to generate the icon
  */
+
+export const getSha256 = (data, callback) => {
+  bitcoin.sha256(data).then((res) => {
+    callback(res);
+  });
+};
 
 export const getIcon = (data) => {
   try {

@@ -5,7 +5,7 @@
 import * as ReactNative from 'react-native';
 import enzyme from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
-
+import mock from 'react-native-permissions/mock';
 
 // enzyme.configure({ adapter: new Adapter() });
 jest.mock('react-native-fs', () => ({
@@ -92,9 +92,7 @@ jest.mock('react-native-audio', () => {
   // code here
 });
 
-jest.mock(('react-native-permissions'), () => {
-  // code here
-});
+jest.mock('react-native-permissions', () => mock);
 
 jest.mock('@react-native-community/slider', () => {
   const data = () => null;
@@ -156,16 +154,18 @@ jest.mock('react-native/Libraries/Utilities/Platform', () => ({
   select: jest.fn((selector) => selector.ios),
 }));
 
-
-jest.doMock('react-native', () => {
+jest.doMock('react-native', () =>
   // Extend ReactNative
-  return Object.setPrototypeOf(
+  Object.setPrototypeOf(
     {
       // Mock a native module
       NativeModules: {
         ...ReactNative.NativeModules,
         Override: { great: 'success' },
-        LocalNotification: { requestPermission: jest.fn() }
+        LocalNotification: { requestPermission: jest.fn() },
+        RNPermissions: {
+          ...mock
+        }
       },
       StyleSheet: {
         create: () => ({}),
@@ -177,8 +177,7 @@ jest.doMock('react-native', () => {
       }
     },
     ReactNative,
-  );
-});
+  ));
 
 
 // jest.mock('PermissionsAndroid', () => {

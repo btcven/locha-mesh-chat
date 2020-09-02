@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import {
   Alert, Clipboard, Dimensions, KeyboardAvoidingView, Platform, View
 } from 'react-native';
-import { sha256 } from 'js-sha256';
 import { verifyImage } from '../../store/contacts/contactsActions';
 import Header from '../../components/Header';
 import ChatBody from './ChatBody';
@@ -22,6 +21,7 @@ import {
 import { messageType } from '../../utils/constans';
 
 import ImagesView from './imagesView';
+import { bitcoin } from '../../../App';
 
 
 const ChatContainer = Platform.select({
@@ -57,8 +57,9 @@ class Chat extends Component {
   }
 
   componentDidMount = () => {
-    console.warn("in the component chat", this.props.chat[this.props.chatSelected.index].toUID);
-    this.props.setView(this.props.chat[this.props.chatSelected.index].toUID);
+    const chatSelected = this.props.chat[this.props.chatSelected.index].toUID;
+    const contactNodeAddress = this.props.navigation.state.params.nodeAddress;
+    this.props.setView(chatSelected, contactNodeAddress);
   };
 
   /**
@@ -221,7 +222,7 @@ class Chat extends Component {
       ? navigation.state.params.uid
       : null;
     const sendObject = {
-      fromUID: userData.ipv6Address,
+      fromUID: userData.peerID,
       toUID,
       msg: {
         text: ''
@@ -229,9 +230,9 @@ class Chat extends Component {
       timestamp: new Date().getTime(),
       type: messageType.MESSAGE
     };
-    data.images.forEach((image, key) => {
-      const id = sha256(
-        `${userData.ipv6Address} + ${toUID}  +  ${sendObject.msg.text
+    data.images.forEach(async (image, key) => {
+      const id = bitcoin.sha256(
+        `${userData.peerID} + ${toUID}  +  ${sendObject.msg.text
         + sendObject.msg.file}  + ${new Date().getTime()}`
       );
       if (data.position === key) {

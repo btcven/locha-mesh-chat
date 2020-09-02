@@ -1,17 +1,16 @@
 /* eslint-disable no-new */
-import { AsyncStorage, NativeModules } from 'react-native';
-import { sha256 } from 'js-sha256';
+import NativeModules from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import RNSF from 'react-native-fs';
 import { ActionTypes } from '../constants';
 import { STORAGE_KEY } from '../../utils/constans';
 import { createFolder } from '../../utils/utils';
-import { bitcoin, database } from '../../../App';
+import { bitcoin, database, chatService } from '../../../App';
 import UdpServer from '../../utils/udp';
 
 /**
  * in this module are the global actions of the application
  * @module AplicationAction
-
  */
 
 // eslint-disable-next-line import/no-mutable-exports
@@ -48,24 +47,27 @@ export const verifyAplicationState = () => async (dispatch) => {
  */
 
 export const restoreAccountWithPin = (pin, callback) => async (dispatch) => {
-  new UdpServer();
-  database.restoreWithPin(sha256(pin)).then(async (res) => {
-    dispatch(writeAction(JSON.parse(JSON.stringify(res[0]))));
+  const shaPing = await bitcoin.sha256(pin);
+  database.restoreWithPin(shaPing).then(async (data) => {
+    bitcoin.createWallet(data.seed[0].seed);
+    await chatService.startService();
+    dispatch(writeAction(JSON.parse(JSON.stringify(data.user[0]))));
   }).catch(() => {
     callback();
   });
 };
 
 export const createNewAccount = (obj) => async (dispatch) => {
-  const udp = new UdpServer();
-  await database.getRealm(sha256(obj.pin), sha256(obj.seed));
+  const shaPing = await bitcoin.sha256(obj.pin);
+  const shaSeed = await bitcoin.sha256(obj.seed);
+  await database.getRealm(shaPing, shaSeed);
   await database.setDataSeed(obj.seed);
   await createFolder();
-  const result = await bitcoin.generateAddress(obj.seed);
-  const ivp6 = udp.globalIpv6 ? udp.globalIpv6 : '::1';
+  const result = await bitcoin.createWallet(obj.seed);
+  const peerID = await chatService.startService();
   database.writteUser({
-    uid: result.toString(),
-    ipv6Address: ivp6,
+    uid: result.pubKey,
+    peerID,
     name: obj.name,
     image: null,
     contacts: [],
@@ -83,10 +85,10 @@ export const restoreWithPhrase = (pin, phrase, name) => async (dispatch) => {
   database.restoreWithPhrase(pin, phrase).then(async () => {
     const udp = new UdpServer();
     await createFolder();
-    const result = await bitcoin.generateAddress(phrase);
+    const result = await bitcoin.createWallet(phrase);
     const ivp6 = udp.globalIpv6 ? udp.globalIpv6 : '::1';
     database.writteUser({
-      uid: result,
+      uid: result.pubKey,
       ipv6Address: ivp6,
       name,
       image: null,
@@ -187,3 +189,15 @@ export const wifiConnect = (credentials, callback) => (dispatch) => {
 export const manualConnection = () => ({
   type: ActionTypes.MANUAL_CONNECTION
 });
+
+
+/** 
+ * set listening address of node in the state
+ * @param {String} address node address
+ */
+export const setMultiAddress = (listenAddress) => {
+  return {
+    type: ActionTypes.SET_NODE_ADDRESS,
+    payload: listenAddress
+  };
+}

@@ -6,8 +6,6 @@ import {
   Text, View, StyleSheet, TouchableHighlight, TouchableOpacity, Clipboard, ScrollView
 } from 'react-native';
 import { connect } from 'react-redux';
-import CryptoJS from 'crypto-js';
-import { sha256 } from 'js-sha256';
 import Share from 'react-native-share';
 import { images } from '../../utils/constans';
 import Header from '../../components/Header';
@@ -19,7 +17,7 @@ import ViewQR from './ViewQR';
 import Languajes from './Language';
 import { toast } from '../../utils/utils';
 import i18n from '../../i18n';
-import { database } from '../../../App';
+import { database, bitcoin } from '../../../App';
 import AddPin from '../LoadWallet/RestoreWithPin';
 
 /**
@@ -63,10 +61,9 @@ class Config extends Component {
   createBackupFile = async (pin) => {
     database.verifyPin(pin).then(async () => {
       const data = await database.getAllData();
-      const ciphertext = CryptoJS.AES.encrypt(JSON.stringify(data), sha256(pin)).toString();
+      const ciphertext = await bitcoin.encrypt(JSON.stringify(data), await bitcoin.sha256(pin)).toString();
       let base64 = Buffer.from(ciphertext).toString('base64');
       base64 = `data:text/plain;base64,${base64}`;
-
       await Share.open({
         url: base64,
         filename: 'Backup'
@@ -224,49 +221,50 @@ class Config extends Component {
               </Right>
             </View>
 
-            <View style={styles.infoContainerAddress}>
-              <View
-                style={{
-                  width: '90%',
-                  justifyContent: 'flex-end',
-                  paddingLeft: 10,
-                  minHeight: 30
-                }}
-              >
-                <TouchableOpacity
-                  onPress={() => this.setContent(this.props.config.ipv6Address)}
-                >
-                  <Text style={styles.textInfo}>
-                    {`${this.props.config.ipv6Address}`.substr(0, 25)}
-                    ...
-                  </Text>
-                </TouchableOpacity>
-              </View>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  flex: 1,
-                  alignItems: 'center'
-                }}
-              >
-                <TouchableHighlight
-                  style={styles.touchable}
-                  underlayColor="#eeeeee"
-                  onPress={() => {
-                    this.setState({ viewQR: true });
+            <TouchableOpacity onPress={() => this.setState({ viewQR: true })}>
+
+              <View style={styles.infoContainerAddress}>
+                <Left>
+                  <Icon type="MaterialIcons" style={{ color: '#fbc233' }} name="perm-device-information" />
+                </Left>
+                <View
+                  style={{
+                    width: '70%',
+                    alignContent: 'flex-start',
+                    paddingLeft: 10
                   }}
                 >
-                  <Icon
-                    style={{
-                      color: '#bdbdbd',
-                      fontSize: 25
+
+                  <Text style={styles.textInfo}>
+                    Account Info
+                  </Text>
+                </View>
+                <Right
+                  style={{
+                    top: 5
+                  }}
+                >
+                  <TouchableOpacity
+                    style={styles.touchable}
+                    underlayColor="#eeeeee"
+                    onPress={() => {
+                      this.setState({ language: true });
                     }}
-                    type="FontAwesome5"
-                    name="qrcode"
-                  />
-                </TouchableHighlight>
+                  >
+                    <Icon
+                      style={{
+                        color: '#bdbdbd',
+                        fontSize: 25,
+                        paddingVertical: 10,
+                        paddingHorizontal: 10
+                      }}
+                      name="arrow-dropright"
+                    />
+                  </TouchableOpacity>
+                </Right>
+
               </View>
-            </View>
+            </TouchableOpacity>
 
             <View style={styles.infoContainerAddress}>
               <Left>

@@ -12,13 +12,13 @@ import {
   Animated,
 } from 'react-native';
 import RNFS from 'react-native-fs';
-import { sha256 } from 'js-sha256';
 import { AudioRecorder, AudioUtils } from 'react-native-audio';
 import * as Animatable from 'react-native-animatable';
 import moment from 'moment';
 import { FileDirectory } from '../../utils/utils';
 import Draggable from '../../components/Draggable';
 import { messageType } from '../../utils/constans';
+import { bitcoin } from '../../../App';
 
 /**
  *
@@ -93,9 +93,9 @@ export default class ChatForm extends Component {
         if (this.state.currentTime !== 0 && !this.state.cancelRecoding) {
           const newPath = `${FileDirectory}/Audios/AUDIO_${new Date().getTime()}.aac`;
           RNFS.exists(this.state.audioPath).then(() => {
-            RNFS.moveFile(this.state.audioPath, newPath).then(() => {
+            RNFS.moveFile(this.state.audioPath, newPath).then(async () => {
               const sendObject = {
-                fromUID: user.ipv6Address,
+                fromUID: user.peerID,
                 toUID,
                 msg: {
                   text: '',
@@ -105,8 +105,8 @@ export default class ChatForm extends Component {
                 type: messageType.MESSAGE
               };
 
-              const id = sha256(
-                `${user.ipv6Address} + ${toUID}  +  
+              const id = await bitcoin.sha256(
+                `${user.peerID} + ${toUID}  +  
                 ${
                 sendObject.msg.text
                 }  + ${new Date().getTime()}`
@@ -154,11 +154,11 @@ export default class ChatForm extends Component {
     this.setState({ finished: didSucceed });
   }
 
-  send = () => {
+  send = async () => {
     const { user, navigation, setChat } = this.props;
     const toUID = navigation.params.uid;
     const sendObject = {
-      fromUID: user.ipv6Address,
+      fromUID: user.peerID,
       toUID,
       msg: {
         text: this.state.message
@@ -167,8 +167,8 @@ export default class ChatForm extends Component {
       type: messageType.MESSAGE
     };
 
-    const id = sha256(
-      `${user.ipv6Address} + ${toUID}  +  ${
+    const id = await bitcoin.sha256(
+      `${user.peerID} + ${toUID}  +  ${
         sendObject.msg.text
       }  + ${new Date().getTime()}`
     );

@@ -8,13 +8,12 @@ import {
 import Modal from 'react-native-modal';
 import { Formik } from 'formik';
 import RNFS from "react-native-fs";
-import CryptoJS from "crypto-js";
-import { sha256 } from "js-sha256";
 import RestoreFile from './RestoreWithPin';
 import AddName from "./AddName";
 import Phrases from "./Phrases";
 import PinView from "./PinView";
 import { toast } from "../../utils/utils";
+import { bitcoin } from '../../../App';
 
 
 /**
@@ -51,10 +50,10 @@ export default class CreateAccount extends Component {
   continue = (values) => {
     const seed = this.props.phrases.slice();
     if (!this.props.restore) {
-      // while (seed.reduce((prev, curr) => prev + +(curr === ''), 0) < 6) {
-      //   const k = Math.floor(Math.random() * (seed.length - 1));
-      //   seed[k] = '';
-      // }
+      while (seed.reduce((prev, curr) => prev + +(curr === ''), 0) < 0) {
+        const k = Math.floor(Math.random() * (seed.length - 1));
+        seed[k] = '';
+      }
       if (this.state.step === 3) {
         this.setState({ step: 5 });
       } else {
@@ -119,9 +118,9 @@ export default class CreateAccount extends Component {
 
   restoreAccountWithFile = (pin) => {
     try {
-      RNFS.readFile(this.state.file).then((res) => {
-        const bytes = CryptoJS.AES.decrypt(res, sha256(pin));
-        const decryptedData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+      RNFS.readFile(this.state.file).then(async (res) => {
+        const bytes = await bitcoin.decrypt(res, await bitcoin.sha256(pin));
+        const decryptedData = JSON.parse(bytes);
         this.setState({ file: null });
         this.props.restoreWithFile(pin, decryptedData);
       }).catch(() => {

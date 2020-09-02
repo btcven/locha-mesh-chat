@@ -1,4 +1,10 @@
 package DeviceInfo;
+import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
@@ -122,5 +128,56 @@ public class Utils {
         } catch (Exception ex) { } // for now eat exceptions
         return "";
     }
+
+
+    /**
+     * @see https://stackoverflow.com/questions/140131/convert-a-string-representation-of-a-hex-dump-to-a-byte-array-using-java
+     */
+    public static byte[] hexStringToByteArray(String s) {
+        int len = s.length();
+        byte[] data = new byte[len / 2];
+        for (int i = 0; i < len; i += 2) {
+            data[i / 2] = (byte)((Character.digit(s.charAt(i), 16) << 4)
+                    + Character.digit(s.charAt(i + 1), 16));
+        }
+        return data;
+    }
+
+    /**
+     * Get the network info.
+     *
+     * @param context the Context.
+     * @return the active NetworkInfo.
+     */
+    public static NetworkInfo getNetworkInfo(Context context) {
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        return cm.getActiveNetworkInfo();
+    }
+
+
+    /**
+     * Check if there is any connectivity at all.
+     *
+     * @param context the Context.
+     * @return true if we are connected to a network, false otherwise.
+     */
+    public static boolean isConnected(Context context) {
+        NetworkInfo info = Utils.getNetworkInfo(context);
+        return (info != null && info.isAvailable() && info.isConnected());
+    }
+
+
+    public static String getOurVersion(Context ctx) {
+        PackageManager pm = ctx.getPackageManager();
+        String us = ctx.getPackageName();
+        try {
+            PackageInfo pi = pm.getPackageInfo(us, 0);
+            if (pi.versionName != null)
+                return pi.versionName;
+        } catch (Exception e) {
+        }
+        return "??";
+    }
+
 
 }

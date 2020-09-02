@@ -3,8 +3,10 @@
 import i18n from 'i18next';
 import { reactI18nextModule } from 'react-i18next';
 // import locale from "react-native-language-detector";
-import { AsyncStorage } from 'react-native';
-import { esp, eng, hld, fra } from './languages';
+import AsyncStorage from '@react-native-community/async-storage';
+import {
+  esp, eng, hld, fra
+} from './languages';
 
 const en = require('./en.json');
 const es = require('./es.json');

@@ -6,21 +6,22 @@ const AplicationState = {
   image: null,
   name: '',
   imageHash: null,
-  ipv6Address: null
+  ipv6Address: null,
+  nodeAddress: []
 };
 
 export const configurationReducer = (state = AplicationState, action) => {
   switch (action.type) {
     case ActionTypes.INITIAL_STATE: {
       return {
-        ipv6Address: action.payload.ipv6Address,
-        uid: action.payload.uid,
-        name: action.payload.name,
-        image: action.payload.picture,
-        imageHash: action.payload.imageHash
+        ...state, ...action.payload
       };
     }
-
+    case ActionTypes.SET_NODE_ADDRESS: {
+      return {
+        ...state, nodeAddress: state.nodeAddress.concat(action.payload)
+      };
+    }
     case ActionTypes.CLEAR_ALL: {
       return { ...AplicationState };
     }

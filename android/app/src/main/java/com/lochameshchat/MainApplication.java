@@ -16,7 +16,6 @@ import com.ocetnik.timer.BackgroundTimerPackage;
 import com.peel.react.TcpSocketsModule;
 import com.reactnative.ivpusic.imagepicker.PickerPackage;
 import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
-import com.reactnativecommunity.rnpermissions.RNPermissionsPackage;
 import com.reactnativecommunity.slider.ReactSliderPackage;
 import com.rnfs.RNFSPackage;
 import com.rnim.rn.audio.ReactNativeAudioPackage;
@@ -35,6 +34,7 @@ import java.util.List;
 
 import DeviceInfo.DeviceInfoPackage;
 import LocalNotification.LocalNotificationPackage;
+import io.locha.p2p.LochaP2PPackage;
 import RNCoapClient.CoapClientPackage;
 import RNWebSocket.RNWebsocketPakage;
 import WiFiModule.WifiPackage;
@@ -59,8 +59,8 @@ public class MainApplication extends Application implements ReactApplication {
           @SuppressWarnings("UnnecessaryLocalVariable")
           List<ReactPackage> packages = new PackageList(this).getPackages();
           // Packages that cannot be autolinked yet can be added manually here, for example:
-           packages.add(new RNPermissionsPackage());
            packages.add(new DeviceInfoPackage());
+           packages.add(new LochaP2PPackage());
            packages.add(new RNWebsocketPakage());
            packages.add(new CoapClientPackage());
            packages.add(new RNUdpServerPackage());

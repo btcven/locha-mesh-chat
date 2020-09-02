@@ -2,7 +2,7 @@
 /* eslint-disable consistent-return */
 
 import moment from 'moment';
-import { sha256 } from 'js-sha256';
+import { bitcoin } from '../../App';
 
 let utilsFuntions;
 if (!process.env.JEST_WORKER_ID) {
@@ -22,15 +22,15 @@ export default class CoreDatabase {
 
   writteUser = (obj) => new Promise((resolve, reject) => {
     try {
-      this.db.write(() => {
+      this.db.write(async () => {
         const userData = {
           uid: obj.uid,
-          ipv6Address: obj.ipv6Address,
+          peerID: obj.peerID,
           name: obj.name,
           picture: obj.picture,
           chats: obj.chats,
           contacts: [],
-          imageHash: obj.picture ? sha256(obj.picture) : null
+          imageHash: obj.picture ? await bitcoin.sha256(obj.picture) : null
         };
         this.db.create(
           'user',
@@ -70,12 +70,12 @@ export default class CoreDatabase {
 
   saveUserPhoto = (obj) => new Promise((resolve, reject) => {
     try {
-      this.db.write(() => {
+      this.db.write(async () => {
         this.db.create(
           'user',
           {
             ...obj,
-            imageHash: obj.picture ? sha256(obj.picture) : null
+            imageHash: obj.picture ? await bitcoin.sha256(obj.picture) : null
           },
           true
         );
@@ -138,7 +138,8 @@ export default class CoreDatabase {
           uid: obj[0].uid,
           name: obj[0].name,
           picture: obj[0].picture,
-          hashUID: obj[0].hashUID
+          hashUID: obj[0].hashUID,
+          nodeAddress: obj[0].nodeAddress
         });
 
         if (!update) {
@@ -252,10 +253,12 @@ export default class CoreDatabase {
       });
       // eslint-disable-next-line array-callback-return
       const chats = this.db.objects('Chat').filter((chat) => {
-        const resultContact = contact.find((cont) => cont.hashUID === chat.toUID);
+        const resultContact = contact.find((cont) => {
+          return chat.toUID === cont.uid;
+        });
 
         if (resultContact) {
-          return resultContact.hashUID === chat.toUID;
+          return resultContact.uid === chat.toUID;
         }
       });
 

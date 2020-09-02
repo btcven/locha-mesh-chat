@@ -21,7 +21,6 @@ describe('main component of configurations', () => {
       />
     ).childAt(0).dive();
 
-      
 
     test('open modal photo', () => {
       wrapper.find('ForwardRef').first().props().onPress();
@@ -35,7 +34,7 @@ describe('main component of configurations', () => {
     });
 
     test('open modal Qr Information', () => {
-      wrapper.find('ForwardRef').at(4).props().onPress();
+      wrapper.find('ForwardRef').at(3).props().onPress();
       expect(wrapper.instance().state.viewQR).toBe(true);
     });
 

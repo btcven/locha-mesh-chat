@@ -50,19 +50,6 @@ export const ReceiveMessage = ({
       />
       )}
 
-      {!item.toUID && contactInfo && (
-      <Thumbnail
-        style={{
-          marginLeft: 5,
-          marginTop: 5
-        }}
-        source={{
-          uri: `${
-            userInfo.picture ? userInfo.picture : getIcon(item.fromUID)
-          }`
-        }}
-      />
-      )}
       <View style={{ width: '90%', flexDirection: 'row' }}>
         <View style={styles.textContent1}>
           {item.name && (

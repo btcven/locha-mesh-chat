@@ -3,8 +3,7 @@ import RNFS from 'react-native-fs';
 import { Platform } from 'react-native';
 import { ActionTypes } from '../constants';
 import { notification, FileDirectory } from '../../utils/utils';
-import { database } from '../../../App';
-import UdpServer from '../../utils/udp';
+import { database, chatService } from '../../../App';
 import { messageType } from '../../utils/constans';
 
 
@@ -26,10 +25,9 @@ import { messageType } from '../../utils/constans';
  */
 
 export const initialChat = (data, status) => async (dispatch) => {
-  const udp = new UdpServer();
   database.setMessage(data.toUID, { ...data }, status).then((res) => {
     if (!process.env.JEST_WORKER_ID) {
-      udp.send(JSON.stringify(data), data.toUID);
+      chatService.send(JSON.stringify(data));
     }
     dispatch({
       type: ActionTypes.NEW_MESSAGE,
@@ -200,11 +198,10 @@ export const cleanAllChat = (id) => async (dispatch) => {
 export const sendMessageWithFile = (data, path, base64) => (dispatch) => {
   const uidChat = data.toUID ? data.toUID : 'broadcast';
   const saveDatabase = { ...data };
-  const udp = new UdpServer();
   saveDatabase.msg.file = path;
   database.setMessage(uidChat, { ...saveDatabase }, 'pending').then((res) => {
     saveDatabase.msg.file = base64;
-    udp.send(JSON.stringify(saveDatabase), uidChat);
+    chatService.send(JSON.stringify(saveDatabase));
     dispatch({
       type: ActionTypes.NEW_MESSAGE,
       payload: {
@@ -252,7 +249,6 @@ export const messageQueue = (index, id, view) => async (dispatch) => {
 export const sendStatus = (data) => {
   // eslint-disable-next-line global-require
   const store = require('..');
-  const udp = new UdpServer();
   const state = store.default.getState();
   // eslint-disable-next-line no-shadow
   const sendStatus = {
@@ -270,7 +266,7 @@ export const sendStatus = (data) => {
     contacts.forEach((contact) => {
       if (data.fromUID === contact.uid) {
         sendStatus.toUID = contact.uid;
-        udp.send(JSON.stringify(sendStatus), sendStatus.toUID);
+        chatService.send(JSON.stringify(sendStatus));
       }
     });
   } catch (err) {
@@ -286,9 +282,19 @@ export const sendStatus = (data) => {
  * @returns {object}
  */
 
-export const setView = (idChat) => async (dispatch) => {
+export const setView = (idChat, nodeAddress) => async (dispatch) => {
+  if (nodeAddress) {
+    await chatService.dial(nodeAddress);
+  }
+
+  if (!idChat) {
+    dispatch({
+      type: ActionTypes.IN_VIEW,
+      payload: idChat
+    });
+    return;
+  }
   database.cancelUnreadMessages(idChat).then((res) => {
-    const udp = new UdpServer();
     if (!process.env.JEST_WORKER_ID) {
       // eslint-disable-next-line global-require
       const store = require('..');
@@ -297,7 +303,7 @@ export const setView = (idChat) => async (dispatch) => {
         const chat = Object.values(state.chats.chat).find((itemChat) => itemChat.toUID === idChat);
         // eslint-disable-next-line no-shadow
         const sendStatus = {
-          fromUID: state.config.ipv6Address,
+          fromUID: state.config.peerID,
           toUID: chat.toUID,
           timestamp: new Date().getTime(),
           data: {
@@ -306,7 +312,7 @@ export const setView = (idChat) => async (dispatch) => {
           },
           type: messageType.STATUS
         };
-        udp.send(JSON.stringify(sendStatus), chat.toUID);
+        chatService.send(JSON.stringify(sendStatus));
       }
     }
     dispatch({
@@ -318,16 +324,14 @@ export const setView = (idChat) => async (dispatch) => {
 
 /**
  * function executed enter the chat  view its function es to send a read status
- * @param {Object} data;
+ * 
  */
-export const sendReadMessageStatus = (data) => () => {
-  const udp = new UdpServer();
-  udp.send(JSON.stringify(sendStatus), data.toUID);
+export const sendReadMessageStatus = () => () => {
+  chatService.send(JSON.stringify(sendStatus));
 };
 
 export const sendAgain = (message) => (dispatch) => {
   database.updateMessage(message).then((res) => {
-    const udp = new UdpServer();
     const sendObject = {
       fromUID: res.fromUID,
       toUID: res.toUID,
@@ -339,8 +343,7 @@ export const sendAgain = (message) => (dispatch) => {
       msgID: res.id,
       shippingTime: res.shippingTime
     };
-
-    udp.send(JSON.stringify(sendObject), res.toUID);
+    chatService.send(JSON.stringify(sendObject));
     dispatch({
       type: ActionTypes.SEND_AGAIN,
       payload: message

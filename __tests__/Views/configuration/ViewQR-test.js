@@ -1,6 +1,5 @@
 import '../../../__Mocks__';
 import React from 'react';
-import renderer from 'react-test-renderer';
 import { shallow } from 'enzyme';
 import ViewQR from '../../../src/views/config/ViewQR';
 
@@ -11,15 +10,9 @@ const screenProps = {
 
 const config = {
   name: 'test',
-  uid: 'test'
+  uid: 'test',
+  nodeAddress: ['test']
 };
-
-test('render the component', () => {
-  const rendered = renderer.create(
-    <ViewQR screenProps={screenProps} open config={config} />
-  ).toJSON();
-  expect(rendered).toBeTruthy();
-});
 
 describe('Language component', () => {
   const wrapper = shallow(<ViewQR screenProps={screenProps} open config={config} />);

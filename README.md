@@ -99,11 +99,16 @@ React Navigation is born from the React Native community's need for an extensibl
 ## Requirements
 Before you start, make sure you have the following requirements
 
-    - Node.js v10.x or a version less than 12.x
-    - Java SE Development Kit (JDK 8)
-    - Python 2.7
-    - git
-    
+  - Node.js v10.x or a version less than 12.x
+  - Java SE Development Kit (JDK 8)
+  - Python 2.7
+  - git
+  - [Rust +1.45](https://rustup.rs/)
+  - [cargo-ndk](https://github.com/bbqsrc/cargo-ndk)
+  - Android Rust targets:
+    - `rustup target add aarch64-linux-android armv7-linux-androideabi x86_64-linux-android i686-linux-android`
+  - Android NDK
+
 Check to have a dependency manager installed like [**npm**](https://) _(bundled with node)_ or [**yarn**](https://github.com/yarnpkg/yarn) _(recommended)_
 
 ## Short Summary
