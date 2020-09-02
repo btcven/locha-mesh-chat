@@ -16,11 +16,11 @@
 //!
 //! This module contains the ChatService class JNI interface.
 
-use std::net::Ipv4Addr;
-use std::{panic, sync::Arc};
+use std::num::NonZeroU32;
+use std::{io, panic, sync::Arc};
 
 use jni::{
-    objects::{GlobalRef, JClass, JString, JValue},
+    objects::{GlobalRef, JClass, JObject, JString, JValue},
     signature::{JavaType, Primitive},
     sys::{jboolean, jbyteArray, jstring, JNI_FALSE, JNI_TRUE},
     Executor, JNIEnv,
@@ -31,6 +31,8 @@ use lazy_static::lazy_static;
 use log::trace;
 use parking_lot::RwLock;
 
+use libp2p::core::connection::PendingConnectionError;
+use libp2p::core::ConnectedPoint;
 use libp2p::identity::secp256k1;
 
 use locha_p2p::identity::Identity;
@@ -39,12 +41,12 @@ use locha_p2p::runtime::events::RuntimeEvents;
 use locha_p2p::runtime::Runtime;
 use locha_p2p::{Multiaddr, PeerId};
 
-use crate::util::{
-    jni_cache::chat_service_events, unwrap_exc_or, unwrap_exc_or_default, unwrap_jni,
-};
+use crate::util::jni_cache::{chat_service_events, classes_refs};
+use crate::util::{unwrap_exc_or, unwrap_exc_or_default, unwrap_jni};
 use crate::{JniError, JniErrorKind};
 
-const CHAT_SERVICE_EVENTS_HANDLER_FIELD_TYPE: &str = "Lio/locha/p2p/runtime/ChatServiceEvents;";
+const CHAT_SERVICE_EVENTS_HANDLER_FIELD_TYPE: &str =
+    "Lio/locha/p2p/runtime/ChatServiceEvents;";
 
 lazy_static! {
     static ref RUNTIME: RwLock<Runtime> = RwLock::new(Runtime::new());
@@ -60,11 +62,15 @@ fn java_bytearray_to_secretkey(
     bytes: jbyteArray,
 ) -> Result<secp256k1::SecretKey, JniError> {
     env.convert_byte_array(bytes).and_then(|bytes| {
-        secp256k1::SecretKey::from_bytes(bytes).map_err(|e| java_msg_error(e.to_string()))
+        secp256k1::SecretKey::from_bytes(bytes)
+            .map_err(|e| java_msg_error(e.to_string()))
     })
 }
 
-fn java_get_events_handler_field(env: &JNIEnv<'_>, class: JClass) -> Result<GlobalRef, JniError> {
+fn java_get_events_handler_field(
+    env: &JNIEnv<'_>,
+    class: JClass,
+) -> Result<GlobalRef, JniError> {
     let events_handler = env
         .get_field(
             class,
@@ -113,12 +119,13 @@ pub extern "system" fn Java_io_locha_p2p_runtime_ChatService_nativeStart(
         };
 
         let events_handler = java_get_events_handler_field(&env, class)?;
-        let executor = env.get_java_vm().map(|vm| Executor::new(Arc::new(vm)))?;
+        let executor =
+            env.get_java_vm().map(|vm| Executor::new(Arc::new(vm)))?;
         let events_proxy = RuntimeEventsProxy::new(executor, events_handler);
 
         runtime
             .start(config, Box::new(events_proxy))
-            .expect("couldn't start chat service");
+            .expect("couldn't start runtime");
 
         Ok(())
     });
@@ -127,10 +134,13 @@ pub extern "system" fn Java_io_locha_p2p_runtime_ChatService_nativeStart(
 }
 
 #[no_mangle]
-pub extern "system" fn Java_io_locha_p2p_runtime_ChatService_nativeStop(env: JNIEnv, _: JClass) {
+pub extern "system" fn Java_io_locha_p2p_runtime_ChatService_nativeStop(
+    env: JNIEnv,
+    _: JClass,
+) {
     let res = panic::catch_unwind(|| {
         let mut runtime = RUNTIME.write();
-        runtime.stop().expect("could not stop chat service");
+        runtime.stop().expect("could not stop runtime");
 
         Ok(())
     });
@@ -174,7 +184,8 @@ pub extern "system" fn Java_io_locha_p2p_runtime_ChatServiceModule_nativeDial(
 ) {
     let res = panic::catch_unwind(|| {
         let multiaddr: String = env.get_string(multiaddr)?.into();
-        let multiaddr: Multiaddr = multiaddr.parse().expect("invalid multiaddr");
+        let multiaddr: Multiaddr =
+            multiaddr.parse().expect("invalid multiaddr");
         let runtime = RUNTIME.read();
         runtime.dial(multiaddr).expect("could not dial address");
 
@@ -218,9 +229,7 @@ impl RuntimeEventsProxy {
 impl RuntimeEvents for RuntimeEventsProxy {
     fn on_new_message(&mut self, message: String) {
         unwrap_jni(self.exec.with_attached(|env| {
-            let contents = env
-                .new_string(message)
-                .expect("Couldn't create Java String");
+            let contents = env.new_string(message)?;
 
             env.call_method_unchecked(
                 self.events.as_obj(),
@@ -232,11 +241,193 @@ impl RuntimeEvents for RuntimeEventsProxy {
         }))
     }
 
+    fn on_peer_discovered(&mut self, peer: &PeerId, addrs: Vec<Multiaddr>) {
+        unwrap_jni(self.exec.with_attached(|env| {
+            let peer = env.new_string(peer.to_string())?;
+            let addrs = rust_slice_to_java_string_array(env, addrs.as_slice())?;
+
+            env.call_method_unchecked(
+                self.events.as_obj(),
+                chat_service_events::on_peer_discovered_id(),
+                JavaType::Primitive(Primitive::Void),
+                &[JValue::from(peer), JValue::from(addrs)],
+            )
+            .and_then(JValue::v)
+        }))
+    }
+
+    fn on_peer_unroutable(&mut self, peer: &PeerId) {
+        unwrap_jni(self.exec.with_attached(|env| {
+            let peer = env.new_string(peer.to_string())?;
+
+            env.call_method_unchecked(
+                self.events.as_obj(),
+                chat_service_events::on_peer_unroutable_id(),
+                JavaType::Primitive(Primitive::Void),
+                &[JValue::from(peer)],
+            )
+            .and_then(JValue::v)
+        }))
+    }
+
+    fn on_connection_established(
+        &mut self,
+        peer: &PeerId,
+        _: &ConnectedPoint,
+        num_established: NonZeroU32,
+    ) {
+        unwrap_jni(self.exec.with_attached(|env| {
+            let peer = env.new_string(peer.to_string())?;
+
+            env.call_method_unchecked(
+                self.events.as_obj(),
+                chat_service_events::on_connection_established_id(),
+                JavaType::Primitive(Primitive::Void),
+                &[
+                    JValue::from(peer),
+                    JValue::Int(num_established.get() as i32),
+                ],
+            )
+            .and_then(JValue::v)
+        }))
+    }
+
+    fn on_connection_closed(
+        &mut self,
+        peer: &PeerId,
+        _: &ConnectedPoint,
+        num_established: u32,
+        cause: Option<String>,
+    ) {
+        unwrap_jni(self.exec.with_attached(|env| {
+            let peer = env.new_string(peer.to_string())?;
+            let cause: JValue = if let Some(c) = cause {
+                env.new_string(c)?.into()
+            } else {
+                JObject::null().into()
+            };
+
+            env.call_method_unchecked(
+                self.events.as_obj(),
+                chat_service_events::on_connection_closed_id(),
+                JavaType::Primitive(Primitive::Void),
+                &[
+                    JValue::from(peer),
+                    JValue::Int(num_established as i32),
+                    cause,
+                ],
+            )
+            .and_then(JValue::v)
+        }))
+    }
+
+    fn on_incomming_connection(
+        &mut self,
+        local_addr: &Multiaddr,
+        send_back_addr: &Multiaddr,
+    ) {
+        unwrap_jni(self.exec.with_attached(|env| {
+            let local_addr = env.new_string(local_addr.to_string())?;
+            let send_back_addr = env.new_string(send_back_addr.to_string())?;
+
+            env.call_method_unchecked(
+                self.events.as_obj(),
+                chat_service_events::on_incoming_connection_id(),
+                JavaType::Primitive(Primitive::Void),
+                &[JValue::from(local_addr), JValue::from(send_back_addr)],
+            )
+            .and_then(JValue::v)
+        }))
+    }
+
+    fn on_incomming_connection_error(
+        &mut self,
+        local_addr: &Multiaddr,
+        send_back_addr: &Multiaddr,
+        error: &PendingConnectionError<io::Error>,
+    ) {
+        unwrap_jni(self.exec.with_attached(|env| {
+            let local_addr = env.new_string(local_addr.to_string())?;
+            let send_back_addr = env.new_string(send_back_addr.to_string())?;
+            let error = env.new_string(error.to_string())?;
+
+            env.call_method_unchecked(
+                self.events.as_obj(),
+                chat_service_events::on_incoming_connection_error_id(),
+                JavaType::Primitive(Primitive::Void),
+                &[
+                    JValue::from(local_addr),
+                    JValue::from(send_back_addr),
+                    JValue::from(error),
+                ],
+            )
+            .and_then(JValue::v)
+        }))
+    }
+
+    fn on_banned_peer(&mut self, peer: &PeerId, _: &ConnectedPoint) {
+        unwrap_jni(self.exec.with_attached(|env| {
+            let peer = env.new_string(peer.to_string())?;
+
+            env.call_method_unchecked(
+                self.events.as_obj(),
+                chat_service_events::on_banned_peer_id(),
+                JavaType::Primitive(Primitive::Void),
+                &[JValue::from(peer)],
+            )
+            .and_then(JValue::v)
+        }))
+    }
+
+    fn on_unreachable_addr(
+        &mut self,
+        peer: &PeerId,
+        address: &Multiaddr,
+        error: &PendingConnectionError<io::Error>,
+        attempts_remaining: u32,
+    ) {
+        unwrap_jni(self.exec.with_attached(|env| {
+            let peer = env.new_string(peer.to_string())?;
+            let address = env.new_string(address.to_string())?;
+            let error = env.new_string(error.to_string())?;
+
+            env.call_method_unchecked(
+                self.events.as_obj(),
+                chat_service_events::on_unreachable_addr_id(),
+                JavaType::Primitive(Primitive::Void),
+                &[
+                    JValue::from(peer),
+                    JValue::from(address),
+                    JValue::from(error),
+                    JValue::Int(attempts_remaining as i32),
+                ],
+            )
+            .and_then(JValue::v)
+        }))
+    }
+
+    fn on_unknown_peer_unreachable_addr(
+        &mut self,
+        address: &Multiaddr,
+        error: &PendingConnectionError<io::Error>,
+    ) {
+        unwrap_jni(self.exec.with_attached(|env| {
+            let address = env.new_string(address.to_string())?;
+            let error = env.new_string(error.to_string())?;
+
+            env.call_method_unchecked(
+                self.events.as_obj(),
+                chat_service_events::on_unknown_peer_unreachable_addr_id(),
+                JavaType::Primitive(Primitive::Void),
+                &[JValue::from(address), JValue::from(error)],
+            )
+            .and_then(JValue::v)
+        }))
+    }
+
     fn on_new_listen_addr(&mut self, multiaddr: &Multiaddr) {
         unwrap_jni(self.exec.with_attached(|env| {
-            let multiaddr = env
-                .new_string(multiaddr.to_string())
-                .expect("Couldn't create Java string");
+            let multiaddr = env.new_string(multiaddr.to_string())?;
 
             env.call_method_unchecked(
                 self.events.as_obj(),
@@ -247,4 +438,91 @@ impl RuntimeEvents for RuntimeEventsProxy {
             .and_then(JValue::v)
         }))
     }
+
+    fn on_expired_listen_addr(&mut self, address: &Multiaddr) {
+        unwrap_jni(self.exec.with_attached(|env| {
+            let address = env.new_string(address.to_string())?;
+
+            env.call_method_unchecked(
+                self.events.as_obj(),
+                chat_service_events::on_expired_listen_addr_id(),
+                JavaType::Primitive(Primitive::Void),
+                &[JValue::from(address)],
+            )
+            .and_then(JValue::v)
+        }))
+    }
+
+    fn on_listener_closed(
+        &mut self,
+        addresses: &[Multiaddr],
+        reason: &Result<(), io::Error>,
+    ) {
+        unwrap_jni(self.exec.with_attached(|env| {
+            let addresses = rust_slice_to_java_string_array(&env, addresses)?;
+            let reason: JValue = match reason {
+                Ok(_) => JObject::null().into(),
+                Err(e) => env.new_string(e.to_string())?.into(),
+            };
+
+            env.call_method_unchecked(
+                self.events.as_obj(),
+                chat_service_events::on_listener_error_id(),
+                JavaType::Primitive(Primitive::Void),
+                &[JValue::from(addresses), reason],
+            )
+            .and_then(JValue::v)
+        }))
+    }
+
+    fn on_listener_error(&mut self, error: &io::Error) {
+        unwrap_jni(self.exec.with_attached(|env| {
+            let error = env.new_string(error.to_string())?;
+
+            env.call_method_unchecked(
+                self.events.as_obj(),
+                chat_service_events::on_listener_error_id(),
+                JavaType::Primitive(Primitive::Void),
+                &[JValue::from(error)],
+            )
+            .and_then(JValue::v)
+        }))
+    }
+
+    fn on_dialing(&mut self, peer: &PeerId) {
+        unwrap_jni(self.exec.with_attached(|env| {
+            let peer = env.new_string(peer.to_string())?;
+
+            env.call_method_unchecked(
+                self.events.as_obj(),
+                chat_service_events::on_dialing_id(),
+                JavaType::Primitive(Primitive::Void),
+                &[JValue::from(peer)],
+            )
+            .and_then(JValue::v)
+        }))
+    }
+}
+
+fn rust_slice_to_java_string_array<'a, T: ToString>(
+    env: &'a JNIEnv<'a>,
+    slice: &[T],
+) -> Result<JObject<'a>, JniError> {
+    assert!(slice.len() <= i32::MAX as usize);
+
+    let arr = env.new_object_array(
+        slice.len() as i32,
+        &classes_refs::java_lang_string(),
+        env.new_string("")?,
+    )?;
+
+    for (i, elem) in slice.iter().enumerate() {
+        env.set_object_array_element(
+            arr,
+            i as i32,
+            env.new_string(elem.to_string())?,
+        )?;
+    }
+
+    Ok(JObject::from(arr))
 }
