@@ -1,4 +1,5 @@
 // Copyright 2018 The Exonum Team
+// Copyright 2020 Bitcoin Venezuela and Locha Mesh Developers
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -45,9 +46,26 @@ static mut THROWABLE_GET_CAUSE: Option<JMethodID> = None;
 static mut JAVA_LANG_ERROR: Option<GlobalRef> = None;
 static mut JAVA_LANG_RUNTIME_EXCEPTION: Option<GlobalRef> = None;
 static mut JAVA_LANG_ILLEGAL_ARGUMENT_EXCEPTION: Option<GlobalRef> = None;
+static mut JAVA_LANG_STRING: Option<GlobalRef> = None;
 
 static mut CHAT_SERVICE_EVENTS_ON_NEW_MESSAGE: Option<JMethodID> = None;
+static mut CHAT_SERVICE_EVENTS_ON_PEER_DISCOVERED: Option<JMethodID> = None;
+static mut CHAT_SERVICE_EVENTS_ON_PEER_UNROUTABLE: Option<JMethodID> = None;
+#[rustfmt::skip]
+static mut CHAT_SERVICE_EVENTS_ON_CONNECTION_ESTABLISHED: Option<JMethodID> = None;
+static mut CHAT_SERVICE_EVENTS_ON_CONNECTION_CLOSED: Option<JMethodID> = None;
+static mut CHAT_SERVICE_EVENTS_ON_INCOMING_CONNECTION: Option<JMethodID> = None;
+#[rustfmt::skip]
+static mut CHAT_SERVICE_EVENTS_ON_INCOMING_CONNECTION_ERROR: Option<JMethodID> = None;
+static mut CHAT_SERVICE_EVENTS_ON_BANNED_PEER: Option<JMethodID> = None;
+static mut CHAT_SERVICE_EVENTS_ON_UNREACHABLE_ADDR: Option<JMethodID> = None;
+#[rustfmt::skip]
+static mut CHAT_SERVICE_EVENTS_ON_UNKNOWN_PEER_UNREACHABLE_ADDR: Option<JMethodID> = None;
 static mut CHAT_SERVICE_EVENTS_ON_NEW_LISTEN_ADDR: Option<JMethodID> = None;
+static mut CHAT_SERVICE_EVENTS_ON_EXPIRED_LISTEN_ADDR: Option<JMethodID> = None;
+static mut CHAT_SERVICE_EVENTS_ON_LISTENER_CLOSED: Option<JMethodID> = None;
+static mut CHAT_SERVICE_EVENTS_ON_LISTENER_ERROR: Option<JMethodID> = None;
+static mut CHAT_SERVICE_EVENTS_ON_DIALING: Option<JMethodID> = None;
 
 /// This function is executed on loading native library by JVM.
 /// It initializes the cache of method and class references.
@@ -75,48 +93,32 @@ pub fn init_cache(env: &JNIEnv) {
 }
 
 /// Caches all required classes and methods ids.
+#[rustfmt::skip]
 unsafe fn cache_methods(env: &JNIEnv) {
-    OBJECT_GET_CLASS = get_method_id(
-        &env,
-        "java/lang/Object",
-        "getClass",
-        "()Ljava/lang/Class;",
-    );
-    CLASS_GET_NAME = get_method_id(
-        &env,
-        "java/lang/Class",
-        "getName",
-        "()Ljava/lang/String;",
-    );
-    THROWABLE_GET_MESSAGE = get_method_id(
-        &env,
-        "java/lang/Throwable",
-        "getMessage",
-        "()Ljava/lang/String;",
-    );
-    THROWABLE_GET_CAUSE = get_method_id(
-        &env,
-        "java/lang/Throwable",
-        "getCause",
-        "()Ljava/lang/Throwable;",
-    );
+    OBJECT_GET_CLASS = get_method_id(&env, "java/lang/Object", "getClass", "()Ljava/lang/Class;");
+    CLASS_GET_NAME = get_method_id(&env, "java/lang/Class", "getName", "()Ljava/lang/String;");
+    THROWABLE_GET_MESSAGE = get_method_id(&env, "java/lang/Throwable", "getMessage", "()Ljava/lang/String;");
+    THROWABLE_GET_CAUSE = get_method_id(&env, "java/lang/Throwable", "getCause", "()Ljava/lang/Throwable;");
     JAVA_LANG_ERROR = get_class(env, "java/lang/Error");
     JAVA_LANG_RUNTIME_EXCEPTION = get_class(env, "java/lang/RuntimeException");
-    JAVA_LANG_ILLEGAL_ARGUMENT_EXCEPTION =
-        get_class(env, "java/lang/IllegalArgumentException");
+    JAVA_LANG_ILLEGAL_ARGUMENT_EXCEPTION = get_class(env, "java/lang/IllegalArgumentException");
+    JAVA_LANG_STRING = get_class(env, "java/lang/String");
 
-    CHAT_SERVICE_EVENTS_ON_NEW_MESSAGE = get_method_id(
-        &env,
-        CHAT_SERVICE_EVENTS_INTERFACE,
-        "onNewMessage",
-        "(Ljava/lang/String;)V",
-    );
-    CHAT_SERVICE_EVENTS_ON_NEW_LISTEN_ADDR = get_method_id(
-        &env,
-        CHAT_SERVICE_EVENTS_INTERFACE,
-        "onNewListenAddr",
-        "(Ljava/lang/String;)V",
-    );
+    CHAT_SERVICE_EVENTS_ON_NEW_MESSAGE = get_method_id(&env, CHAT_SERVICE_EVENTS_INTERFACE, "onNewMessage", "(Ljava/lang/String;)V");
+    CHAT_SERVICE_EVENTS_ON_PEER_DISCOVERED = get_method_id(&env, CHAT_SERVICE_EVENTS_INTERFACE, "onPeerDiscovered", "(Ljava/lang/String;[Ljava/lang/String;)V");
+    CHAT_SERVICE_EVENTS_ON_PEER_UNROUTABLE = get_method_id(&env, CHAT_SERVICE_EVENTS_INTERFACE, "onPeerUnroutable", "(Ljava/lang/String;)V");
+    CHAT_SERVICE_EVENTS_ON_CONNECTION_ESTABLISHED = get_method_id(&env, CHAT_SERVICE_EVENTS_INTERFACE, "onConnectionEstablished", "(Ljava/lang/String;I)V");
+    CHAT_SERVICE_EVENTS_ON_CONNECTION_CLOSED = get_method_id(&env, CHAT_SERVICE_EVENTS_INTERFACE, "onConnectionClosed", "(Ljava/lang/String;ILjava/lang/String;)V");
+    CHAT_SERVICE_EVENTS_ON_INCOMING_CONNECTION = get_method_id(&env, CHAT_SERVICE_EVENTS_INTERFACE, "onIncomingConnection", "(Ljava/lang/String;Ljava/lang/String;)V");
+    CHAT_SERVICE_EVENTS_ON_INCOMING_CONNECTION_ERROR = get_method_id(&env, CHAT_SERVICE_EVENTS_INTERFACE, "onIncomingConnectionError", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V");
+    CHAT_SERVICE_EVENTS_ON_BANNED_PEER = get_method_id(&env, CHAT_SERVICE_EVENTS_INTERFACE, "onBannedPeer", "(Ljava/lang/String;)V");
+    CHAT_SERVICE_EVENTS_ON_UNREACHABLE_ADDR = get_method_id(&env, CHAT_SERVICE_EVENTS_INTERFACE, "onUnreachableAddr", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;I)V");
+    CHAT_SERVICE_EVENTS_ON_UNKNOWN_PEER_UNREACHABLE_ADDR = get_method_id(&env, CHAT_SERVICE_EVENTS_INTERFACE, "onUnknownPeerUnreachableAddr", "(Ljava/lang/String;Ljava/lang/String;)V");
+    CHAT_SERVICE_EVENTS_ON_NEW_LISTEN_ADDR = get_method_id(&env, CHAT_SERVICE_EVENTS_INTERFACE, "onNewListenAddr", "(Ljava/lang/String;)V");
+    CHAT_SERVICE_EVENTS_ON_EXPIRED_LISTEN_ADDR = get_method_id(&env, CHAT_SERVICE_EVENTS_INTERFACE, "onExpiredListenAddr", "(Ljava/lang/String;)V");
+    CHAT_SERVICE_EVENTS_ON_LISTENER_CLOSED = get_method_id(&env, CHAT_SERVICE_EVENTS_INTERFACE, "onListenerClosed", "([Ljava/lang/String;)V");
+    CHAT_SERVICE_EVENTS_ON_LISTENER_ERROR = get_method_id(&env, CHAT_SERVICE_EVENTS_INTERFACE, "onListenerError", "(Ljava/lang/String;)V");
+    CHAT_SERVICE_EVENTS_ON_DIALING = get_method_id(&env, CHAT_SERVICE_EVENTS_INTERFACE, "onDialing", "(Ljava/lang/String;)V");
 
     debug!("Done caching references to Java classes and methods.");
 }
@@ -163,16 +165,94 @@ fn check_cache_initialized() {
 pub mod chat_service_events {
     use super::*;
 
-    /// Returns cached `JMethodID` for `ChatServiceEvents.onNewMessage(String contents)`.
+    /// Returns cached `JMethodID` for `ChatServiceEvents.onNewMessage`.
     pub fn on_new_message_id() -> JMethodID<'static> {
         check_cache_initialized();
         unsafe { CHAT_SERVICE_EVENTS_ON_NEW_MESSAGE.unwrap() }
     }
 
-    /// Returns cached `JMethodID` for `ChatServiceEvents.onNewListenAddr(String contents)`.
+    /// Returns cached `JMethodID` for `ChatServiceEvents.onPeerDiscovered`.
+    pub fn on_peer_discovered_id() -> JMethodID<'static> {
+        check_cache_initialized();
+        unsafe { CHAT_SERVICE_EVENTS_ON_PEER_DISCOVERED.unwrap() }
+    }
+
+    /// Returns cached `JMethodID` for `ChatServiceEvents.onPeerUnroutable`.
+    pub fn on_peer_unroutable_id() -> JMethodID<'static> {
+        check_cache_initialized();
+        unsafe { CHAT_SERVICE_EVENTS_ON_PEER_UNROUTABLE.unwrap() }
+    }
+
+    /// Returns cached `JMethodID` for `ChatServiceEvents.onConnectionEstablished`.
+    pub fn on_connection_established_id() -> JMethodID<'static> {
+        check_cache_initialized();
+        unsafe { CHAT_SERVICE_EVENTS_ON_CONNECTION_ESTABLISHED.unwrap() }
+    }
+
+    /// Returns cached `JMethodID` for `ChatServiceEvents.onConnectionClosed`.
+    pub fn on_connection_closed_id() -> JMethodID<'static> {
+        check_cache_initialized();
+        unsafe { CHAT_SERVICE_EVENTS_ON_CONNECTION_CLOSED.unwrap() }
+    }
+
+    /// Returns cached `JMethodID` for `ChatServiceEvents.onIncomingConnection`.
+    pub fn on_incoming_connection_id() -> JMethodID<'static> {
+        check_cache_initialized();
+        unsafe { CHAT_SERVICE_EVENTS_ON_INCOMING_CONNECTION.unwrap() }
+    }
+
+    /// Returns cached `JMethodID` for `ChatServiceEvents.onIncomingConnectionError`.
+    pub fn on_incoming_connection_error_id() -> JMethodID<'static> {
+        check_cache_initialized();
+        unsafe { CHAT_SERVICE_EVENTS_ON_INCOMING_CONNECTION_ERROR.unwrap() }
+    }
+
+    /// Returns cached `JMethodID` for `ChatServiceEvents.onBannedPeer`.
+    pub fn on_banned_peer_id() -> JMethodID<'static> {
+        check_cache_initialized();
+        unsafe { CHAT_SERVICE_EVENTS_ON_BANNED_PEER.unwrap() }
+    }
+
+    /// Returns cached `JMethodID` for `ChatServiceEvents.onUnreachableAddr`.
+    pub fn on_unreachable_addr_id() -> JMethodID<'static> {
+        check_cache_initialized();
+        unsafe { CHAT_SERVICE_EVENTS_ON_UNREACHABLE_ADDR.unwrap() }
+    }
+
+    /// Returns cached `JMethodID` for `ChatServiceEvents.onUnknownPeerUnreachable`.
+    pub fn on_unknown_peer_unreachable_addr_id() -> JMethodID<'static> {
+        check_cache_initialized();
+        unsafe { CHAT_SERVICE_EVENTS_ON_UNKNOWN_PEER_UNREACHABLE_ADDR.unwrap() }
+    }
+
+    /// Returns cached `JMethodID` for `ChatServiceEvents.onNewListenAddr`.
     pub fn on_new_listen_addr_id() -> JMethodID<'static> {
         check_cache_initialized();
         unsafe { CHAT_SERVICE_EVENTS_ON_NEW_LISTEN_ADDR.unwrap() }
+    }
+
+    /// Returns cached `JMethodID` for `ChatServiceEvents.onExpiredListenAddr`.
+    pub fn on_expired_listen_addr_id() -> JMethodID<'static> {
+        check_cache_initialized();
+        unsafe { CHAT_SERVICE_EVENTS_ON_EXPIRED_LISTEN_ADDR.unwrap() }
+    }
+
+    /// Returns cached `JMethodID` for `ChatServiceEvents.onListenerClosed`.
+    pub fn on_listener_closed_id() -> JMethodID<'static> {
+        check_cache_initialized();
+        unsafe { CHAT_SERVICE_EVENTS_ON_LISTENER_CLOSED.unwrap() }
+    }
+
+    /// Returns cached `JMethodID` for `ChatServiceEvents.onListenerError`.
+    pub fn on_listener_error_id() -> JMethodID<'static> {
+        check_cache_initialized();
+        unsafe { CHAT_SERVICE_EVENTS_ON_LISTENER_ERROR.unwrap() }
+    }
+
+    /// Returns cached `JMethodID` for `ChatServiceEvents.onDialing`.
+    pub fn on_dialing_id() -> JMethodID<'static> {
+        check_cache_initialized();
+        unsafe { CHAT_SERVICE_EVENTS_ON_DIALING.unwrap() }
     }
 }
 
@@ -235,5 +315,11 @@ pub mod classes_refs {
     pub fn java_lang_illegal_argument_exception() -> GlobalRef {
         check_cache_initialized();
         unsafe { JAVA_LANG_ILLEGAL_ARGUMENT_EXCEPTION.clone().unwrap() }
+    }
+
+    /// Returns cached `JClass` for `java/lang/String` as a `GlobalRef`.
+    pub fn java_lang_string() -> GlobalRef {
+        check_cache_initialized();
+        unsafe { JAVA_LANG_STRING.clone().unwrap() }
     }
 }
