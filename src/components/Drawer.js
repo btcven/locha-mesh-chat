@@ -122,7 +122,7 @@ class DrawerComponent extends Component {
                   <Text>Developer dashboard</Text>
                 </ListItem>
 
-                <ListItem icon button onPress={() => this.handleChange('config')}>
+                <ListItem icon button onPress={() => this.handleChange('administrative')}>
                   <Left>
                     <Button style={{ backgroundColor: '#ef6c00' }}>
                       <Icon type="MaterialIcons" active name="developer-mode" />

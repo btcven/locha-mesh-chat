@@ -16,7 +16,7 @@ export const AppStackNavigator = createStackNavigator({
   contacts: Contact,
   config: Config,
   chat: Chat,
-  administrativeDasboard: AdministrativeComponent,
+  administrative: AdministrativeComponent,
   deviceSettings: DeviceSettings,
 });
 
