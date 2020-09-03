@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View, Text } from 'react-native';
 
-class AdministrativeDasboard extends Component {
+export default class AdministrativeComponent extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -11,10 +11,8 @@ class AdministrativeDasboard extends Component {
   render() {
     return (
       <View>
-        <Text> administrativeDasboard </Text>
+        <Text> AdministrativeComponent </Text>
       </View>
     );
   }
 }
-
-export default AdministrativeDasboard;
