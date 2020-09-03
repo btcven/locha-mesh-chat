@@ -31,4 +31,6 @@ public interface ChatServiceEvents {
      * @param multiaddr Listening address in Multiaddr format.
      */
     public void onNewListenAddr(String multiaddr);
+
+
 }
