@@ -19,7 +19,6 @@ package io.locha.p2p.runtime;
 import DeviceInfo.Utils;
 import io.locha.p2p.util.LibraryLoader;
 
-import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -33,23 +32,13 @@ import android.os.IBinder;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 
-import com.facebook.react.bridge.Promise;
-import com.lochameshchat.MainActivity;
 import com.lochameshchat.R;
-
-import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * Chat service. This class manages the chat logic, such as starting and
  * stopping the server.
- *
- * <p> TODO: this should not be a singleton, instead modify the Rust code to
- * work without globals and with various servers. That can help with mocking
- * and other things.
  */
 public class ChatService  extends Service {
     static {
@@ -57,10 +46,12 @@ public class ChatService  extends Service {
     }
 
     private static String TAG = "LochaP2P";
-    private static ChatService INSTANCE = null;
 
+    /**
+     * This field is accessed by Rust JNI to report events. It MUST not be null when nativeStart()
+     * is called, otherwise a RuntimeException will be thrown.
+     */
     private ChatServiceEvents eventsHandler;
-    private String peerId;
     private boolean isStarted = false;
 
     public ChatService() {
@@ -73,45 +64,44 @@ public class ChatService  extends Service {
         return null;
     }
 
-
     @Override
     public void onCreate() {
-
         super.onCreate();
 
-        eventsHandler = EventReceivers.get();
+        eventsHandler = EventsReceiver.get();
 
+        // Guard for Android >=8.0
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-            Log.e(TAG, "entro en 1" );
+            Log.d(TAG, String.format("Starting foreground on ver = %d", Build.VERSION.SDK_INT));
             startMyOwnForeground();
-        }
-        else{
-            Log.i(TAG, "entro en 2: ");
+        } else {
+            Log.d(TAG, "Starting foreground");
             startForeground(1, new Notification());
         }
-
-
     }
 
+    private void startMyOwnForeground() {
+        if (Build.VERSION.SDK_INT >= 26) {
+            String NOTIFICATION_CHANNEL_ID = "com.lochameshchat";
+            String channelName = "Background Service";
 
-    private void startMyOwnForeground(){
-            if (Build.VERSION.SDK_INT >= 26) {
-                String NOTIFICATION_CHANNEL_ID = "com.example.simpleapp";
-                String channelName = "My Background Service";
-                NotificationChannel chan = new NotificationChannel(NOTIFICATION_CHANNEL_ID, channelName, NotificationManager.IMPORTANCE_LOW);
-                chan.setLightColor(Color.BLUE);
-                chan.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
-                NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-                assert manager != null;
-                manager.createNotificationChannel(chan);
+            NotificationChannel chan = new NotificationChannel(NOTIFICATION_CHANNEL_ID,
+                                                               channelName,
+                                                               NotificationManager.IMPORTANCE_LOW);
+            chan.setLightColor(Color.BLUE);
+            chan.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
+            NotificationManager manager =
+                (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+            assert manager != null;
+            manager.createNotificationChannel(chan);
 
-            Intent notificationIntent = new Intent("com.lochameshchat.CLICK_FOREGRAUND_NOTIFICATION");
+            Intent notificationIntent = new Intent("com.lochameshchat.CLICK_FOREGROUND_NOTIFICATION");
 
             PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, notificationIntent, 0);
 
             Notification notification = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
                     .setOngoing(true)
-                    .setContentTitle("Locha Mesh  is running in the background")
+                    .setContentTitle("Locha Mesh Chat is running in the background")
                     .setSmallIcon(R.mipmap.ic_launcher)
                     .setContentIntent(pendingIntent)
                     .setPriority(NotificationManager.IMPORTANCE_MIN)
@@ -125,13 +115,7 @@ public class ChatService  extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-
-        Log.i(TAG, "--------------------- onStartCommand ------------------------ ");
-
         String privateKey  = intent.getStringExtra("privateKey");
-
-        Log.i(TAG, "privateKey" + privateKey);
-
         byte[] privateKeyBytes = Utils.hexStringToByteArray(privateKey);
         start(privateKeyBytes);
 
@@ -152,29 +136,22 @@ public class ChatService  extends Service {
             sendBroadcast(broadCastIntent);
             return;
         }
+
         try {
             nativeStart(privateKey);
-            this.peerId = nativeGetPeerId();
 
-            Intent broadCastIntent = new Intent("com.lochameshchat.SERVICE_IS_STARTED");
-            broadCastIntent.putExtra("peerID", peerId);
+            // Retrieve our peer ID and save on broadcastIntent
+            String peerId = nativeGetPeerId();
+            Intent broadcastIntent = new Intent("com.lochameshchat.SERVICE_IS_STARTED");
+            broadcastIntent.putExtra("peerID", peerId);
             isStarted = true;
-            sendBroadcast(broadCastIntent);
-        }catch (Exception e){
-            Log.e(TAG, "into the catch" + e.toString());
+            sendBroadcast(broadcastIntent);
+        } catch (Exception e){
+            Log.e(TAG, "Could not start service: {}" + e.toString());
             Intent broadCastIntent = new Intent("com.lochameshchat.SERVICE_NOT_STARTED");
             sendBroadcast(broadCastIntent);
         }
     }
-
-    /**
-     * @throws RuntimeException if not started.
-     * @throws RuntimeException if an error ocurred while stopping ChatService.
-     */
-    public void stop() {
-
-    }
-
 
     @Override
     public void onDestroy(){
@@ -182,16 +159,6 @@ public class ChatService  extends Service {
         Intent broadCastIntent = new Intent("com.lochameshchat.STOP_SERVICE");
         sendBroadcast(broadCastIntent);
     }
-
-
-    /**
-     * Return the peer ID 
-     */
-    public String getPeerId() {
-        return this.peerId;
-    }
-
-
 
     public native String nativeGetPeerId();
     public native void nativeStart(byte[] privateKey);

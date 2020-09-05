@@ -16,7 +16,6 @@
 
 package io.locha.p2p.runtime;
 
-import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -24,23 +23,14 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Parcelable;
 import android.provider.Settings;
 import android.util.Log;
-import android.widget.Toast;
+import androidx.annotation.NonNull;
 
-import com.facebook.react.bridge.ActivityEventListener;
-import com.facebook.react.bridge.BaseActivityEventListener;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
-import com.facebook.react.modules.core.DeviceEventManagerModule;
-import com.facebook.react.bridge.WritableMap;
-import com.facebook.react.bridge.Arguments;
-import com.facebook.react.bridge.ReactContext;
-
-import androidx.annotation.Nullable;
 
 import DeviceInfo.Utils;
 import io.locha.p2p.util.LibraryLoader;
@@ -54,73 +44,74 @@ public class ChatServiceModule extends ReactContextBaseJavaModule {
     private ChatService service;
     private Intent intentService;
     private Promise mPromise;
-    private static final int IMAGE_PICKER_REQUEST = 1;
     private BroadcastReceiver _bReceiver;
     private IntentFilter intentFilter;
 
     public static final String SERVICE_IS_STARTED = "com.lochameshchat.SERVICE_IS_STARTED";
     public static final String SERVICE_NOT_STARTED = "com.lochameshchat.SERVICE_NOT_STARTED";
-    public static final String CLICK_FOREGRAUND_NOTIFICATION = "com.lochameshchat.CLICK_FOREGRAUND_NOTIFICATION";
+    public static final String CLICK_FOREGROUND_NOTIFICATION = "com.lochameshchat.CLICK_FOREGRAUND_NOTIFICATION";
     public static final String STOP_SERVICE = "com.lochameshchat.STOP_SERVICE";
     private String peerID = null;
 
     public ChatServiceModule(ReactApplicationContext reactContext) {
         super(reactContext);
         this.reactContext = reactContext;
+
         LibraryLoader.load();
 
          intentFilter = new IntentFilter();
          intentFilter.addAction(SERVICE_IS_STARTED);
          intentFilter.addAction(SERVICE_NOT_STARTED);
-         intentFilter.addAction(CLICK_FOREGRAUND_NOTIFICATION);
+         intentFilter.addAction(CLICK_FOREGROUND_NOTIFICATION);
          intentFilter.addAction(STOP_SERVICE);
          _bReceiver = bReceiver;
 
          reactContext.registerReceiver(_bReceiver, intentFilter);
 
-        // eventReceiver class initialization
-        EventReceivers.get(reactContext);
-
-
+        // EventsReceiver class initialization
+        EventsReceiver.init(reactContext);
     }
 
+    /**
+     * @return Module name.
+     */
     @Override
+    @NonNull
     public String getName() {
         return "ChatService";
     }
 
     /**
-     * init service for maintaining live app in the background
+     * Initialize service for maintaining the app alive in the background
      *
-     * Android version >=  8 used ForegroundService
+     * Android Version >=8.0 used ForegroundService
      *
-     * @param privateKey Secp256k1 private key in hex, must be exactly 64
+     * @param privateKey secp256k1 private key in hex, must be exactly 64
      * characters (32-bytes).
      */
     @ReactMethod
     public void start(String privateKey, Promise promise) {
-
         mPromise = promise;
         boolean isConnected = Utils.isConnected(reactContext);
 
-        // if(isConnected){
+        if (isConnected) {
             intentService = new Intent(reactContext, ChatService.class);
+            // Guard for Android >=8.0
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                Log.i(TAG, "startForegroundService");
+                Log.i(TAG, "starting foreground service");
                 intentService.putExtra("privateKey",  privateKey);
                 reactContext.startForegroundService(intentService);
-            }else{
-                Log.i(TAG, "normal service");
+            } else {
+                Log.i(TAG, "starting normal service");
                 reactContext.startService(intentService);
             }
-        // }else{
-        //     promise.reject("Error", "it's divice is not conected" );
-        // }
-
+        } else {
+            promise.reject("Error", "the device is not connected");
+        }
     }
 
     /**
-     * stop service
+     * Stop the service
      */
     @ReactMethod public void stop(Promise promise) {
         try{
@@ -128,17 +119,16 @@ public class ChatServiceModule extends ReactContextBaseJavaModule {
             reactContext.stopService(intentService);
 
         } catch (Exception e){
-            Log.e(TAG, "stop service: "+ e.toString() );
             promise.reject("Error", e.toString());
+            Log.e(TAG, "Couldn't stop service", e);
         }
     }
-
 
     @ReactMethod public void isStarted(Promise promise) {
         try {
             promise.resolve(nativeIsStarted());
-        }catch (Exception e){
-            Log.e(TAG, "Error: " + e.toString() );
+        } catch (Exception e) {
+            Log.e(TAG, "Couldn't check if runtime has started", e);
         }
     }
 
@@ -148,10 +138,11 @@ public class ChatServiceModule extends ReactContextBaseJavaModule {
      */
     @ReactMethod
     public void getPeerId(Promise promise) {
-        if(peerID == null){
+        if (peerID == null) {
             promise.reject("Error", "peerID is null");
-        }
+        } else {
             promise.resolve(peerID);
+        }
     }
 
     /**
@@ -167,7 +158,7 @@ public class ChatServiceModule extends ReactContextBaseJavaModule {
         try {
             nativeDial(multiaddr);
         } catch (Exception e){
-            Log.e(TAG, "dial: " + e.toString());
+            Log.e(TAG, "Couldn't dial address", e);
         }
 
     }
@@ -178,14 +169,14 @@ public class ChatServiceModule extends ReactContextBaseJavaModule {
      * @param contents The message contents.
      */
     @ReactMethod public void sendMessage(String contents) {
+        Log.d(TAG, "sendMessage");
+
         try {
-            Log.i(TAG, "sendMessage: " + contents);
             nativeSendMessage(contents);
         } catch (Exception e) {
-            Log.e(TAG, e.toString());
+            Log.e(TAG, "Couldn't send message", e);
         }
     }
-
 
     /**
      * BroadcastReceiver is where we will be listening
@@ -195,31 +186,31 @@ public class ChatServiceModule extends ReactContextBaseJavaModule {
     private BroadcastReceiver bReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.i(TAG, "broadcast Receiver"+ intent.getAction());
-            if(intent.getAction().equals(SERVICE_IS_STARTED)) {
+            Log.d(TAG, "broadcast Receiver" + intent.getAction());
+
+            if (intent.getAction().equals(SERVICE_IS_STARTED)) {
                 String _peerID = intent.getStringExtra("peerID");
                 peerID = _peerID;
                 mPromise.resolve(_peerID);
                 mPromise = null;
             }
 
-            if (intent.getAction().equals(SERVICE_NOT_STARTED)){
+            if (intent.getAction().equals(SERVICE_NOT_STARTED)) {
                 mPromise.reject("Error", "error starting service");
                 mPromise= null;
             }
-            
-            if(intent.getAction().equals(CLICK_FOREGRAUND_NOTIFICATION)){
-                try{
+
+            if (intent.getAction().equals(CLICK_FOREGROUND_NOTIFICATION)){
+                try {
                     Intent _intent = new Intent();
                     _intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
                     Uri uri = Uri.fromParts("package", reactContext.getPackageName(), null);
                     _intent.setData(uri);
                     _intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     reactContext.getApplicationContext().startActivity(_intent);
-                } catch (Exception e){
-                    Log.e(TAG, "onReceive: " + e.toString() );
+                } catch (Exception e) {
+                    Log.e(TAG, "Error", e);
                 }
-
             }
 
             if (intent.getAction().equals(STOP_SERVICE)){
@@ -229,7 +220,6 @@ public class ChatServiceModule extends ReactContextBaseJavaModule {
             }
         }
     };
-
 
     public boolean checkServiceRunning(Class<?> serviceClass){
         ActivityManager manager = (ActivityManager) reactContext.getSystemService(reactContext.ACTIVITY_SERVICE);
