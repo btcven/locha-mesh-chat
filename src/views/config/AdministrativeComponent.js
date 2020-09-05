@@ -50,7 +50,7 @@ class AdministrativeComponent extends Component {
       <Container>
         <Content>
           <List>
-            <ListItem selected>
+            <ListItem>
               <Left>
                 <Text>Chat Service</Text>
               </Left>
@@ -63,7 +63,7 @@ class AdministrativeComponent extends Component {
                 <Text>Peers Conected</Text>
               </Left>
               <Right>
-                <Text>20</Text>
+                <Text>{this.props.peersConnected.length}</Text>
               </Right>
             </ListItem>
             <ListItem>
@@ -111,7 +111,8 @@ class AdministrativeComponent extends Component {
 
 const mapStateToProps = (state) => ({
   administrative: state.aplication.administrative,
-  chatService: state.chats.chatService
+  chatService: state.chats.chatService,
+  peersConnected: state.chats.peersConnected
 });
 
 export default connect(

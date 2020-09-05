@@ -375,7 +375,7 @@ export const startManualService = (callback) => async (dispatch) => {
 
 /**
  * manual stop of the chat service
- * 
+ *
  * @brief this function is executed jus only in the administrative panel
  */
 export const stopService = (callback) => async (dispatch) => {
@@ -390,4 +390,23 @@ export const stopService = (callback) => async (dispatch) => {
   } catch (error) {
     console.log('error to the stop chat service', error);
   }
+};
+
+export const setPeers = (peer) => (dispatch, getState) => {
+  const isDefined = getState().chats.peersConnected.find(((data) => data === peer));
+  if (!isDefined) {
+    dispatch({
+      type: ActionTypes.NEW_PEER_CONNECTED,
+      payload: peer
+    });
+  }
+};
+
+
+export const removeDisconnedPeers = (peer) => (dispatch, getState) => {
+  const peers = getState().chats.peersConnected.filter(((data) => data !== peer));
+  dispatch({
+    type: ActionTypes.REMOVED_PEER,
+    payload: peers
+  });
 };

@@ -95,7 +95,7 @@ public class ChatService  extends Service {
             assert manager != null;
             manager.createNotificationChannel(chan);
 
-            Intent notificationIntent = new Intent("com.lochameshchat.CLICK_FOREGROUND_NOTIFICATION");
+            Intent notificationIntent = new Intent("com.lochameshchat.CLICK_FOREGRAUND_NOTIFICATION");
 
             PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, notificationIntent, 0);
 
