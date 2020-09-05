@@ -12,7 +12,8 @@ const AplicationState = {
   wsUrl: undefined,
   retryConnection: false,
   notConnectedValidAp: null,
-  nodeAddress: []
+  nodeAddress: [],
+  administrative: false
 };
 
 export const AplicationReducer = (state = AplicationState, action) => {
@@ -71,6 +72,12 @@ export const AplicationReducer = (state = AplicationState, action) => {
 
     case ActionTypes.NOT_CONNECTED_VALID_AP: {
       return { ...state, notConnectedValidAp: action.payload };
+    }
+    case ActionTypes.OPENING_HIDDEN_PANEL: {
+      return { ...state, administrative: action.payload };
+    }
+    case ActionTypes.CLOSE_HIDDEN_PANEL: {
+      return { ...state, administrative: action.payload };
     }
     default: {
       return state;

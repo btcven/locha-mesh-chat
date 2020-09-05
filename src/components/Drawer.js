@@ -12,10 +12,11 @@ import {
   View, Text, StyleSheet, NativeModules
 } from 'react-native';
 import { connect } from 'react-redux';
-import AsyncStorage from '@react-native-community/async-storage';
-import { closeMenu } from '../store/aplication/aplicationAction';
+import { closeMenu, openAdministrativePanel, isAdministrative } from '../store/aplication/aplicationAction';
 import { images } from '../utils/constans';
 import NavigationService from '../utils/navigationService';
+import { toast } from '../utils/utils';
+
 
 /**
  * view of the menu drawer
@@ -28,31 +29,13 @@ class DrawerComponent extends Component {
     super();
     this.state = {
       clicks: 0,
-      isAdmin: false
     };
   }
 
+  componentDidMount = () => {
+    this.props.isAdministrative();
+  };
 
-  componentDidMount = async () => {
-    const isAdmin = await AsyncStorage.getItem('admin');
-    if (isAdmin) {
-      this.setState({
-        isAdmin: true
-      });
-    }
-  }
-
-
-  componentDidUpdate = async () => {
-    if (
-      this.state.clicks === 8
-      && this.state.isAdmin === false) {
-      await AsyncStorage.setItem('admin', String(true));
-      this.setState({
-        isAdmin: true
-      });
-    }
-  }
 
   handleChange = (view) => {
     NavigationService.navigate(view);
@@ -63,6 +46,12 @@ class DrawerComponent extends Component {
     this.setState({
       clicks: count
     });
+
+    if (this.state.clicks === 8) {
+      this.props.openAdministrativePanel(() => {
+        toast('great! you are now an administrator');
+      });
+    }
   }
 
   render() {
@@ -115,7 +104,7 @@ class DrawerComponent extends Component {
             </Body>
           </ListItem>
 
-          {this.state.isAdmin
+          {this.props.administrative
             && (
               <>
                 <ListItem itemDivider>
@@ -139,7 +128,7 @@ class DrawerComponent extends Component {
         <View style={{ height: 60, alignItems: 'center', justifyContent: 'center' }}>
           <Button
             onPress={this.onclickCounter}
-            disabled={this.state.isAdmin}
+            disabled={this.props.administrative}
             transparent
             style={{
               width: '100%',
@@ -159,10 +148,19 @@ class DrawerComponent extends Component {
 
 const mapStateToProps = (state) => ({
   menu: state.aplication.menu,
-  user: state.config
+  user: state.config,
+  administrative: state.aplication.administrative,
+
 });
 
-export default connect(mapStateToProps, { closeMenu })(DrawerComponent);
+export default connect(
+  mapStateToProps,
+  {
+    closeMenu,
+    isAdministrative,
+    openAdministrativePanel
+  }
+)(DrawerComponent);
 
 const styles = StyleSheet.create({
   headerDrawer: {

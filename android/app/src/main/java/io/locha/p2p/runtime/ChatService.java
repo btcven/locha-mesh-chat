@@ -179,6 +179,8 @@ public class ChatService  extends Service {
     @Override
     public void onDestroy(){
         nativeStop();
+        Intent broadCastIntent = new Intent("com.lochameshchat.STOP_SERVICE");
+        sendBroadcast(broadCastIntent);
     }
 
 

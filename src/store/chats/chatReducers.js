@@ -3,7 +3,8 @@
 import { ActionTypes } from '../constants';
 
 const AplicationState = {
-  chat: []
+  chat: [],
+  chatService: false
 };
 
 export const chatReducer = (state = AplicationState, action) => {
@@ -13,7 +14,7 @@ export const chatReducer = (state = AplicationState, action) => {
     }
 
     case ActionTypes.INITIAL_STATE: {
-      return { ...state, chat: action.payload.chats };
+      return { ...state, chat: action.payload.chats, chatService: true };
     }
 
     case ActionTypes.ADD_CONTACTS: {
@@ -180,6 +181,10 @@ export const chatReducer = (state = AplicationState, action) => {
 
     case ActionTypes.UPDATE_STATE: {
       return { ...state, chat: state.chat.slice() };
+    }
+
+    case ActionTypes.CHAT_SERVICE_STATUS: {
+      return { ...state, chatService: action.payload };
     }
 
     default: {

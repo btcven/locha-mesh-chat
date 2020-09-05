@@ -324,7 +324,7 @@ export const setView = (idChat, nodeAddress) => async (dispatch) => {
 
 /**
  * function executed enter the chat  view its function es to send a read status
- * 
+ *
  */
 export const sendReadMessageStatus = () => () => {
   chatService.send(JSON.stringify(sendStatus));
@@ -354,3 +354,40 @@ export const sendAgain = (message) => (dispatch) => {
 export const updateState = () => ({
   type: ActionTypes.UPDATE_STATE
 });
+
+/**
+ * manual starting of the chat service
+ *
+ * @brief this function is executed jus only in the administrative panel
+ */
+export const startManualService = (callback) => async (dispatch) => {
+  try {
+    await chatService.startService();
+    callback();
+    dispatch({
+      type: ActionTypes.CHAT_SERVICE_STATUS,
+      payload: true
+    });
+  } catch (error) {
+    console.log('error to the start chat service');
+  }
+};
+
+/**
+ * manual stop of the chat service
+ * 
+ * @brief this function is executed jus only in the administrative panel
+ */
+export const stopService = (callback) => async (dispatch) => {
+  try {
+    await chatService.stop();
+    console.log('despues del maldito servicio de mierda');
+    callback();
+    dispatch({
+      type: ActionTypes.CHAT_SERVICE_STATUS,
+      payload: false
+    });
+  } catch (error) {
+    console.log('error to the stop chat service', error);
+  }
+};
