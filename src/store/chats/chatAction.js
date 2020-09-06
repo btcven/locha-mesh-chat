@@ -392,6 +392,11 @@ export const stopService = (callback) => async (dispatch) => {
   }
 };
 
+
+/**
+ * This action adds to the global state the count of new peers
+ * @param {*} peer  peerId was returned of the chatService
+ */
 export const setPeers = (peer) => (dispatch, getState) => {
   const isDefined = getState().chats.peersConnected.find(((data) => data === peer));
   if (!isDefined) {
@@ -402,11 +407,23 @@ export const setPeers = (peer) => (dispatch, getState) => {
   }
 };
 
-
+/**
+ * This action removing of the the global state the pairs that  is disconnecting
+ * @param {*} peer  peerId was returned of the chatService
+ */
 export const removeDisconnedPeers = (peer) => (dispatch, getState) => {
   const peers = getState().chats.peersConnected.filter(((data) => data !== peer));
   dispatch({
     type: ActionTypes.REMOVED_PEER,
     payload: peers
   });
+};
+
+export const setNewDials = (nodeAddress, callback) => async (dispatch) => {
+  try {
+    await chatService.dial(nodeAddress);
+    callback(true);
+  } catch (err) {
+    callback(false);
+  }
 };

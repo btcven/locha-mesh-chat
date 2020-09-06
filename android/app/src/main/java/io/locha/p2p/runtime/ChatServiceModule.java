@@ -154,11 +154,14 @@ public class ChatServiceModule extends ReactContextBaseJavaModule {
      *
      * @see <a href="https://multiformats.io/multiaddr/">Multiaddr</a>
      */
-    @ReactMethod public void dial(String multiaddr) {
+    @ReactMethod public void dial(String multiaddr, Promise promise) {
+        Log.i(TAG, "dial: hereeeee");
         try {
             nativeDial(multiaddr);
+            promise.resolve(null);
         } catch (Exception e){
-            Log.e(TAG, "Couldn't dial address", e);
+            Log.e(TAG, "Couldn't dial address"+ e.toString());
+            promise.reject("error", e.toString());
         }
 
     }

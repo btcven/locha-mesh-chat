@@ -1,5 +1,6 @@
+/* eslint-disable react/sort-comp */
 import React, { Component } from 'react';
-import { Text } from 'react-native';
+import { Text, Alert } from 'react-native';
 import {
   Container,
   Content,
@@ -12,10 +13,19 @@ import {
 } from 'native-base';
 import { connect } from 'react-redux';
 import { closeAdministrativePanel, openAdministrativePanel } from '../../store/aplication/aplicationAction';
-import { startManualService, stopService } from '../../store/chats/chatAction';
+import { startManualService, stopService, setNewDials } from '../../store/chats/chatAction';
 import { toast } from '../../utils/utils';
+import AddManualAddress from './AddManualAddress';
 
 class AdministrativeComponent extends Component {
+  constructor() {
+    super();
+    this.state = {
+      dialAddress: false,
+      manualBootstrap: false
+    };
+  }
+
   static navigationOptions = {
     title: 'Admistrative dashboard'
   };
@@ -45,10 +55,48 @@ class AdministrativeComponent extends Component {
     }
   }
 
+  closeModal = (name) => {
+    if (name === 'dialAddress') {
+      this.setState({
+        dialAddress: false
+      });
+    } else {
+      this.setState({
+        manualBootstrap: false
+      });
+    }
+  }
+
+
+  sendDialToChatService = (address, callback) => {
+    this.props.setNewDials(address, (res) => {
+      if (res) {
+        this.setState({ dialAddress: false });
+        toast('dial added successfully');
+      } else {
+        callback();
+        toast('Error,dial not valid');
+      }
+    });
+  }
+
   render() {
     return (
       <Container>
         <Content>
+          <AddManualAddress
+            open={this.state.dialAddress}
+            close={this.closeModal}
+            title="Add dial"
+            nameComponent="dialAddress"
+            action={this.sendDialToChatService}
+          />
+          <AddManualAddress
+            open={this.state.manualBootstrap}
+            close={this.closeModal}
+            title="Add Bootstrap address"
+            nameComponent="bootstrapAddress"
+          />
           <List>
             <ListItem>
               <Left>
@@ -71,11 +119,11 @@ class AdministrativeComponent extends Component {
                 <Text>UPN</Text>
               </Left>
               <Right>
-                <Switch value />
+                <Switch value={false} onTouchEnd={() => alert('this is not available now')} />
               </Right>
             </ListItem>
 
-            <ListItem>
+            <ListItem button onPress={() => this.setState({ dialAddress: true })}>
               <Left>
                 <Text>Add Dials </Text>
               </Left>
@@ -83,7 +131,7 @@ class AdministrativeComponent extends Component {
                 <Icon name="arrow-forward" />
               </Right>
             </ListItem>
-            <ListItem>
+            <ListItem button onPress={() => alert('this is not available now')}>
               <Left>
                 <Text>Add boopstraps address </Text>
               </Left>
@@ -118,6 +166,7 @@ const mapStateToProps = (state) => ({
 export default connect(
   mapStateToProps,
   {
+    setNewDials,
     stopService,
     startManualService,
     closeAdministrativePanel,

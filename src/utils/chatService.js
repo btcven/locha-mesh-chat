@@ -27,8 +27,8 @@ export default class ChatService {
     await this.service.stop();
   }
 
-  dial = (multiaddr) => {
-    this.service.dial(multiaddr);
+  dial = async (multiaddr) => {
+    await this.service.dial(multiaddr);
   }
 
   send = (message) => {
