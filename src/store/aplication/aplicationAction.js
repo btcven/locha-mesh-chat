@@ -201,7 +201,6 @@ export const setMultiAddress = (listenAddress) => ({
   payload: listenAddress
 });
 
-
 /**
  * this will opening administrative panel in the menu drawer
  */

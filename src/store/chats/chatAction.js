@@ -369,7 +369,7 @@ export const startManualService = (callback) => async (dispatch) => {
       payload: true
     });
   } catch (error) {
-    console.log('error to the start chat service');
+    console.log('couldn\'t start chat service');
   }
 };
 
@@ -381,17 +381,15 @@ export const startManualService = (callback) => async (dispatch) => {
 export const stopService = (callback) => async (dispatch) => {
   try {
     await chatService.stop();
-    console.log('despues del maldito servicio de mierda');
     callback();
     dispatch({
       type: ActionTypes.CHAT_SERVICE_STATUS,
       payload: false
     });
   } catch (error) {
-    console.log('error to the stop chat service', error);
+    console.log('couldn\'t stop chat service: ', error);
   }
 };
-
 
 /**
  * This action adds to the global state the count of new peers

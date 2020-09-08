@@ -86,7 +86,7 @@ public class EventsReceiver implements ChatServiceEvents {
     }
 
     @Override public void onIncomingConnectionError(String localAddr, String sendBackAddr, String error) {
-        Log.d(TAG, String.format("incomingConnection Error: localAddr=%s, sendBackAddr=%s, error=%s",
+        Log.d(TAG, String.format("incomingConnectionError: localAddr=%s, sendBackAddr=%s, error=%s",
                                  localAddr, sendBackAddr, error));
         WritableMap map = Arguments.createMap();
         map.putString("localAddr", localAddr);
