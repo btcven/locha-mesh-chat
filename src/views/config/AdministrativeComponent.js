@@ -46,7 +46,7 @@ class AdministrativeComponent extends Component {
   startOrClose = async () => {
     if (this.props.chatService) {
       this.props.stopService(() => {
-        toast('Chat service it stopped ');
+        toast('Chat service it stopped');
       });
     } else {
       this.props.startManualService(() => {
