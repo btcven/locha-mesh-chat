@@ -3,7 +3,9 @@
 import { ActionTypes } from '../constants';
 
 const AplicationState = {
-  chat: []
+  chat: [],
+  chatService: false,
+  peersConnected: []
 };
 
 export const chatReducer = (state = AplicationState, action) => {
@@ -13,7 +15,7 @@ export const chatReducer = (state = AplicationState, action) => {
     }
 
     case ActionTypes.INITIAL_STATE: {
-      return { ...state, chat: action.payload.chats };
+      return { ...state, chat: action.payload.chats, chatService: true };
     }
 
     case ActionTypes.ADD_CONTACTS: {
@@ -180,6 +182,21 @@ export const chatReducer = (state = AplicationState, action) => {
 
     case ActionTypes.UPDATE_STATE: {
       return { ...state, chat: state.chat.slice() };
+    }
+
+    case ActionTypes.CHAT_SERVICE_STATUS: {
+      return { ...state, chatService: action.payload };
+    }
+
+    case ActionTypes.NEW_PEER_CONNECTED: {
+      return {
+        ...state,
+        peersConnected: state.peersConnected.concat(action.payload)
+      };
+    }
+
+    case ActionTypes.REMOVED_PEER: {
+      return { ...state, peersConnected: action.payload }
     }
 
     default: {

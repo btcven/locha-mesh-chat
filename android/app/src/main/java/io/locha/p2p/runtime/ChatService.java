@@ -95,7 +95,7 @@ public class ChatService  extends Service {
             assert manager != null;
             manager.createNotificationChannel(chan);
 
-            Intent notificationIntent = new Intent("com.lochameshchat.CLICK_FOREGROUND_NOTIFICATION");
+            Intent notificationIntent = new Intent("com.lochameshchat.CLICK_FOREGRAUND_NOTIFICATION");
 
             PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, notificationIntent, 0);
 
@@ -156,6 +156,8 @@ public class ChatService  extends Service {
     @Override
     public void onDestroy(){
         nativeStop();
+        Intent broadCastIntent = new Intent("com.lochameshchat.STOP_SERVICE");
+        sendBroadcast(broadCastIntent);
     }
 
     public native String nativeGetPeerId();

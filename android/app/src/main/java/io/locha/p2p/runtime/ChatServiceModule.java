@@ -49,7 +49,8 @@ public class ChatServiceModule extends ReactContextBaseJavaModule {
 
     public static final String SERVICE_IS_STARTED = "com.lochameshchat.SERVICE_IS_STARTED";
     public static final String SERVICE_NOT_STARTED = "com.lochameshchat.SERVICE_NOT_STARTED";
-    public static final String CLICK_FOREGROUND_NOTIFICATION = "com.lochameshchat.CLICK_FOREGROUND_NOTIFICATION";
+    public static final String CLICK_FOREGROUND_NOTIFICATION = "com.lochameshchat.CLICK_FOREGRAUND_NOTIFICATION";
+    public static final String STOP_SERVICE = "com.lochameshchat.STOP_SERVICE";
     private String peerID = null;
 
     public ChatServiceModule(ReactApplicationContext reactContext) {
@@ -62,6 +63,7 @@ public class ChatServiceModule extends ReactContextBaseJavaModule {
          intentFilter.addAction(SERVICE_IS_STARTED);
          intentFilter.addAction(SERVICE_NOT_STARTED);
          intentFilter.addAction(CLICK_FOREGROUND_NOTIFICATION);
+         intentFilter.addAction(STOP_SERVICE);
          _bReceiver = bReceiver;
 
          reactContext.registerReceiver(_bReceiver, intentFilter);
@@ -111,11 +113,13 @@ public class ChatServiceModule extends ReactContextBaseJavaModule {
     /**
      * Stop the service
      */
-    @ReactMethod public void stop() {
+    @ReactMethod public void stop(Promise promise) {
         try{
+            mPromise = promise;
             reactContext.stopService(intentService);
-            reactContext.unregisterReceiver(_bReceiver);
+
         } catch (Exception e){
+            promise.reject("Error", e.toString());
             Log.e(TAG, "Couldn't stop service", e);
         }
     }
@@ -150,11 +154,13 @@ public class ChatServiceModule extends ReactContextBaseJavaModule {
      *
      * @see <a href="https://multiformats.io/multiaddr/">Multiaddr</a>
      */
-    @ReactMethod public void dial(String multiaddr) {
+    @ReactMethod public void dial(String multiaddr, Promise promise) {
         try {
             nativeDial(multiaddr);
+            promise.resolve(null);
         } catch (Exception e){
             Log.e(TAG, "Couldn't dial address", e);
+            promise.reject("error", e.toString());
         }
 
     }
@@ -207,6 +213,12 @@ public class ChatServiceModule extends ReactContextBaseJavaModule {
                 } catch (Exception e) {
                     Log.e(TAG, "Error", e);
                 }
+            }
+
+            if (intent.getAction().equals(STOP_SERVICE)){
+                Log.e(TAG, "onReceive: entro en el intent" );
+                mPromise.resolve(null);
+                mPromise = null;
             }
         }
     };

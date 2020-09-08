@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable no-new */
 import NativeModules from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -191,13 +192,54 @@ export const manualConnection = () => ({
 });
 
 
-/** 
+/**
  * set listening address of node in the state
  * @param {String} address node address
  */
-export const setMultiAddress = (listenAddress) => {
-  return {
-    type: ActionTypes.SET_NODE_ADDRESS,
-    payload: listenAddress
-  };
-}
+export const setMultiAddress = (listenAddress) => ({
+  type: ActionTypes.SET_NODE_ADDRESS,
+  payload: listenAddress
+});
+
+/**
+ * this will opening administrative panel in the menu drawer
+ */
+export const openAdministrativePanel = (callback) => async (dispatch) => {
+  try {
+    await AsyncStorage.setItem('admin', String(true));
+    callback();
+    dispatch({
+      type: ActionTypes.OPENING_HIDDEN_PANEL,
+      payload: true
+    });
+  } catch (error) {
+    console.log('Error', error);
+  }
+};
+
+/**
+ * this will closed administrative panel in the menu drawer
+ */
+export const closeAdministrativePanel = (callback) => async (dispatch) => {
+  try {
+    await AsyncStorage.removeItem('admin');
+    callback();
+    dispatch({
+      type: ActionTypes.CLOSE_HIDDEN_PANEL,
+      payload: false
+    });
+  } catch (error) {
+    console.log('Error', error);
+  }
+};
+
+
+export const isAdministrative = () => async (dispatch) => {
+  let isDefined = await AsyncStorage.getItem('admin');
+  // eslint-disable-next-line no-unneeded-ternary
+  isDefined = isDefined ? true : false;
+  dispatch({
+    type: ActionTypes.OPENING_HIDDEN_PANEL,
+    payload: isDefined
+  });
+};
