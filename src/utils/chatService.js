@@ -77,7 +77,7 @@ export default class ChatService {
 
   startService = async () => {
     const xpriv = await bitcoin.getPrivKey();
-    const PeerID = await this.service.start(xpriv);
+    const PeerID = await this.service.start(xpriv, true);
 
     return PeerID;
   }
