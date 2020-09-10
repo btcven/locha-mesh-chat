@@ -44,7 +44,8 @@ export default class AddContact extends Component {
       this.setState({
         name: selected[0].name,
         image: selected[0].picture,
-        uid: selected[0].uid
+        uid: selected[0].uid,
+        nodeAddress: selected[0].nodeAddress
       });
     }
   };

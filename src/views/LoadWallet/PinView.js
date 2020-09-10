@@ -11,7 +11,8 @@ export default class PinView extends Component {
     this.state = {
       pin: ['', '', '', '', '', ''],
       buttons: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'],
-      values: props.values
+      values: props.values,
+      send: false
     };
   }
 
@@ -33,8 +34,15 @@ export default class PinView extends Component {
       this.state.pin.map((arr) => {
         pin += arr;
       });
-      this.props.createAccount(pin, this.state.values);
-      this.setState({ pin: ['', '', '', '', '', ''] });
+      if (this.state.send) {
+        return;
+      }
+      this.props.createAccount(pin, this.state.values, () => {
+        this.setState({ pin: ['', '', '', '', '', ''], send: false });
+      });
+      this.setState({
+        send: true
+      });
     }
   }
 
@@ -53,10 +61,11 @@ export default class PinView extends Component {
       this.setState({ pin: array });
     } else {
       const result = array.findIndex((pin) => pin === '');
+      if (result !== -1) {
+        array[result] = character;
 
-      array[result] = character;
-
-      this.setState({ pin: array });
+        this.setState({ pin: array });
+      }
     }
   }
 

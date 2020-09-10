@@ -85,11 +85,13 @@ export default class CreateAccount extends Component {
     this.setState({ step: 3 });
   }
 
-  createAccount = (pin) => {
+  createAccount = (pin, values, callback) => {
     this.props.createNewAccount({
       pin,
       seed: this.props.stringPhrases,
       name: this.state.name
+    }, () => {
+      callback();
     });
   }
 

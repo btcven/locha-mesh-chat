@@ -61,7 +61,6 @@ class Chat extends Component {
     };
   }
 
-
   eventConnected = () => {
     chatService.event.addListener('connectionEstablished', ({ peer, numEstablished }) => {
       const chatSelected = this.props.chat[this.props.chatSelected.index].toUID;

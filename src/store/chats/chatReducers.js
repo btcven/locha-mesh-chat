@@ -26,7 +26,7 @@ export const chatReducer = (state = AplicationState, action) => {
 
     case ActionTypes.DELETE_CONTACT: {
       const res = Object.values(state.chat).filter((obj) => {
-        const result = action.payload.find((payload) => obj.toUID !== payload.hashUID);
+        const result = action.payload.find((payload) => obj.toUID !== payload.uid);
 
         return result;
       });

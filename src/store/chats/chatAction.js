@@ -326,7 +326,7 @@ export const setView = (idChat, nodeAddress) => async (dispatch) => {
  * function executed enter the chat  view its function es to send a read status
  *
  */
-export const sendReadMessageStatus = () => () => {
+export const sendReadMessageStatus = (sendStatus) => () => {
   chatService.send(JSON.stringify(sendStatus));
 };
 
