@@ -34,7 +34,7 @@ use parking_lot::Once;
 /// Invalid JNI version constant, signifying JNI_OnLoad failure.
 const INVALID_JNI_VERSION: jint = 0;
 const CHAT_SERVICE_EVENTS_INTERFACE: &str =
-    "io/locha/p2p/runtime/ChatServiceEvents";
+    "io/locha/p2p/runtime/RuntimeEvents";
 
 static INIT: Once = Once::new();
 

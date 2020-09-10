@@ -1,4 +1,22 @@
-package io.locha.p2p.runtime;
+/*
+ * Copyright 2020 Locha Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package io.locha.p2p.service;
+
+import io.locha.p2p.runtime.RuntimeEvents;
 
 import android.util.Log;
 
@@ -10,35 +28,33 @@ import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.facebook.react.bridge.Arguments;
+import com.facebook.react.uimanager.events.EventDispatcher;
 
-public class EventsReceiver implements ChatServiceEvents {
-    ReactApplicationContext reactContext;
-
-    private static EventsReceiver INSTANCE = null;
+public class EventsDispatcher implements RuntimeEvents {
     private static final String TAG = "EventsReceiver";
+    private static EventsDispatcher INSTANCE = null;
+    private ReactApplicationContext reactContext;
 
-    private EventsReceiver(ReactApplicationContext context) {
-        reactContext = context;
-    }
+    private EventsDispatcher() { }
 
     /**
-     * Get instance of the EventReceivers.
+     * Function returns class instance it, doesn't needs parameters.
+     *
+     * @return EventsDispatcher instance.
      */
-    public static EventsReceiver init(ReactApplicationContext context) {
+    public static EventsDispatcher getInstance() {
         if (INSTANCE == null) {
-            INSTANCE = new EventsReceiver(context);
+            INSTANCE = new EventsDispatcher();
         }
 
         return INSTANCE;
     }
 
     /**
-     * Function returns class instance it, doesn't needs parameters.
-     *
-     * @return EventsReceiver instance.
+     * Set the ReactApplicationContext for this object.
      */
-    public static EventsReceiver get() {
-        return INSTANCE;
+    public void setApplicationContext(ReactApplicationContext context) {
+        this.reactContext = context;
     }
 
     @Override public void onNewMessage(String contents) {
@@ -96,7 +112,7 @@ public class EventsReceiver implements ChatServiceEvents {
     }
 
     @Override public void onBannedPeer(String peer) {
-        Log.d(TAG, String.format("bannedPeer: peer=%s"));
+        Log.d(TAG, String.format("bannedPeer: peer=%s", peer));
         sendEvent(this.reactContext, "bannedPeer", peer);
     }
 
