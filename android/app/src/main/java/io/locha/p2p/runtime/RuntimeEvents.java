@@ -137,10 +137,4 @@ public interface RuntimeEvents {
      */
     void onDialing(String peer);
 
-    /**
-     * external Address event
-     *
-     * @param  address
-     */
-    void onExternalAddress(String address);
 }

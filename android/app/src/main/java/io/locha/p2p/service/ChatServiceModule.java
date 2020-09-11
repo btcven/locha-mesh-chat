@@ -57,6 +57,8 @@ public class ChatServiceModule extends ReactContextBaseJavaModule {
     private Promise mPromise;
     private boolean isServiceStarted = false;
     EventsDispatcher event;
+    private final static  int  RECHARGE_TIME = 6000;
+    private final static  int  WAIT_TIME = 2000;
 
     public ChatServiceModule(ReactApplicationContext reactContext) {
         super(reactContext);
@@ -217,27 +219,28 @@ public class ChatServiceModule extends ReactContextBaseJavaModule {
 
 
 
-    public void getExternalAddressWithTime()  {
+    public void spawnExternalIpAddrThread()  {
 
          Thread thread = new Thread(new Runnable() {
              public void run() {
                  try{
-                     Thread.sleep(2000);
+                     Thread.sleep(WAIT_TIME);
+                     // Wait at least 2 s before checking for external addresses as UPnP and other
 
                      Timer timer = new Timer();
 
                      timer.schedule( new TimerTask() {
                          public void run() {
-                             String[] ip =  Runtime.getInstance().externalAddresses();
+                             String[] ips =  Runtime.getInstance().externalAddresses();
 
-                             for (String i : ip) {
-                                 event.onExternalAddress(i);
+                             for (String ip : ips) {
+                                 event.onExternalAddress(ip);
                              }
                          }
-                     }, 0, 60000);
+                     }, 0, RECHARGE_TIME);
 
-                 }catch (Exception e){
-                     Log.e(TAG, "getExternalAddress: Error: ",e);
+                 } catch (Exception e){
+                     Log.e(TAG, "getExternalAddress: failed: ",e);
                  }
              }
          });
@@ -264,9 +267,9 @@ public class ChatServiceModule extends ReactContextBaseJavaModule {
                 assert peerId != null;
                 mPromise.resolve(peerId);
                 try {
-                    getExternalAddressWithTime();
+                    spawnExternalIpAddrThread();
                 } catch (Exception e) {
-                    Log.e(TAG, "onReceive: " + e.toString());
+                    Log.e(TAG, "Couldn't spawn External IP worker thread: ", e);
                 }
                 Log.d(TAG, String.format("Started with peerId=%s", peerId));
                 return;
