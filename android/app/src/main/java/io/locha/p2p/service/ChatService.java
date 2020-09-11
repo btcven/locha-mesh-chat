@@ -131,6 +131,7 @@ public class ChatService extends Service {
         return START_STICKY;
     }
 
+
     @Override public void onDestroy() {
         Runtime runtime = Runtime.getInstance();
         runtime.stop();

@@ -165,6 +165,11 @@ public class EventsDispatcher implements RuntimeEvents {
         sendEvent(this.reactContext, "dialing", peer);
     }
 
+
+    @Override  public void onExternalAddress(String address){
+        sendEvent(reactContext, "externalAddress" , address);
+    }
+
     /**
      * Sends the given event to React Native
      *

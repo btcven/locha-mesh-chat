@@ -36,6 +36,9 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.WritableArray;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import DeviceInfo.Utils;
 
 /**
@@ -53,11 +56,14 @@ public class ChatServiceModule extends ReactContextBaseJavaModule {
     private String peerId = null;
     private Promise mPromise;
     private boolean isServiceStarted = false;
+    EventsDispatcher event;
 
     public ChatServiceModule(ReactApplicationContext reactContext) {
         super(reactContext);
 
         this.reactContext = reactContext;
+
+        event = EventsDispatcher.getInstance();
 
         /* The EventsDispatcher class is responsible for sending events from the Chat
          * Service to the React Native JS context, it's a singleto that is shared between
@@ -209,6 +215,37 @@ public class ChatServiceModule extends ReactContextBaseJavaModule {
         promise.resolve(this.isServiceStarted && Runtime.isStarted());
     }
 
+
+
+    public void getExternalAddressWithTime()  {
+
+         Thread thread = new Thread(new Runnable() {
+             public void run() {
+                 try{
+                     Thread.sleep(2000);
+
+                     Timer timer = new Timer();
+
+                     timer.schedule( new TimerTask() {
+                         public void run() {
+                             String[] ip =  Runtime.getInstance().externalAddresses();
+
+                             for (String i : ip) {
+                                 event.onExternalAddress(i);
+                             }
+                         }
+                     }, 0, 60000);
+
+                 }catch (Exception e){
+                     Log.e(TAG, "getExternalAddress: Error: ",e);
+                 }
+             }
+         });
+
+        thread.start();
+    }
+
+
     /**
      * BroadcastReceiver is where we will be listening to all the events returned
      * by ChatService
@@ -226,6 +263,11 @@ public class ChatServiceModule extends ReactContextBaseJavaModule {
                 peerId = intent.getStringExtra("peerId");
                 assert peerId != null;
                 mPromise.resolve(peerId);
+                try {
+                    getExternalAddressWithTime();
+                } catch (Exception e) {
+                    Log.e(TAG, "onReceive: " + e.toString());
+                }
                 Log.d(TAG, String.format("Started with peerId=%s", peerId));
                 return;
             }

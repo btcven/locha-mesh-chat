@@ -136,4 +136,11 @@ public interface RuntimeEvents {
      * @param peer The peer that is being dialed.
      */
     void onDialing(String peer);
+
+    /**
+     * external Address event
+     *
+     * @param  address
+     */
+    void onExternalAddress(String address);
 }
