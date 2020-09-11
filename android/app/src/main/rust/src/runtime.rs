@@ -37,7 +37,6 @@ use locha_p2p::identity::Identity;
 use locha_p2p::runtime::config::RuntimeConfig;
 use locha_p2p::runtime::events::RuntimeEvents;
 use locha_p2p::runtime::Runtime;
-use locha_p2p::upnp::Upnp;
 use locha_p2p::{Multiaddr, PeerId};
 
 use crate::util::jni_cache::{chat_service_events, classes_refs};
@@ -129,12 +128,6 @@ pub extern "system" fn Java_io_locha_p2p_runtime_Runtime_nativeNew(
             Runtime::new(config, events_proxy, attempt_upnp).unwrap();
 
         task::spawn(runtime_task);
-
-        if attempt_upnp {
-            let (upnp, upnp_task) = Upnp::new();
-            task::spawn(upnp_task);
-            task::block_on(runtime.enable_upnp(upnp)).unwrap();
-        }
 
         env.set_rust_field(class, "handle", runtime)?;
 
