@@ -29,9 +29,13 @@ class RestoreWithPin extends Component {
    * @param {String} pin pin entered
    * @memberof RestoreWithPin
    */
-  restoreAccount = (pin) => {
+  restoreAccount = (pin, values, callback) => {
     if (this.state.step === 1) {
-      this.props.restoreAccountWithPin(pin, () => {
+      this.props.restoreAccountWithPin(pin, (res) => {
+        if (res) {
+          callback();
+          return;
+        }
         toast(this.props.screenProps.t('Initial:error1'));
       });
     } else {

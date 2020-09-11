@@ -52,13 +52,15 @@ export const restoreAccountWithPin = (pin, callback) => async (dispatch) => {
   database.restoreWithPin(shaPing).then(async (data) => {
     bitcoin.createWallet(data.seed[0].seed);
     await chatService.startService();
+    callback(true);
     dispatch(writeAction(JSON.parse(JSON.stringify(data.user[0]))));
-  }).catch(() => {
-    callback();
+  }).catch((err) => {
+    console.warn('in catch', err);
+    callback(false);
   });
 };
 
-export const createNewAccount = (obj) => async (dispatch) => {
+export const createNewAccount = (obj, callback) => async (dispatch) => {
   const shaPing = await bitcoin.sha256(obj.pin);
   const shaSeed = await bitcoin.sha256(obj.seed);
   await database.getRealm(shaPing, shaSeed);
@@ -74,6 +76,7 @@ export const createNewAccount = (obj) => async (dispatch) => {
     contacts: [],
     chats: []
   }).then(async (res) => {
+    callback();
     if (!process.env.JEST_WORKER_ID) {
       await AsyncStorage.setItem('@APP:status', 'created');
     }
