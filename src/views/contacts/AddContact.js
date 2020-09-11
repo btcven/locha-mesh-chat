@@ -232,7 +232,7 @@ export default class AddContact extends Component {
               >
                 <View>
                   <View style={styles.inputStyle}>
-                    <Text>Ipv6 adress</Text>
+                    <Text>{screenProps.t('Contacts:uid')}</Text>
 
                     <TouchableOpacity
                       style={{
