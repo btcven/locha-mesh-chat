@@ -53,7 +53,7 @@
       "addContact": "Agregar contacto",
       "editContact": "Editar contacto",
       "name": "Nombre del contacto",
-      "uid": "direccion ipv6",
+      "uid": "ID del contacto",
       "wait": "Por favor espere",
       "existName": "ya existe un contacto con ese nombre",
       "existContact": "Contacto existente",
