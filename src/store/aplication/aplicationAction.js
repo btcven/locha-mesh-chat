@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 /* eslint-disable no-new */
-import NativeModules from 'react-native';
+import { NativeModules } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import RNSF from 'react-native-fs';
 import { ActionTypes } from '../constants';
@@ -51,7 +51,7 @@ export const restoreAccountWithPin = (pin, callback) => async (dispatch) => {
   const shaPing = await bitcoin.sha256(pin);
   database.restoreWithPin(shaPing).then(async (data) => {
     bitcoin.createWallet(data.seed[0].seed);
-    await chatService.startService();
+    // await chatService.startService();
     callback(true);
     dispatch(writeAction(JSON.parse(JSON.stringify(data.user[0]))));
   }).catch((err) => {
