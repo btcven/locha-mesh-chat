@@ -36,6 +36,9 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.WritableArray;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import DeviceInfo.Utils;
 
 /**
@@ -53,11 +56,16 @@ public class ChatServiceModule extends ReactContextBaseJavaModule {
     private String peerId = null;
     private Promise mPromise;
     private boolean isServiceStarted = false;
+    EventsDispatcher event;
+    private final static  int  RECHARGE_TIME = 6000;
+    private final static  int  WAIT_TIME = 2000;
 
     public ChatServiceModule(ReactApplicationContext reactContext) {
         super(reactContext);
 
         this.reactContext = reactContext;
+
+        event = EventsDispatcher.getInstance();
 
         /* The EventsDispatcher class is responsible for sending events from the Chat
          * Service to the React Native JS context, it's a singleto that is shared between
@@ -209,6 +217,38 @@ public class ChatServiceModule extends ReactContextBaseJavaModule {
         promise.resolve(this.isServiceStarted && Runtime.isStarted());
     }
 
+
+
+    public void spawnExternalIpAddrThread()  {
+
+         Thread thread = new Thread(new Runnable() {
+             public void run() {
+                 try{
+                     Thread.sleep(WAIT_TIME);
+                     // Wait at least 2 s before checking for external addresses as UPnP and other
+
+                     Timer timer = new Timer();
+
+                     timer.schedule( new TimerTask() {
+                         public void run() {
+                             String[] ips =  Runtime.getInstance().externalAddresses();
+
+                             for (String ip : ips) {
+                                 event.onExternalAddress(ip);
+                             }
+                         }
+                     }, 0, RECHARGE_TIME);
+
+                 } catch (Exception e){
+                     Log.e(TAG, "getExternalAddress: failed: ",e);
+                 }
+             }
+         });
+
+        thread.start();
+    }
+
+
     /**
      * BroadcastReceiver is where we will be listening to all the events returned
      * by ChatService
@@ -226,6 +266,11 @@ public class ChatServiceModule extends ReactContextBaseJavaModule {
                 peerId = intent.getStringExtra("peerId");
                 assert peerId != null;
                 mPromise.resolve(peerId);
+                try {
+                    spawnExternalIpAddrThread();
+                } catch (Exception e) {
+                    Log.e(TAG, "Couldn't spawn External IP worker thread: ", e);
+                }
                 Log.d(TAG, String.format("Started with peerId=%s", peerId));
                 return;
             }

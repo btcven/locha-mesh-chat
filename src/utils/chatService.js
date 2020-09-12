@@ -17,6 +17,7 @@ export default class ChatService {
     this.onNewListenAddr();
     this.onConnectionEstablished();
     this.onConnectionClosed();
+    this.onNewExternalAddress();
     this.store = require('../store').default;
     ChatService.instance = this;
 
@@ -75,6 +76,17 @@ export default class ChatService {
     }));
   }
 
+  onNewExternalAddress = () => {
+    this.event.addListener('externalAddress', (externalAddress) => {
+      const result = this.store.getState().config.nodeAddress.find(address => {
+        return address === externalAddress;
+      });
+      if (!result) {
+        this.store.dispatch(setMultiAddress(externalAddress));
+      }
+    });
+  }
+
   startService = async () => {
     const xpriv = await bitcoin.getPrivKey();
     const PeerID = await this.service.start(xpriv, true);
@@ -92,6 +104,9 @@ export default class ChatService {
       this.store.dispatch(setPeers(peer));
     }));
   }
+
+
+
 
   onConnectionClosed = () => {
     this.event.addListener('connectionClosed', (({ peer, numEstablished, cause }) => {
