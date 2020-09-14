@@ -44,7 +44,8 @@ export default class AddContact extends Component {
       this.setState({
         name: selected[0].name,
         image: selected[0].picture,
-        uid: selected[0].uid
+        uid: selected[0].uid,
+        nodeAddress: selected[0].nodeAddress
       });
     }
   };
@@ -231,7 +232,7 @@ export default class AddContact extends Component {
               >
                 <View>
                   <View style={styles.inputStyle}>
-                    <Text>Ipv6 adress</Text>
+                    <Text>{screenProps.t('Contacts:uid')}</Text>
 
                     <TouchableOpacity
                       style={{

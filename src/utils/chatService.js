@@ -1,6 +1,6 @@
 import { NativeModules, NativeEventEmitter } from 'react-native';
 import { bitcoin } from '../../App';
-import { getChat, setStatusMessage } from '../store/chats';
+import { getChat, setStatusMessage, setPeers, removeDisconnedPeers } from '../store/chats';
 import { messageType, addressType } from './constans';
 import { requestImageStatus, sentImageStatus, verifyHashImageStatus } from '../store/contacts';
 import { setMultiAddress } from '../store/aplication';
@@ -15,18 +15,21 @@ export default class ChatService {
     this.event = new NativeEventEmitter(this.service);
     this.onNewMessage();
     this.onNewListenAddr();
+    this.onConnectionEstablished();
+    this.onConnectionClosed();
+    this.onNewExternalAddress();
     this.store = require('../store').default;
     ChatService.instance = this;
 
     return this;
   }
 
-  stop = () => {
-    this.service.stop();
+  stop = async () => {
+    await this.service.stop();
   }
 
-  dial = (multiaddr) => {
-    this.service.dial(multiaddr);
+  dial = async (multiaddr) => {
+    await this.service.dial(multiaddr);
   }
 
   send = (message) => {
@@ -73,9 +76,20 @@ export default class ChatService {
     }));
   }
 
+  onNewExternalAddress = () => {
+    this.event.addListener('externalAddress', (externalAddress) => {
+      const result = this.store.getState().config.nodeAddress.find(address => {
+        return address === externalAddress;
+      });
+      if (!result) {
+        this.store.dispatch(setMultiAddress(externalAddress));
+      }
+    });
+  }
+
   startService = async () => {
     const xpriv = await bitcoin.getPrivKey();
-    const PeerID = await this.service.start(xpriv);
+    const PeerID = await this.service.start(xpriv, true);
 
     return PeerID;
   }
@@ -83,4 +97,20 @@ export default class ChatService {
   getPeerId = async () => this.service.getPeerId()
 
   getlisteningAddress = () => this.multiaddr
+
+
+  onConnectionEstablished = () => {
+    this.event.addListener('connectionEstablished', (({ peer, numEstablished }) => {
+      this.store.dispatch(setPeers(peer));
+    }));
+  }
+
+
+
+
+  onConnectionClosed = () => {
+    this.event.addListener('connectionClosed', (({ peer, numEstablished, cause }) => {
+      this.store.dispatch(removeDisconnedPeers(peer));
+    }));
+  }
 }

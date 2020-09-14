@@ -43,7 +43,6 @@ export default class ChatBody extends Component {
       if (rule1) {
         if (this.props.user.peerID !== lastMessage.fromUID) {
           this.sound.setVolume(0.1).play();
-
           const sendStatus = {
             fromUID: this.props.user.peerID,
             toUID: lastMessage.fromUID,
@@ -56,7 +55,6 @@ export default class ChatBody extends Component {
           };
 
           if (lastMessage.toUID) {
-            
             this.props.sendReadMessageStatus(sendStatus);
           }
         }

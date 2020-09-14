@@ -16,35 +16,35 @@
 
 package io.locha.p2p;
 
+import io.locha.p2p.service.ChatServiceModule;
+
 import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.NativeModule;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.uimanager.ViewManager;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import io.locha.p2p.runtime.ChatServiceModule;
+
 import android.util.Log;
 
 public class LochaP2PPackage implements ReactPackage {
     private static String TAG = "LochaP2P";
 
-    @Override
-    public List<ViewManager> createViewManagers(ReactApplicationContext reactContext) {
-        Log.i(TAG, "Creating view managers");
+    @Override public List<ViewManager> createViewManagers(ReactApplicationContext reactContext) {
+        Log.d(TAG, "Creating view managers");
         return Collections.emptyList();
     }
 
-    @Override
-    public List<NativeModule> createNativeModules(
-            ReactApplicationContext reactContext) {
-        Log.i(TAG, "Creating native modules");
+    @Override public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
+        Log.d(TAG, "Creating native modules");
 
         List<NativeModule> modules = new ArrayList<>();
 
-        Log.i(TAG, "Adding ChatServiceModule");
+        Log.d(TAG, "Adding ChatServiceModule");
         modules.add(new ChatServiceModule(reactContext));
-    
+
         return modules;
     }
 }

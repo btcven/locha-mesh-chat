@@ -12,9 +12,11 @@ import {
   View, Text, StyleSheet, NativeModules
 } from 'react-native';
 import { connect } from 'react-redux';
-import { closeMenu } from '../store/aplication/aplicationAction';
+import { closeMenu, openAdministrativePanel, isAdministrative } from '../store/aplication/aplicationAction';
 import { images } from '../utils/constans';
 import NavigationService from '../utils/navigationService';
+import { toast } from '../utils/utils';
+
 
 /**
  * view of the menu drawer
@@ -23,9 +25,34 @@ import NavigationService from '../utils/navigationService';
  *
  */
 class DrawerComponent extends Component {
+  constructor() {
+    super();
+    this.state = {
+      clicks: 0,
+    };
+  }
+
+  componentDidMount = () => {
+    this.props.isAdministrative();
+  };
+
+
   handleChange = (view) => {
     NavigationService.navigate(view);
   };
+
+  onclickCounter = () => {
+    const count = this.state.clicks + 1;
+    this.setState({
+      clicks: count
+    });
+
+    if (this.state.clicks === 8) {
+      this.props.openAdministrativePanel(() => {
+        toast('great! you are now an administrator');
+      });
+    }
+  }
 
   render() {
     const { screenProps } = this.props;
@@ -76,11 +103,43 @@ class DrawerComponent extends Component {
               <Text>{screenProps.t('Drawer:setting')}</Text>
             </Body>
           </ListItem>
+
+          {this.props.administrative
+            && (
+              <>
+                <ListItem itemDivider>
+                  <Text>Developer dashboard</Text>
+                </ListItem>
+
+                <ListItem icon button onPress={() => this.handleChange('administrative')}>
+                  <Left>
+                    <Button style={{ backgroundColor: '#ef6c00' }}>
+                      <Icon type="MaterialIcons" active name="developer-mode" />
+                    </Button>
+                  </Left>
+                  <Body>
+                    <Text>Admin settings</Text>
+                  </Body>
+                </ListItem>
+              </>
+            )}
         </View>
+
         <View style={{ height: 60, alignItems: 'center', justifyContent: 'center' }}>
-          <Text>
-            { `Version ${NativeModules.RNDeviceInfo.VersionInfo}`}
-          </Text>
+          <Button
+            onPress={this.onclickCounter}
+            disabled={this.props.administrative}
+            transparent
+            style={{
+              width: '100%',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
+          >
+            <Text>
+              {`Version ${NativeModules.RNDeviceInfo.VersionInfo}`}
+            </Text>
+          </Button>
         </View>
       </Container>
     );
@@ -89,10 +148,19 @@ class DrawerComponent extends Component {
 
 const mapStateToProps = (state) => ({
   menu: state.aplication.menu,
-  user: state.config
+  user: state.config,
+  administrative: state.aplication.administrative,
+
 });
 
-export default connect(mapStateToProps, { closeMenu })(DrawerComponent);
+export default connect(
+  mapStateToProps,
+  {
+    closeMenu,
+    isAdministrative,
+    openAdministrativePanel
+  }
+)(DrawerComponent);
 
 const styles = StyleSheet.create({
   headerDrawer: {

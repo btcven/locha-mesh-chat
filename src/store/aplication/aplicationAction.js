@@ -1,5 +1,6 @@
+/* eslint-disable no-console */
 /* eslint-disable no-new */
-import NativeModules from 'react-native';
+import { NativeModules } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import RNSF from 'react-native-fs';
 import { ActionTypes } from '../constants';
@@ -51,13 +52,15 @@ export const restoreAccountWithPin = (pin, callback) => async (dispatch) => {
   database.restoreWithPin(shaPing).then(async (data) => {
     bitcoin.createWallet(data.seed[0].seed);
     await chatService.startService();
+    callback(true);
     dispatch(writeAction(JSON.parse(JSON.stringify(data.user[0]))));
-  }).catch(() => {
-    callback();
+  }).catch((err) => {
+    console.warn('in catch', err);
+    callback(false);
   });
 };
 
-export const createNewAccount = (obj) => async (dispatch) => {
+export const createNewAccount = (obj, callback) => async (dispatch) => {
   const shaPing = await bitcoin.sha256(obj.pin);
   const shaSeed = await bitcoin.sha256(obj.seed);
   await database.getRealm(shaPing, shaSeed);
@@ -73,6 +76,7 @@ export const createNewAccount = (obj) => async (dispatch) => {
     contacts: [],
     chats: []
   }).then(async (res) => {
+    callback();
     if (!process.env.JEST_WORKER_ID) {
       await AsyncStorage.setItem('@APP:status', 'created');
     }
@@ -191,13 +195,54 @@ export const manualConnection = () => ({
 });
 
 
-/** 
+/**
  * set listening address of node in the state
  * @param {String} address node address
  */
-export const setMultiAddress = (listenAddress) => {
-  return {
-    type: ActionTypes.SET_NODE_ADDRESS,
-    payload: listenAddress
-  };
-}
+export const setMultiAddress = (listenAddress) => ({
+  type: ActionTypes.SET_NODE_ADDRESS,
+  payload: listenAddress
+});
+
+/**
+ * this will opening administrative panel in the menu drawer
+ */
+export const openAdministrativePanel = (callback) => async (dispatch) => {
+  try {
+    await AsyncStorage.setItem('admin', String(true));
+    callback();
+    dispatch({
+      type: ActionTypes.OPENING_HIDDEN_PANEL,
+      payload: true
+    });
+  } catch (error) {
+    console.log('Error', error);
+  }
+};
+
+/**
+ * this will closed administrative panel in the menu drawer
+ */
+export const closeAdministrativePanel = (callback) => async (dispatch) => {
+  try {
+    await AsyncStorage.removeItem('admin');
+    callback();
+    dispatch({
+      type: ActionTypes.CLOSE_HIDDEN_PANEL,
+      payload: false
+    });
+  } catch (error) {
+    console.log('Error', error);
+  }
+};
+
+
+export const isAdministrative = () => async (dispatch) => {
+  let isDefined = await AsyncStorage.getItem('admin');
+  // eslint-disable-next-line no-unneeded-ternary
+  isDefined = isDefined ? true : false;
+  dispatch({
+    type: ActionTypes.OPENING_HIDDEN_PANEL,
+    payload: isDefined
+  });
+};

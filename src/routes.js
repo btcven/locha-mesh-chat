@@ -9,13 +9,15 @@ import Config from './views/config';
 import Chat from './views/home/Chat';
 import Drawer from './components/Drawer';
 import DeviceSettings from './views/deviceSettings';
+import AdministrativeComponent from './views/config/AdministrativeComponent';
 
 export const AppStackNavigator = createStackNavigator({
   initial: DualComponent,
   contacts: Contact,
   config: Config,
   chat: Chat,
-  deviceSettings: DeviceSettings
+  administrative: AdministrativeComponent,
+  deviceSettings: DeviceSettings,
 });
 
 const MyDrawerNavigator = createDrawerNavigator(

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Container } from 'native-base';
 import { connect } from 'react-redux';
 import {
-  Alert, Clipboard, Dimensions, KeyboardAvoidingView, Platform, View
+  Alert, Clipboard, Dimensions, KeyboardAvoidingView, Platform, View,
 } from 'react-native';
 import { verifyImage } from '../../store/contacts/contactsActions';
 import Header from '../../components/Header';
@@ -16,12 +16,13 @@ import {
   deleteMessages,
   setView,
   sendReadMessageStatus,
-  sendAgain
+  sendAgain,
+  setNewDials
 } from '../../store/chats';
 import { messageType } from '../../utils/constans';
 
 import ImagesView from './imagesView';
-import { bitcoin } from '../../../App';
+import { bitcoin, chatService } from '../../../App';
 
 
 const ChatContainer = Platform.select({
@@ -42,8 +43,12 @@ class Chat extends Component {
 
   constructor(props) {
     super(props);
+
+    this.interval = null;
     this.state = {
       selected: [],
+      isConnected: false,
+      seconds: 0,
       imagesView: [],
       fileModal: false,
       menu: [
@@ -56,9 +61,68 @@ class Chat extends Component {
     };
   }
 
+  eventConnected = () => {
+    chatService.event.addListener('connectionEstablished', ({ peer, numEstablished }) => {
+      const chatSelected = this.props.chat[this.props.chatSelected.index].toUID;
+      if (
+        peer === chatSelected
+        && this.state.isConnected !== true
+      ) {
+        this.setState({
+          isConnected: true
+        });
+        clearInterval(this.interval);
+      }
+    });
+  }
+
+  eventDisconnected = () => {
+    chatService.event.addListener('connectionClosed', ({ peer, numEstablished, cause }) => {
+      const chatSelected = this.props.chat[this.props.chatSelected.index].toUID;
+      if (
+        peer === chatSelected
+        && this.state.isConnected !== false
+      ) {
+        this.setState({
+          isConnected: false
+        });
+        this.reconnect();
+      }
+    });
+  }
+
+
+  errorConnection = () => {
+    chatService.event.addListener('unknownPeerUnreachableAddr', (data) => {
+      if (!this.interval) {
+        this.reconnect();
+      }
+    });
+  }
+
+  reconnect = () => {
+    const { nodeAddress } = this.props.navigation.state.params;
+    this.interval = setInterval(() => {
+      if (this.state.seconds < 8) {
+        this.setState({
+          seconds: this.state.seconds + 1
+        });
+      } else {
+        const adress = nodeAddress;
+        this.props.setNewDials(adress, () => { });
+        this.setState({
+          seconds: 0
+        });
+      }
+    }, 1000);
+  }
+
   componentDidMount = () => {
     const chatSelected = this.props.chat[this.props.chatSelected.index].toUID;
     const contactNodeAddress = this.props.navigation.state.params.nodeAddress;
+    this.eventConnected();
+    this.eventDisconnected();
+    this.errorConnection();
     this.props.setView(chatSelected, contactNodeAddress);
   };
 
@@ -214,6 +278,7 @@ class Chat extends Component {
 
   componentWillUnmount = () => {
     this.props.setView(undefined);
+    clearInterval(this.interval);
   };
 
   sendFileWithImage = (data, callback) => {
@@ -292,6 +357,8 @@ class Chat extends Component {
           />
         )}
         <Header
+          isConnected={this.state.isConnected}
+          seconds={this.state.seconds}
           {...this.props}
           menu={this.state.menu}
           selected={this.state.selected}
@@ -344,5 +411,6 @@ export default connect(mapStateToProps, {
   deleteMessages,
   sendReadMessageStatus,
   sendAgain,
-  verifyImage
+  verifyImage,
+  setNewDials
 })(Chat);

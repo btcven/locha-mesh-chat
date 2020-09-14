@@ -324,9 +324,9 @@ export const setView = (idChat, nodeAddress) => async (dispatch) => {
 
 /**
  * function executed enter the chat  view its function es to send a read status
- * 
+ *
  */
-export const sendReadMessageStatus = () => () => {
+export const sendReadMessageStatus = (sendStatus) => () => {
   chatService.send(JSON.stringify(sendStatus));
 };
 
@@ -354,3 +354,74 @@ export const sendAgain = (message) => (dispatch) => {
 export const updateState = () => ({
   type: ActionTypes.UPDATE_STATE
 });
+
+/**
+ * manual starting of the chat service
+ *
+ * @brief this function is executed jus only in the administrative panel
+ */
+export const startManualService = (callback) => async (dispatch) => {
+  try {
+    await chatService.startService();
+    callback();
+    dispatch({
+      type: ActionTypes.CHAT_SERVICE_STATUS,
+      payload: true
+    });
+  } catch (error) {
+    console.log('couldn\'t start chat service');
+  }
+};
+
+/**
+ * manual stop of the chat service
+ *
+ * @brief this function is executed jus only in the administrative panel
+ */
+export const stopService = (callback) => async (dispatch) => {
+  try {
+    await chatService.stop();
+    callback();
+    dispatch({
+      type: ActionTypes.CHAT_SERVICE_STATUS,
+      payload: false
+    });
+  } catch (error) {
+    console.log('couldn\'t stop chat service: ', error);
+  }
+};
+
+/**
+ * This action adds to the global state the count of new peers
+ * @param {*} peer  peerId was returned of the chatService
+ */
+export const setPeers = (peer) => (dispatch, getState) => {
+  const isDefined = getState().chats.peersConnected.find(((data) => data === peer));
+  if (!isDefined) {
+    dispatch({
+      type: ActionTypes.NEW_PEER_CONNECTED,
+      payload: peer
+    });
+  }
+};
+
+/**
+ * This action removing of the the global state the pairs that  is disconnecting
+ * @param {*} peer  peerId was returned of the chatService
+ */
+export const removeDisconnedPeers = (peer) => (dispatch, getState) => {
+  const peers = getState().chats.peersConnected.filter(((data) => data !== peer));
+  dispatch({
+    type: ActionTypes.REMOVED_PEER,
+    payload: peers
+  });
+};
+
+export const setNewDials = (nodeAddress, callback) => async (dispatch) => {
+  try {
+    await chatService.dial(nodeAddress);
+    callback(true);
+  } catch (err) {
+    callback(false);
+  }
+};

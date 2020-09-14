@@ -32,7 +32,7 @@
         </intent-filter>
       </activity>
       <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />
-        <service android:name="io.locha.p2p.runtime.ChatService"/>
+      <service android:name="io.locha.p2p.service.ChatService"/>
     </application>
 
 </manifest>
