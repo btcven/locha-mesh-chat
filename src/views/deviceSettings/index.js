@@ -40,7 +40,7 @@ class DeviceSettings extends React.Component {
   }
 
   render() {
-    const { deviceInfo, screenProps,  } = this.props;
+    const { deviceInfo, screenProps } = this.props;
     return (
       <Container>
         <Header {...this.props} name={`${screenProps.t('DeviceSettings:headerTitle')}`} />
