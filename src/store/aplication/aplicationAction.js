@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 /* eslint-disable no-new */
-import NativeModules from 'react-native';
+import { NativeModules } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import RNSF from 'react-native-fs';
 import { ActionTypes } from '../constants';

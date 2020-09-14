@@ -166,7 +166,7 @@ public class EventsDispatcher implements RuntimeEvents {
     }
 
 
-    @Override  public void onExternalAddress(String address){
+    public void onExternalAddress(String address){
         sendEvent(reactContext, "externalAddress" , address);
     }
 

@@ -1,6 +1,6 @@
 /* eslint-disable import/prefer-default-export */
 import RNFetchBlob from 'rn-fetch-blob';
-import NativeModules from 'react-native';
+import { NativeModules } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import { ActionTypes } from '../constants';
 import { toast } from '../../utils/utils';
@@ -11,7 +11,7 @@ import { bitcoin } from '../../../App';
  *@module ChatAction
  */
 
-const url = 'https://192.168.4.1:443';
+const url = 'coap://[2001:db8::1]:5683';
 const deviceInfoURL = `${url}/system/info`;
 const apSettings = `${url}/wifi/ap`;
 const staSettings = `${url}/wifi/sta`;
@@ -21,46 +21,16 @@ const request = RNFetchBlob.config({
 });
 
 
-/**
- * function used to read the characteristics of esp32
- * @returns {Object}
- */
-// export const getDeviceInfo = () => async (dispatch, getState) => {
-//   const { username, password } = getState().device.user;
-//   const value = await getCredentials({ username, password });
-//   request.fetch('GET', deviceInfoURL, {
-//     user: value.username,
-//     password: value.password,
-//   }).then((res) => {
-//     const { status } = res.info();
-//     if (status === 200) {
-//       dispatch({
-//         type: ActionTypes.GET_DEVICE_INFO,
-//         payload: JSON.parse(res.data)
-//       });
-//     } else {
-//       dispatch(errorConnection());
-//     }
-//   }).catch(() => {
-//     dispatch(errorConnection());
-//   });
-// };
-
-
 export const getDeviceInfo = () => async (dispatch, getState) => {
   NativeModules.RNCoapClient.request(
-    'coap://[2001:db8::1]:5683/system/info',
+    deviceInfoURL,
     'get'
   ).then((res) => {
-    console.log(
-      'ress', res
-    );
     dispatch({
       type: ActionTypes.GET_DEVICE_INFO,
       payload: JSON.parse(res)
     });
   }).catch((err) => {
-    console.log('despues aqui', err);
     dispatch(errorConnection());
   });
 };
