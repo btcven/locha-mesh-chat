@@ -1,13 +1,12 @@
 /* eslint-disable no-console */
 /* eslint-disable no-new */
-import { NativeModules } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import RNSF from 'react-native-fs';
 import { ActionTypes } from '../constants';
 import { STORAGE_KEY } from '../../utils/constans';
 import { createFolder } from '../../utils/utils';
 import { bitcoin, database, chatService } from '../../../App';
-import UdpServer from '../../utils/udp';
+
 
 /**
  * in this module are the global actions of the application
@@ -87,13 +86,12 @@ export const createNewAccount = (obj, callback) => async (dispatch) => {
 
 export const restoreWithPhrase = (pin, phrase, name) => async (dispatch) => {
   database.restoreWithPhrase(pin, phrase).then(async () => {
-    const udp = new UdpServer();
     await createFolder();
     const result = await bitcoin.createWallet(phrase);
-    const ivp6 = udp.globalIpv6 ? udp.globalIpv6 : '::1';
+    const peerID = await chatService.startService();
     database.writteUser({
       uid: result.pubKey,
-      ipv6Address: ivp6,
+      peerID,
       name,
       image: null,
       contacts: [],
@@ -134,21 +132,6 @@ export const loading = () => (dispatch) => {
 
 /**
  * @function
- * @description hide application spinner
- */
-
-export const loaded = () => ({
-  type: ActionTypes.LOADING_OFF
-});
-
-export const clearAll = () => (dispatch) => {
-  dispatch({
-    type: ActionTypes.CLEAR_ALL
-  });
-};
-
-/**
- * @function
  * @description function to add a new pin
  * @param {Object} obj
  * @param {String} obj.path database address
@@ -162,37 +145,6 @@ export const newPin = (obj) => (dispatch) => {
     });
   });
 };
-
-
-export const notConnectedValidAp = (notValid) => (dispatch, getState) => {
-  const { aplication } = getState();
-  if (aplication.notConnectedValidAp !== notValid) {
-    dispatch({
-      type: ActionTypes.NOT_CONNECTED_VALID_AP,
-      payload: notValid
-    });
-
-    dispatch({
-      type: ActionTypes.MANUAL_CONNECTION,
-      payload: notValid
-    });
-  }
-};
-
-/**
- * function used for connect the WiFi inside app
- * @param {Object} credentials  ssid and password of the wifi ap
- * @param {*} callback
- */
-export const wifiConnect = (credentials, callback) => (dispatch) => {
-  NativeModules.RNwifiModule.connect(credentials);
-  callback();
-};
-
-
-export const manualConnection = () => ({
-  type: ActionTypes.MANUAL_CONNECTION
-});
 
 
 /**

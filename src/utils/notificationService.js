@@ -25,7 +25,6 @@ export default class NotifService {
   }
 
   localNotif = (data, id) => {
-    
     this.LocalNotification.createNotification(
       {
         id: id.toString(),
@@ -35,12 +34,6 @@ export default class NotifService {
     );
   }
 
-
-  //   checkPermission(cbk) {
-  //     return PushNotification.checkPermissions(res => {
-  //       console.log(res);
-  //     });
-  //   }
 
   cancelNotif(id) {
     this.LocalNotification.clearNotificationID({ id });
