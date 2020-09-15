@@ -38,14 +38,6 @@ describe('Aplication actions', () => {
     expect(newState.aplication.loading).toBe(true);
   });
 
-  test('loaded action', async () => {
-    await store.dispatch(loaded());
-
-    const newState = store.getState();
-
-    expect(newState.aplication.loading).toBe(false);
-  });
-
   // test('Create new account action', async () => {
   //   await store.dispatch(createNewAccount(obj)).then(() => {
   //     const newState = store.getState();
