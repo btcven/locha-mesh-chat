@@ -1,6 +1,8 @@
 import { NativeModules, NativeEventEmitter } from 'react-native';
 import { bitcoin } from '../../App';
-import { getChat, setStatusMessage, setPeers, removeDisconnedPeers } from '../store/chats';
+import {
+  getChat, setStatusMessage, setPeers, removeDisconnedPeers
+} from '../store/chats';
 import { messageType, addressType } from './constans';
 import { requestImageStatus, sentImageStatus, verifyHashImageStatus } from '../store/contacts';
 import { setMultiAddress } from '../store/aplication';
@@ -78,9 +80,7 @@ export default class ChatService {
 
   onNewExternalAddress = () => {
     this.event.addListener('externalAddress', (externalAddress) => {
-      const result = this.store.getState().config.nodeAddress.find(address => {
-        return address === externalAddress;
-      });
+      const result = this.store.getState().config.nodeAddress.find((address) => address === externalAddress);
       if (!result) {
         this.store.dispatch(setMultiAddress(externalAddress));
       }
@@ -104,8 +104,6 @@ export default class ChatService {
       this.store.dispatch(setPeers(peer));
     }));
   }
-
-
 
 
   onConnectionClosed = () => {

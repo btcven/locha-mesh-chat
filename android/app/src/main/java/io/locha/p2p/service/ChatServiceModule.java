@@ -105,11 +105,11 @@ public class ChatServiceModule extends ReactContextBaseJavaModule {
     @ReactMethod public void start(String privateKey, boolean attemptUpnp, Promise promise) {
         this.mPromise = promise;
 
-        if (!Utils.isConnected(this.reactContext)) {
-            this.mPromise.reject(ENOTCONNECTED, "The device is not connected");
-            this.mPromise = null;
-            return;
-        }
+//        if (!Utils.isConnected(this.reactContext)) {
+//            this.mPromise.reject(ENOTCONNECTED, "The device is not connected");
+//            this.mPromise = null;
+//            return;
+//        }
 
         try {
             byte[] privateKeyBytes = Utils.hexStringToByteArray(privateKey);

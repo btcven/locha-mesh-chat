@@ -16,6 +16,7 @@ import { closeAdministrativePanel, openAdministrativePanel } from '../../store/a
 import { startManualService, stopService, setNewDials } from '../../store/chats/chatAction';
 import { toast } from '../../utils/utils';
 import AddManualAddress from './AddManualAddress';
+import AddNewAddressListen from './AddNewAddressListen';
 
 class AdministrativeComponent extends Component {
   constructor() {
@@ -97,6 +98,8 @@ class AdministrativeComponent extends Component {
             title="Add Bootstrap address"
             nameComponent="bootstrapAddress"
           />
+
+          <AddNewAddressListen />
           <List>
             <ListItem>
               <Left>
@@ -148,6 +151,14 @@ class AdministrativeComponent extends Component {
                   value={this.props.administrative}
                   onTouchEnd={() => this.closeOrActiveAdministration()}
                 />
+              </Right>
+            </ListItem>
+            <ListItem button onPress={() => alert('this is not available now')}>
+              <Left>
+                <Text>configure manual listening </Text>
+              </Left>
+              <Right>
+                <Icon name="arrow-forward" />
               </Right>
             </ListItem>
           </List>
