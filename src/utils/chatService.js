@@ -1,8 +1,7 @@
 import { NativeModules, NativeEventEmitter } from 'react-native';
 import { bitcoin } from '../../App';
 import { getChat, setStatusMessage, setPeers, removeDisconnedPeers } from '../store/chats';
-import { messageType, addressType } from './constans';
-import { requestImageStatus, sentImageStatus, verifyHashImageStatus } from '../store/contacts';
+import { messageType } from './constans';
 import { setMultiAddress } from '../store/aplication';
 
 export default class ChatService {
@@ -54,20 +53,7 @@ export default class ChatService {
 
   setStatus = async (statusData) => {
     const { dispatch } = this.store;
-    switch (statusData.data.status) {
-      // execute function that is in contact actions
-      case 'RequestImage': dispatch(requestImageStatus(statusData));
-        break;
-      // Execute function that is in contact actions
-      case 'sentImage': dispatch(sentImageStatus(statusData));
-        break;
-      // Execute function that is in contact actions
-      case 'verifyHashImage': dispatch(verifyHashImageStatus(statusData));
-        break;
-      // Execute function that is in chat actions
-      default: dispatch(setStatusMessage(statusData));
-        break;
-    }
+    dispatch(setStatusMessage(statusData));
   };
 
   onNewListenAddr = () => {

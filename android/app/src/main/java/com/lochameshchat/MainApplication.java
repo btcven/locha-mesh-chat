@@ -3,46 +3,21 @@ package com.lochameshchat;
 
 import android.app.Application;
 
-import com.RNFetchBlob.RNFetchBlobPackage;
-import com.bitgo.randombytes.RandomBytesPackage;
+
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.soloader.SoLoader;
-import com.horcrux.svg.SvgPackage;
-import com.oblador.vectoricons.VectorIconsPackage;
-import com.ocetnik.timer.BackgroundTimerPackage;
-import com.peel.react.TcpSocketsModule;
-import com.reactnative.ivpusic.imagepicker.PickerPackage;
-import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
-import com.reactnativecommunity.slider.ReactSliderPackage;
-import com.rnfs.RNFSPackage;
-import com.rnim.rn.audio.ReactNativeAudioPackage;
-import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
-import com.tradle.react.UdpSocketsModule;
-import com.wenkesj.voice.VoicePackage;
-import com.zmxv.RNSound.RNSoundPackage;
-
-import org.reactnative.camera.RNCameraPackage;
-
 import android.content.Context;
 import com.facebook.react.PackageList;
-
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
-
 import DeviceInfo.DeviceInfoPackage;
 import LocalNotification.LocalNotificationPackage;
 import io.locha.p2p.LochaP2PPackage;
 import RNCoapClient.CoapClientPackage;
 import RNWebSocket.RNWebsocketPakage;
-import WiFiModule.WifiPackage;
-import cl.json.RNSharePackage;
-import io.github.elyx0.reactnativedocumentpicker.DocumentPickerPackage;
-import io.realm.react.RealmReactPackage;
-import upd.RNUdpServerPackage;
-
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -63,9 +38,7 @@ public class MainApplication extends Application implements ReactApplication {
            packages.add(new LochaP2PPackage());
            packages.add(new RNWebsocketPakage());
            packages.add(new CoapClientPackage());
-           packages.add(new RNUdpServerPackage());
            packages.add(new LocalNotificationPackage());
-           packages.add(new WifiPackage());
 
           return packages;
         }

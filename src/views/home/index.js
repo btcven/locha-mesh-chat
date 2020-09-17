@@ -54,7 +54,7 @@ class index extends Component {
 
   componentDidMount = () => {
     database.realmObservable();
-    pendingObservable();
+    // pendingObservable();
   };
 
   selectedChat = (info, obj) => {
@@ -102,7 +102,7 @@ class index extends Component {
   getContactInformation = (data) => {
     const result = this.props.contacts.find((contact) => data.toUID === contact.uid);
 
-    return result || { ...chats[0], picture: null };
+    return result;
   };
 
   seleted = (data) => {
@@ -168,9 +168,7 @@ class index extends Component {
 
   orderChats = (orderChats) => {
     const sort = orderChats.sort((a, b) => {
-      if (b.toUID !== 'broadcast' && a.toUID !== 'broadcast') {
-        return new Date(b.timestamp) - new Date(a.timestamp);
-      }
+      return new Date(b.timestamp) - new Date(a.timestamp);
     });
     return sort;
   };
@@ -193,7 +191,6 @@ class index extends Component {
           back={this.closeSelected}
           search={this.search}
         />
-
         <Content>
           {this.orderChats(result).map((chat) => {
             const queue = chat.queue ? Object.values(chat.queue) : [];
@@ -204,18 +201,9 @@ class index extends Component {
             );
             const infoData = this.getContactInformation(chat);
             const messages = Object.values(chat.messages);
-            const lastmessage = messages.length ? (
-              this.getDataTypeMessage(messages[messages.length - 1])
-            ) : (
-                <Text note>
-                  {chats[0].lastMessage}
-                </Text>
-              );
+            const lastmessage = this.getDataTypeMessage(messages[messages.length - 1]);
 
-            const lasTime = messages.length
-              ? Number(messages[messages.length - 1].timestamp)
-              : new Date();
-
+            const lasTime = Number(messages[messages.length - 1].timestamp);
             if (messages.length !== 0) {
               return (
                 <List key={chat.toUID} style={{ backgroundColor }}>
@@ -234,8 +222,6 @@ class index extends Component {
                         }}
                         />
                       )}
-
-
                       {infoData.picture && (
                         <Thumbnail
                           source={{
