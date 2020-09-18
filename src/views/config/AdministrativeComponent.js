@@ -23,7 +23,8 @@ class AdministrativeComponent extends Component {
     super();
     this.state = {
       dialAddress: false,
-      manualBootstrap: false
+      manualBootstrap: false,
+      addresListen: false
     };
   }
 
@@ -61,13 +62,16 @@ class AdministrativeComponent extends Component {
       this.setState({
         dialAddress: false
       });
-    } else {
+    } else if (name === 'bootstrapAddress') {
       this.setState({
         manualBootstrap: false
       });
+    } else {
+      this.setState({
+        addresListen: false
+      });
     }
   }
-
 
   sendDialToChatService = (address, callback) => {
     this.props.setNewDials(address, (res) => {
@@ -99,7 +103,7 @@ class AdministrativeComponent extends Component {
             nameComponent="bootstrapAddress"
           />
 
-          <AddNewAddressListen />
+          <AddNewAddressListen open={this.state.addresListen} close={this.closeModal} />
           <List>
             <ListItem>
               <Left>
@@ -153,7 +157,7 @@ class AdministrativeComponent extends Component {
                 />
               </Right>
             </ListItem>
-            <ListItem button onPress={() => alert('this is not available now')}>
+            <ListItem button onPress={() => this.setState({ addresListen: true })}>
               <Left>
                 <Text>configure manual listening </Text>
               </Left>

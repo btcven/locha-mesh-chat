@@ -111,4 +111,9 @@ export default class ChatService {
       this.store.dispatch(removeDisconnedPeers(peer));
     }));
   }
+
+
+  addNewAddressListen = (address) => {
+    this.service.addNewChatService(address);
+  }
 }

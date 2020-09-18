@@ -4,16 +4,21 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.util.Log;
 
+import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.WritableArray;
 
 import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
@@ -24,6 +29,7 @@ import javax.annotation.Nonnull;
 public class DeviceInfoModule  extends ReactContextBaseJavaModule {
 
     private final ReactApplicationContext reactContext;
+    private final static String TAG = "DeviceInfo";
 
     public DeviceInfoModule(@Nonnull ReactApplicationContext reactContext ) {
         super(reactContext);
@@ -95,8 +101,23 @@ public class DeviceInfoModule  extends ReactContextBaseJavaModule {
         }
 
         promise.reject("Error", "error");
-
     }
+
+
+
+   @ReactMethod public void getIpv6Andipv4Adress(Promise promise){
+
+        List<String> ipInterface =  Utils.getAllIps();
+
+       for (String address: ipInterface) {
+           Log.i(TAG, "getIpv6Andipv4Adress: " + address);
+       }
+
+       WritableArray array = Arguments.fromList(ipInterface);
+
+       promise.resolve(array);
+
+   }
 
 
 }

@@ -1,44 +1,54 @@
 
 import React, { Component } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, NativeModules } from 'react-native';
 import {
   Text, Picker, Button, ListItem, CheckBox, Body
 } from 'native-base';
 import Modal from 'react-native-modal';
 import { connect } from 'react-redux';
-import AsyncStorage from '@react-native-community/async-storage';
-
+import { chatService } from '../../../App';
 
 class AddNewAddressListen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isDefaul: false
+      isDefaul: true,
+      ipInterface: [],
+      adressSelected: ''
     };
   }
 
   componentDidMount = async () => {
-    const result = await AsyncStorage.getItem('defaultAddresslisten');
-    if (result) {
-      this.setState({
-        isDefaul: true
-      });
-    }
+    const ips = await NativeModules.RNDeviceInfo.getIpv6Andipv4Adress();
+    this.setState({
+      ipInterface: ips,
+      adressSelected: '0.0.0.0'
+    });
   }
 
   setDefault = async () => {
     if (!this.state.isDefaul) {
-      await AsyncStorage.setItem('defaultAddresslisten', String(true));
       this.setState({ isDefaul: true });
     } else {
-      await AsyncStorage.removeItem('defaultAddresslisten');
       this.setState({ isDefaul: false });
     }
   }
 
+  onChangeAddress = (address) => {
+    this.setState({
+      adressSelected: address
+    });
+  }
+
+  save = () => {
+    chatService.addNewAddressListen(this.state.adressSelected);
+  }
+
+
   render() {
     const localAddress = ['0.0.0.0'];
-    const value = !this.state.isDefaul ? this.props.listenAddress : localAddress;
+
+    const value = !this.state.isDefaul ? this.state.ipInterface : localAddress;
     return (
       <Modal
         style={{
@@ -46,27 +56,27 @@ class AddNewAddressListen extends Component {
           margin: 0
         }}
         avoidKeyboard
-        isVisible
+        isVisible={this.props.open}
         animationIn="slideInUp"
         animationOut="slideOutDown"
         animationOutTiming={800}
-        onBackdropPress={() => console.log('hi')}
+        onBackdropPress={() => this.props.close()}
       >
         <View style={styles.container}>
           <Text>
             por favor seleccion un address donde desea escuchar
           </Text>
-
           <View style={styles.dropDownStyle}>
             <Picker
               enabled={!this.state.isDefaul}
               mode="dropdown"
+              selectedValue={this.state.adressSelected}
+              onValueChange={this.onChangeAddress}
               style={{ width: '100%' }}
             >
               {value.map((address) => <Picker.Item label={address} value={address} />)}
             </Picker>
           </View>
-
           <ListItem>
             <CheckBox color="orange" checked={this.state.isDefaul} onPress={this.setDefault} />
             <Body>
@@ -78,7 +88,7 @@ class AddNewAddressListen extends Component {
             style={styles.buttonContainer}
           >
             <Button
-              onPress={() => console.log('save')}
+              onPress={() => this.props.close()}
               transparent
               style={{
                 marginHorizontal: 10
@@ -90,7 +100,7 @@ class AddNewAddressListen extends Component {
             </Button>
             <Button
               transparent
-              onPress={() => console.log('back')}
+              onPress={() => this.save()}
               style={styles.styleTextButton}
             >
               <Text>save</Text>
@@ -133,5 +143,4 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-end'
   }
-
 });

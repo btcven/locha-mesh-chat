@@ -139,10 +139,17 @@ public class Runtime {
         nativeSendMessage(contents);
     }
 
+
+
+    public void setNewAddressListen(String address){
+        nativeNewAddressListen(address);
+    }
+
     private native void nativeNew(byte[] privateKey, boolean attemptUpnp);
     private native void nativeStop();
     private native String[] nativeExternalAddresses();
     private native String nativeGetPeerId();
     private native void nativeDial(String multiaddr);
     private native void nativeSendMessage(String contents);
+    private native void nativeNewAddressListen(String address);
 }

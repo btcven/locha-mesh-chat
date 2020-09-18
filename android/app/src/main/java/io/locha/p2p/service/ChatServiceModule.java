@@ -16,6 +16,7 @@
 
 package io.locha.p2p.service;
 
+import DeviceInfo.DeviceInfoModule;
 import io.locha.p2p.runtime.Runtime;
 
 import android.content.BroadcastReceiver;
@@ -217,6 +218,10 @@ public class ChatServiceModule extends ReactContextBaseJavaModule {
         promise.resolve(this.isServiceStarted && Runtime.isStarted());
     }
 
+
+    @ReactMethod public void addNewChatService(String address){
+        Runtime.getInstance().setNewAddressListen(address);
+    }
 
 
     public void spawnExternalIpAddrThread()  {
