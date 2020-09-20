@@ -6,6 +6,7 @@ import {
 } from 'native-base';
 import Modal from 'react-native-modal';
 import { connect } from 'react-redux';
+import AsyncStorage from '@react-native-community/async-storage';
 import { chatService } from '../../../App';
 
 class AddNewAddressListen extends Component {
@@ -41,7 +42,13 @@ class AddNewAddressListen extends Component {
   }
 
   save = () => {
-    chatService.addNewAddressListen(this.state.adressSelected);
+    chatService.addNewAddressListen(this.state.adressSelected, async () => {
+      if (this.state.isDefaul) {
+        await AsyncStorage.setItem('addressListen', this.state.adressSelected);
+      } else {
+        await AsyncStorage.removeItem('addressListen');
+      }
+    });
   }
 
 

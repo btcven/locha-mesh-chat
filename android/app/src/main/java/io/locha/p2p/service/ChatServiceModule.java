@@ -37,6 +37,10 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.WritableArray;
 
+import java.net.Inet4Address;
+import java.net.Inet6Address;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -60,6 +64,7 @@ public class ChatServiceModule extends ReactContextBaseJavaModule {
     EventsDispatcher event;
     private final static  int  RECHARGE_TIME = 6000;
     private final static  int  WAIT_TIME = 2000;
+
 
     public ChatServiceModule(ReactApplicationContext reactContext) {
         super(reactContext);
@@ -103,14 +108,8 @@ public class ChatServiceModule extends ReactContextBaseJavaModule {
      * @param attemptUpnp Whether to enable UPnP and attempt to use it to discover
      * our external IP address and do port mapping.
      */
-    @ReactMethod public void start(String privateKey, boolean attemptUpnp, Promise promise) {
+    @ReactMethod public void start(String privateKey, boolean attemptUpnp,  String addressListen, Promise promise) {
         this.mPromise = promise;
-
-//        if (!Utils.isConnected(this.reactContext)) {
-//            this.mPromise.reject(ENOTCONNECTED, "The device is not connected");
-//            this.mPromise = null;
-//            return;
-//        }
 
         try {
             byte[] privateKeyBytes = Utils.hexStringToByteArray(privateKey);
@@ -118,6 +117,9 @@ public class ChatServiceModule extends ReactContextBaseJavaModule {
             this.serviceIntent = new Intent(this.reactContext, ChatService.class);
             this.serviceIntent.putExtra("privateKey", privateKeyBytes);
             this.serviceIntent.putExtra("attemptUpnp", attemptUpnp);
+            if(addressListen != null){
+                this.serviceIntent.putExtra("addressListen", addressListen);
+            }
 
             // Guard for Android >=8.0
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -142,6 +144,17 @@ public class ChatServiceModule extends ReactContextBaseJavaModule {
         } catch (Exception e) {
             Log.e(TAG, "Couldn't stop service", e);
             promise.reject(ENOTSTARTED, e);
+        }
+    }
+
+    /**
+     * Stop the service
+     */
+    public void stop() {
+        try {
+            this.reactContext.stopService(serviceIntent);
+        } catch (Exception e) {
+            Log.e(TAG, "Couldn't stop service", e);
         }
     }
 
@@ -219,8 +232,32 @@ public class ChatServiceModule extends ReactContextBaseJavaModule {
     }
 
 
-    @ReactMethod public void addNewChatService(String address){
-        Runtime.getInstance().setNewAddressListen(address);
+
+    public String addRequiredAdressFormat(String ip) throws UnknownHostException {
+
+           InetAddress address = InetAddress.getByName(ip);
+           if (address instanceof Inet6Address) {
+               return "/ip6/"+ip+"/tcp/4444";
+           } else if (address instanceof Inet4Address) {
+               return "/ip4/"+ip+"/tcp/4444";
+           }
+           return null;
+    }
+
+
+    @ReactMethod public void addNewChatService(String privKey ,String address, Promise promise){
+       try {
+         String _address =  addRequiredAdressFormat(address);
+
+         stop();
+
+        start(privKey,true, _address, promise );
+
+
+       } catch (Exception e) {
+
+       }
+
     }
 
 

@@ -6,6 +6,7 @@ import {
 import { messageType, addressType } from './constans';
 import { requestImageStatus, sentImageStatus, verifyHashImageStatus } from '../store/contacts';
 import { setMultiAddress } from '../store/aplication';
+import { cleanNodeAddress } from '../store/configuration'
 
 export default class ChatService {
   constructor() {
@@ -89,7 +90,7 @@ export default class ChatService {
 
   startService = async () => {
     const xpriv = await bitcoin.getPrivKey();
-    const PeerID = await this.service.start(xpriv, true);
+    const PeerID = await this.service.start(xpriv, true, null);
 
     return PeerID;
   }
@@ -113,7 +114,10 @@ export default class ChatService {
   }
 
 
-  addNewAddressListen = (address) => {
-    this.service.addNewChatService(address);
+  addNewAddressListen = async (address) => {
+    const xpriv = await bitcoin.getPrivKey();
+    this.service.addNewChatService(xpriv, address).then(() => {
+      this.store.dispatch(cleanNodeAddress);
+    });
   }
 }

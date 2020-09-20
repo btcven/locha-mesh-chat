@@ -135,3 +135,8 @@ export const setNewIpv6 = (ipv6) => (dispatch, getState) => {
     });
   }
 };
+
+
+export const cleanNodeAddress = () => ({
+  type: ActionTypes.CLEAN_ADDRESS_LISTEN
+});

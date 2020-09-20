@@ -37,6 +37,10 @@ export const configurationReducer = (state = AplicationState, action) => {
     case ActionTypes.EDIT_NAME: {
       return { ...state, name: action.payload };
     }
+
+    case ActionTypes.CLEAN_ADDRESS_LISTEN: {
+      return { ...state, nodeAddress: [] };
+    }
     default: {
       return state;
     }
