@@ -7,6 +7,7 @@ import { messageType, addressType } from './constans';
 import { requestImageStatus, sentImageStatus, verifyHashImageStatus } from '../store/contacts';
 import { setMultiAddress } from '../store/aplication';
 import { cleanNodeAddress } from '../store/configuration'
+import AsyncStorage from '@react-native-community/async-storage';
 
 export default class ChatService {
   constructor() {
@@ -90,7 +91,8 @@ export default class ChatService {
 
   startService = async () => {
     const xpriv = await bitcoin.getPrivKey();
-    const PeerID = await this.service.start(xpriv, true, null);
+    const addressListen = await AsyncStorage.getItem('AddressListen');
+    const PeerID = await this.service.start(xpriv, true, addressListen);
 
     return PeerID;
   }
@@ -114,10 +116,13 @@ export default class ChatService {
   }
 
 
-  addNewAddressListen = async (address) => {
+  addNewAddressListen = async (address, callback) => {
     const xpriv = await bitcoin.getPrivKey();
+    this.store.dispatch(cleanNodeAddress());
     this.service.addNewChatService(xpriv, address).then(() => {
-      this.store.dispatch(cleanNodeAddress);
+      callback(null);
+    }).catch((err) => {
+      callback(err);
     });
   }
 }

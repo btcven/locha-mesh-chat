@@ -118,7 +118,8 @@ public class ChatServiceModule extends ReactContextBaseJavaModule {
             this.serviceIntent.putExtra("privateKey", privateKeyBytes);
             this.serviceIntent.putExtra("attemptUpnp", attemptUpnp);
             if(addressListen != null){
-                this.serviceIntent.putExtra("addressListen", addressListen);
+                String _addressListen = addRequiredAdressFormat(addressListen);
+                this.serviceIntent.putExtra("addressListen", _addressListen);
             }
 
             // Guard for Android >=8.0
@@ -241,21 +242,20 @@ public class ChatServiceModule extends ReactContextBaseJavaModule {
            } else if (address instanceof Inet4Address) {
                return "/ip4/"+ip+"/tcp/4444";
            }
-           return null;
+           return ip;
     }
 
 
     @ReactMethod public void addNewChatService(String privKey ,String address, Promise promise){
        try {
-         String _address =  addRequiredAdressFormat(address);
-
-         stop();
-
-        start(privKey,true, _address, promise );
+           // the service was stopped to start it again with a new address
+           stop();
+            // starting service again
+            start(privKey,false, address, promise );
 
 
        } catch (Exception e) {
-
+           Log.e(TAG, "failed to add the new listening address: ", e);
        }
 
     }

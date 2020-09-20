@@ -8,6 +8,7 @@ import Modal from 'react-native-modal';
 import { connect } from 'react-redux';
 import AsyncStorage from '@react-native-community/async-storage';
 import { chatService } from '../../../App';
+import { toast } from '../../utils/utils';
 
 class AddNewAddressListen extends Component {
   constructor(props) {
@@ -20,16 +21,20 @@ class AddNewAddressListen extends Component {
   }
 
   componentDidMount = async () => {
+    let isDefault = await AsyncStorage.getItem('AddressListen');
+    const addressListen = isDefault || '0.0.0.0';
+    isDefault ? isDefault = false : isDefault = true;
     const ips = await NativeModules.RNDeviceInfo.getIpv6Andipv4Adress();
     this.setState({
       ipInterface: ips,
-      adressSelected: '0.0.0.0'
+      adressSelected: addressListen,
+      isDefaul: isDefault
     });
   }
 
   setDefault = async () => {
     if (!this.state.isDefaul) {
-      this.setState({ isDefaul: true });
+      this.setState({ isDefaul: true, adressSelected: '0.0.0.0' });
     } else {
       this.setState({ isDefaul: false });
     }
@@ -42,11 +47,19 @@ class AddNewAddressListen extends Component {
   }
 
   save = () => {
-    chatService.addNewAddressListen(this.state.adressSelected, async () => {
-      if (this.state.isDefaul) {
-        await AsyncStorage.setItem('addressListen', this.state.adressSelected);
+    chatService.addNewAddressListen(this.state.adressSelected, async (error) => {
+      if (error) {
+        toast('an error occurred while adding a new listening address');
+        return;
+      }
+      if (!this.state.isDefaul) {
+        await AsyncStorage.setItem('AddressListen', this.state.adressSelected);
+        toast(`successful changes the server listening address will be ${this.state.adressSelected}`);
+        this.props.close();
       } else {
-        await AsyncStorage.removeItem('addressListen');
+        await AsyncStorage.removeItem('AddressListen');
+        toast('successful changes the server listening address will be all available directions');
+        this.props.close();
       }
     });
   }
