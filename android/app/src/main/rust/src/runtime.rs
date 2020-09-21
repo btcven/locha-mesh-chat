@@ -187,21 +187,6 @@ pub extern "system" fn Java_io_locha_p2p_runtime_Runtime_nativeGetPeerId(
 }
 
 
-#[no_mangle]
-pub extern "system" fn Java_io_locha_p2p_runtime_Runtime_nativeNewAddressListen(
-  env: JNIEnv,
-  class: JClass,
-  address: JString,
-) {
-
-  let input: String = env.get_string(address)                                  
-  .expect("Couldn't get java string!")                                   
-  .into();                                                               
-
-   trace!("nativeNewAddressListen: {}", input)
-
-  
-}
 
 #[no_mangle]
 pub extern "system" fn Java_io_locha_p2p_runtime_Runtime_nativeDial(
