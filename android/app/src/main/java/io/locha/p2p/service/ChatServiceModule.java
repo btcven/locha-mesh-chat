@@ -245,8 +245,8 @@ public class ChatServiceModule extends ReactContextBaseJavaModule {
        try {
            // the service was stopped to start it again with a new address
            stop();
-            // starting service again
-            start(privKey,false, address, promise );
+           // starting service again
+           start(privKey,false, address, promise );
 
 
        } catch (Exception e) {
