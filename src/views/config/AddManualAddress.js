@@ -88,7 +88,6 @@ export default class AddManualAddress extends Component {
   }
 }
 
-
 const styles = StyleSheet.create({
   container: {
     backgroundColor: 'white',
@@ -100,5 +99,4 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: '400'
   }
-
 });

@@ -116,8 +116,5 @@ public class DeviceInfoModule  extends ReactContextBaseJavaModule {
        WritableArray array = Arguments.fromList(ipInterface);
 
        promise.resolve(array);
-
    }
-
-
 }

@@ -32,7 +32,6 @@ class AdministrativeComponent extends Component {
     title: 'Admistrative dashboard'
   };
 
-
   closeOrActiveAdministration = () => {
     if (this.props.administrative) {
       this.props.closeAdministrativePanel(() => {

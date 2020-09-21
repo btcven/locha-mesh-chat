@@ -11,7 +11,7 @@ crate-type = ["cdylib", "lib"]
 locha-p2p = { version = "0.1", git = "https://github.com/btcven/locha-p2p" }
 async-std = { version = "1", features = ["unstable"] }
 jni = "0.17"
-libp2p = "0.24"
+libp2p = "0.28"
 log = "0.4"
 parking_lot = "0.11"
 android_logger = "0.9"

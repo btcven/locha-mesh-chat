@@ -99,11 +99,10 @@ pub extern "system" fn Java_io_locha_p2p_runtime_Runtime_nativeNew(
         let identity = Identity::from(secret_key);
         let attempt_upnp = attempt_upnp == JNI_TRUE;
 
-        let mut discovery = DiscoveryConfig::new();
+        let mut discovery = DiscoveryConfig::new(true);
 
 
-        let input: String = env.get_string(address)                                                             
-        ?.into();                                                               
+        let input: String = env.get_string(address)?.into();                                                               
     
         trace!("nativeNewAddressListen: {}", input);
 
@@ -112,7 +111,6 @@ pub extern "system" fn Java_io_locha_p2p_runtime_Runtime_nativeNew(
             .id(identity.id())
             .allow_ipv4_private(false)
             .allow_ipv4_shared(false)
-            .allow_ipv6_link_local(false)
             .allow_ipv6_ula(true);
 
         let config = RuntimeConfig {
@@ -185,8 +183,6 @@ pub extern "system" fn Java_io_locha_p2p_runtime_Runtime_nativeGetPeerId(
 
     unwrap_exc_or(&env, res, env.new_string("").unwrap()).into_inner()
 }
-
-
 
 #[no_mangle]
 pub extern "system" fn Java_io_locha_p2p_runtime_Runtime_nativeDial(

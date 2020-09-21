@@ -64,7 +64,6 @@ class AddNewAddressListen extends Component {
     });
   }
 
-
   render() {
     const localAddress = ['0.0.0.0'];
 
@@ -84,7 +83,7 @@ class AddNewAddressListen extends Component {
       >
         <View style={styles.container}>
           <Text>
-            por favor seleccion un address donde desea escuchar
+            please select an address where you want to listen
           </Text>
           <View style={styles.dropDownStyle}>
             <Picker

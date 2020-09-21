@@ -190,21 +190,6 @@ const getInfoMessage = (id) => {
 };
 
 /**
- * function used to save the image in memory
- * @param {String} base64File base64 format image
- */
-export const saveImageBase64 = (base64File) => new Promise((resolve, reject) => {
-  const connectiveAddress = Platform.OS === 'android' ? 'file:///' : '';
-  const name = `IMG_${new Date().getTime()}`;
-  const directory = `${connectiveAddress}${FileDirectory}/Pictures/${name}.jpg`.trim();
-  RNFS.writeFile(directory, base64File, 'base64').then(() => {
-    resolve(directory);
-  }).catch(() => {
-    reject();
-  });
-});
-
-/**
  *
  * function to display a message on the phone works only for android
  * @param {string} message

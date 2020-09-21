@@ -65,7 +65,6 @@ public class ChatServiceModule extends ReactContextBaseJavaModule {
     private final static  int  RECHARGE_TIME = 6000;
     private final static  int  WAIT_TIME = 2000;
 
-
     public ChatServiceModule(ReactApplicationContext reactContext) {
         super(reactContext);
 
@@ -232,19 +231,15 @@ public class ChatServiceModule extends ReactContextBaseJavaModule {
         promise.resolve(this.isServiceStarted && Runtime.isStarted());
     }
 
-
-
     public String addRequiredAdressFormat(String ip) throws UnknownHostException {
-
            InetAddress address = InetAddress.getByName(ip);
            if (address instanceof Inet6Address) {
-               return "/ip6/"+ip+"/tcp/4444";
+               return String.format("/ip6/%s/tcp/4444", ip);
            } else if (address instanceof Inet4Address) {
-               return "/ip4/"+ip+"/tcp/4444";
+               return  String.format("/ip4/%s/tcp/4444", ip);
            }
            return ip;
     }
-
 
     @ReactMethod public void addNewChatService(String privKey ,String address, Promise promise){
        try {
@@ -259,7 +254,6 @@ public class ChatServiceModule extends ReactContextBaseJavaModule {
        }
 
     }
-
 
     public void spawnExternalIpAddrThread()  {
 
@@ -289,7 +283,6 @@ public class ChatServiceModule extends ReactContextBaseJavaModule {
 
         thread.start();
     }
-
 
     /**
      * BroadcastReceiver is where we will be listening to all the events returned

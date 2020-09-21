@@ -1,13 +1,12 @@
 import { NativeModules, NativeEventEmitter } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import { bitcoin } from '../../App';
 import {
   getChat, setStatusMessage, setPeers, removeDisconnedPeers
 } from '../store/chats';
-import { messageType, addressType } from './constans';
-import { requestImageStatus, sentImageStatus, verifyHashImageStatus } from '../store/contacts';
+import { messageType } from './constans';
 import { setMultiAddress } from '../store/aplication';
-import { cleanNodeAddress } from '../store/configuration'
-import AsyncStorage from '@react-native-community/async-storage';
+import { cleanNodeAddress } from '../store/configuration';
 
 export default class ChatService {
   constructor() {
@@ -24,7 +23,6 @@ export default class ChatService {
     this.onNewExternalAddress();
     this.store = require('../store').default;
     ChatService.instance = this;
-
     return this;
   }
 
@@ -58,20 +56,7 @@ export default class ChatService {
 
   setStatus = async (statusData) => {
     const { dispatch } = this.store;
-    switch (statusData.data.status) {
-      // execute function that is in contact actions
-      case 'RequestImage': dispatch(requestImageStatus(statusData));
-        break;
-      // Execute function that is in contact actions
-      case 'sentImage': dispatch(sentImageStatus(statusData));
-        break;
-      // Execute function that is in contact actions
-      case 'verifyHashImage': dispatch(verifyHashImageStatus(statusData));
-        break;
-      // Execute function that is in chat actions
-      default: dispatch(setStatusMessage(statusData));
-        break;
-    }
+    dispatch(setStatusMessage(statusData));
   };
 
   onNewListenAddr = () => {
@@ -101,20 +86,17 @@ export default class ChatService {
 
   getlisteningAddress = () => this.multiaddr
 
-
   onConnectionEstablished = () => {
     this.event.addListener('connectionEstablished', (({ peer, numEstablished }) => {
       this.store.dispatch(setPeers(peer));
     }));
   }
 
-
   onConnectionClosed = () => {
     this.event.addListener('connectionClosed', (({ peer, numEstablished, cause }) => {
       this.store.dispatch(removeDisconnedPeers(peer));
     }));
   }
-
 
   addNewAddressListen = async (address, callback) => {
     const xpriv = await bitcoin.getPrivKey();

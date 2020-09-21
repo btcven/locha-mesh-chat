@@ -46,7 +46,7 @@ public class ChatService extends Service {
     public static final String SERVICE_STOPPED = "com.lochameshchat.SERVICE_STOPPED";
     public static final String CLICK_FOREGROUND_NOTIFICATION = "com.lochameshchat.CLICK_FOREGROUND_NOTIFICATION";
     private String NOTIFICATION_CHANNEL_ID = "com.lochameshchat";
-    private static final String DEFAULT_ADDRESS_LISTEN = "/ip4/0.0.0.0/tcp/4444";
+    private static final String DEFAULT_LISTEN_ADDRESS = "/ip4/0.0.0.0/tcp/4444";
 
     private static String TAG = "LochaP2P";
     private static int SERVICE_ID = 1337;
