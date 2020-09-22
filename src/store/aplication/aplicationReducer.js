@@ -2,16 +2,12 @@
 import { ActionTypes } from '../constants';
 
 const AplicationState = {
-  aplication: true,
   photos: [],
   loading: false,
   tab: 1,
   menu: false,
   view: undefined,
   appStatus: undefined,
-  wsUrl: undefined,
-  retryConnection: false,
-  notConnectedValidAp: null,
   nodeAddress: [],
   administrative: false
 };
@@ -20,10 +16,6 @@ export const AplicationReducer = (state = AplicationState, action) => {
   switch (action.type) {
     case ActionTypes.INITIAL_STATE: {
       return { ...state };
-    }
-
-    case ActionTypes.CLEAR_ALL: {
-      return { ...AplicationState, appStatus: 'created' };
     }
 
     case ActionTypes.APP_STATUS: {
@@ -69,14 +61,7 @@ export const AplicationReducer = (state = AplicationState, action) => {
           : !state.retryConnection
       };
     }
-
-    case ActionTypes.NOT_CONNECTED_VALID_AP: {
-      return { ...state, notConnectedValidAp: action.payload };
-    }
     case ActionTypes.OPENING_HIDDEN_PANEL: {
-      return { ...state, administrative: action.payload };
-    }
-    case ActionTypes.CLOSE_HIDDEN_PANEL: {
       return { ...state, administrative: action.payload };
     }
     default: {

@@ -23,6 +23,7 @@ export const ActionTypes = {
   // CONFIGURATION
   GET_PHOTO_USER: '@@configuration/GET_PHOTO',
   EDIT_NAME: '@@configuration/EDIT_NAME',
+  CLEAN_ADDRESS_LISTEN: '@@configuration/CLEAN_ADDRESS_LISTEN',
 
   // CONTACTS
 

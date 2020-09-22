@@ -46,6 +46,7 @@ public class ChatService extends Service {
     public static final String SERVICE_STOPPED = "com.lochameshchat.SERVICE_STOPPED";
     public static final String CLICK_FOREGROUND_NOTIFICATION = "com.lochameshchat.CLICK_FOREGROUND_NOTIFICATION";
     private String NOTIFICATION_CHANNEL_ID = "com.lochameshchat";
+    private static final String DEFAULT_LISTEN_ADDRESS = "/ip4/0.0.0.0/tcp/4444";
 
     private static String TAG = "LochaP2P";
     private static int SERVICE_ID = 1337;
@@ -112,12 +113,18 @@ public class ChatService extends Service {
             byte[] privateKey = intent.getByteArrayExtra("privateKey");
             boolean attemptUpnp = intent.getBooleanExtra("attemptUpnp", true);
 
+            String addressListen = intent.getStringExtra("addressListen");
+            if(addressListen == null){
+                addressListen = DEFAULT_LISTEN_ADDRESS;
+            }
+
+            Log.i(TAG, "addressListen: "+ addressListen);
             /* Get the instance of our class that will dispatch the events to React Native JS */
             EventsDispatcher dispatcher = EventsDispatcher.getInstance();
 
             /* Initialize Runtime */
             Runtime runtime = Runtime.getInstance();
-            runtime.start(dispatcher, privateKey, attemptUpnp);
+            runtime.start(dispatcher, privateKey, attemptUpnp, addressListen);
 
             /* Inform that the service started */
             Intent started = new Intent(SERVICE_STARTED);

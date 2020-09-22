@@ -16,6 +16,7 @@
 
 package io.locha.p2p.service;
 
+import DeviceInfo.DeviceInfoModule;
 import io.locha.p2p.runtime.Runtime;
 
 import android.content.BroadcastReceiver;
@@ -36,6 +37,10 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.WritableArray;
 
+import java.net.Inet4Address;
+import java.net.Inet6Address;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -102,14 +107,8 @@ public class ChatServiceModule extends ReactContextBaseJavaModule {
      * @param attemptUpnp Whether to enable UPnP and attempt to use it to discover
      * our external IP address and do port mapping.
      */
-    @ReactMethod public void start(String privateKey, boolean attemptUpnp, Promise promise) {
+    @ReactMethod public void start(String privateKey, boolean attemptUpnp,  String addressListen, Promise promise) {
         this.mPromise = promise;
-
-        if (!Utils.isConnected(this.reactContext)) {
-            this.mPromise.reject(ENOTCONNECTED, "The device is not connected");
-            this.mPromise = null;
-            return;
-        }
 
         try {
             byte[] privateKeyBytes = Utils.hexStringToByteArray(privateKey);
@@ -117,6 +116,10 @@ public class ChatServiceModule extends ReactContextBaseJavaModule {
             this.serviceIntent = new Intent(this.reactContext, ChatService.class);
             this.serviceIntent.putExtra("privateKey", privateKeyBytes);
             this.serviceIntent.putExtra("attemptUpnp", attemptUpnp);
+            if(addressListen != null){
+                String _addressListen = addRequiredAdressFormat(addressListen);
+                this.serviceIntent.putExtra("addressListen", _addressListen);
+            }
 
             // Guard for Android >=8.0
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -141,6 +144,17 @@ public class ChatServiceModule extends ReactContextBaseJavaModule {
         } catch (Exception e) {
             Log.e(TAG, "Couldn't stop service", e);
             promise.reject(ENOTSTARTED, e);
+        }
+    }
+
+    /**
+     * Stop the service
+     */
+    public void stop() {
+        try {
+            this.reactContext.stopService(serviceIntent);
+        } catch (Exception e) {
+            Log.e(TAG, "Couldn't stop service", e);
         }
     }
 
@@ -217,7 +231,28 @@ public class ChatServiceModule extends ReactContextBaseJavaModule {
         promise.resolve(this.isServiceStarted && Runtime.isStarted());
     }
 
+    public String addRequiredAdressFormat(String ip) throws UnknownHostException {
+           InetAddress address = InetAddress.getByName(ip);
+           if (address instanceof Inet6Address) {
+               return String.format("/ip6/%s/tcp/4444", ip);
+           } else if (address instanceof Inet4Address) {
+               return  String.format("/ip4/%s/tcp/4444", ip);
+           }
+           return ip;
+    }
+    @ReactMethod public void addNewChatService(String privKey ,String address, Promise promise){
+       try {
+           // the service was stopped to start it again with a new address
+           stop();
+           // starting service again
+           start(privKey,false, address, promise );
 
+
+       } catch (Exception e) {
+           Log.e(TAG, "failed to add the new listening address: ", e);
+       }
+
+    }
 
     public void spawnExternalIpAddrThread()  {
 
@@ -247,7 +282,6 @@ public class ChatServiceModule extends ReactContextBaseJavaModule {
 
         thread.start();
     }
-
 
     /**
      * BroadcastReceiver is where we will be listening to all the events returned

@@ -89,7 +89,9 @@ pub extern "system" fn Java_io_locha_p2p_runtime_Runtime_nativeNew(
     class: JClass,
     secret_key: jbyteArray,
     attempt_upnp: jboolean,
+    address: JString
 ) {
+  
     trace!("nativeStart");
 
     let res = panic::catch_unwind(|| {
@@ -97,19 +99,22 @@ pub extern "system" fn Java_io_locha_p2p_runtime_Runtime_nativeNew(
         let identity = Identity::from(secret_key);
         let attempt_upnp = attempt_upnp == JNI_TRUE;
 
-        let mut discovery = DiscoveryConfig::new();
+        let mut discovery = DiscoveryConfig::new(true);
+
+        let input: String = env.get_string(address)?.into();                                                               
+    
+        trace!("nativeNewAddressListen: {}", input);
 
         discovery
             .use_mdns(true)
             .id(identity.id())
             .allow_ipv4_private(false)
             .allow_ipv4_shared(false)
-            .allow_ipv6_link_local(false)
             .allow_ipv6_ula(true);
 
         let config = RuntimeConfig {
             identity,
-            listen_addr: "/ip4/0.0.0.0/tcp/4444"
+            listen_addr: input
                 .parse()
                 .expect("invalid listen addr"),
             channel_cap: 20,
