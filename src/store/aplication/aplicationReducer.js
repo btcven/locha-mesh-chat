@@ -61,6 +61,9 @@ export const AplicationReducer = (state = AplicationState, action) => {
           : !state.retryConnection
       };
     }
+    case ActionTypes.OPENING_HIDDEN_PANEL: {
+      return { ...state, administrative: action.payload };
+    }
     default: {
       return state;
     }

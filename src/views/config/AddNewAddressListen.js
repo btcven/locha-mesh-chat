@@ -32,6 +32,7 @@ class AddNewAddressListen extends Component {
     });
   }
 
+
   setDefault = async () => {
     if (!this.state.isDefaul) {
       this.setState({ isDefaul: true, adressSelected: '0.0.0.0' });
@@ -47,24 +48,26 @@ class AddNewAddressListen extends Component {
   }
 
   save = () => {
+    const { screenProps } = this.props;
     chatService.addNewAddressListen(this.state.adressSelected, async (error) => {
       if (error) {
-        toast('an error occurred while adding a new listening address');
+        toast(screenProps.t('Admin:errorSaveListen'));
         return;
       }
       if (!this.state.isDefaul) {
         await AsyncStorage.setItem('AddressListen', this.state.adressSelected);
-        toast(`successful changes the server listening address will be ${this.state.adressSelected}`);
+        toast(screenProps.t('Admin:addressListenMessage1'));
         this.props.close();
       } else {
         await AsyncStorage.removeItem('AddressListen');
-        toast('successful changes the server listening address will be all available directions');
+        toast(screenProps.t('Admin:addressListenMessage2'));
         this.props.close();
       }
     });
   }
 
   render() {
+    const { screenProps } = this.props;
     const localAddress = ['0.0.0.0'];
 
     const value = !this.state.isDefaul ? this.state.ipInterface : localAddress;
@@ -83,7 +86,7 @@ class AddNewAddressListen extends Component {
       >
         <View style={styles.container}>
           <Text>
-            please select an address where you want to listen
+            {screenProps.t('Admin:AddressListenTitle')}
           </Text>
           <View style={styles.dropDownStyle}>
             <Picker
@@ -93,13 +96,13 @@ class AddNewAddressListen extends Component {
               onValueChange={this.onChangeAddress}
               style={{ width: '100%' }}
             >
-              {value.map((address) => <Picker.Item label={address} value={address} />)}
+              {value.map((address) => <Picker.Item key={address} label={address} value={address} />)}
             </Picker>
           </View>
           <ListItem>
             <CheckBox color="orange" checked={this.state.isDefaul} onPress={this.setDefault} />
             <Body>
-              <Text>default</Text>
+              <Text>{screenProps.t('Admin:default')}</Text>
             </Body>
           </ListItem>
 
@@ -114,7 +117,7 @@ class AddNewAddressListen extends Component {
               }}
             >
               <Text style={styles.styleTextButton}>
-                back
+                {screenProps.t('Initial:back')}
               </Text>
             </Button>
             <Button
@@ -122,7 +125,7 @@ class AddNewAddressListen extends Component {
               onPress={() => this.save()}
               style={styles.styleTextButton}
             >
-              <Text>save</Text>
+              <Text>{screenProps.t('Settings:saveButton')}</Text>
             </Button>
           </View>
 

@@ -108,7 +108,7 @@ class DrawerComponent extends Component {
             && (
               <>
                 <ListItem itemDivider>
-                  <Text>Developer dashboard</Text>
+                  <Text>{screenProps.t('Drawer:listName')}</Text>
                 </ListItem>
 
                 <ListItem icon button onPress={() => this.handleChange('administrative')}>
@@ -137,7 +137,7 @@ class DrawerComponent extends Component {
             }}
           >
             <Text>
-              {`Version ${NativeModules.RNDeviceInfo.VersionInfo}`}
+              {`${screenProps.t('Drawer:version')} ${NativeModules.RNDeviceInfo.VersionInfo}`}
             </Text>
           </Button>
         </View>

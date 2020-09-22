@@ -190,7 +190,9 @@ export const closeAdministrativePanel = (callback) => async (dispatch) => {
   }
 };
 
-
+/**
+ * open the administrative panel
+ */
 export const isAdministrative = () => async (dispatch) => {
   let isDefined = await AsyncStorage.getItem('admin');
   // eslint-disable-next-line no-unneeded-ternary
@@ -200,4 +202,3 @@ export const isAdministrative = () => async (dispatch) => {
     payload: isDefined
   });
 };
-

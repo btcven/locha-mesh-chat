@@ -13,6 +13,9 @@ export default class AddManualAddress extends Component {
     };
   }
 
+  /**
+   * executed the action for the save new dial
+   */
   saveDial = () => {
     this.props.action(this.state.name, () => {
       this.setState({
@@ -23,7 +26,7 @@ export default class AddManualAddress extends Component {
 
   render() {
     const {
-      open, close, title, nameComponent
+      open, close, title, nameComponent, screenProps
     } = this.props;
     const rule = this.state.name.length < 8 ? true : false;
     return (
@@ -69,7 +72,7 @@ export default class AddManualAddress extends Component {
               }}
             >
               <Text style={styles.styleTextButton}>
-                back
+                {screenProps.t('Initial:back')}
               </Text>
             </Button>
             <Button
@@ -78,7 +81,7 @@ export default class AddManualAddress extends Component {
               onPress={() => this.saveDial()}
               style={styles.styleTextButton}
             >
-              <Text>save</Text>
+              <Text>{screenProps.t('Settings:saveButton')}</Text>
             </Button>
           </View>
         </View>

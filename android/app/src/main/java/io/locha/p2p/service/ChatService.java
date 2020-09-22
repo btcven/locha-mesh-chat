@@ -115,7 +115,7 @@ public class ChatService extends Service {
 
             String addressListen = intent.getStringExtra("addressListen");
             if(addressListen == null){
-                addressListen = DEFAULT_ADDRESS_LISTEN;
+                addressListen = DEFAULT_LISTEN_ADDRESS;
             }
 
             Log.i(TAG, "addressListen: "+ addressListen);
