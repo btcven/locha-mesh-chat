@@ -67,13 +67,13 @@ const deletePhotoFromPhone = async () => {
     }
   });
 };
+
 /**
  *
  * @description activate the phone's camera, cut the photo and move it to the folder
  * @param {string}  id user id
  * @param {callback} callback
  */
-
 export const openCamera = (id, callback) => async (dispatch) => {
   ImagePicker.openCamera({
     width: 500,
@@ -135,3 +135,8 @@ export const setNewIpv6 = (ipv6) => (dispatch, getState) => {
     });
   }
 };
+
+
+export const cleanNodeAddress = () => ({
+  type: ActionTypes.CLEAN_ADDRESS_LISTEN
+});

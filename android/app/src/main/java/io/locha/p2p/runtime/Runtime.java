@@ -58,7 +58,7 @@ public class Runtime {
      */
     public void start(@NonNull RuntimeEvents eventsHandler,
                          byte[] secretKey,
-                         boolean attemptUpnp) throws RuntimeException {
+                         boolean attemptUpnp, String address) throws RuntimeException {
         if (handle != 0) {
             throw new RuntimeException("Runtime is already started");
         }
@@ -66,7 +66,7 @@ public class Runtime {
         this.eventsHandler = eventsHandler;
         this.handle = 0;
 
-        nativeNew(secretKey, attemptUpnp);
+        nativeNew(secretKey, attemptUpnp, address);
     }
 
     public static Runtime getInstance() {
@@ -139,10 +139,17 @@ public class Runtime {
         nativeSendMessage(contents);
     }
 
-    private native void nativeNew(byte[] privateKey, boolean attemptUpnp);
+
+
+    public void setNewAddressListen(String address){
+        nativeNewAddressListen(address);
+    }
+
+    private native void nativeNew(byte[] privateKey, boolean attemptUpnp, String address);
     private native void nativeStop();
     private native String[] nativeExternalAddresses();
     private native String nativeGetPeerId();
     private native void nativeDial(String multiaddr);
     private native void nativeSendMessage(String contents);
+    private native void nativeNewAddressListen(String address);
 }
