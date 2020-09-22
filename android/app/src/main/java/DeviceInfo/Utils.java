@@ -167,7 +167,6 @@ public class Utils {
                     System.out.println("ip1--:" + inetAddress);
                     System.out.println("ip2--:" + inetAddress.getHostAddress());
 
-
                     ipv4Array.add(inetAddress.getHostAddress().toString());
 
                 }
