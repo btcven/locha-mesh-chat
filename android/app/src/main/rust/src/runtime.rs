@@ -101,7 +101,6 @@ pub extern "system" fn Java_io_locha_p2p_runtime_Runtime_nativeNew(
 
         let mut discovery = DiscoveryConfig::new(true);
 
-
         let input: String = env.get_string(address)?.into();                                                               
     
         trace!("nativeNewAddressListen: {}", input);
