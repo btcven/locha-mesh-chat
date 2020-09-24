@@ -16,7 +16,7 @@ export default class AddManualAddress extends Component {
   /**
    * executed the action for the save new dial
    */
-  saveDial = () => {
+  saveDial = async () => {
     this.props.action(this.state.name, () => {
       this.setState({
         name: ''

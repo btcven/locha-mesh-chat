@@ -14,7 +14,6 @@ import {
 import { connect } from 'react-redux';
 import { closeMenu, openAdministrativePanel, isAdministrative } from '../store/aplication/aplicationAction';
 import { images } from '../utils/constans';
-import NavigationService from '../utils/navigationService';
 import { toast } from '../utils/utils';
 
 
@@ -38,7 +37,8 @@ class DrawerComponent extends Component {
 
 
   handleChange = (view) => {
-    NavigationService.navigate(view);
+    const { navigation } = this.props;
+    navigation.navigate(view);
   };
 
   onclickCounter = () => {
@@ -55,7 +55,7 @@ class DrawerComponent extends Component {
   }
 
   render() {
-    const { screenProps } = this.props;
+    const { screenProps, navigation } = this.props;
     return (
       <Container>
         <View style={styles.headerDrawer}>

@@ -1,8 +1,6 @@
 import '../../../__Mocks__';
 import React from 'react';
-import renderer from 'react-test-renderer';
 import { shallow } from 'enzyme';
-import { Provider } from 'react-redux';
 import { navigationPops } from '../../components/heder-test';
 import Configuration from '../../../src/views/config';
 import store from '../../../src/store';

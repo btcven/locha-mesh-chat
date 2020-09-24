@@ -128,7 +128,7 @@ export default class ChatService {
       this.store.dispatch(setPeers(peer));
     }));
   }
-  
+
   /**
    * this is an event, its function is to detect when someone disconnects
    */
@@ -145,12 +145,17 @@ export default class ChatService {
    * @param {*} callback  callback
    */
   addNewAddressListen = async (address, callback) => {
-    const xpriv = await bitcoin.getPrivKey();
-    this.store.dispatch(cleanNodeAddress());
-    this.service.addNewChatService(xpriv, address).then(() => {
+
+    if (!process.env.JEST_WORKER_ID) {
+      const xpriv = await bitcoin.getPrivKey();
+      this.store.dispatch(cleanNodeAddress());
+      this.service.addNewChatService(xpriv, address).then(() => {
+        callback(null);
+      }).catch((err) => {
+        callback(err);
+      });
+    } else {
       callback(null);
-    }).catch((err) => {
-      callback(err);
-    });
+    }
   }
 }

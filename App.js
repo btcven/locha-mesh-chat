@@ -6,7 +6,6 @@ import { Root } from 'native-base';
 import RouteContainer from './src/routes';
 import store from './src/store';
 import { verifyAplicationState } from './src/store/aplication';
-import NativationService from './src/utils/navigationService';
 import Bitcoin from './src/utils/Bitcoin';
 import Database from './src/database';
 import ChatService from './src/utils/chatService';
@@ -14,9 +13,6 @@ import NotifService from './src/utils/notificationService';
 
 const WrappedStack = ({ t }) => (
   <RouteContainer
-    ref={(ref) => {
-      NativationService.setTopLevelNavigator(ref);
-    }}
     screenProps={{ t }}
   />
 );

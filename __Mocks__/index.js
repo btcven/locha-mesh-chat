@@ -6,6 +6,8 @@ import * as ReactNative from 'react-native';
 import enzyme from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 import mock from 'react-native-permissions/mock';
+import mockAsyncStorage from '@react-native-community/async-storage/jest/async-storage-mock';
+
 
 // enzyme.configure({ adapter: new Adapter() });
 jest.mock('react-native-fs', () => ({
@@ -53,11 +55,6 @@ jest.mock('react-native-fs', () => ({
   LibraryDirectoryPath: jest.fn(),
   PicturesDirectoryPath: jest.fn(),
 }));
-
-
-jest.mock('@react-native-community/async-storage', () => {
-  // code here
-});
 
 
 jest.mock('react-native-share', () => {
@@ -124,27 +121,11 @@ jest.mock('rn-fetch-blob', () => ({
   })
 }));
 
-// jest.mock('NativeEventEmitter', () => class MockNativeEventEmitter {
-//   addListener = () => jest.fn()
-
-//   removeListener = () => jest.fn()
-
-//   removeAllListeners = () => jest.fn()
-// });
-
 
 jest.mock(
   '../node_modules/react-native/Libraries/EventEmitter/NativeEventEmitter',
 );
 
-
-// jest.mock('LocalNotification', () => ({
-//   requestPermission: jest.fn()
-// }));
-
-// jest.mock('NativeModules', () => ({
-//   LocalNotification: { requestPermission: jest.fn() }
-// }));
 
 jest.mock('native-base/dist/src/basic/Icon', () => jest.genMockFromModule('native-base/dist/src/basic/Icon'));
 
@@ -152,6 +133,19 @@ jest.mock('native-base/dist/src/basic/Icon', () => jest.genMockFromModule('nativ
 jest.mock('react-native/Libraries/Utilities/Platform', () => ({
   OS: 'ios',
   select: jest.fn((selector) => selector.ios),
+}));
+
+jest.mock('@react-native-community/async-storage', () => ({
+  getItem: jest.fn(() => new Promise((resolve) => {
+    resolve(null);
+  })),
+
+  setItem: jest.fn(() => new Promise((resolve) => {
+    resolve(true);
+  })),
+  removeItem: jest.fn(() => new Promise((resolve) => {
+    resolve();
+  }))
 }));
 
 jest.doMock('react-native', () =>
@@ -162,7 +156,25 @@ jest.doMock('react-native', () =>
       NativeModules: {
         ...ReactNative.NativeModules,
         Override: { great: 'success' },
-        LocalNotification: { requestPermission: jest.fn() },
+        LocalNotification: {
+          requestPermission: jest.fn(),
+
+
+        },
+        RNDeviceInfo: {
+          VersionInfo: '1',
+          getIpv6Andipv4Adress: jest.fn().mockReturnValue(['192.168.0.1'])
+        },
+        ChatService: {
+          startService: new Promise((resolve) => { resolve('5c28fab375d47994b30190b01338ea48daa0b307909a3d465a597772469633e1'); }),
+          stop: new Promise((resolve) => { resolve(); }),
+          addNewAddressListen: new Promise((resolve) => { resolve(); })
+        },
+        bitcoinModule: {
+          createWallet: new Promise((resolve) => { resolve('5c28fab375d47994b30190b01338ea48daa0b307909a3d465a597772469633e1'); }),
+          sha256: new Promise((resolve) => { resolve('5c28fab375d47994b30190b01338ea48daa0b307909a3d465a597772469633e1'); }),
+          getPrivateKey: new Promise((resolve) => { resolve('test'); })
+        },
         RNPermissions: {
           ...mock
         }
@@ -178,13 +190,3 @@ jest.doMock('react-native', () =>
     },
     ReactNative,
   ));
-
-
-// jest.mock('PermissionsAndroid', () => {
-//   const PermissionsAndroid = require.requireActual('PermissionsAndroid');
-
-//   return {
-//     ...PermissionsAndroid,
-//     request: () => jest.fn()
-//   };
-// });
