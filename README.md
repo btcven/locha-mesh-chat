@@ -3,8 +3,8 @@
     <img height="200px" src="documents/configuration/files/logo.png">
   </a>
   <br>
-  <a href="https://travis-ci.com/btcven/locha-mesh-chat">
-    <img src="https://travis-ci.com/btcven/locha-mesh-chat.svg?branch=master" title="Build Status">
+  <a href="https://github.com/btcven/locha-mesh-chat/actions">
+    <img src="https://github.com/btcven/locha-mesh-chat/workflows/Node.js%20CI/badge.svg" title="Build Status">
   </a>
 </p>
 <p align="center">
