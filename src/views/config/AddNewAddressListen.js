@@ -47,7 +47,7 @@ class AddNewAddressListen extends Component {
     });
   }
 
-  save = () => {
+  save = async () => {
     const { screenProps } = this.props;
     chatService.addNewAddressListen(this.state.adressSelected, async (error) => {
       if (error) {

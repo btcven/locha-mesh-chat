@@ -130,7 +130,6 @@ export default class Database extends CoreDatabase {
       });
     } catch (err) {
       // eslint-disable-next-line no-console
-      console.log('dios mio de mi vida', err);
     }
   })
 

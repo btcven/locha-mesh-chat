@@ -82,7 +82,13 @@ export default class ViewQR extends Component {
                   onValueChange={this.onValueChange}
                   style={{ width: '100%' }}
                 >
-                  {this.props.config.nodeAddress.map((address) => <Picker.Item label={address} value={address} />)}
+                  {this.props.config.nodeAddress.map((address) => (
+                    <Picker.Item
+                      key={address}
+                      label={address}
+                      value={address}
+                    />
+                  ))}
                 </Picker>
               </View>
 

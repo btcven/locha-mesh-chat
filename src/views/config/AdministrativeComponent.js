@@ -32,7 +32,7 @@ class AdministrativeComponent extends Component {
     title: 'Admistrative dashboard'
   };
 
-  closeOrActiveAdministration = () => {
+  closeOrActiveAdministration = async () => {
     const { screenProps } = this.props;
     if (this.props.administrative) {
       this.props.closeAdministrativePanel(() => {
@@ -74,7 +74,7 @@ class AdministrativeComponent extends Component {
     }
   }
 
-  sendDialToChatService = (address, callback) => {
+  sendDialToChatService = async (address, callback) => {
     const { screenProps } = this.props;
     this.props.setNewDials(address, (res) => {
       if (res) {
