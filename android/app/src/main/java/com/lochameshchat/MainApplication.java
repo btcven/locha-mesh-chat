@@ -17,7 +17,6 @@ import DeviceInfo.DeviceInfoPackage;
 import LocalNotification.LocalNotificationPackage;
 import io.locha.p2p.LochaP2PPackage;
 import RNCoapClient.CoapClientPackage;
-import RNWebSocket.RNWebsocketPakage;
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -36,7 +35,6 @@ public class MainApplication extends Application implements ReactApplication {
           // Packages that cannot be autolinked yet can be added manually here, for example:
            packages.add(new DeviceInfoPackage());
            packages.add(new LochaP2PPackage());
-           packages.add(new RNWebsocketPakage());
            packages.add(new CoapClientPackage());
            packages.add(new LocalNotificationPackage());
 
