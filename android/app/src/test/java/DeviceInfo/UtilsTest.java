@@ -60,7 +60,4 @@ class UtilsTest {
         String expected = new String(bytes);
         assertEquals(result, expected);
     }
-
-
-
 }

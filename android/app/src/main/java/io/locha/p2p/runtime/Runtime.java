@@ -32,7 +32,7 @@ public class Runtime {
      * This field is accessed by Rust JNI to report events. It MUST not be null
      * when nativeStart() is called, otherwise a RuntimeException will be thrown.
      */
-    private RuntimeEvents eventsHandler;
+        private RuntimeEvents eventsHandler;
     /**
      * Rust Runtime handle, it's initialized on the constructor by nativeNew function.
      */
