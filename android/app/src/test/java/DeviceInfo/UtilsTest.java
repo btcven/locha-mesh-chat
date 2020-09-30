@@ -55,7 +55,6 @@ class UtilsTest {
 
     @Test
     void hexStringToByteArray() {
-
         byte[] bytes =  Utils.hexStringToByteArray(TEST);
         String result = new String(bytes);
         String expected = new String(bytes);
@@ -63,9 +62,5 @@ class UtilsTest {
     }
 
 
-    @Test
-    public void newTest(){
-      ReactApplicationContext context =  getRNContext();
-    }
 
 }

@@ -139,6 +139,9 @@ android {
         versionName "1.0"
         missingDimensionStrategy ('react-native-camera','general')
         multiDexEnabled true
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+
     }
 
     signingConfigs {
@@ -216,6 +219,7 @@ android {
 
     testOptions {
         unitTests {
+            returnDefaultValues = true
             includeAndroidResources = true
         }
     }
@@ -274,6 +278,7 @@ dependencies {
 
     testImplementation 'junit:junit:4.12'
     testImplementation "org.robolectric:robolectric:4.2"
+    testImplementation "org.mockito:mockito-core:2.+"
 
     testImplementation 'androidx.test.espresso:espresso-core:3.1.1'
     testImplementation 'androidx.test:core:1.1.0'
@@ -281,9 +286,12 @@ dependencies {
     testImplementation "com.android.support:support-annotations:27.1.1"
     testImplementation 'com.android.support.test:runner:1.0.2'
     testImplementation 'com.android.support.test:rules:1.0.2'
+    testImplementation 'org.khronos:opengl-api:gl1.1-android-2.1_r1'
 
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    androidTestImplementation 'androidx.test:runner:1.1.0'
+    androidTestImplementation 'androidx.test:rules:1.1.0'
 
 
 }
