@@ -53,7 +53,7 @@ public class EventsDispatcher implements RuntimeEvents {
     /**
      * Set the ReactApplicationContext for this object.
      */
-    public void setApplicationContext(ReactApplicationContext context) {
+    public  void setApplicationContext(ReactApplicationContext context) {
         this.reactContext = context;
     }
 
@@ -182,9 +182,13 @@ public class EventsDispatcher implements RuntimeEvents {
     private static void sendEvent(@NonNull ReactContext reactContext,
                                   String eventName,
                                   @Nullable String param) {
-        reactContext
-                .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-                .emit(eventName, param);
+        try {
+            reactContext
+                    .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                    .emit(eventName, param);
+        }catch (Exception e){
+            Log.e(TAG, "fail event because: ", e);
+        }
     }
 
 
@@ -200,8 +204,12 @@ public class EventsDispatcher implements RuntimeEvents {
     private static void sendEvent(@NonNull ReactContext reactContext,
                                   String eventName,
                                   @Nullable WritableMap params) {
+        try {
         reactContext
                 .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
                 .emit(eventName, params);
+        }catch (Exception e){
+            Log.e(TAG, "Fail event because: ", e);
+        }
     }
 }

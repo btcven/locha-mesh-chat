@@ -177,4 +177,11 @@ public class Utils {
         return ipv4Array;
     }
 
+
+
+
+    public static int suma(int a, int b){
+        return a + b;
+    }
+
 }

@@ -35,7 +35,6 @@ import java.util.Random;
 import java.util.Set;
 
 
-
 public class LocalNotificationModule extends ReactContextBaseJavaModule implements ActivityEventListener {
 
     private final ReactApplicationContext reactContext;

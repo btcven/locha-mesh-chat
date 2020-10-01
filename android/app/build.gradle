@@ -121,6 +121,7 @@ def enableHermes = project.ext.react.get("enableHermes", false);
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
+    testOptions.unitTests.includeAndroidResources = true
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -139,6 +140,8 @@ android {
         missingDimensionStrategy ('react-native-camera','general')
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+
     }
 
     signingConfigs {
@@ -214,6 +217,13 @@ android {
         exclude  'META-INF/legal/NOTICE.md'
     }
 
+    testOptions {
+        unitTests {
+            returnDefaultValues = true
+            includeAndroidResources = true
+        }
+    }
+
 }
 
 dependencies {
@@ -248,6 +258,7 @@ dependencies {
     implementation group: 'com.google.guava', name: 'guava', version: 'r05'
 
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.7.0'
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
       exclude group:'com.facebook.fbjni'
     }
@@ -266,11 +277,23 @@ dependencies {
     }
 
     testImplementation 'junit:junit:4.12'
+    testImplementation "org.robolectric:robolectric:4.2"
+    testImplementation "org.mockito:mockito-core:2.+"
 
-    androidTestImplementation 'androidx.test:core:' + rootProject.coreVersion;
-    androidTestImplementation 'androidx.test.ext:junit:' + rootProject.extJUnitVersion;
-    androidTestImplementation 'androidx.test:runner:' + rootProject.runnerVersion;
-    androidTestImplementation 'com.google.truth:truth:' + rootProject.truthVersion
+    testImplementation 'androidx.test.espresso:espresso-core:3.1.1'
+    testImplementation 'androidx.test:core:1.1.0'
+    testImplementation 'androidx.test.ext:junit:1.1.0'
+    testImplementation "com.android.support:support-annotations:27.1.1"
+    testImplementation 'com.android.support.test:runner:1.0.2'
+    testImplementation 'com.android.support.test:rules:1.0.2'
+    testImplementation 'org.khronos:opengl-api:gl1.1-android-2.1_r1'
+
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    androidTestImplementation 'androidx.test:runner:1.1.0'
+    androidTestImplementation 'androidx.test:rules:1.1.0'
+
+
 }
 
 apply plugin: 'org.mozilla.rust-android-gradle.rust-android'

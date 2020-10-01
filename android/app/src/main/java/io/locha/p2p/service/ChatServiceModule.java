@@ -240,6 +240,7 @@ public class ChatServiceModule extends ReactContextBaseJavaModule {
            }
            return ip;
     }
+
     @ReactMethod public void addNewChatService(String privKey ,String address, Promise promise){
        try {
            // the service was stopped to start it again with a new address
