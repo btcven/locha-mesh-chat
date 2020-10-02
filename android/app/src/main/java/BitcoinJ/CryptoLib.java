@@ -100,7 +100,7 @@ public class CryptoLib {
         walletKeys.put("pubKey", account.getPublicKeyAsHex());
 
 
-        return null;
+        return walletKeys;
     }
 
 
