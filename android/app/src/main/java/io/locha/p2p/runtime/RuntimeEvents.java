@@ -28,22 +28,6 @@ public interface RuntimeEvents {
     void onNewMessage(String contents);
 
     /**
-     * A peer has been discovered.
-     *
-     * @param peer The discovered peer.
-     * @param addrs Multiaddresses found for this peer.
-     *
-     */
-    void onPeerDiscovered(String peer, String[] addrs);
-
-    /**
-     * No route has been found to peer.
-     *
-     * @param peer The unroutable peer.
-     */
-    void onPeerUnroutable(String peer);
-
-    /**
      * Connection established to peer.
      *
      * @param peer The peer the connection was established to.

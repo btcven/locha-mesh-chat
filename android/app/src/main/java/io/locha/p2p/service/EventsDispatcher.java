@@ -62,19 +62,6 @@ public class EventsDispatcher implements RuntimeEvents {
         sendEvent(this.reactContext, "newMessage", contents);
     }
 
-    @Override public void onPeerDiscovered(String peer, String[] addrs) {
-        Log.d(TAG, String.format("peerDiscovered: %s", peer));
-        WritableMap map = Arguments.createMap();
-        map.putString("peer", peer);
-        map.putArray("addresses", Arguments.fromArray(addrs));
-        sendEvent(this.reactContext, "peerDiscovered", map);
-    }
-
-    @Override public void onPeerUnroutable(String peer) {
-        Log.d(TAG, String.format("peerUnroutable: %s", peer));
-        sendEvent(this.reactContext, "peerUnroutable", peer);
-    }
-
     @Override public void onConnectionEstablished(String peer, int numEstablished) {
         Log.d(TAG, String.format("connectionEstablished: peer=%s numEstablished=%d", peer, numEstablished));
         WritableMap map = Arguments.createMap();

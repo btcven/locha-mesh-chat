@@ -32,7 +32,6 @@ use libp2p::core::connection::PendingConnectionError;
 use libp2p::core::ConnectedPoint;
 use libp2p::identity::secp256k1;
 
-use locha_p2p::discovery::DiscoveryConfig;
 use locha_p2p::identity::Identity;
 use locha_p2p::runtime::config::RuntimeConfig;
 use locha_p2p::runtime::events::RuntimeEvents;
@@ -99,28 +98,22 @@ pub extern "system" fn Java_io_locha_p2p_runtime_Runtime_nativeNew(
         let identity = Identity::from(secret_key);
         let attempt_upnp = attempt_upnp == JNI_TRUE;
 
-        let mut discovery = DiscoveryConfig::new(true);
-
-        let input: String = env.get_string(address)?.into();                                                               
+        let listen_address: String = env.get_string(address)?.into();                                                               
     
-        trace!("nativeNewAddressListen: {}", input);
-
-        discovery
-            .use_mdns(true)
-            .id(identity.id())
-            .allow_ipv4_private(false)
-            .allow_ipv4_shared(false)
-            .allow_ipv6_ula(true);
+        trace!("listen address: {}", listen_address);
 
         let config = RuntimeConfig {
             identity,
-            listen_addr: input
+            listen_addr: listen_address
                 .parse()
                 .expect("invalid listen addr"),
             channel_cap: 20,
             heartbeat_interval: 10,
 
-            discovery,
+            mdns: true,
+            upnp: attempt_upnp,
+
+            bootstrap_nodes: Vec::new(),
         };
 
         let events_handler = java_get_events_handler_field(&env, class)?;
@@ -130,7 +123,7 @@ pub extern "system" fn Java_io_locha_p2p_runtime_Runtime_nativeNew(
             Box::new(RuntimeEventsProxy::new(executor, events_handler));
 
         let (runtime, runtime_task) =
-            Runtime::new(config, events_proxy, attempt_upnp).unwrap();
+            Runtime::new(config, events_proxy).unwrap();
 
         task::spawn(runtime_task);
 
@@ -242,35 +235,6 @@ impl RuntimeEvents for RuntimeEventsProxy {
                 chat_service_events::on_new_message_id(),
                 JavaType::Primitive(Primitive::Void),
                 &[JValue::from(contents)],
-            )
-            .and_then(JValue::v)
-        }))
-    }
-
-    fn on_peer_discovered(&mut self, peer: &PeerId, addrs: Vec<Multiaddr>) {
-        unwrap_jni(self.exec.with_attached(|env| {
-            let peer = env.new_string(peer.to_string())?;
-            let addrs = rust_slice_to_java_string_array(env, addrs.as_slice())?;
-
-            env.call_method_unchecked(
-                self.events.as_obj(),
-                chat_service_events::on_peer_discovered_id(),
-                JavaType::Primitive(Primitive::Void),
-                &[JValue::from(peer), JValue::from(addrs)],
-            )
-            .and_then(JValue::v)
-        }))
-    }
-
-    fn on_peer_unroutable(&mut self, peer: &PeerId) {
-        unwrap_jni(self.exec.with_attached(|env| {
-            let peer = env.new_string(peer.to_string())?;
-
-            env.call_method_unchecked(
-                self.events.as_obj(),
-                chat_service_events::on_peer_unroutable_id(),
-                JavaType::Primitive(Primitive::Void),
-                &[JValue::from(peer)],
             )
             .and_then(JValue::v)
         }))
