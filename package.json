@@ -11,7 +11,8 @@
     "docs": "./node_modules/.bin/jsdoc -c jsdoc.json",
     "lint": "eslint '**/*.{js,jsx}' --quiet",
     "test": "jest --verbose --runInBand --detectOpenHandles && codecov",
-    "release": "cd android && ./gradlew assembleRelease"
+    "release": "cd android && ./gradlew assembleRelease",
+    "keystore": "cd android && ./keystore.sh"
   },
   "precommit": "lint --staged",
   "dependencies": {
