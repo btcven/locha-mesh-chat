@@ -7,7 +7,7 @@
     "ios": "react-native run-ios",
     "languajes": "node languages.js",
     "start": "react-native start",
-    "postinstall": "./node_modules/.bin/rn-nodeify  --install stream,vm  --hack  --yarn",
+    "postinstall": "./node_modules/.bin/rn-nodeify  --install stream,vm  --hack  --yarn && npx jetify ",
     "docs": "./node_modules/.bin/jsdoc -c jsdoc.json",
     "lint": "eslint '**/*.{js,jsx}' --quiet",
     "test": "jest --verbose --runInBand --detectOpenHandles && codecov",
