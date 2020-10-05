@@ -49,8 +49,6 @@ static mut JAVA_LANG_ILLEGAL_ARGUMENT_EXCEPTION: Option<GlobalRef> = None;
 static mut JAVA_LANG_STRING: Option<GlobalRef> = None;
 
 static mut CHAT_SERVICE_EVENTS_ON_NEW_MESSAGE: Option<JMethodID> = None;
-static mut CHAT_SERVICE_EVENTS_ON_PEER_DISCOVERED: Option<JMethodID> = None;
-static mut CHAT_SERVICE_EVENTS_ON_PEER_UNROUTABLE: Option<JMethodID> = None;
 #[rustfmt::skip]
 static mut CHAT_SERVICE_EVENTS_ON_CONNECTION_ESTABLISHED: Option<JMethodID> = None;
 static mut CHAT_SERVICE_EVENTS_ON_CONNECTION_CLOSED: Option<JMethodID> = None;
@@ -107,8 +105,6 @@ unsafe fn cache_methods(env: &JNIEnv) {
     JAVA_LANG_STRING = get_class(env, "java/lang/String");
 
     CHAT_SERVICE_EVENTS_ON_NEW_MESSAGE = get_method_id(&env, CHAT_SERVICE_EVENTS_INTERFACE, "onNewMessage", "(Ljava/lang/String;)V");
-    CHAT_SERVICE_EVENTS_ON_PEER_DISCOVERED = get_method_id(&env, CHAT_SERVICE_EVENTS_INTERFACE, "onPeerDiscovered", "(Ljava/lang/String;[Ljava/lang/String;)V");
-    CHAT_SERVICE_EVENTS_ON_PEER_UNROUTABLE = get_method_id(&env, CHAT_SERVICE_EVENTS_INTERFACE, "onPeerUnroutable", "(Ljava/lang/String;)V");
     CHAT_SERVICE_EVENTS_ON_CONNECTION_ESTABLISHED = get_method_id(&env, CHAT_SERVICE_EVENTS_INTERFACE, "onConnectionEstablished", "(Ljava/lang/String;I)V");
     CHAT_SERVICE_EVENTS_ON_CONNECTION_CLOSED = get_method_id(&env, CHAT_SERVICE_EVENTS_INTERFACE, "onConnectionClosed", "(Ljava/lang/String;ILjava/lang/String;)V");
     CHAT_SERVICE_EVENTS_ON_INCOMING_CONNECTION = get_method_id(&env, CHAT_SERVICE_EVENTS_INTERFACE, "onIncomingConnection", "(Ljava/lang/String;Ljava/lang/String;)V");
@@ -171,18 +167,6 @@ pub mod chat_service_events {
     pub fn on_new_message_id() -> JMethodID<'static> {
         check_cache_initialized();
         unsafe { CHAT_SERVICE_EVENTS_ON_NEW_MESSAGE.unwrap() }
-    }
-
-    /// Returns cached `JMethodID` for `ChatServiceEvents.onPeerDiscovered`.
-    pub fn on_peer_discovered_id() -> JMethodID<'static> {
-        check_cache_initialized();
-        unsafe { CHAT_SERVICE_EVENTS_ON_PEER_DISCOVERED.unwrap() }
-    }
-
-    /// Returns cached `JMethodID` for `ChatServiceEvents.onPeerUnroutable`.
-    pub fn on_peer_unroutable_id() -> JMethodID<'static> {
-        check_cache_initialized();
-        unsafe { CHAT_SERVICE_EVENTS_ON_PEER_UNROUTABLE.unwrap() }
     }
 
     /// Returns cached `JMethodID` for `ChatServiceEvents.onConnectionEstablished`.
