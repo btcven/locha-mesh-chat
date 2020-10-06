@@ -174,6 +174,7 @@ class index extends Component {
   };
 
   render() {
+
     const result = this.state.search
       ? Object.values(this.props.chats).filter((chat) => (
         chat.toUID.toLowerCase().includes(this.state.search)
@@ -182,6 +183,7 @@ class index extends Component {
           .includes(this.state.search.toLowerCase())
       ))
       : Object.values(this.props.chats);
+
     return (
       <Container>
         <Header
@@ -201,10 +203,10 @@ class index extends Component {
             );
             const infoData = this.getContactInformation(chat);
             const messages = Object.values(chat.messages);
-            const lastmessage = this.getDataTypeMessage(messages[messages.length - 1]);
 
-            const lasTime = Number(messages[messages.length - 1].timestamp);
             if (messages.length !== 0) {
+              const lastmessage = this.getDataTypeMessage(messages[messages.length - 1]);
+              const lasTime = Number(messages[messages.length - 1].timestamp);
               return (
                 <List key={chat.toUID} style={{ backgroundColor }}>
                   <ListItem
