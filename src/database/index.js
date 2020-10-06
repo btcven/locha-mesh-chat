@@ -107,7 +107,6 @@ export default class Database extends CoreDatabase {
       const userData = await this.getUserData();
       resolve({ user: userData, seed: this.seed.objects('Seed') });
     } catch (err) {
-      console.log("err123", err);
       reject(err);
     }
   })

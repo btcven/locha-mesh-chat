@@ -52,10 +52,6 @@ class index extends Component {
     drawerLabel: 'Home'
   };
 
-  componentDidMount = () => {
-    database.realmObservable();
-    // pendingObservable();
-  };
 
   selectedChat = (info, obj) => {
     if (this.state.selected.length === 0) {
@@ -174,7 +170,6 @@ class index extends Component {
   };
 
   render() {
-
     const result = this.state.search
       ? Object.values(this.props.chats).filter((chat) => (
         chat.toUID.toLowerCase().includes(this.state.search)
@@ -184,6 +179,7 @@ class index extends Component {
       ))
       : Object.values(this.props.chats);
 
+    console.log("dios123", this.props.chats);
     return (
       <Container>
         <Header
@@ -203,7 +199,6 @@ class index extends Component {
             );
             const infoData = this.getContactInformation(chat);
             const messages = Object.values(chat.messages);
-
             if (messages.length !== 0) {
               const lastmessage = this.getDataTypeMessage(messages[messages.length - 1]);
               const lasTime = Number(messages[messages.length - 1].timestamp);
