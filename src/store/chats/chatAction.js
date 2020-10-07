@@ -373,6 +373,7 @@ export const startManualService = (callback) => async (dispatch) => {
   }
 };
 
+
 /**
  * manual stop of the chat service
  *

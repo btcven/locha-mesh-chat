@@ -21,6 +21,7 @@ export default class ChatService {
     this.onConnectionEstablished();
     this.onConnectionClosed();
     this.onNewExternalAddress();
+    this.IsActiveUpnp = false;
     this.store = require('../store').default;
     ChatService.instance = this;
     return this;
@@ -107,8 +108,8 @@ export default class ChatService {
     const xpriv = await bitcoin.getPrivKey();
     // get node address  if it defined
     const addressListen = await AsyncStorage.getItem('AddressListen');
-    const peerID = await this.service.start(xpriv, true, addressListen);
-
+    this.IsActiveUpnp = await AsyncStorage.getItem('upnp') ? true : false;
+    const peerID = await this.service.start(xpriv, this.IsActiveUpnp, addressListen);
     return peerID;
   }
 
@@ -157,5 +158,21 @@ export default class ChatService {
     } else {
       callback(null);
     }
+  }
+
+  desactivateUpnp = async () => {
+    const xpriv = await bitcoin.getPrivKey();
+    await this.stop();
+    const addressListen = await AsyncStorage.getItem('AddressListen');
+    const peerID = await this.service.start(xpriv, false, addressListen);
+    this.IsActiveUpnp = false;
+    return peerID;
+  }
+
+
+  activateUpnp = async () => {
+    await this.stop();
+    const peerID = await this.startService();
+    return peerID;
   }
 }

@@ -12,11 +12,14 @@ import {
   Switch
 } from 'native-base';
 import { connect } from 'react-redux';
-import { closeAdministrativePanel, openAdministrativePanel } from '../../store/aplication/aplicationAction';
+import AsyncStorage from '@react-native-community/async-storage';
+import { closeAdministrativePanel, openAdministrativePanel, } from '../../store/aplication/aplicationAction';
 import { startManualService, stopService, setNewDials } from '../../store/chats/chatAction';
 import { toast } from '../../utils/utils';
 import AddManualAddress from './AddManualAddress';
 import AddNewAddressListen from './AddNewAddressListen';
+import { chatService } from '../../../App';
+
 
 class AdministrativeComponent extends Component {
   constructor() {
@@ -24,13 +27,22 @@ class AdministrativeComponent extends Component {
     this.state = {
       dialAddress: false,
       manualBootstrap: false,
-      addresListen: false
+      addresListen: false,
+      upnp: false
     };
   }
 
   static navigationOptions = {
     title: 'Admistrative dashboard'
   };
+
+
+  componentDidMount = async () => {
+    const res = await AsyncStorage.getItem('upnp');
+    if (res) {
+      this.setState({ upnp: true });
+    }
+  }
 
   closeOrActiveAdministration = async () => {
     const { screenProps } = this.props;
@@ -87,6 +99,26 @@ class AdministrativeComponent extends Component {
     });
   }
 
+
+  activateOrDesactivateUpnp = async () => {
+    const { screenProps } = this.props;
+    if (this.state.upnp) {
+      await chatService.desactivateUpnp();
+      await AsyncStorage.removeItem('upnp');
+      toast(screenProps.t('Admin:desactivateUpnp'));
+      this.setState({
+        upnp: false
+      });
+    } else {
+      await chatService.activateUpnp();
+      await AsyncStorage.setItem('upnp', String(true));
+      toast(screenProps.t('Admin:activateUpnp'));
+      this.setState({
+        upnp: true
+      });
+    }
+  }
+
   render() {
     const { screenProps } = this.props;
     return (
@@ -131,7 +163,7 @@ class AdministrativeComponent extends Component {
                 <Text>{screenProps.t('Admin:upnp')}</Text>
               </Left>
               <Right>
-                <Switch value={false} onTouchEnd={() => alert('this is not available now')} />
+                <Switch value={this.state.upnp} onTouchEnd={() => this.activateOrDesactivateUpnp()} />
               </Right>
             </ListItem>
 
