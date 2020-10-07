@@ -1,0 +1,76 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`test home componente render home component 1`] = `
+<Styled(Container)>
+  <Connect(HeaderComponent)
+    back={[Function]}
+    chats={Array []}
+    contacts={Array []}
+    delete={[Function]}
+    deleteChat={[Function]}
+    navigation={
+      Object {
+        "closeDrawer": [MockFunction],
+        "dismiss": [MockFunction],
+        "goBack": [MockFunction],
+        "navigate": [MockFunction],
+        "openDrawer": [MockFunction] {
+          "calls": Array [
+            Array [],
+          ],
+          "results": Array [
+            Object {
+              "type": "return",
+              "value": undefined,
+            },
+          ],
+        },
+        "pop": [MockFunction],
+        "popToTop": [MockFunction],
+        "push": [MockFunction],
+        "replace": [MockFunction],
+        "reset": [MockFunction],
+        "setParams": [MockFunction],
+        "state": Object {
+          "key": "id-1581513550398-0",
+          "routeName": "initial",
+        },
+        "toggleDrawer": [MockFunction],
+      }
+    }
+    screenProps={
+      Object {
+        "t": [Function],
+      }
+    }
+    search={[Function]}
+    selected={Array []}
+    selectedChat={[Function]}
+    store={
+      Object {
+        "dispatch": [Function],
+        "getState": [Function],
+        "replaceReducer": [Function],
+        "subscribe": [Function],
+        Symbol(observable): [Function],
+      }
+    }
+  />
+  <Styled(Content) />
+  <FloatButtons
+    add={[Function]}
+    icon={
+      <Styled(Icon)
+        name="message"
+        style={
+          Object {
+            "color": "#f5f5f5",
+            "fontSize": 24,
+          }
+        }
+        type="MaterialIcons"
+      />
+    }
+  />
+</Styled(Container)>
+`;

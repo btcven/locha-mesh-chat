@@ -267,11 +267,12 @@ public class ChatServiceModule extends ReactContextBaseJavaModule {
 
                      timer.schedule( new TimerTask() {
                          public void run() {
-                             String[] ips =  Runtime.getInstance().externalAddresses();
-
-                             for (String ip : ips) {
-                                 event.onExternalAddress(ip);
-                             }
+                            if( Runtime.getInstance().isStarted()) {
+                                String[] ips =  Runtime.getInstance().externalAddresses();
+                                for (String ip : ips) {
+                                    event.onExternalAddress(ip);
+                                }
+                            }
                          }
                      }, 0, RECHARGE_TIME);
 

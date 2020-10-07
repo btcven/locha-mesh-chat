@@ -36,6 +36,7 @@ class RestoreWithPin extends Component {
           callback();
           return;
         }
+        callback();
         toast(this.props.screenProps.t('Initial:error1'));
       });
     } else {

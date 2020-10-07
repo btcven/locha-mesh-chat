@@ -52,10 +52,6 @@ class index extends Component {
     drawerLabel: 'Home'
   };
 
-  componentDidMount = () => {
-    database.realmObservable();
-    // pendingObservable();
-  };
 
   selectedChat = (info, obj) => {
     if (this.state.selected.length === 0) {
@@ -182,6 +178,8 @@ class index extends Component {
           .includes(this.state.search.toLowerCase())
       ))
       : Object.values(this.props.chats);
+
+    console.log("dios123", this.props.chats);
     return (
       <Container>
         <Header
@@ -201,10 +199,9 @@ class index extends Component {
             );
             const infoData = this.getContactInformation(chat);
             const messages = Object.values(chat.messages);
-            const lastmessage = this.getDataTypeMessage(messages[messages.length - 1]);
-
-            const lasTime = Number(messages[messages.length - 1].timestamp);
             if (messages.length !== 0) {
+              const lastmessage = this.getDataTypeMessage(messages[messages.length - 1]);
+              const lasTime = Number(messages[messages.length - 1].timestamp);
               return (
                 <List key={chat.toUID} style={{ backgroundColor }}>
                   <ListItem
