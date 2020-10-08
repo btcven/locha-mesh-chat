@@ -118,4 +118,28 @@ describe('test Administrative component', () => {
     wrapper.instance().sendDialToChatService('test', () => { });
     expect(mocksendDialfalse.mock.calls.length).toBe(1);
   });
+
+
+  test('check componentDidMount', async () => {
+    const instance = wrapper.instance();
+    await instance.componentDidMount();
+    expect(instance.state.upnp).toBe(true);
+  });
+
+
+  test('activate upnp', () => {
+    wrapper.setState({ upnp: false });
+    wrapper.find('Styled(Switch)').at(1).props().onTouchEnd();
+    setTimeout(async () => {
+      await expect(wrapper.instance().state.upnp).toBe(true);
+    }, 500);
+  });
+
+  test('disable upnp', () => {
+    wrapper.setState({ upnp: true });
+    wrapper.find('Styled(Switch)').at(1).props().onTouchEnd();
+    setTimeout(async () => {
+      await expect(wrapper.instance().state.upnp).toBe(false);
+    }, 500);
+  });
 });

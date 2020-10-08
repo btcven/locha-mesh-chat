@@ -135,7 +135,7 @@
     "errorSaveListen": "Ha ocurrido un error a agregar una nueva direccion de escucha",
     "addressListenMessage1": "Cambios exitosos la dirección de escucha del servidor será",
     "addressListenMessage2": "Cambios exitosos la dirección de escucha del servidor serán todas las direcciones disponibles",
-    "activateUpnp": "Upnp activado satisfactoriamente",
-    "desactivateUpnp": "Upnp desactivado"
+    "activateUpnp": "UPnP activado satisfactoriamente",
+    "desactivateUpnp": "UPnP desactivado"
   }
 }

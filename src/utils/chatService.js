@@ -108,7 +108,7 @@ export default class ChatService {
     const xpriv = await bitcoin.getPrivKey();
     // get node address  if it defined
     const addressListen = await AsyncStorage.getItem('AddressListen');
-    this.IsActiveUpnp = await AsyncStorage.getItem('upnp') ? true : false;
+    this.IsActiveUpnp = !!await AsyncStorage.getItem('upnp');
     const peerID = await this.service.start(xpriv, this.IsActiveUpnp, addressListen);
     return peerID;
   }
@@ -146,7 +146,6 @@ export default class ChatService {
    * @param {*} callback  callback
    */
   addNewAddressListen = async (address, callback) => {
-
     if (!process.env.JEST_WORKER_ID) {
       const xpriv = await bitcoin.getPrivKey();
       this.store.dispatch(cleanNodeAddress());
@@ -160,7 +159,7 @@ export default class ChatService {
     }
   }
 
-  desactivateUpnp = async () => {
+  deactivateUpnp = async () => {
     const xpriv = await bitcoin.getPrivKey();
     await this.stop();
     const addressListen = await AsyncStorage.getItem('AddressListen');

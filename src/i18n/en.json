@@ -138,8 +138,8 @@
     "default": "default",
     "errorSaveListen": "an error occurred while adding a new listening address",
     "addressListenMessage1": "successful changes the server listening address will be",
-    "addressListenMessage2": "successful changes the server listening address will be all available directions",
-    "activateUpnp": "Upnp activated successfully",
-    "desactivateUpnp": "Upnp disabled"
+    "addressListenMessage2": "successful changes the server listening address will be all available addresses",
+    "activateUpnp": "UPnP activated successfully",
+    "desactivateUpnp": "UPnP disabled"
   }
 }

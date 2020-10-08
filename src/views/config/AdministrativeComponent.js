@@ -112,10 +112,10 @@ class AdministrativeComponent extends Component {
     } else {
       await chatService.activateUpnp();
       await AsyncStorage.setItem('upnp', String(true));
-      toast(screenProps.t('Admin:activateUpnp'));
       this.setState({
         upnp: true
       });
+      toast(screenProps.t('Admin:activateUpnp'));
     }
   }
 

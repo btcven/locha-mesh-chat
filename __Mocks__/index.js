@@ -136,8 +136,12 @@ jest.mock('react-native/Libraries/Utilities/Platform', () => ({
 }));
 
 jest.mock('@react-native-community/async-storage', () => ({
-  getItem: jest.fn(() => new Promise((resolve) => {
-    resolve(null);
+  getItem: jest.fn((data) => new Promise((resolve) => {
+    if (data === 'upnp') {
+      resolve(true);
+    } else {
+      resolve(null);
+    }
   })),
 
   setItem: jest.fn(() => new Promise((resolve) => {
@@ -166,14 +170,18 @@ jest.doMock('react-native', () =>
           getIpv6Andipv4Adress: jest.fn().mockReturnValue(['192.168.0.1'])
         },
         ChatService: {
-          startService: new Promise((resolve) => { resolve('5c28fab375d47994b30190b01338ea48daa0b307909a3d465a597772469633e1'); }),
-          stop: new Promise((resolve) => { resolve(); }),
-          addNewAddressListen: new Promise((resolve) => { resolve(); })
+          start: jest.fn(() => new Promise((resolve) => {
+            resolve('5c28fab375d47994b30190b01338ea48daa0b307909a3d465a597772469633e1');
+          })),
+          stop: jest.fn(() => new Promise((resolve) => { resolve(); })),
+          addNewAddressListen: jest.fn(() => new Promise((resolve) => { resolve(); }))
         },
         bitcoinModule: {
-          createWallet: new Promise((resolve) => { resolve('5c28fab375d47994b30190b01338ea48daa0b307909a3d465a597772469633e1'); }),
+          createWallet: jest.fn(() => new Promise((resolve) => {
+            resolve('5c28fab375d47994b30190b01338ea48daa0b307909a3d465a597772469633e1');
+          })),
           sha256: new Promise((resolve) => { resolve('5c28fab375d47994b30190b01338ea48daa0b307909a3d465a597772469633e1'); }),
-          getPrivateKey: new Promise((resolve) => { resolve('test'); })
+          getPrivateKey: jest.fn(() => new Promise((resolve) => { resolve('test'); }))
         },
         RNPermissions: {
           ...mock
