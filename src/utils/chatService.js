@@ -55,16 +55,20 @@ export default class ChatService {
    */
   onNewMessage = () => {
     this.event.addListener('newMessage', ((message) => {
-      const parse = JSON.parse(message);
-      const { dispatch } = this.store;
-      switch (parse.type) {
-        case messageType.MESSAGE: dispatch(getChat(parse));
-          break;
-        // Execute function that is in chat actions
-        case messageType.STATUS: this.setStatus(parse);
-          break;
-        default:
-          break;
+      try {
+        const parse = JSON.parse(message);
+        const { dispatch } = this.store;
+        switch (parse.type) {
+          case messageType.MESSAGE: dispatch(getChat(parse));
+            break;
+          // Execute function that is in chat actions
+          case messageType.STATUS: this.setStatus(parse);
+            break;
+          default:
+            break;
+        }
+      } catch (error) {
+        console.log('Error with the message is: ', error);
       }
     }));
   }
