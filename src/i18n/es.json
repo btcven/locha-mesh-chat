@@ -136,6 +136,6 @@
     "addressListenMessage1": "Cambios exitosos la dirección de escucha del servidor será",
     "addressListenMessage2": "Cambios exitosos la dirección de escucha del servidor serán todas las direcciones disponibles",
     "activateUpnp": "UPnP activado satisfactoriamente",
-    "desactivateUpnp": "UPnP desactivado"
+    "deactivateUpnp": "UPnP desactivado"
   }
 }

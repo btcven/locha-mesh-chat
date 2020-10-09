@@ -140,6 +140,6 @@
     "addressListenMessage1": "successful changes the server listening address will be",
     "addressListenMessage2": "successful changes the server listening address will be all available addresses",
     "activateUpnp": "UPnP activated successfully",
-    "desactivateUpnp": "UPnP disabled"
+    "deactivateUpnp": "UPnP disabled"
   }
 }
