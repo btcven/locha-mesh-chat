@@ -166,8 +166,6 @@ export default class CoreDatabase {
     this.db.write(() => {
       try {
         const chat = this.db.objectForPrimaryKey('Chat', id);
-        console.log('here in the chat', chat);
-
         const time = new Date().getTime();
         const file = obj.msg.typeFile
           ? {
@@ -193,6 +191,22 @@ export default class CoreDatabase {
     });
   });
 
+  verifyValidMessage = (contactId) => new Promise((resolve, reject) => {
+    this.db.write(() => {
+      try {
+        const contact = this.db.objectForPrimaryKey('Contact', contactId);
+        if (contact) {
+          resolve();
+        } else {
+          throw new Error('no contact found');
+        }
+      } catch (err) {
+        reject(err);
+      }
+    });
+  });
+
+
   addTemporalInfo = (obj) => new Promise((resolve) => {
     this.db.write(() => {
       this.db.create('temporalContacts', {
@@ -202,10 +216,6 @@ export default class CoreDatabase {
     });
   });
 
-  verifyContact = (hashUID) => new Promise((resolve) => {
-    const contact = this.db.objects('Contact').find((data) => data.hashUID === hashUID);
-    resolve(contact);
-  });
 
   getTemporalContact = (id) => new Promise((resolve) => {
     const temporal = this.db.objectForPrimaryKey('temporalContacts', id);

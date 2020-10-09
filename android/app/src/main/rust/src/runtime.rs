@@ -88,32 +88,25 @@ pub extern "system" fn Java_io_locha_p2p_runtime_Runtime_nativeNew(
     class: JClass,
     secret_key: jbyteArray,
     attempt_upnp: jboolean,
-    address: JString
+    address: JString,
 ) {
-  
     trace!("nativeStart");
 
     let res = panic::catch_unwind(|| {
         let secret_key = java_bytearray_to_secretkey(&env, secret_key)?;
         let identity = Identity::from(secret_key);
-        let attempt_upnp = attempt_upnp == JNI_TRUE;
-
-        let listen_address: String = env.get_string(address)?.into();                                                               
-    
-        trace!("listen address: {}", listen_address);
+        let listen_addr: String = env.get_string(address)?.into();
 
         let config = RuntimeConfig {
             identity,
-            listen_addr: listen_address
-                .parse()
-                .expect("invalid listen addr"),
+            listen_addr: listen_addr.parse().unwrap(),
             channel_cap: 20,
             heartbeat_interval: 10,
 
             mdns: true,
-            upnp: attempt_upnp,
+            upnp: attempt_upnp == JNI_TRUE,
 
-            bootstrap_nodes: Vec::new(),
+            bootstrap_nodes: locha_p2p::p2p::behaviour::bootstrap_nodes(),
         };
 
         let events_handler = java_get_events_handler_field(&env, class)?;
