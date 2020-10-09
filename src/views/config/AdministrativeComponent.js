@@ -20,7 +20,6 @@ import AddManualAddress from './AddManualAddress';
 import AddNewAddressListen from './AddNewAddressListen';
 import { chatService } from '../../../App';
 
-
 class AdministrativeComponent extends Component {
   constructor() {
     super();
@@ -35,7 +34,6 @@ class AdministrativeComponent extends Component {
   static navigationOptions = {
     title: 'Admistrative dashboard'
   };
-
 
   componentDidMount = async () => {
     const res = await AsyncStorage.getItem('upnp');
@@ -99,22 +97,21 @@ class AdministrativeComponent extends Component {
     });
   }
 
-
   activateOrDesactivateUpnp = async () => {
     const { screenProps } = this.props;
     if (this.state.upnp) {
       await chatService.desactivateUpnp();
-      await AsyncStorage.removeItem('upnp');
-      toast(screenProps.t('Admin:desactivateUpnp'));
       this.setState({
         upnp: false
       });
+      await AsyncStorage.removeItem('upnp');
+      toast(screenProps.t('Admin:desactivateUpnp'));
     } else {
-      await chatService.activateUpnp();
-      await AsyncStorage.setItem('upnp', String(true));
+      chatService.activateUpnp();
       this.setState({
         upnp: true
       });
+      await AsyncStorage.setItem('upnp', String(true));
       toast(screenProps.t('Admin:activateUpnp'));
     }
   }
@@ -139,7 +136,6 @@ class AdministrativeComponent extends Component {
             title="Add Bootstrap address"
             nameComponent="bootstrapAddress"
           />
-
           <AddNewAddressListen screenProps={screenProps} open={this.state.addresListen} close={this.closeModal} />
           <List>
             <ListItem>

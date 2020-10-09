@@ -17,6 +17,8 @@ const hiddePanel = jest.fn((callback) => callback());
 const mocksendDial = jest.fn((adress, callback) => callback(true));
 const mocksendDialfalse = jest.fn((adress, callback) => callback(false));
 
+jest.useFakeTimers();
+
 describe('test Administrative component', () => {
   const wrapper = shallow(
     <AdministrativeComponent
@@ -128,6 +130,8 @@ describe('test Administrative component', () => {
 
 
   test('activate upnp', () => {
+    jest.useFakeTimers();
+
     wrapper.setState({ upnp: false });
     wrapper.find('Styled(Switch)').at(1).props().onTouchEnd();
     setTimeout(async () => {
