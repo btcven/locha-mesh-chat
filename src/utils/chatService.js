@@ -64,7 +64,7 @@ export default class ChatService {
         await database.verifyValidMessage(parse.fromUID);
 
         // Verify that the message is for me
-        console.warn(getState().config.peerID);
+
         if (parse.toUID !== getState().config.peerID) {
           return;
         }
