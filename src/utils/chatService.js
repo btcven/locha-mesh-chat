@@ -168,7 +168,6 @@ export default class ChatService {
     return peerID;
   }
 
-
   activateUpnp = async () => {
     await this.stop();
     const peerID = await this.startService();
