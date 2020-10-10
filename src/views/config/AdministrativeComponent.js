@@ -12,11 +12,13 @@ import {
   Switch
 } from 'native-base';
 import { connect } from 'react-redux';
-import { closeAdministrativePanel, openAdministrativePanel } from '../../store/aplication/aplicationAction';
+import AsyncStorage from '@react-native-community/async-storage';
+import { closeAdministrativePanel, openAdministrativePanel, } from '../../store/aplication/aplicationAction';
 import { startManualService, stopService, setNewDials } from '../../store/chats/chatAction';
 import { toast } from '../../utils/utils';
 import AddManualAddress from './AddManualAddress';
 import AddNewAddressListen from './AddNewAddressListen';
+import { chatService } from '../../../App';
 
 class AdministrativeComponent extends Component {
   constructor() {
@@ -24,13 +26,21 @@ class AdministrativeComponent extends Component {
     this.state = {
       dialAddress: false,
       manualBootstrap: false,
-      addresListen: false
+      addresListen: false,
+      upnp: false
     };
   }
 
   static navigationOptions = {
     title: 'Admistrative dashboard'
   };
+
+  componentDidMount = async () => {
+    const res = await AsyncStorage.getItem('upnp');
+    if (res) {
+      this.setState({ upnp: true });
+    }
+  }
 
   closeOrActiveAdministration = async () => {
     const { screenProps } = this.props;
@@ -87,6 +97,25 @@ class AdministrativeComponent extends Component {
     });
   }
 
+  activateOrDesactivateUpnp = async () => {
+    const { screenProps } = this.props;
+    if (this.state.upnp) {
+      chatService.deactivateUpnp();
+      this.setState({
+        upnp: false
+      });
+      await AsyncStorage.removeItem('upnp');
+      toast(screenProps.t('Admin:deactivateUpnp'));
+    } else {
+      chatService.activateUpnp();
+      this.setState({
+        upnp: true
+      });
+      await AsyncStorage.setItem('upnp', String(true));
+      toast(screenProps.t('Admin:activateUpnp'));
+    }
+  }
+
   render() {
     const { screenProps } = this.props;
     return (
@@ -107,7 +136,6 @@ class AdministrativeComponent extends Component {
             title="Add Bootstrap address"
             nameComponent="bootstrapAddress"
           />
-
           <AddNewAddressListen screenProps={screenProps} open={this.state.addresListen} close={this.closeModal} />
           <List>
             <ListItem>
@@ -131,7 +159,7 @@ class AdministrativeComponent extends Component {
                 <Text>{screenProps.t('Admin:upnp')}</Text>
               </Left>
               <Right>
-                <Switch value={false} onTouchEnd={() => alert('this is not available now')} />
+                <Switch value={this.state.upnp} onTouchEnd={() => this.activateOrDesactivateUpnp()} />
               </Right>
             </ListItem>
 

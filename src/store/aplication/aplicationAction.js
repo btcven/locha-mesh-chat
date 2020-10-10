@@ -65,6 +65,7 @@ export const createNewAccount = (obj, callback) => async (dispatch) => {
   await database.getRealm(shaPing, shaSeed);
   await database.setDataSeed(obj.seed);
   await createFolder();
+  await AsyncStorage.setItem('upnp', String(true));
   const result = await bitcoin.createWallet(obj.seed);
   const peerID = await chatService.startService();
   database.writteUser({
@@ -89,6 +90,7 @@ export const restoreWithPhrase = (pin, phrase, name) => async (dispatch) => {
     await createFolder();
     const result = await bitcoin.createWallet(phrase);
     const peerID = await chatService.startService();
+    await AsyncStorage.setItem('upnp', String(true));
     database.writteUser({
       uid: result.pubKey,
       peerID,
@@ -202,3 +204,4 @@ export const isAdministrative = () => async (dispatch) => {
     payload: isDefined
   });
 };
+

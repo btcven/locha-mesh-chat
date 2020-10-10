@@ -19,17 +19,14 @@ import {
   Alert, View,
 } from 'react-native';
 import Moment from 'moment';
-import { chats } from '../../utils/constans';
 import {
   getSelectedColor,
   unSelect,
-  pendingObservable,
   getIcon
 } from '../../utils/utils';
 import Header from '../../components/Header';
 import { selectedChat, deleteChat } from '../../store/chats';
 import FloatButton from '../../components/FloatButton';
-import { database, chatService } from '../../../App';
 
 
 /**
@@ -179,7 +176,6 @@ class index extends Component {
       ))
       : Object.values(this.props.chats);
 
-    console.log("dios123", this.props.chats);
     return (
       <Container>
         <Header
