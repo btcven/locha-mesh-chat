@@ -5,7 +5,6 @@ import { navigationPops } from '../../components/heder-test';
 import AdministrativeComponent from '../../../src/views/config/AdministrativeComponent';
 import store from '../../../src/store';
 
-
 const screenProps = {
   t: (data) => data
 };
@@ -137,7 +136,7 @@ describe('test Administrative component', () => {
     }, 500);
   });
 
-  test('disable upnp', () => {
+  test('disable u', () => {
     wrapper.setState({ upnp: true });
     wrapper.find('Styled(Switch)').at(1).props().onTouchEnd();
     setTimeout(async () => {
