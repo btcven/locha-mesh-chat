@@ -127,7 +127,6 @@ describe('test Administrative component', () => {
     expect(instance.state.upnp).toBe(true);
   });
 
-
   test('activate upnp', () => {
     jest.useFakeTimers();
 
