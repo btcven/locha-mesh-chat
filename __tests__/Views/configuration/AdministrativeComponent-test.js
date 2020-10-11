@@ -126,7 +126,7 @@ describe('test Administrative component', () => {
     expect(instance.state.upnp).toBe(true);
   });
 
-  test('activate upnp', () => {
+  test('enable UPnP', () => {
     jest.useFakeTimers();
 
     wrapper.setState({ upnp: false });
@@ -136,7 +136,7 @@ describe('test Administrative component', () => {
     }, 500);
   });
 
-  test('disable u', () => {
+  test('disable UPnP', () => {
     wrapper.setState({ upnp: true });
     wrapper.find('Styled(Switch)').at(1).props().onTouchEnd();
     setTimeout(async () => {
