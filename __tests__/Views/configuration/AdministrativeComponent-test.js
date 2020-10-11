@@ -121,7 +121,6 @@ describe('test Administrative component', () => {
     expect(mocksendDialfalse.mock.calls.length).toBe(1);
   });
 
-
   test('check componentDidMount', async () => {
     const instance = wrapper.instance();
     await instance.componentDidMount();
