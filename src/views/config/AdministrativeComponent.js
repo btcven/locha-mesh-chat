@@ -100,12 +100,12 @@ class AdministrativeComponent extends Component {
   activateOrDesactivateUpnp = async () => {
     const { screenProps } = this.props;
     if (this.state.upnp) {
-      await chatService.desactivateUpnp();
+      chatService.deactivateUpnp();
       this.setState({
         upnp: false
       });
       await AsyncStorage.removeItem('upnp');
-      toast(screenProps.t('Admin:desactivateUpnp'));
+      toast(screenProps.t('Admin:deactivateUpnp'));
     } else {
       chatService.activateUpnp();
       this.setState({
