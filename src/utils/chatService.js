@@ -1,6 +1,5 @@
 import { NativeModules, NativeEventEmitter } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
-import { throws } from 'assert';
 import { bitcoin, database } from '../../App';
 import {
   getChat, setStatusMessage, setPeers, removeDisconnedPeers
@@ -51,35 +50,40 @@ export default class ChatService {
     this.service.sendMessage(message);
   }
 
+  onMessage = async (message) => {
+    try {
+      const { dispatch, getState } = this.store;
+      const parse = JSON.parse(message);
+
+      // verify that the message was be a contact
+
+      await database.verifyValidMessage(parse.fromUID);
+
+      // Verify that the message is for me
+      if (parse.toUID !== getState().config.peerID) {
+        return;
+      }
+
+      switch (parse.type) {
+        case messageType.MESSAGE: dispatch(getChat(parse));
+          break;
+        // Execute function that is in chat actions
+        case messageType.STATUS: this.setStatus(parse);
+          break;
+        default:
+          break;
+      }
+    } catch (error) {
+      console.log('Error with the message is: ', error);
+    }
+  }
+
   /**
    * functions executed when is received a new message
    */
   onNewMessage = () => {
     this.event.addListener('newMessage', (async (message) => {
-      try {
-        const { dispatch, getState } = this.store;
-        const parse = JSON.parse(message);
-
-        // verify that the message was be a contact
-        await database.verifyValidMessage(parse.fromUID);
-
-        // Verify that the message is for me
-
-        if (parse.toUID !== getState().config.peerID) {
-          return;
-        }
-        switch (parse.type) {
-          case messageType.MESSAGE: dispatch(getChat(parse));
-            break;
-          // Execute function that is in chat actions
-          case messageType.STATUS: this.setStatus(parse);
-            break;
-          default:
-            break;
-        }
-      } catch (error) {
-        console.log('Error with the message is: ', error);
-      }
+      this.onMessage(message);
     }));
   }
 

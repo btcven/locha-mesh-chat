@@ -76,11 +76,11 @@ export const createNewAccount = (obj, callback) => async (dispatch) => {
     contacts: [],
     chats: []
   }).then(async (res) => {
-    callback();
     if (!process.env.JEST_WORKER_ID) {
       await AsyncStorage.setItem('@APP:status', 'created');
     }
     dispatch(writeAction(res));
+    callback();
   });
 };
 

@@ -178,7 +178,10 @@ jest.doMock('react-native', () =>
         },
         bitcoinModule: {
           createWallet: jest.fn(() => new Promise((resolve) => {
-            resolve('5c28fab375d47994b30190b01338ea48daa0b307909a3d465a597772469633e1');
+            resolve({
+              pubKey: '5c28fab375d47994b30190b01338ea48daa0b307909a3d465a597772469633e1',
+              privKey: '5c28fab375d47994b30190b01338ea48daa0b307909a3d465a597772469633e1'
+            });
           })),
           sha256: new Promise((resolve) => { resolve('5c28fab375d47994b30190b01338ea48daa0b307909a3d465a597772469633e1'); }),
           getPrivateKey: jest.fn(() => new Promise((resolve) => { resolve('test'); }))
