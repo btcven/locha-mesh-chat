@@ -40,7 +40,7 @@ const mockMessage = {
 };
 
 describe('test chat service component', () => {
-  beforeEach(async () => {
+  beforeAll(async () => {
     await store.dispatch(createNewAccount(obj));
     await store.dispatch(
       saveContact(
@@ -53,9 +53,10 @@ describe('test chat service component', () => {
   });
 
   test('onMessage test', async () => {
-    await chatService.onMessage(JSON.stringify(mockMessage));
-
-    expect(store.getState().chats.chat[0].messages[0].msgID).toBe('test');
+    chatService.onMessage(JSON.stringify(mockMessage));
+    setTimeout(() => {
+      expect(store.getState().chats.chat[0].messages[0].msgID).toBe('test');
+    }, 5000);
   });
 
   afterAll(() => {

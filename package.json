@@ -10,7 +10,7 @@
     "postinstall": "./node_modules/.bin/rn-nodeify  --install stream,vm  --hack  --yarn && npx jetify ",
     "docs": "./node_modules/.bin/jsdoc -c jsdoc.json",
     "lint": "eslint '**/*.{js,jsx}' --quiet",
-    "test": "jest --verbose --runInBand --detectOpenHandles && codecov",
+    "test": "jest --verbose --runInBand --detectOpenHandles --forceExit  && codecov",
     "release": "cd android && ./gradlew assembleRelease",
     "keystore": "cd android && ./keystore.sh"
   },
