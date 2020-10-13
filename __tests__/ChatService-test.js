@@ -53,7 +53,7 @@ describe('test chat service component', () => {
   });
 
   test('onMessage test', async () => {
-    chatService.onMessage(JSON.stringify(mockMessage));
+    await chatService.onMessage(JSON.stringify(mockMessage));
     setTimeout(() => {
       expect(store.getState().chats.chat[0].messages[0].msgID).toBe('test');
     }, 5000);
