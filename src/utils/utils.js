@@ -12,11 +12,17 @@ import {
 import NotifService from './notificationService';
 import NavigationService from './navigationService';
 import store from '../store';
+import ChatService from './chatService';
 
 /**
  * global functions used in multiple places in the app
  * @module Utils
  */
+
+
+export const getChatserviceInstance = () => {
+  return new ChatService();
+};
 
 export const notification = new NotifService();
 /**

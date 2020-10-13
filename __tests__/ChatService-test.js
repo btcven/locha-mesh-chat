@@ -5,6 +5,7 @@ import store from '../src/store';
 import { saveContact } from '../src/store/contacts/contactsActions';
 import { createNewAccount } from '../src/store/aplication/aplicationAction';
 import { messageType } from '../src/utils/constans';
+import { getChatserviceInstance } from '../src/utils/utils';
 
 const newContact = {
   name: 'TEST',
@@ -53,7 +54,8 @@ describe('test chat service component', () => {
   });
 
   test('onMessage test', async () => {
-    await chatService.onMessage(JSON.stringify(mockMessage));
+    const service = getChatserviceInstance();
+    await service.onMessage(JSON.stringify(mockMessage));
     setTimeout(() => {
       expect(store.getState().chats.chat[0].messages[0].msgID).toBe('test');
     }, 5000);
