@@ -5,7 +5,6 @@ import { navigationPops } from '../../components/heder-test';
 import AdministrativeComponent from '../../../src/views/config/AdministrativeComponent';
 import store from '../../../src/store';
 
-
 const screenProps = {
   t: (data) => data
 };
@@ -121,15 +120,13 @@ describe('test Administrative component', () => {
     expect(mocksendDialfalse.mock.calls.length).toBe(1);
   });
 
-
   test('check componentDidMount', async () => {
     const instance = wrapper.instance();
     await instance.componentDidMount();
     expect(instance.state.upnp).toBe(true);
   });
 
-
-  test('activate upnp', () => {
+  test('enable UPnP', () => {
     jest.useFakeTimers();
 
     wrapper.setState({ upnp: false });
@@ -139,9 +136,8 @@ describe('test Administrative component', () => {
     }, 500);
   });
 
-  test('disable upnp', () => {
+  test('disable UPnP', () => {
     jest.useFakeTimers();
-    
     wrapper.setState({ upnp: true });
     wrapper.find('Styled(Switch)').at(1).props().onTouchEnd();
     setTimeout(async () => {

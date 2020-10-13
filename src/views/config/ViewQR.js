@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import Modal from 'react-native-modal';
-import { View, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Clipboard } from 'react-native';
 import QRCode from 'react-native-qrcode-svg';
 import { Text, Form, Picker } from 'native-base';
+import { toast } from '../../utils/utils';
 
 /**
  *
@@ -28,6 +29,12 @@ export default class ViewQR extends Component {
       });
     }
   }
+
+
+  setContent = async (data) => {
+    Clipboard.setString(data);
+    toast(this.props.screenProps.t('Settings:uidCopy'));
+  };
 
   onValueChange = (data) => {
     this.setState({
@@ -68,7 +75,7 @@ export default class ViewQR extends Component {
                 </Text>
               </View>
               <View style={styles.peerIdContainer}>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={() => this.setContent(this.props.config.peerID)}>
                   <Text>
                     {this.props.config.peerID}
                   </Text>

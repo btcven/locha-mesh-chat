@@ -3,7 +3,7 @@ import {
   Container, Icon, Left, Right, Thumbnail
 } from 'native-base';
 import {
-  Text, View, StyleSheet, TouchableHighlight, TouchableOpacity, Clipboard, ScrollView
+  Text, View, StyleSheet, TouchableHighlight, TouchableOpacity, ScrollView
 } from 'react-native';
 import { connect } from 'react-redux';
 import Share from 'react-native-share';
@@ -15,7 +15,6 @@ import EditName from './EditName';
 import EditPhoto from './EditPhoto';
 import ViewQR from './ViewQR';
 import Languajes from './Language';
-import { toast } from '../../utils/utils';
 import i18n from '../../i18n';
 import { database, bitcoin } from '../../../App';
 import AddPin from '../LoadWallet/RestoreWithPin';
@@ -52,10 +51,7 @@ class Config extends Component {
     header: null
   };
 
-  setContent = async (data) => {
-    Clipboard.setString(data);
-    toast(this.props.screenProps.t('Settings:uidCopy'));
-  };
+
 
 
   createBackupFile = async (pin) => {

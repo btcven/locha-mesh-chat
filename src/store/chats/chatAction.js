@@ -252,7 +252,7 @@ export const sendStatus = (data) => {
   const state = store.default.getState();
   // eslint-disable-next-line no-shadow
   const sendStatus = {
-    fromUID: state.config.uid,
+    fromUID: state.config.peerID,
     timestamp: new Date().getTime(),
     data: {
       status: 'delivered',

@@ -1,6 +1,6 @@
 /* eslint-disable react/sort-comp */
 import React, { Component } from 'react';
-import { Text, Alert } from 'react-native';
+import { Text } from 'react-native';
 import {
   Container,
   Content,

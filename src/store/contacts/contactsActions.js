@@ -1,6 +1,6 @@
 import RNFS from 'react-native-fs';
 import { ActionTypes } from '../constants';
-import { FileDirectory} from '../../utils/utils';
+import { FileDirectory } from '../../utils/utils';
 import { database } from '../../../App';
 /**
  * here are all the actions references to contacts
@@ -36,7 +36,6 @@ export const saveContact = (
       picture: !data.picture ? null : newPath
     }
   ];
-
   database.addContacts(id, obj).then((res) => {
     obj.push(...lastContact);
     dispatch({

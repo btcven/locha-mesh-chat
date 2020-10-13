@@ -21,7 +21,6 @@ describe('test new Address Listen component', () => {
     />
   ).childAt(0).dive();
 
-  console.log("aqui123", wrapper.debug());
 
   test('it will close modal when click outside', () => {
 
