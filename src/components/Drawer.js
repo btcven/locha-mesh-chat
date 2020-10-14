@@ -7,15 +7,15 @@ import {
   Button,
   Icon,
   Thumbnail,
+  BackAndroid
 } from 'native-base';
 import {
-  View, Text, StyleSheet, NativeModules
+  View, Text, StyleSheet, NativeModules, Alert
 } from 'react-native';
 import { connect } from 'react-redux';
 import { closeMenu, openAdministrativePanel, isAdministrative } from '../store/aplication/aplicationAction';
 import { images } from '../utils/constans';
 import { toast } from '../utils/utils';
-
 
 /**
  * view of the menu drawer
@@ -93,7 +93,7 @@ class DrawerComponent extends Component {
             </Body>
           </ListItem>
 
-          <ListItem icon button onPress={() => this.handleChange('config')}>
+          <ListItem icon button onPress={() => this.handleChang('config')}>
             <Left>
               <Button style={{ backgroundColor: '#ef6c00' }}>
                 <Icon active name="settings" />
