@@ -93,7 +93,7 @@ class DrawerComponent extends Component {
             </Body>
           </ListItem>
 
-          <ListItem icon button onPress={() => this.handleChang('config')}>
+          <ListItem icon button onPress={() => this.handleChange('config')}>
             <Left>
               <Button style={{ backgroundColor: '#ef6c00' }}>
                 <Icon active name="settings" />
