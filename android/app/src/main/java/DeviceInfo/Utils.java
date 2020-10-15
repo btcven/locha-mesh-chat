@@ -154,7 +154,6 @@ public class Utils {
     }
 
 
-
     public static List<String> getAllIps() {
         List<String> ipv4Array = new ArrayList<String>();
         try {

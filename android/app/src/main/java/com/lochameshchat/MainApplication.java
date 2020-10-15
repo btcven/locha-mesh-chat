@@ -38,7 +38,6 @@ public class MainApplication extends Application implements ReactApplication {
            packages.add(new LochaP2PPackage());
            packages.add(new CoapClientPackage());
            packages.add(new LocalNotificationPackage());
-//           packages.add(new ReactNativeExceptionHandlerPackage());
           return packages;
         }
 

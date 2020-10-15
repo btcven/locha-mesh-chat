@@ -79,18 +79,4 @@ class UtilsTest {
         assertEquals(result, expected);
     }
 
-
-    @Test
-    void getOurVersion() {
-        assertNull(context);
-//        String result = Utils.getOurVersion(context);
-//        try{
-//
-//            assertEquals( "1",result);
-//        } catch (Exception e){
-//            doThrow(e);
-//        }
-    }
-
-
 }
