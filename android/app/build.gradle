@@ -122,6 +122,19 @@ def enableHermes = project.ext.react.get("enableHermes", false);
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     testOptions.unitTests.includeAndroidResources = true
+
+    def versionPropsFile = file('gradle.properties')
+    def Properties versionProps = new Properties()
+
+    if (versionPropsFile.canRead()) {
+        versionProps.load(new FileInputStream(versionPropsFile))
+    }
+    else {
+        versionProps['COMPILATION_VERSION']='1'
+    }
+
+    def code = versionProps['COMPILATION_VERSION'].toInteger()
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -135,7 +148,7 @@ android {
         applicationId "com.lochameshchat"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
+        versionCode code
         versionName "1.0"
         missingDimensionStrategy ('react-native-camera','general')
         multiDexEnabled true
