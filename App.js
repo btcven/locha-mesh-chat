@@ -10,7 +10,6 @@ import Bitcoin from './src/utils/Bitcoin';
 import Database from './src/database';
 import ChatService from './src/utils/chatService';
 import NotifService from './src/utils/notificationService';
-import './src/utils/ErrorHandler';
 
 const WrappedStack = ({ t }) => (
   <RouteContainer
