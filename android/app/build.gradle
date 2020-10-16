@@ -130,10 +130,10 @@ android {
         versionProps.load(new FileInputStream(versionPropsFile))
     }
     else {
-        versionProps['COMPILATION_VERSION']='1'
+        versionProps['COMPILATION_NUMBER']="0"
     }
 
-    def code = versionProps['COMPILATION_VERSION'].toInteger()
+    def code = versionProps['COMPILATION_NUMBER'].toInteger()
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8

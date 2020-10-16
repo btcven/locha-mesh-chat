@@ -2,11 +2,11 @@
 
 cp gradle.properties.in gradle.properties
 
-if [ "${VERSION}" ]
+if [ "${COMPILATION_NUMBER}" ]
 then
-  echo "COMPILATION_VERSION=${VERSION}" >> gradle.properties
+  echo "COMPILATION_NUMBER=${COMPILATION_NUMBER}" >> gradle.properties
 else
-  echo "COMPILATION_VERSION=1.0" >> gradle.properties
+  echo "COMPILATION_NUMBER=0" >> gradle.properties
 fi
 
 echo "MYAPP_RELEASE_STORE_FILE=my-upload-key.keystore" >> gradle.properties
