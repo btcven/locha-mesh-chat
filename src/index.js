@@ -6,7 +6,7 @@ import Home from './views/home';
 import LoadWallet from './views/LoadWallet';
 import RestoreWithPing from './views/LoadWallet/RestoreWithPin';
 import { selectedChat } from './store/chats';
-
+import './utils/ErrorHandler';
 /**
  *
  * @description application views container

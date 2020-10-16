@@ -152,6 +152,15 @@ jest.mock('@react-native-community/async-storage', () => ({
   }))
 }));
 
+
+jest.mock('react-native-exception-handler', () => ({
+  setJSExceptionHandler: jest.fn((callback) => callback({
+    message: 'test'
+  }, true)),
+  setNativeExceptionHandler: jest.fn((callback) => callback('data'))
+}));
+
+
 jest.doMock('react-native', () =>
   // Extend ReactNative
   Object.setPrototypeOf(

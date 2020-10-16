@@ -5,6 +5,7 @@ import android.app.Application;
 
 
 import com.facebook.react.ReactApplication;
+import com.masteratul.exceptionhandler.ReactNativeExceptionHandlerPackage;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
@@ -37,7 +38,6 @@ public class MainApplication extends Application implements ReactApplication {
            packages.add(new LochaP2PPackage());
            packages.add(new CoapClientPackage());
            packages.add(new LocalNotificationPackage());
-
           return packages;
         }
 

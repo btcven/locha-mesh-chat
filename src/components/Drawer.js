@@ -7,15 +7,15 @@ import {
   Button,
   Icon,
   Thumbnail,
+  BackAndroid
 } from 'native-base';
 import {
-  View, Text, StyleSheet, NativeModules
+  View, Text, StyleSheet, NativeModules, Alert
 } from 'react-native';
 import { connect } from 'react-redux';
 import { closeMenu, openAdministrativePanel, isAdministrative } from '../store/aplication/aplicationAction';
 import { images } from '../utils/constans';
 import { toast } from '../utils/utils';
-
 
 /**
  * view of the menu drawer

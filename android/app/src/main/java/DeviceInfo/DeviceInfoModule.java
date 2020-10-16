@@ -117,4 +117,11 @@ public class DeviceInfoModule  extends ReactContextBaseJavaModule {
 
        promise.resolve(array);
    }
+
+    /**
+     * close the app completely
+     */
+   @ReactMethod public void exitApp(){
+       System.exit(0);
+   }
 }
