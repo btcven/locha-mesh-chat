@@ -130,7 +130,7 @@ android {
         versionProps.load(new FileInputStream(versionPropsFile))
     }
     else {
-        versionProps['COMPILATION_NUMBER']="0"
+        versionProps['COMPILATION_NUMBER']="1"
     }
 
     def code = versionProps['COMPILATION_NUMBER'].toInteger()
