@@ -44,6 +44,7 @@ jobs:
         KEYALIAS: ${{ secrets.ALIAS }}
         STOREPASSWORD: ${{ secrets.STOREPASSWORD }}
         KEYPASSWORD: ${{ secrets.KEYPASSWORD }}
+        COMPILATION_NUMBER: ${{ github.run_id }}
       run: cd android && chmod +x ./gradlew && chmod +x ./keystore.sh && echo ${SIGNINGKEY} | base64 --decode >> my-upload-key.keystore && mv my-upload-key.keystore app/ && ./keystore.sh
 
     # Build Command
