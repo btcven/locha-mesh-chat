@@ -205,7 +205,7 @@ class index extends Component {
             const messages = Object.values(chat.messages);
 
 
-            if (messages.length !== 0 || infoData.name === 'broadcast') {
+            if (messages.length !== 0 || (infoData.name === 'broadcast' && this.props.broadcast)) {
               const message = messages[messages.length - 1]
                 ? messages[messages.length - 1]
                 : broadcastInfo.lastMessage;
@@ -304,7 +304,8 @@ class index extends Component {
 
 const mapStateToProps = (state) => ({
   chats: state.chats.chat,
-  contacts: Object.values(state.contacts.contacts)
+  contacts: Object.values(state.contacts.contacts),
+  broadcast: state.chats.broadcast
 });
 
 export default connect(mapStateToProps, { selectedChat, deleteChat })(index);

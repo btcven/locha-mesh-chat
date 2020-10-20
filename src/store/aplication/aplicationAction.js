@@ -51,8 +51,15 @@ export const restoreAccountWithPin = (pin, callback) => async (dispatch) => {
   database.restoreWithPin(shaPing).then(async (data) => {
     bitcoin.createWallet(data.seed[0].seed);
     await chatService.startService();
+    const broadcast = await AsyncStorage.getItem('broadcast');
+
     callback(true);
     dispatch(writeAction(JSON.parse(JSON.stringify(data.user[0]))));
+    if (broadcast) {
+      dispatch({
+        type: ActionTypes.ENABLE_BROADCAST
+      });
+    }
   }).catch((err) => {
     console.warn('in catch', err);
     callback(false);

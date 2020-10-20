@@ -140,6 +140,9 @@
     "addressListenMessage1": "successful changes the server listening address will be",
     "addressListenMessage2": "successful changes the server listening address will be all available addresses",
     "activateUpnp": "UPnP activated successfully",
-    "deactivateUpnp": "UPnP disabled"
+    "deactivateUpnp": "UPnP disabled",
+    "broadcastChat": "Broadcast chat",
+    "enableBroadcast": "enable broadcast Chat",
+    "disableBroadcast": "disable broadcast Chat "
   }
 }
