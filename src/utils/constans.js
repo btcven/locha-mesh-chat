@@ -1,13 +1,11 @@
 /* eslint-disable global-require */
 
-export const chats = [{
-  idChat: '1',
+export const broadcastInfo = {
   name: 'broadcast',
   lastMessage: 'welcome to locha mesh',
-  picture: require('./img/fotoperfil.jpg'),
-  date: new Date()
-}
-];
+  date: new Date().getTime(),
+  hashUID: '0205f8f594f8ca7e27d0f0b3e37430bcad4c066f4bbd92b0be9c052a36ba5bc1d6'
+};
 
 export const STORAGE_KEY = '@APP:status';
 

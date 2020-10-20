@@ -74,7 +74,13 @@ export const createNewAccount = (obj, callback) => async (dispatch) => {
     name: obj.name,
     image: null,
     contacts: [],
-    chats: []
+    chats: [
+      {
+        fromUID: peerID,
+        toUID: 'broadcast',
+        messages: []
+      }
+    ]
   }).then(async (res) => {
     if (!process.env.JEST_WORKER_ID) {
       await AsyncStorage.setItem('@APP:status', 'created');
@@ -204,4 +210,3 @@ export const isAdministrative = () => async (dispatch) => {
     payload: isDefined
   });
 };
-

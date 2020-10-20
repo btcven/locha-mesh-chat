@@ -81,7 +81,6 @@ export const getChat = (parse) => async (dispatch) => {
   });
 };
 
-
 export const setStatusMessage = (statusData) => async (dispatch) => {
   database.addStatusOnly(statusData).then(() => {
     dispatch({

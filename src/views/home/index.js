@@ -27,7 +27,7 @@ import {
 import Header from '../../components/Header';
 import { selectedChat, deleteChat } from '../../store/chats';
 import FloatButton from '../../components/FloatButton';
-
+import { broadcastInfo } from '../../utils/constans';
 
 /**
  *
@@ -93,8 +93,15 @@ class index extends Component {
   };
 
   getContactInformation = (data) => {
-    const result = this.props.contacts.find((contact) => data.toUID === contact.uid);
+    if (data.toUID === broadcastInfo.name) {
+      return {
+        name: broadcastInfo.name,
+        picture: null,
+        hashUID: broadcastInfo.hashUID
+      };
+    }
 
+    const result = this.props.contacts.find((contact) => data.toUID === contact.uid);
     return result;
   };
 
@@ -160,9 +167,7 @@ class index extends Component {
   };
 
   orderChats = (orderChats) => {
-    const sort = orderChats.sort((a, b) => {
-      return new Date(b.timestamp) - new Date(a.timestamp);
-    });
+    const sort = orderChats.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
     return sort;
   };
 
@@ -195,9 +200,17 @@ class index extends Component {
             );
             const infoData = this.getContactInformation(chat);
             const messages = Object.values(chat.messages);
-            if (messages.length !== 0) {
-              const lastmessage = this.getDataTypeMessage(messages[messages.length - 1]);
-              const lasTime = Number(messages[messages.length - 1].timestamp);
+
+            if (messages.length !== 0 || infoData.name === 'broadcast') {
+              //  getting last message
+              const lastmessage = infoData.name === broadcastInfo.name
+                ? broadcastInfo.lastMessage
+                : this.getDataTypeMessage(messages[messages.length - 1]);
+              //  getting last datetime
+              const lasTime = infoData.name === broadcastInfo.name
+                ? broadcastInfo.date
+                : Number(messages[messages.length - 1].timestamp);
+
               return (
                 <List key={chat.toUID} style={{ backgroundColor }}>
                   <ListItem
