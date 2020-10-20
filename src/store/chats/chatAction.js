@@ -64,7 +64,7 @@ export const getChat = (parse) => async (dispatch) => {
   if (parse.msg.file) {
     parse.msg.file = await saveFile(parse.msg);
   }
-  const uidChat = parse.fromUID;
+  const uidChat = parse.toUID === 'broadcast' ? parse.toUID : parse.fromUID;
   const name = infoMensagge ? infoMensagge.name : undefined;
   database.setMessage(uidChat, { ...parse, name }, 'delivered').then((res) => {
     dispatch({
@@ -259,18 +259,22 @@ export const sendStatus = (data) => {
     },
     type: messageType.STATUS
   };
-
-  try {
-    const contacts = Object.values(state.contacts.contacts);
-    contacts.forEach((contact) => {
-      if (data.fromUID === contact.uid) {
-        sendStatus.toUID = contact.uid;
-        chatService.send(JSON.stringify(sendStatus));
-      }
-    });
-  } catch (err) {
-    // eslint-disable-next-line no-console
-    console.log('entro en el catch', err);
+  if (data.toUID === 'broadcast') {
+    sendStatus.toUID = 'broadcast';
+    chatService.send(JSON.stringify(sendStatus));
+  } else {
+    try {
+      const contacts = Object.values(state.contacts.contacts);
+      contacts.forEach((contact) => {
+        if (data.fromUID === contact.uid) {
+          sendStatus.toUID = contact.uid;
+          chatService.send(JSON.stringify(sendStatus));
+        }
+      });
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.log('entro en el catch', err);
+    }
   }
 };
 

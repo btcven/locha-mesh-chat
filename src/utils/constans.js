@@ -2,7 +2,7 @@
 
 export const broadcastInfo = {
   name: 'broadcast',
-  lastMessage: 'welcome to locha mesh',
+  lastMessage: 'Welcome to locha mesh',
   date: new Date().getTime(),
   hashUID: '0205f8f594f8ca7e27d0f0b3e37430bcad4c066f4bbd92b0be9c052a36ba5bc1d6'
 };

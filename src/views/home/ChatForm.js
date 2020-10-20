@@ -107,8 +107,7 @@ export default class ChatForm extends Component {
 
               const id = await bitcoin.sha256(
                 `${user.peerID} + ${toUID}  +  
-                ${
-                sendObject.msg.text
+                ${sendObject.msg.text
                 }  + ${new Date().getTime()}`
               );
 
@@ -156,7 +155,7 @@ export default class ChatForm extends Component {
 
   send = async () => {
     const { user, navigation, setChat } = this.props;
-    const toUID = navigation.params.uid;
+    const toUID = navigation.params ? navigation.params.uid : 'broadcast';
     const sendObject = {
       fromUID: user.peerID,
       toUID,
@@ -168,8 +167,7 @@ export default class ChatForm extends Component {
     };
 
     const id = await bitcoin.sha256(
-      `${user.peerID} + ${toUID}  +  ${
-        sendObject.msg.text
+      `${user.peerID} + ${toUID}  +  ${sendObject.msg.text
       }  + ${new Date().getTime()}`
     );
 

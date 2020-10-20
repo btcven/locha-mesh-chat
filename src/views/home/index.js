@@ -156,6 +156,9 @@ class index extends Component {
   };
 
   getDataTypeMessage = (message) => {
+    if (typeof message === 'string') {
+      return this.getFilesInfo(message);
+    }
     if (message.file) {
       return this.getFilesInfo(message.file.fileType);
     }
@@ -201,11 +204,14 @@ class index extends Component {
             const infoData = this.getContactInformation(chat);
             const messages = Object.values(chat.messages);
 
+
             if (messages.length !== 0 || infoData.name === 'broadcast') {
+              const message = messages[messages.length - 1]
+                ? messages[messages.length - 1]
+                : broadcastInfo.lastMessage;
+
               //  getting last message
-              const lastmessage = infoData.name === broadcastInfo.name
-                ? broadcastInfo.lastMessage
-                : this.getDataTypeMessage(messages[messages.length - 1]);
+              const lastmessage = this.getDataTypeMessage(message);
               //  getting last datetime
               const lasTime = infoData.name === broadcastInfo.name
                 ? broadcastInfo.date
@@ -247,7 +253,6 @@ class index extends Component {
                       }}
                     >
                       <Text note>
-                        {' '}
                         {Moment(lasTime).format('LT')}
                       </Text>
 

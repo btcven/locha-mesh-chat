@@ -3,7 +3,7 @@ import {
   Header, Left, Body, Right, Title, Icon, Thumbnail
 } from 'native-base';
 import {
-  StyleSheet, TouchableHighlight, TextInput, View, Text, TouchableOpacity
+  StyleSheet, TouchableHighlight, TextInput, View,
 } from 'react-native';
 import { connect } from 'react-redux';
 import * as Animatable from 'react-native-animatable';
@@ -195,14 +195,6 @@ class HeaderComponent extends Component {
               </Animatable.View>
             )}
           </Header>
-          {!isConnected
-            && this.props.navigation.state.routeName === 'chat'
-            && (seconds > 0 && seconds < 8)
-            && (
-              <View style={styles.notConnectedContainer}>
-                <Text>{`will try to reconnect in ${8 - seconds} seconds`}</Text>
-              </View>
-            )}
         </>
       );
     }

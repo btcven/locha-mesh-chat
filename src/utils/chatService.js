@@ -55,13 +55,12 @@ export default class ChatService {
       const { dispatch, getState } = this.store;
       const parse = JSON.parse(message);
 
-      // verify that the message was be a contact
-
-      await database.verifyValidMessage(parse.fromUID);
-
-      // Verify that the message is for me
-      if (parse.toUID !== getState().config.peerID) {
-        return;
+      if (parse.toUID !== 'broadcast') {
+        await database.verifyValidMessage(parse.fromUID);
+        // Verify that the message is for me
+        if (parse.toUID !== getState().config.peerID) {
+          return;
+        }
       }
 
       switch (parse.type) {
