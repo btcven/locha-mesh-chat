@@ -46,8 +46,6 @@ describe('Aplication actions', () => {
     }));
   });
 
-
-
   // --- CONTACT ACTIONS -----
   describe('contact action', () => {
     const idUSer = '02676c01888dc0b31caceac3304dc1f5fb386ea4ab867492070c88b0eb0a91db2d';
