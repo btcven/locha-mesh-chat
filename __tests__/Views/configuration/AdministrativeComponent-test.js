@@ -62,7 +62,7 @@ describe('test Administrative component', () => {
 
 
   test('simulate button address listen', () => {
-    wrapper.find('Styled(ListItem)').at(6).props().onPress();
+    wrapper.find('Styled(ListItem)').at(5).props().onPress ();
 
     expect(wrapper.instance().state.addresListen).toBe(true);
   });
@@ -72,7 +72,7 @@ describe('test Administrative component', () => {
       openAdministrativePanel: mockShowPanel,
       administrative: false
     });
-    wrapper.find('Styled(Switch)').at(2).props().onTouchEnd();
+    wrapper.find('Styled(Switch)').at(3).props().onTouchEnd();
     expect(mockShowPanel.mock.calls.length).toBe(1);
   });
 
@@ -81,7 +81,7 @@ describe('test Administrative component', () => {
       closeAdministrativePanel: hiddePanel,
       administrative: true
     });
-    wrapper.find('Styled(Switch)').at(2).props().onTouchEnd();
+    wrapper.find('Styled(Switch)').at(3).props().onTouchEnd();
     expect(hiddePanel.mock.calls.length).toBe(1);
   });
 

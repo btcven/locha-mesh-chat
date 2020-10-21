@@ -28,7 +28,6 @@ class AdministrativeComponent extends Component {
       manualBootstrap: false,
       addresListen: false,
       upnp: false,
-      broadcast: false
     };
   }
 
