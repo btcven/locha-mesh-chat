@@ -432,18 +432,18 @@ export const setNewDials = (nodeAddress, callback) => async (dispatch) => {
 
 export const enableBroadcast = (callback) => async (dispatch) => {
   await AsyncStorage.setItem('broadcast', String(true));
-  callback();
   dispatch({
     type: ActionTypes.ENABLE_BROADCAST,
     payload: true
   });
+  callback();
 };
 
 export const disableBroadcast = (callback) => async (dispatch) => {
   await AsyncStorage.removeItem('broadcast');
-  callback();
   dispatch({
     type: ActionTypes.DISABLE_BROADCAST,
     payload: false
   });
+  callback();
 };
