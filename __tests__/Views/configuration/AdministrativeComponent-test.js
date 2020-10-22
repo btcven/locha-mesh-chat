@@ -148,7 +148,7 @@ describe('test Administrative component', () => {
     }, 500);
   });
 
-  test('enable bradcast chat', () => {
+  test('enable broadcast chat', () => {
     wrapper.setProps({
       broadcast: false,
       enableBroadcast: mockEnableBroadcast
@@ -159,7 +159,7 @@ describe('test Administrative component', () => {
   });
 
 
-  test('disabled bradcast chat', () => {
+  test('disabled broadcast chat', () => {
     wrapper.setProps({
       broadcast: true,
       disableBroadcast: mockDisabedBroadcast
