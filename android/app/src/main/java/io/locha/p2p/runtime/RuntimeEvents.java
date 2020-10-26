@@ -23,9 +23,10 @@ public interface RuntimeEvents {
     /**
      * New message received
      *
-     * @param contents Message contents
+     * @param peerId The originator peer ID.
+     * @param contents Message contents.
      */
-    void onNewMessage(String contents);
+    void onNewMessage(String peerId, String contents);
 
     /**
      * Connection established to peer.

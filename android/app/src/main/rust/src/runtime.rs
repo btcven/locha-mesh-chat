@@ -219,15 +219,19 @@ impl RuntimeEventsProxy {
 }
 
 impl RuntimeEvents for RuntimeEventsProxy {
-    fn on_new_message(&mut self, message: String) {
+    fn on_new_message(&mut self, peer_id: &PeerId, message: String) {
         unwrap_jni(self.exec.with_attached(|env| {
+            let id = env.new_string(peer_id.to_string())?;
             let contents = env.new_string(message)?;
 
             env.call_method_unchecked(
                 self.events.as_obj(),
                 chat_service_events::on_new_message_id(),
                 JavaType::Primitive(Primitive::Void),
-                &[JValue::from(contents)],
+                &[
+                    JValue::from(id),
+                    JValue::from(contents)
+                ],
             )
             .and_then(JValue::v)
         }))

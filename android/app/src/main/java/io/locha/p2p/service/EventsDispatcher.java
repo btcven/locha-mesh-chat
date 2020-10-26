@@ -57,9 +57,12 @@ public class EventsDispatcher implements RuntimeEvents {
         this.reactContext = context;
     }
 
-    @Override public void onNewMessage(String contents) {
+    @Override public void onNewMessage(String peerId, String contents) {
         Log.d(TAG, "newMessage");
-        sendEvent(this.reactContext, "newMessage", contents);
+        WritableMap map = Arguments.createMap();
+        map.putString("peerId", peerId);
+        map.putString("contents", contents);
+        sendEvent(this.reactContext, "newMessage", map);
     }
 
     @Override public void onConnectionEstablished(String peer, int numEstablished) {

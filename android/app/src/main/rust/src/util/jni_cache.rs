@@ -104,7 +104,7 @@ unsafe fn cache_methods(env: &JNIEnv) {
     JAVA_LANG_ILLEGAL_ARGUMENT_EXCEPTION = get_class(env, "java/lang/IllegalArgumentException");
     JAVA_LANG_STRING = get_class(env, "java/lang/String");
 
-    CHAT_SERVICE_EVENTS_ON_NEW_MESSAGE = get_method_id(&env, CHAT_SERVICE_EVENTS_INTERFACE, "onNewMessage", "(Ljava/lang/String;)V");
+    CHAT_SERVICE_EVENTS_ON_NEW_MESSAGE = get_method_id(&env, CHAT_SERVICE_EVENTS_INTERFACE, "onNewMessage", "(Ljava/lang/String;Ljava/lang/String;)V");
     CHAT_SERVICE_EVENTS_ON_CONNECTION_ESTABLISHED = get_method_id(&env, CHAT_SERVICE_EVENTS_INTERFACE, "onConnectionEstablished", "(Ljava/lang/String;I)V");
     CHAT_SERVICE_EVENTS_ON_CONNECTION_CLOSED = get_method_id(&env, CHAT_SERVICE_EVENTS_INTERFACE, "onConnectionClosed", "(Ljava/lang/String;ILjava/lang/String;)V");
     CHAT_SERVICE_EVENTS_ON_INCOMING_CONNECTION = get_method_id(&env, CHAT_SERVICE_EVENTS_INTERFACE, "onIncomingConnection", "(Ljava/lang/String;Ljava/lang/String;)V");
