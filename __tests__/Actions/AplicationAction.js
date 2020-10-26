@@ -6,6 +6,7 @@ import {
   loading,
 } from '../../src/store/aplication/aplicationAction';
 import { editContacts, deleteContactAction } from '../../src/store/contacts';
+import { enableBroadcast, disableBroadcast } from '../../src/store/chats';
 import { database } from '../../App';
 
 describe('Aplication actions', () => {
@@ -29,6 +30,20 @@ describe('Aplication actions', () => {
     const newState = store.getState();
 
     expect(newState.aplication.loading).toBe(true);
+  });
+
+  test('enabling broadcast chat', async () => {
+    await store.dispatch(enableBroadcast(() => {
+      const newState = store.getState();
+      expect(newState.chats.broadcast).toBe(true);
+    }));
+  });
+
+  test('disabling broadcast chat', async () => {
+    await store.dispatch(disableBroadcast(() => {
+      const newState = store.getState();
+      expect(newState.chats.broadcast).toBe(false);
+    }));
   });
 
   // --- CONTACT ACTIONS -----

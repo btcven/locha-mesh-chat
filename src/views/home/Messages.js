@@ -38,7 +38,7 @@ export const ReceiveMessage = ({
     }}
   >
     <View style={[styles.receiveContainer, selected]}>
-      {!item.toUID && !contactInfo && (
+      {item.toUID === 'broadcast' && !contactInfo && (
       <Thumbnail
         style={{
           marginLeft: 5,
@@ -46,6 +46,19 @@ export const ReceiveMessage = ({
         }}
         source={{
           uri: `${getIcon(item.fromUID)}`
+        }}
+      />
+      )}
+
+      {item.toUID === 'broadcast' && contactInfo && (
+      <Thumbnail
+        style={{
+          marginLeft: 5,
+          marginTop: 5
+        }}
+        source={{
+          uri: `${userInfo.picture ? userInfo.picture : getIcon(item.fromUID)
+          }`
         }}
       />
       )}
@@ -103,7 +116,7 @@ export const SenderMessage = ({
 }) => {
   const timeCreated = Moment(item.shippingTime);
   const cancelled = !!((Moment().diff(timeCreated, 's') > 30 && item.status === 'pending')
-      || item.status === 'not sent');
+    || item.status === 'not sent');
 
   const styleBody = item.msg.length < 20 ? styles.styleBody1 : styles.styleBody2;
 
@@ -191,7 +204,7 @@ export const SoundMessage = ({
   rule,
   index,
   chats
-// eslint-disable-next-line consistent-return
+  // eslint-disable-next-line consistent-return
 }) => {
   if (!rule) {
     return (

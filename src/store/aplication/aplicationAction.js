@@ -51,8 +51,15 @@ export const restoreAccountWithPin = (pin, callback) => async (dispatch) => {
   database.restoreWithPin(shaPing).then(async (data) => {
     bitcoin.createWallet(data.seed[0].seed);
     await chatService.startService();
+    const broadcast = await AsyncStorage.getItem('broadcast');
+
     callback(true);
     dispatch(writeAction(JSON.parse(JSON.stringify(data.user[0]))));
+    if (broadcast) {
+      dispatch({
+        type: ActionTypes.ENABLE_BROADCAST
+      });
+    }
   }).catch((err) => {
     console.warn('in catch', err);
     callback(false);
@@ -74,7 +81,13 @@ export const createNewAccount = (obj, callback) => async (dispatch) => {
     name: obj.name,
     image: null,
     contacts: [],
-    chats: []
+    chats: [
+      {
+        fromUID: peerID,
+        toUID: 'broadcast',
+        messages: []
+      }
+    ]
   }).then(async (res) => {
     if (!process.env.JEST_WORKER_ID) {
       await AsyncStorage.setItem('@APP:status', 'created');
@@ -204,4 +217,3 @@ export const isAdministrative = () => async (dispatch) => {
     payload: isDefined
   });
 };
-

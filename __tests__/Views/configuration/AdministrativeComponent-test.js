@@ -16,6 +16,9 @@ const hiddePanel = jest.fn((callback) => callback());
 const mocksendDial = jest.fn((adress, callback) => callback(true));
 const mocksendDialfalse = jest.fn((adress, callback) => callback(false));
 
+const mockEnableBroadcast = jest.fn((callback) => callback());
+const mockDisabedBroadcast = jest.fn((callback) => callback());
+
 jest.useFakeTimers();
 
 describe('test Administrative component', () => {
@@ -62,7 +65,7 @@ describe('test Administrative component', () => {
 
 
   test('simulate button address listen', () => {
-    wrapper.find('Styled(ListItem)').at(6).props().onPress();
+    wrapper.find('Styled(ListItem)').at(5).props().onPress();
 
     expect(wrapper.instance().state.addresListen).toBe(true);
   });
@@ -72,7 +75,7 @@ describe('test Administrative component', () => {
       openAdministrativePanel: mockShowPanel,
       administrative: false
     });
-    wrapper.find('Styled(Switch)').at(2).props().onTouchEnd();
+    wrapper.find('Styled(Switch)').at(3).props().onTouchEnd();
     expect(mockShowPanel.mock.calls.length).toBe(1);
   });
 
@@ -81,7 +84,7 @@ describe('test Administrative component', () => {
       closeAdministrativePanel: hiddePanel,
       administrative: true
     });
-    wrapper.find('Styled(Switch)').at(2).props().onTouchEnd();
+    wrapper.find('Styled(Switch)').at(3).props().onTouchEnd();
     expect(hiddePanel.mock.calls.length).toBe(1);
   });
 
@@ -143,5 +146,26 @@ describe('test Administrative component', () => {
     setTimeout(async () => {
       await expect(wrapper.instance().state.upnp).toBe(false);
     }, 500);
+  });
+
+  test('enable broadcast chat', () => {
+    wrapper.setProps({
+      broadcast: false,
+      enableBroadcast: mockEnableBroadcast
+    });
+    wrapper.find('Styled(Switch)').at(2).props().onTouchEnd();
+
+    expect(mockEnableBroadcast.mock.calls.length).toBe(1);
+  });
+
+
+  test('disabled broadcast chat', () => {
+    wrapper.setProps({
+      broadcast: true,
+      disableBroadcast: mockDisabedBroadcast
+    });
+    wrapper.find('Styled(Switch)').at(2).props().onTouchEnd();
+
+    expect(mockDisabedBroadcast.mock.calls.length).toBe(1);
   });
 });

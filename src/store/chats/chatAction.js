@@ -1,6 +1,7 @@
 
 import RNFS from 'react-native-fs';
 import { Platform } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import { ActionTypes } from '../constants';
 import { notification, FileDirectory } from '../../utils/utils';
 import { database, chatService } from '../../../App';
@@ -64,7 +65,7 @@ export const getChat = (parse) => async (dispatch) => {
   if (parse.msg.file) {
     parse.msg.file = await saveFile(parse.msg);
   }
-  const uidChat = parse.fromUID;
+  const uidChat = parse.toUID === 'broadcast' ? parse.toUID : parse.fromUID;
   const name = infoMensagge ? infoMensagge.name : undefined;
   database.setMessage(uidChat, { ...parse, name }, 'delivered').then((res) => {
     dispatch({
@@ -80,7 +81,6 @@ export const getChat = (parse) => async (dispatch) => {
     });
   });
 };
-
 
 export const setStatusMessage = (statusData) => async (dispatch) => {
   database.addStatusOnly(statusData).then(() => {
@@ -260,18 +260,22 @@ export const sendStatus = (data) => {
     },
     type: messageType.STATUS
   };
-
-  try {
-    const contacts = Object.values(state.contacts.contacts);
-    contacts.forEach((contact) => {
-      if (data.fromUID === contact.uid) {
-        sendStatus.toUID = contact.uid;
-        chatService.send(JSON.stringify(sendStatus));
-      }
-    });
-  } catch (err) {
-    // eslint-disable-next-line no-console
-    console.log('entro en el catch', err);
+  if (data.toUID === 'broadcast') {
+    sendStatus.toUID = 'broadcast';
+    chatService.send(JSON.stringify(sendStatus));
+  } else {
+    try {
+      const contacts = Object.values(state.contacts.contacts);
+      contacts.forEach((contact) => {
+        if (data.fromUID === contact.uid) {
+          sendStatus.toUID = contact.uid;
+          chatService.send(JSON.stringify(sendStatus));
+        }
+      });
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.log('entro en el catch', err);
+    }
   }
 };
 
@@ -424,4 +428,22 @@ export const setNewDials = (nodeAddress, callback) => async (dispatch) => {
   } catch (err) {
     callback(false);
   }
+};
+
+export const enableBroadcast = (callback) => async (dispatch) => {
+  await AsyncStorage.setItem('broadcast', String(true));
+  dispatch({
+    type: ActionTypes.ENABLE_BROADCAST,
+    payload: true
+  });
+  callback();
+};
+
+export const disableBroadcast = (callback) => async (dispatch) => {
+  await AsyncStorage.removeItem('broadcast');
+  dispatch({
+    type: ActionTypes.DISABLE_BROADCAST,
+    payload: false
+  });
+  callback();
 };

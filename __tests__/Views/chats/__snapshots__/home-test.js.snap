@@ -4,6 +4,7 @@ exports[`test home componente render home component 1`] = `
 <Styled(Container)>
   <Connect(HeaderComponent)
     back={[Function]}
+    broadcast={false}
     chats={Array []}
     contacts={Array []}
     delete={[Function]}

@@ -14,7 +14,7 @@ import {
 import { connect } from 'react-redux';
 import AsyncStorage from '@react-native-community/async-storage';
 import { closeAdministrativePanel, openAdministrativePanel, } from '../../store/aplication/aplicationAction';
-import { startManualService, stopService, setNewDials } from '../../store/chats/chatAction';
+import { startManualService, stopService, setNewDials, disableBroadcast, enableBroadcast } from '../../store/chats/chatAction';
 import { toast } from '../../utils/utils';
 import AddManualAddress from './AddManualAddress';
 import AddNewAddressListen from './AddNewAddressListen';
@@ -27,7 +27,7 @@ class AdministrativeComponent extends Component {
       dialAddress: false,
       manualBootstrap: false,
       addresListen: false,
-      upnp: false
+      upnp: false,
     };
   }
 
@@ -116,6 +116,19 @@ class AdministrativeComponent extends Component {
     }
   }
 
+  activateOrDesactivateBroadcast = async () => {
+    const { screenProps } = this.props;
+    if (this.props.broadcast) {
+      this.props.disableBroadcast(() => {
+        toast(screenProps.t('Admin:disableBroadcast'));
+      });
+    } else {
+      this.props.enableBroadcast(() => {
+        toast(screenProps.t('Admin:enableBroadcast'));
+      });
+    }
+  }
+
   render() {
     const { screenProps } = this.props;
     return (
@@ -181,6 +194,25 @@ class AdministrativeComponent extends Component {
                 <Icon name="arrow-forward" />
               </Right>
             </ListItem>
+            <ListItem button onPress={() => this.setState({ addresListen: true })}>
+              <Left>
+                <Text>{screenProps.t('Admin:manualListen')}</Text>
+              </Left>
+              <Right>
+                <Icon name="arrow-forward" />
+              </Right>
+            </ListItem>
+            <ListItem>
+              <Left>
+                <Text>{screenProps.t('Admin:broadcastChat')}</Text>
+              </Left>
+              <Right>
+                <Switch
+                  value={this.props.broadcast}
+                  onTouchEnd={() => { this.activateOrDesactivateBroadcast(); }}
+                />
+              </Right>
+            </ListItem>
             <ListItem>
               <Left>
                 <Text>{screenProps.t('Admin:hidePannel')}</Text>
@@ -190,14 +222,6 @@ class AdministrativeComponent extends Component {
                   value={this.props.administrative}
                   onTouchEnd={() => this.closeOrActiveAdministration()}
                 />
-              </Right>
-            </ListItem>
-            <ListItem button onPress={() => this.setState({ addresListen: true })}>
-              <Left>
-                <Text>{screenProps.t('Admin:manualListen')}</Text>
-              </Left>
-              <Right>
-                <Icon name="arrow-forward" />
               </Right>
             </ListItem>
           </List>
@@ -210,12 +234,15 @@ class AdministrativeComponent extends Component {
 const mapStateToProps = (state) => ({
   administrative: state.aplication.administrative,
   chatService: state.chats.chatService,
-  peersConnected: state.chats.peersConnected
+  peersConnected: state.chats.peersConnected,
+  broadcast: state.chats.broadcast
 });
 
 export default connect(
   mapStateToProps,
   {
+    disableBroadcast,
+    enableBroadcast,
     setNewDials,
     stopService,
     startManualService,

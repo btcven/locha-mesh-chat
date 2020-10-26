@@ -203,7 +203,7 @@ const getInfoMessage = (id) => {
 const androidToast = (message) => {
   ToastAndroid.showWithGravityAndOffset(
     message,
-    1,
+    ToastAndroid.SHORT,
     ToastAndroid.BOTTOM,
     25,
     60

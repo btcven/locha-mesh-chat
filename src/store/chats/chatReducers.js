@@ -5,7 +5,8 @@ import { ActionTypes } from '../constants';
 const AplicationState = {
   chat: [],
   chatService: false,
-  peersConnected: []
+  peersConnected: [],
+  broadcast: false
 };
 
 export const chatReducer = (state = AplicationState, action) => {
@@ -197,6 +198,14 @@ export const chatReducer = (state = AplicationState, action) => {
 
     case ActionTypes.REMOVED_PEER: {
       return { ...state, peersConnected: action.payload }
+    }
+
+    case ActionTypes.ENABLE_BROADCAST: {
+      return { ...state, broadcast: true };
+    }
+
+    case ActionTypes.DISABLE_BROADCAST: {
+      return { ...state, broadcast: false };
     }
 
     default: {

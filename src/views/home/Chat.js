@@ -22,7 +22,7 @@ import {
 import { messageType } from '../../utils/constans';
 
 import ImagesView from './imagesView';
-import { bitcoin, chatService } from '../../../App';
+import { bitcoin } from '../../../App';
 
 
 const ChatContainer = Platform.select({
@@ -47,8 +47,6 @@ class Chat extends Component {
     this.interval = null;
     this.state = {
       selected: [],
-      isConnected: false,
-      seconds: 0,
       imagesView: [],
       fileModal: false,
       menu: [
@@ -61,69 +59,15 @@ class Chat extends Component {
     };
   }
 
-  eventConnected = () => {
-    chatService.event.addListener('connectionEstablished', ({ peer, numEstablished }) => {
-      const chatSelected = this.props.chat[this.props.chatSelected.index].toUID;
-      if (
-        peer === chatSelected
-        && this.state.isConnected !== true
-      ) {
-        this.setState({
-          isConnected: true
-        });
-        clearInterval(this.interval);
-      }
-    });
-  }
-
-  eventDisconnected = () => {
-    chatService.event.addListener('connectionClosed', ({ peer, numEstablished, cause }) => {
-      const chatSelected = this.props.chat[this.props.chatSelected.index].toUID;
-      if (
-        peer === chatSelected
-        && this.state.isConnected !== false
-      ) {
-        this.setState({
-          isConnected: false
-        });
-        this.reconnect();
-      }
-    });
-  }
-
-
-  errorConnection = () => {
-    chatService.event.addListener('unknownPeerUnreachableAddr', (data) => {
-      if (!this.interval) {
-        this.reconnect();
-      }
-    });
-  }
-
-  reconnect = () => {
-    const { nodeAddress } = this.props.navigation.state.params;
-    this.interval = setInterval(() => {
-      if (this.state.seconds < 8) {
-        this.setState({
-          seconds: this.state.seconds + 1
-        });
-      } else {
-        const adress = nodeAddress;
-        this.props.setNewDials(adress, () => { });
-        this.setState({
-          seconds: 0
-        });
-      }
-    }, 1000);
-  }
 
   componentDidMount = () => {
     const chatSelected = this.props.chat[this.props.chatSelected.index].toUID;
-    const contactNodeAddress = this.props.navigation.state.params.nodeAddress;
-    this.eventConnected();
-    this.eventDisconnected();
-    this.errorConnection();
-    this.props.setView(chatSelected, contactNodeAddress);
+    try {
+      const contactNodeAddress = this.props.navigation.state.params.nodeAddress;
+      this.props.setView(chatSelected, contactNodeAddress);
+    } catch (err) {
+      this.props.setView(chatSelected, null);
+    }
   };
 
   /**
@@ -162,7 +106,6 @@ class Chat extends Component {
       { cancelable: false }
     );
   };
-
 
   /**
    * function executes when pressing a message
@@ -355,8 +298,6 @@ class Chat extends Component {
           />
         )}
         <Header
-          isConnected={this.state.isConnected}
-          seconds={this.state.seconds}
           {...this.props}
           menu={this.state.menu}
           selected={this.state.selected}
