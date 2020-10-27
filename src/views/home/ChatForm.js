@@ -70,7 +70,7 @@ export default class ChatForm extends Component {
 
   _record = async () => {
     const { user, navigation } = this.props;
-    const toUID = navigation.params ? navigation.params.uid : null;
+    const toUID = navigation.params ? navigation.params.uid : 'broadcast';
 
     if (this.state.hasPermission) {
       this.prepareRecordingPath(this.state.audioPath);
@@ -95,7 +95,6 @@ export default class ChatForm extends Component {
           RNFS.exists(this.state.audioPath).then(() => {
             RNFS.moveFile(this.state.audioPath, newPath).then(async () => {
               const sendObject = {
-                fromUID: user.peerID,
                 toUID,
                 msg: {
                   text: '',
@@ -157,6 +156,9 @@ export default class ChatForm extends Component {
   send = async () => {
     const { user, navigation, setChat } = this.props;
     const toUID = navigation.params ? navigation.params.uid : 'broadcast';
+
+    console.log("dios123", user);
+
     const sendObject = {
       toUID,
       msg: {

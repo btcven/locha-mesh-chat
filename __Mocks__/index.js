@@ -86,7 +86,16 @@ jest.mock('react-navigation-stack', () => {
 
 
 jest.mock('react-native-audio', () => {
-  // code here
+  const AudioUtils = {
+    DocumentDirectoryPath: 'test'
+  };
+
+  const AudioRecorder = {
+    checkAuthorizationStatus: jest.fn(() => new Promise((resolve) => { resolve(true); })),
+    prepareRecordingAtPath: jest.fn((data, params) => { })
+  };
+
+  return { AudioUtils, AudioRecorder };
 });
 
 jest.mock('react-native-permissions', () => mock);

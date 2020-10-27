@@ -32,6 +32,7 @@ const mockContact2 = {
 
 const mockUser = {
   uid: '02e5f8f594f8ca7e27d0f0b3e37432bcad4c066f4bbd91b0be9c052a36ba5bc1d6',
+  peerID: '02e5f8f594f8ca7e27d0f0b3e37432bcad4c066f4bbd91b0be9c052a36ba5bc1d6',
   name: 'obj.name',
   image: null,
   contacts: [],
