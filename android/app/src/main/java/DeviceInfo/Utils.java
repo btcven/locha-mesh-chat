@@ -22,7 +22,6 @@ import java.util.Enumeration;
 import java.util.List;
 
 public class Utils {
-
     /**
      * Convert byte array to hex string
      * @param bytes
@@ -188,7 +187,4 @@ public class Utils {
 
         return  obj.toString();
     }
-
-
-
 }

@@ -8,7 +8,6 @@ const sendChatMock = jest.fn();
 const mockOpenModal = jest.fn();
 const sendMessageWithSongMock = jest.fn();
 
-
 const screenProps = {
   t: (data) => data
 };
@@ -38,13 +37,11 @@ describe('chat form component', () => {
     expect(wrapper.instance()).toBeDefined();
   });
 
-
   test('componentDidMount', async () => {
     const instance = wrapper.instance();
     await instance.componentDidMount();
     expect(instance.state.hasPermission).toBe(true);
   });
-
 
   test('simulate onchageText', () => {
     const input = wrapper.find('Component').first();

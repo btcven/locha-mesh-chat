@@ -157,8 +157,6 @@ export default class ChatForm extends Component {
     const { user, navigation, setChat } = this.props;
     const toUID = navigation.params ? navigation.params.uid : 'broadcast';
 
-    console.log("dios123", user);
-
     const sendObject = {
       toUID,
       msg: {

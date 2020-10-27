@@ -65,7 +65,7 @@ public class EventsDispatcher implements RuntimeEvents {
             String stringify = Utils.parseJSON(contents, peerId);
             sendEvent(this.reactContext, "newMessage", stringify);
         } catch (Exception err) {
-            Log.e(TAG, " something failed to the parse the json:", err );
+            Log.e(TAG, " something failed trying parse the JSON:", err );
         }
 
     }

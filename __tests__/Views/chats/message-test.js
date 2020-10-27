@@ -3,7 +3,6 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import { ReceiveMessage } from '../../../src/views/home/Messages';
 
-
 const mockMessage = [{
   fromUID: '16Uiu2HAm9JHK1iG6g2nLNw2fmAWerGiVoKMnjcvEs6pJVnd6STPC',
   id: 'ad7ae2f9dc672c55095e60f2e8367393261088972af35c49c007be0c642fda24',
@@ -18,7 +17,6 @@ const mockMessage = [{
   type: 1
 }];
 
-
 const screenProps = {
   t: (data) => data
 };
@@ -30,7 +28,6 @@ const mockContact = [{
   picture: null,
   uid: '16Uiu2HAm2BXA1TTUE7vvSu3U4YURxb4FwTYjfrwnZN618jrYBpNS'
 }];
-
 
 const onLongPressMock = jest.fn();
 const onPressMock = jest.fn();
@@ -51,9 +48,7 @@ describe('message component', () => {
     expect(wrapper.instance()).toBeDefined();
   });
 
-
   test('onLongPress button message', () => {
-
     wrapper.find('ForwardRef').at(0).props().onLongPress();
     expect(onLongPressMock.mock.calls.length).toBe(1);
   });
