@@ -28,7 +28,7 @@ export default class AddManualAddress extends Component {
     const {
       open, close, title, nameComponent, screenProps
     } = this.props;
-    const rule = this.state.name.length < 8 ? true : false;
+    const rule = this.state.name.length < 8;
     return (
       <Modal
         style={{

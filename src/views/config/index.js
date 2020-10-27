@@ -52,8 +52,6 @@ class Config extends Component {
   };
 
 
-
-
   createBackupFile = async (pin) => {
     database.verifyPin(pin).then(async () => {
       const data = await database.getAllData();

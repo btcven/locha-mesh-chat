@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import Modal from 'react-native-modal';
-import { View, StyleSheet, TouchableOpacity, Clipboard } from 'react-native';
+import {
+  View, StyleSheet, TouchableOpacity, Clipboard
+} from 'react-native';
 import QRCode from 'react-native-qrcode-svg';
 import { Text, Form, Picker } from 'native-base';
 import { toast } from '../../utils/utils';

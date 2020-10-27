@@ -16,6 +16,7 @@
 
 package io.locha.p2p.service;
 
+import DeviceInfo.Utils;
 import io.locha.p2p.runtime.RuntimeEvents;
 
 import android.util.Log;
@@ -58,11 +59,15 @@ public class EventsDispatcher implements RuntimeEvents {
     }
 
     @Override public void onNewMessage(String peerId, String contents) {
-        Log.d(TAG, "newMessage");
-        WritableMap map = Arguments.createMap();
-        map.putString("peerId", peerId);
-        map.putString("contents", contents);
-        sendEvent(this.reactContext, "newMessage", map);
+        try {
+            Log.d(TAG, "newMessage");
+
+            String stringify = Utils.parseJSON(contents, peerId);
+            sendEvent(this.reactContext, "newMessage", stringify);
+        } catch (Exception err) {
+            Log.e(TAG, " something failed to the parse the json:", err );
+        }
+
     }
 
     @Override public void onConnectionEstablished(String peer, int numEstablished) {

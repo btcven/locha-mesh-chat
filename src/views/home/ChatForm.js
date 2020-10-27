@@ -112,6 +112,7 @@ export default class ChatForm extends Component {
               );
 
               this.props.sendMessagesWithSound(
+                user.peerID,
                 { ...sendObject, msgID: id },
                 newPath,
                 data.base64
@@ -157,7 +158,6 @@ export default class ChatForm extends Component {
     const { user, navigation, setChat } = this.props;
     const toUID = navigation.params ? navigation.params.uid : 'broadcast';
     const sendObject = {
-      fromUID: user.peerID,
       toUID,
       msg: {
         text: this.state.message
@@ -171,7 +171,7 @@ export default class ChatForm extends Component {
       }  + ${new Date().getTime()}`
     );
 
-    setChat({ ...sendObject, msgID: id }, 'pending');
+    setChat(user.peerID, { ...sendObject, msgID: id }, 'pending');
     this.setState({ message: '' });
   };
 

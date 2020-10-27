@@ -14,7 +14,9 @@ import {
 import { connect } from 'react-redux';
 import AsyncStorage from '@react-native-community/async-storage';
 import { closeAdministrativePanel, openAdministrativePanel, } from '../../store/aplication/aplicationAction';
-import { startManualService, stopService, setNewDials, disableBroadcast, enableBroadcast } from '../../store/chats/chatAction';
+import {
+  startManualService, stopService, setNewDials, disableBroadcast, enableBroadcast
+} from '../../store/chats/chatAction';
 import { toast } from '../../utils/utils';
 import AddManualAddress from './AddManualAddress';
 import AddNewAddressListen from './AddNewAddressListen';

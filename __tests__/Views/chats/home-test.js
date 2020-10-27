@@ -69,7 +69,4 @@ describe('test home componente', () => {
     });
     expect(wrapper.instance().props.chats).toBeDefined();
   });
-
-
-  
 });

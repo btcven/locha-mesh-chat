@@ -6,6 +6,9 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
@@ -178,9 +181,14 @@ public class Utils {
 
 
 
+    public static String parseJSON(String json, String peerID) throws JSONException {
+        
+        JSONObject obj = new JSONObject(json);
+        obj.put("fromUID", peerID);
 
-    public static int suma(int a, int b){
-        return a + b;
+        return  obj.toString();
     }
+
+
 
 }

@@ -23,7 +23,6 @@ describe('test new Address Listen component', () => {
 
 
   test('it will close modal when click outside', () => {
-
     const data = wrapper.find('ReactNativeModal').dive();
 
     data.find('TouchableWithoutFeedback').props().onPress();
@@ -46,8 +45,7 @@ describe('test new Address Listen component', () => {
   });
 
   test('simulate Picker', () => {
-
-    const enable = wrapper.find('Styled(PickerNB)').dive().instance().props.enabled
+    const enable = wrapper.find('Styled(PickerNB)').dive().instance().props.enabled;
     expect(enable).toBe(false);
   });
 

@@ -146,7 +146,6 @@ export const loading = () => (dispatch) => {
 };
 
 
-
 /**
  * @function
  * @description function to add a new pin

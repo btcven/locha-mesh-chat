@@ -226,7 +226,7 @@ class Chat extends Component {
 
   sendFileWithImage = (data, callback) => {
     const { userData, navigation } = this.props;
-    const toUID = navigation.state.params.uid;
+    const toUID = navigation.state.params ? navigation.state.params.uid : 'broadcast';
     const sendObject = {
       fromUID: userData.peerID,
       toUID,
@@ -250,6 +250,7 @@ class Chat extends Component {
         };
 
         this.props.sendMessageWithFile(
+          userData.peerID,
           { ...sendData, msgID: id },
           image.url,
           image.base64

@@ -122,7 +122,7 @@ export default class Database extends CoreDatabase {
     try {
       this.seed.write(() => {
         this.seed.create('Seed', {
-          id: id,
+          id,
           seed: phrases
         }, true);
 

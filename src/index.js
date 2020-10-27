@@ -14,8 +14,6 @@ import './utils/ErrorHandler';
  * @extends {Component}
  */
 class DualComponent extends Component {
-
-
   // eslint-disable-next-line react/sort-comp
   static navigationOptions = {
     header: null
