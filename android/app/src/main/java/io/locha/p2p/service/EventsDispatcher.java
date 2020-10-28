@@ -31,6 +31,8 @@ import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.uimanager.events.EventDispatcher;
 
+import org.json.JSONObject;
+
 public class EventsDispatcher implements RuntimeEvents {
     private static final String TAG = "EventsReceiver";
     private static EventsDispatcher INSTANCE = null;
