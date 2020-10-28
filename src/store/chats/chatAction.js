@@ -18,15 +18,14 @@ import { messageType } from '../../utils/constans';
  * @description send the messages to the socket and save them in the database
  * @param {object} data Information about the chat
  * @param {string} data.toUID address where the message will be sent
- * @param {string} data.fromUID uid who is sending the message
  * @param {object} data.msg  message content
  * @param {number} timestamp sent date
  * @param  {string} type type message
  * @returns {object}
  */
 
-export const initialChat = (data, status) => async (dispatch) => {
-  database.setMessage(data.toUID, { ...data }, status).then((res) => {
+export const initialChat = (fromUID, data, status) => async (dispatch) => {
+  database.setMessage(data.toUID, { ...data, fromUID }, status).then((res) => {
     if (!process.env.JEST_WORKER_ID) {
       chatService.send(JSON.stringify(data));
     }
@@ -35,6 +34,7 @@ export const initialChat = (data, status) => async (dispatch) => {
       payload: {
         name: undefined,
         ...data,
+        fromUID,
         time: res.time,
         shippingTime: res.time,
         msg: data.msg.text,
@@ -195,11 +195,11 @@ export const cleanAllChat = (id) => async (dispatch) => {
  * @param {String} base64
  */
 
-export const sendMessageWithFile = (data, path, base64) => (dispatch) => {
+export const sendMessageWithFile = (fromUID, data, path, base64) => (dispatch) => {
   const uidChat = data.toUID ? data.toUID : 'broadcast';
   const saveDatabase = { ...data };
   saveDatabase.msg.file = path;
-  database.setMessage(uidChat, { ...saveDatabase }, 'pending').then((res) => {
+  database.setMessage(uidChat, { ...saveDatabase, fromUID }, 'pending').then((res) => {
     saveDatabase.msg.file = base64;
     chatService.send(JSON.stringify(saveDatabase));
     dispatch({
@@ -207,6 +207,7 @@ export const sendMessageWithFile = (data, path, base64) => (dispatch) => {
       payload: {
         name: undefined,
         ...data,
+        fromUID,
         msg: data.msg.text,
         id: data.msgID,
         file: res.file,
@@ -252,7 +253,6 @@ export const sendStatus = (data) => {
   const state = store.default.getState();
   // eslint-disable-next-line no-shadow
   const sendStatus = {
-    fromUID: state.config.peerID,
     timestamp: new Date().getTime(),
     data: {
       status: 'delivered',
@@ -307,7 +307,6 @@ export const setView = (idChat, nodeAddress) => async (dispatch) => {
         const chat = Object.values(state.chats.chat).find((itemChat) => itemChat.toUID === idChat);
         // eslint-disable-next-line no-shadow
         const sendStatus = {
-          fromUID: state.config.peerID,
           toUID: chat.toUID,
           timestamp: new Date().getTime(),
           data: {
@@ -337,7 +336,6 @@ export const sendReadMessageStatus = (sendStatus) => () => {
 export const sendAgain = (message) => (dispatch) => {
   database.updateMessage(message).then((res) => {
     const sendObject = {
-      fromUID: res.fromUID,
       toUID: res.toUID,
       msg: {
         text: res.msg

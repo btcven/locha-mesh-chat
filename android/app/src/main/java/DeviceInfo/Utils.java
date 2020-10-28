@@ -6,6 +6,9 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
@@ -19,7 +22,6 @@ import java.util.Enumeration;
 import java.util.List;
 
 public class Utils {
-
     /**
      * Convert byte array to hex string
      * @param bytes
@@ -175,12 +177,4 @@ public class Utils {
         }
         return ipv4Array;
     }
-
-
-
-
-    public static int suma(int a, int b){
-        return a + b;
-    }
-
 }

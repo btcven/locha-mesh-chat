@@ -16,6 +16,7 @@
 
 package io.locha.p2p.service;
 
+import DeviceInfo.Utils;
 import io.locha.p2p.runtime.RuntimeEvents;
 
 import android.util.Log;
@@ -29,6 +30,8 @@ import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.uimanager.events.EventDispatcher;
+
+import org.json.JSONObject;
 
 public class EventsDispatcher implements RuntimeEvents {
     private static final String TAG = "EventsReceiver";
@@ -58,11 +61,16 @@ public class EventsDispatcher implements RuntimeEvents {
     }
 
     @Override public void onNewMessage(String peerId, String contents) {
-        Log.d(TAG, "newMessage");
-        WritableMap map = Arguments.createMap();
-        map.putString("peerId", peerId);
-        map.putString("contents", contents);
-        sendEvent(this.reactContext, "newMessage", map);
+        try {
+            Log.d(TAG, "newMessage");
+            JSONObject obj = new JSONObject(contents);
+            obj.put("fromUID", peerId);
+           
+            sendEvent(this.reactContext, "newMessage", obj.toString());
+        } catch (Exception err) {
+            Log.e(TAG, " something failed trying parse the message JSON:", err );
+        }
+
     }
 
     @Override public void onConnectionEstablished(String peer, int numEstablished) {

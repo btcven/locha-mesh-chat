@@ -263,9 +263,7 @@ export default class CoreDatabase {
       });
       // eslint-disable-next-line array-callback-return
       const chats = this.db.objects('Chat').filter((chat) => {
-        const resultContact = contact.find((cont) => {
-          return chat.toUID === cont.uid;
-        });
+        const resultContact = contact.find((cont) => chat.toUID === cont.uid);
 
         if (resultContact) {
           return resultContact.uid === chat.toUID;

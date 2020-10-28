@@ -40,12 +40,10 @@ describe('test Administrative component', () => {
   });
 
   test('it will close modal when click outside', () => {
-
     const data = wrapper.find('ReactNativeModal').dive();
 
     data.find('TouchableWithoutFeedback').props().onPress();
 
     expect(mockCloseFunction.mock.calls.length).toBe(2);
   });
-
 });

@@ -20,9 +20,7 @@ import ChatService from './chatService';
  */
 
 
-export const getChatserviceInstance = () => {
-  return new ChatService();
-};
+export const getChatserviceInstance = () => new ChatService();
 
 export const notification = new NotifService();
 /**
@@ -116,7 +114,6 @@ export const onNotification = (res) => {
   const rule = state.aplication.view !== view;
   unreadMessages(rule, state, view, res);
   if (state.config.peerID !== res.fromUID && rule) {
-
     const id = parseInt((view), 16);
 
     const result = getInfoMessage(id);

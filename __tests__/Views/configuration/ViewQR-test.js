@@ -37,7 +37,6 @@ describe('Language component', () => {
   });
 
   test('it will close modal when click outside', () => {
-
     const data = wrapper.find('ReactNativeModal').dive();
 
     data.find('TouchableWithoutFeedback').props().onPress();

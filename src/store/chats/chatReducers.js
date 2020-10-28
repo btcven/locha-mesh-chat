@@ -197,7 +197,7 @@ export const chatReducer = (state = AplicationState, action) => {
     }
 
     case ActionTypes.REMOVED_PEER: {
-      return { ...state, peersConnected: action.payload }
+      return { ...state, peersConnected: action.payload };
     }
 
     case ActionTypes.ENABLE_BROADCAST: {

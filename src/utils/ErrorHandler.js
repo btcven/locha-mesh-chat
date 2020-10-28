@@ -2,6 +2,7 @@
 import { Alert, NativeModules } from 'react-native';
 import { setJSExceptionHandler, setNativeExceptionHandler } from 'react-native-exception-handler';
 import { chatService } from '../../App';
+
 const device = NativeModules.RNDeviceInfo;
 
 const errorHandler = (e, isFatal) => {
