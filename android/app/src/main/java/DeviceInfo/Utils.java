@@ -177,14 +177,4 @@ public class Utils {
         }
         return ipv4Array;
     }
-
-
-
-    public static String parseJSON(String json, String peerID) throws JSONException {
-        
-        JSONObject obj = new JSONObject(json);
-        obj.put("fromUID", peerID);
-
-        return  obj.toString();
-    }
 }
