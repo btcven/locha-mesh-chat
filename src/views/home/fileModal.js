@@ -36,8 +36,10 @@ export default class FileModal extends Component {
     const imageArray = [];
     // this.props.close()
     ImagePicker.openPicker({
-      multiple: true,
-      includeBase64: true
+      multiple: false,
+      includeBase64: true,
+      width: 200,
+      height: 200
     }).then((image) => {
       image.forEach((data) => {
         imageArray.push({
@@ -60,9 +62,9 @@ export default class FileModal extends Component {
   GetphotoFromCamera = () => {
     this.props.close();
     ImagePicker.openCamera({
-      width: 500,
-      height: 500,
-      cropping: true,
+      width: 200,
+      height: 200,
+      cropping: false,
       includeBase64: true
     }).then((image) => {
       const newPath = `${FileDirectory}/Pictures/IMG_${new Date().getTime()}.jpg `;
