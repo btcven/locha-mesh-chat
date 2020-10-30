@@ -86,16 +86,16 @@ class Player extends Component {
   render() {
     return (
       <View
-        style={{ flexDirection: 'row', alignItems: 'center', marginTop: 15 }}
+        style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 }}
       >
         {!this.state.play && (
           <TouchableOpacity testID="playButton" onPress={() => this.play()}>
-            <Icon name="play" style={{ color: '#616161' }} />
+            <Icon name="play" style={{ color: '#616161', fontSize: 22 }} />
           </TouchableOpacity>
         )}
         {this.state.play && (
           <TouchableOpacity testID="pauseButton" onPress={() => this.pause()}>
-            <Icon name="pause" style={{ color: '#616161' }} />
+            <Icon name="pause" style={{ color: '#616161', fontSize: 22 }} />
           </TouchableOpacity>
         )}
 
@@ -110,7 +110,7 @@ class Player extends Component {
         />
 
         {(this.state.play || this.state.reproduced > 0) && (
-          <Text style={{ position: 'absolute', top: 33 }}>
+          <Text style={{ position: 'absolute', top: 29 }}>
             {moment
               .utc((this.state.duration - this.state.reproduced) * 1000)
               .format('m:ss')}
@@ -118,7 +118,7 @@ class Player extends Component {
         )}
 
         {!this.state.play && this.state.reproduced < 1 && (
-          <Text style={{ position: 'absolute', top: 33 }}>
+          <Text style={{ position: 'absolute', top: 29 }}>
             {moment.utc(this.state.duration * 1000).format('m:ss')}
           </Text>
         )}
