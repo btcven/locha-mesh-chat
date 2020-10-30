@@ -77,6 +77,9 @@ export default class ChatForm extends Component {
 
       AudioRecorder.onProgress = (data) => {
         this.setState({ currentTime: Math.floor(data.currentTime) });
+        if (Math.floor(data.currentTime) >= 30) {
+          this._stop();
+        }
       };
 
       try {

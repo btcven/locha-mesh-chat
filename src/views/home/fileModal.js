@@ -41,7 +41,6 @@ export default class FileModal extends Component {
       height: 400,
       cropping: true
     }).then((image) => {
-      console.log('imagen123', image.size, image.width);
       imageArray.push({
         url: image.path,
         base64: image.data,
@@ -67,7 +66,6 @@ export default class FileModal extends Component {
       includeBase64: true
     }).then((image) => {
       const newPath = `${FileDirectory}/Pictures/IMG_${new Date().getTime()}.jpg `;
-      console.log('imagen123', image.size, image.width);
       setTimeout(() => {
         const imagesView = [
           {
