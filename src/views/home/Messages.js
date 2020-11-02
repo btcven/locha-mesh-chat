@@ -27,85 +27,86 @@ export const ReceiveMessage = ({
   contactInfo,
   selected
 }) => (
-  <TouchableList
-    onLongPress={() => onSelected(item)}
-    onPress={() => onClick(item)}
-    style={{
-      marginVertical: 5,
-      minHeight: 70,
-      width: '100%',
-      flexDirection: 'row'
-    }}
-  >
-    <View style={[styles.receiveContainer, selected]}>
-      {item.toUID === 'broadcast' && !contactInfo && (
-      <Thumbnail
-        style={{
-          marginLeft: 5,
-          marginTop: 5
-        }}
-        source={{
-          uri: `${getIcon(item.fromUID)}`
-        }}
-      />
-      )}
-
-      {item.toUID === 'broadcast' && contactInfo && (
-      <Thumbnail
-        style={{
-          marginLeft: 5,
-          marginTop: 5
-        }}
-        source={{
-          uri: `${userInfo.picture ? userInfo.picture : getIcon(item.fromUID)
-          }`
-        }}
-      />
-      )}
-
-      <View style={{ width: '90%', flexDirection: 'row' }}>
-        <View style={styles.textContent1}>
-          {item.name && (
-          <Text
+    <TouchableList
+      onLongPress={() => onSelected(item)}
+      onPress={() => onClick(item)}
+      style={{
+        marginVertical: 5,
+        minHeight: 70,
+        width: '100%',
+        alignContent: 'center',
+        flexDirection: 'row'
+      }}
+    >
+      <View style={[styles.receiveContainer, selected]}>
+        {item.toUID === 'broadcast' && !contactInfo && (
+          <Thumbnail
             style={{
-              paddingBottom: 7,
-              color: hashGenerateColort(item.fromUID)
+              marginLeft: 5,
+
             }}
-          >
-            {userInfo.name}
-          </Text>
-          )}
-          <View style={{ minWidth: 110 }}>
-            {item.file && (
-            <View style={{ minWidth: '80%' }}>
-              <Image
-                style={{ width: '100%', height: 150 }}
-                source={{
-                  resizeMode: 'contain',
-                  uri: item.file.file,
-                  cache: 'force-cache'
+            source={{
+              uri: `${getIcon(item.fromUID)}`
+            }}
+          />
+        )}
+
+        {item.toUID === 'broadcast' && contactInfo && (
+          <Thumbnail
+            style={{
+              marginLeft: 5,
+              marginTop: 5
+            }}
+            source={{
+              uri: `${userInfo.picture ? userInfo.picture : getIcon(item.fromUID)
+                }`
+            }}
+          />
+        )}
+
+        <View style={{ width: '90%', flexDirection: 'row' }}>
+          <View style={styles.textContent1}>
+            {item.name && (
+              <Text
+                style={{
+                  paddingBottom: 7,
+                  color: hashGenerateColort(item.fromUID)
                 }}
-              />
-            </View>
+              >
+                {userInfo.name}
+              </Text>
             )}
-            <Text style={{ fontSize: 15 }}>{item.msg}</Text>
+            <View style={{ minWidth: 110 }}>
+              {item.file && (
+                <View style={{ minWidth: '80%' }}>
+                  <Image
+                    style={{ width: '100%', height: 150 }}
+                    source={{
+                      resizeMode: 'contain',
+                      uri: item.file.file,
+                      cache: 'force-cache'
+                    }}
+                  />
+                </View>
+              )}
+              <Text style={{ fontSize: 15 }}>{item.msg}</Text>
+            </View>
+            <Text
+              style={{
+                paddingTop: 3,
+                paddingLeft: 10,
+                paddingBottom: 6,
+                fontSize: 12,
+                textAlign: 'right'
+              }}
+            >
+              {Moment(Number(item.timestamp)).format('LT')}
+            </Text>
           </View>
-          <Text
-            style={{
-              paddingTop: 3,
-              paddingLeft: 10,
-              paddingBottom: 6,
-              fontSize: 12,
-              textAlign: 'right'
-            }}
-          >
-            {Moment(Number(item.timestamp)).format('LT')}
-          </Text>
         </View>
       </View>
-    </View>
-  </TouchableList>
-);
+    </TouchableList>
+  );
 
 export const SenderMessage = ({
   onClick,
@@ -322,7 +323,7 @@ const styles = StyleSheet.create({
     width: '100%',
     flexDirection: 'row',
     justifyContent: 'flex-end',
-    paddingBottom: 10
+    marginBottom: 10
   },
 
   selected: {
@@ -331,9 +332,9 @@ const styles = StyleSheet.create({
 
   receiveContainer: {
     width: '100%',
-    alignItems: 'flex-start',
+    alignItems: 'center',
+    flexDirection: 'row',
     marginBottom: 10,
-    flexDirection: 'row'
   },
   textContent1: {
     maxWidth: '82%',
@@ -349,7 +350,7 @@ const styles = StyleSheet.create({
     maxWidth: '82%',
     backgroundColor: '#fff',
     minHeight: 30,
-    paddingTop: 5,
+    paddingTop: 10,
     paddingHorizontal: 10,
     marginHorizontal: 10,
     borderRadius: 7,
@@ -357,7 +358,8 @@ const styles = StyleSheet.create({
   },
   styleBody1: {
     flexDirection: 'row',
-    flex: 1
+    flex: 1,
+    justifyContent: 'space-between'
   },
   styleBody2: {
     flexDirection: 'column'
@@ -368,13 +370,13 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     paddingBottom: 6,
     fontSize: 12,
-    alignItems: 'flex-end'
+    alignItems: 'center'
   },
 
   textStyle2: {
     paddingTop: 5,
     paddingBottom: 6,
     flex: 1,
-    alignItems: 'flex-end'
+    alignItems: 'center'
   }
 });

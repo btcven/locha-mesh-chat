@@ -36,19 +36,19 @@ export default class FileModal extends Component {
     const imageArray = [];
     // this.props.close()
     ImagePicker.openPicker({
-      multiple: true,
-      includeBase64: true
+      includeBase64: true,
+      width: 400,
+      height: 400,
+      cropping: true
     }).then((image) => {
-      image.forEach((data) => {
-        imageArray.push({
-          url: data.path,
-          base64: data.data,
-          width: Dimensions.get('window').width
-        });
+      imageArray.push({
+        url: image.path,
+        base64: image.data,
+        width: Dimensions.get('window').width
       });
-      this.props.setImageView(imageArray);
-      this.props.close();
     });
+    this.props.setImageView(imageArray);
+    this.props.close();
   };
 
   /**
@@ -60,13 +60,12 @@ export default class FileModal extends Component {
   GetphotoFromCamera = () => {
     this.props.close();
     ImagePicker.openCamera({
-      width: 500,
-      height: 500,
+      width: 400,
+      height: 400,
       cropping: true,
       includeBase64: true
     }).then((image) => {
       const newPath = `${FileDirectory}/Pictures/IMG_${new Date().getTime()}.jpg `;
-      // RNFS.moveFile(image.path, newPath).then(() => {
       setTimeout(() => {
         const imagesView = [
           {

@@ -43,6 +43,16 @@ describe('chat form component', () => {
     expect(instance.state.hasPermission).toBe(true);
   });
 
+  test('audio button', () => {
+    wrapper.find('Draggable').props().onPressIn();
+    expect(wrapper.instance().state.recording).toBe(true);
+  });
+
+  test('audio button', () => {
+    wrapper.find('Draggable').props().onPressOut();
+    expect(wrapper.instance().state.recording).toBe(false);
+  });
+
   test('simulate onchageText', () => {
     const input = wrapper.find('Component').first();
     input.props().onChangeText('test');

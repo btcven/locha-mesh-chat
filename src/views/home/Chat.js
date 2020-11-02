@@ -237,7 +237,7 @@ class Chat extends Component {
       type: messageType.MESSAGE
     };
     data.images.forEach(async (image, key) => {
-      const id = bitcoin.sha256(
+      const id = await bitcoin.sha256(
         `${userData.peerID} + ${toUID}  +  ${sendObject.msg.text
         + sendObject.msg.file}  + ${new Date().getTime()}`
       );
