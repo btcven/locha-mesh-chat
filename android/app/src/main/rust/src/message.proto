@@ -10,11 +10,4 @@ message Content {
   string text = 6;
   string typeFile = 7;
   string file = 8;
-
-  enum Size {
-    SMALL = 0;
-    MEDIUM = 1;
-    LARGE = 2;
-  }
-
 }

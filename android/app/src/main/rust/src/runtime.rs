@@ -24,6 +24,7 @@ use jni::{Executor, JNIEnv};
 use log::trace;
 use prost::Message;
 use serde_json;
+use snap::raw::{Decoder, Encoder};
 use std::io::Cursor;
 use std::num::NonZeroU32;
 use std::{io, panic, sync::Arc};
@@ -204,9 +205,7 @@ pub fn serialize_message(contents: &String) -> Vec<u8> {
   message.shipping_time =
     json["shippingTime"].to_string().parse::<u64>().unwrap();
   message.type_message = json["type"].to_string().parse::<u32>().unwrap();
-  message.text = "hola".to_string();
-  message.type_file = json["msg"]["text"].to_string();
-  message.file = "file".to_string();
+  message.text = json["msg"]["text"].to_string();
   if json["msg"]["file"].is_null() == false {
     message.file = json["msg"]["file"].to_string();
   };
@@ -216,20 +215,35 @@ pub fn serialize_message(contents: &String) -> Vec<u8> {
   };
 
   buf.reserve(message.encoded_len());
-
   message.encode(&mut buf).unwrap();
+  let bytes: &[u8] = &buf;
 
-  buf
+  let mut encoder = Encoder::new();
+  let compressed_bytes =
+    encoder.compress_vec(bytes).expect("Compression failed");
+
+  compressed_bytes
 }
 
 pub fn deserialize_message(buf: &[u8]) {
-  let content: Result<items::Content, prost::DecodeError> =
-    items::Content::decode(&mut Cursor::new(buf));
-  
-    match content {
-      Ok(v) => trace!("working with version {}", v.to_uid),
-      Err(e) => trace!("error parsing header: {}", e),
-    }
+  let mut decode = Decoder::new();
+  let decompress_bytes = decode.decompress_vec(buf).expect("decompress failed");
+
+  let content: items::Content =
+    items::Content::decode(&mut Cursor::new(&decompress_bytes)).unwrap();
+
+  let json_message = serde_json::json!({
+      "toUID": content.to_uid,
+      "msgID": content.msg_id,
+      "timestamp": content.timestamp,
+      "shippingTime": content.shipping_time,
+      "type": content.type_message,
+      "msg": serde_json::json!({
+        "text": content.text
+      })
+  });
+
+  trace!("dios mio {}", json_message.to_string());
 }
 
 #[no_mangle]
