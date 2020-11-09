@@ -250,8 +250,8 @@ pub fn deserialize_message(buf: &[u8]) -> String {
     r#type: content.type_message,
     msg: Msg {
       text: content.text,
-      typeFile: content.type_file,
-      file: content.file,
+      typeFile: Some(content.type_file),
+      file: Some(content.file),
     },
   };
 
