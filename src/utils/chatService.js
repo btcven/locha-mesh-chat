@@ -84,7 +84,6 @@ export default class ChatService {
    */
   onNewMessage = () => {
     this.event.addListener('newMessage', (async (message) => {
-      console.warn('aquiiii', message);
       this.onMessage(message);
     }));
   }
