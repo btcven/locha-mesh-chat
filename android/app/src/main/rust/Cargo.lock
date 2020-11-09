@@ -188,9 +188,9 @@ dependencies = [
 
 [[package]]
 name = "async-io"
-version = "1.1.10"
+version = "1.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d54bc4c1c7292475efb2253227dbcfad8fe1ca4c02bc62c510cc2f3da5c4704e"
+checksum = "40a0b2bb8ae20fede194e779150fe283f65a4a08461b496de546ec366b174ad9"
 dependencies = [
  "concurrent-queue",
  "fastrand",
@@ -501,9 +501,9 @@ checksum = "631ae5198c9be5e753e5cc215e1bd73c2b466a3565173db433f52bb9d3e66dba"
 
 [[package]]
 name = "cc"
-version = "1.0.61"
+version = "1.0.62"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ed67cbde08356238e75fc4656be4749481eeffb09e19f320a25237d5221c985d"
+checksum = "f1770ced377336a88a67c473594ccc14eca6f4559217c34f64aac8f83d641b40"
 dependencies = [
  "jobserver",
 ]
@@ -1768,7 +1768,7 @@ dependencies = [
 [[package]]
 name = "locha-p2p"
 version = "0.1.0"
-source = "git+https://github.com/btcven/locha-p2p?branch=feature/change_message_type#426c0eae7c051bfa3b1cfca76b4143eff82f0d7f"
+source = "git+https://github.com/btcven/locha-p2p#d0f8f71561ae1c08df9a2cf5596663da8149d1e4"
 dependencies = [
  "async-std",
  "futures",
@@ -1867,7 +1867,7 @@ dependencies = [
 [[package]]
 name = "miniupnpc"
 version = "0.1.0"
-source = "git+https://github.com/btcven/locha-p2p?branch=feature/change_message_type#426c0eae7c051bfa3b1cfca76b4143eff82f0d7f"
+source = "git+https://github.com/btcven/locha-p2p#d0f8f71561ae1c08df9a2cf5596663da8149d1e4"
 dependencies = [
  "miniupnpc-sys",
 ]
@@ -1875,7 +1875,7 @@ dependencies = [
 [[package]]
 name = "miniupnpc-sys"
 version = "0.1.0"
-source = "git+https://github.com/btcven/locha-p2p?branch=feature/change_message_type#426c0eae7c051bfa3b1cfca76b4143eff82f0d7f"
+source = "git+https://github.com/btcven/locha-p2p#d0f8f71561ae1c08df9a2cf5596663da8149d1e4"
 dependencies = [
  "bindgen",
  "cc",

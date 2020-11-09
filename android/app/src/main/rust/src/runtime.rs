@@ -221,8 +221,8 @@ pub fn serialize_message(contents: &String) -> Vec<u8> {
   message.timestamp = json.timestamp;
   message.type_message = json.r#type;
   message.text = json.msg.text;
-  message.file = String::new();
-  message.type_file = String::new();
+  message.file = json.msg.file.unwrap_or(String::new());
+  message.type_file = json.msg.typeFile.unwrap_or(String::new());
 
   buf.reserve(message.encoded_len());
   message.encode(&mut buf).unwrap();
@@ -242,21 +242,32 @@ pub fn deserialize_message(buf: &[u8]) -> String {
   let content: items::Content =
     items::Content::decode(&mut Cursor::new(&decompress_bytes)).unwrap();
 
-  let message: Person = Person {
+  let message = Person {
     toUID: content.to_uid,
     msgID: content.msg_id,
     timestamp: content.timestamp,
-    shippingTime: Some(content.shipping_time),
+    shippingTime: if content.shipping_time == 0 {
+        None
+    } else {
+        Some(content.shipping_time)
+    },
     r#type: content.type_message,
     msg: Msg {
       text: content.text,
-      typeFile: Some(content.type_file),
-      file: Some(content.file),
+      file: if content.file.is_empty() {
+          None
+      } else {
+          Some(content.file)
+      },
+      typeFile: if content.type_file.is_empty() {
+          None
+      } else {
+          Some(content.type_file)
+      },
     },
   };
 
-  let result = serde_json::to_string(&message).unwrap();
-  result
+  serde_json::to_string(&message).unwrap()
 }
 
 #[no_mangle]
