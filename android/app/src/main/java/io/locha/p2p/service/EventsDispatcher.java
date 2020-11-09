@@ -62,11 +62,11 @@ public class EventsDispatcher implements RuntimeEvents {
 
     @Override public void onNewMessage(String peerId, String contents) {
         try {
-            Log.d(TAG, "newMessage");
             JSONObject obj = new JSONObject(contents);
             obj.put("fromUID", peerId);
-           
+
             sendEvent(this.reactContext, "newMessage", obj.toString());
+            Log.d(TAG, "newMessage" + obj.toString());
         } catch (Exception err) {
             Log.e(TAG, " something failed trying parse the message JSON:", err );
         }

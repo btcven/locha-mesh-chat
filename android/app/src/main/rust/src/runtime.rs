@@ -21,17 +21,17 @@ use jni::objects::{GlobalRef, JClass, JObject, JString, JValue};
 use jni::signature::{JavaType, Primitive};
 use jni::sys::{jboolean, jbyteArray, jobject, jstring, JNI_TRUE};
 use jni::{Executor, JNIEnv};
+use libp2p::core::connection::PendingConnectionError;
+use libp2p::core::ConnectedPoint;
+use libp2p::identity::secp256k1;
 use log::trace;
 use prost::Message;
+use serde::{Deserialize, Serialize};
 use serde_json;
 use snap::raw::{Decoder, Encoder};
 use std::io::Cursor;
 use std::num::NonZeroU32;
 use std::{io, panic, sync::Arc};
-
-use libp2p::core::connection::PendingConnectionError;
-use libp2p::core::ConnectedPoint;
-use libp2p::identity::secp256k1;
 
 use locha_p2p::identity::Identity;
 use locha_p2p::runtime::config::RuntimeConfig;
@@ -48,6 +48,23 @@ const CHAT_SERVICE_EVENTS_HANDLER_FIELD_TYPE: &str =
 
 pub mod items {
   include!(concat!(env!("OUT_DIR"), "/message.items.rs"));
+}
+
+#[derive(Serialize, Deserialize)]
+struct Msg {
+  text: String,
+  typeFile: Option<String>,
+  file: Option<String>,
+}
+
+#[derive(Serialize, Deserialize)]
+struct Person {
+  toUID: String,
+  msgID: String,
+  timestamp: u64,
+  shippingTime: Option<u64>,
+  r#type: u32,
+  msg: Msg,
 }
 
 #[inline(always)]
@@ -195,24 +212,17 @@ pub fn serialize_message(contents: &String) -> Vec<u8> {
   trace!("json string {}", contents);
 
   let mut buf = Vec::new();
-  let json: serde_json::Value =
-    serde_json::from_str(&contents).expect("JSON was not well-formatted");
+  let json: Person =
+    serde_json::from_str(contents).expect("JSON was not well-formatted");
 
   let mut message: items::Content = items::Content::default();
-  message.to_uid = json["toUID"].to_string();
-  message.msg_id = json["msgID"].to_string();
-  message.timestamp = json["timestamp"].to_string().parse::<u64>().unwrap();
-  message.shipping_time =
-    json["shippingTime"].to_string().parse::<u64>().unwrap();
-  message.type_message = json["type"].to_string().parse::<u32>().unwrap();
-  message.text = json["msg"]["text"].to_string();
-  if json["msg"]["file"].is_null() == false {
-    message.file = json["msg"]["file"].to_string();
-  };
-
-  if json["msg"]["typeFile"].is_null() == false {
-    message.file = json["msg"]["typeFile"].to_string();
-  };
+  message.to_uid = json.toUID;
+  message.msg_id = json.msgID;
+  message.timestamp = json.timestamp;
+  message.type_message = json.r#type;
+  message.text = json.msg.text;
+  message.file = String::new();
+  message.type_file = String::new();
 
   buf.reserve(message.encoded_len());
   message.encode(&mut buf).unwrap();
@@ -225,25 +235,28 @@ pub fn serialize_message(contents: &String) -> Vec<u8> {
   compressed_bytes
 }
 
-pub fn deserialize_message(buf: &[u8]) {
+pub fn deserialize_message(buf: &[u8]) -> String {
   let mut decode = Decoder::new();
   let decompress_bytes = decode.decompress_vec(buf).expect("decompress failed");
 
   let content: items::Content =
     items::Content::decode(&mut Cursor::new(&decompress_bytes)).unwrap();
 
-  let json_message = serde_json::json!({
-      "toUID": content.to_uid,
-      "msgID": content.msg_id,
-      "timestamp": content.timestamp,
-      "shippingTime": content.shipping_time,
-      "type": content.type_message,
-      "msg": serde_json::json!({
-        "text": content.text
-      })
-  });
+  let message: Person = Person {
+    toUID: content.to_uid,
+    msgID: content.msg_id,
+    timestamp: content.timestamp,
+    shippingTime: Some(content.shipping_time),
+    r#type: content.type_message,
+    msg: Msg {
+      text: content.text,
+      typeFile: content.type_file,
+      file: content.file,
+    },
+  };
 
-  trace!("dios mio {}", json_message.to_string());
+  let result = serde_json::to_string(&message).unwrap();
+  result
 }
 
 #[no_mangle]
@@ -258,8 +271,7 @@ pub extern "system" fn Java_io_locha_p2p_runtime_Runtime_nativeSendMessage(
     let runtime = env.get_rust_field::<_, _, Runtime>(class, "handle")?;
     let contents: String = env.get_string(contents)?.into();
     let serilize: Vec<u8> = serialize_message(&contents);
-    deserialize_message(&serilize);
-    task::block_on(runtime.send_message(contents));
+    task::block_on(runtime.send_message(serilize));
     Ok(())
   });
   unwrap_exc_or_default(&env, res)
@@ -278,10 +290,11 @@ impl RuntimeEventsProxy {
 }
 
 impl RuntimeEvents for RuntimeEventsProxy {
-  fn on_new_message(&mut self, peer_id: &PeerId, message: String) {
+  fn on_new_message(&mut self, peer_id: &PeerId, message: Vec<u8>) {
     unwrap_jni(self.exec.with_attached(|env| {
+      let str_message: String = deserialize_message(&message);
       let id = env.new_string(peer_id.to_string())?;
-      let contents = env.new_string(message)?;
+      let contents = env.new_string(str_message)?;
 
       env
         .call_method_unchecked(

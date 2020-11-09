@@ -55,6 +55,8 @@ export default class ChatService {
       const { dispatch, getState } = this.store;
       const parse = JSON.parse(message);
 
+      console.log("javaScriptJSON", parse);
+
       if (parse.toUID !== 'broadcast') {
         await database.verifyValidMessage(parse.fromUID);
         // Verify that the message is for me
