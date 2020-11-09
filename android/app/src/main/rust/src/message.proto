@@ -10,4 +10,5 @@ message Content {
   string text = 6;
   string typeFile = 7;
   string file = 8;
+  string status = 9;
 }

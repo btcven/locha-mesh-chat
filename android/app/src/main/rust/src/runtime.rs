@@ -58,6 +58,12 @@ struct Msg {
 }
 
 #[derive(Serialize, Deserialize)]
+struct DataStatus {
+  status: String,
+  msgID: String,
+}
+
+#[derive(Serialize, Deserialize)]
 struct Person {
   toUID: String,
   msgID: String,
@@ -65,6 +71,21 @@ struct Person {
   shippingTime: Option<u64>,
   r#type: u32,
   msg: Msg,
+}
+
+#[derive(Serialize, Deserialize)]
+struct Status {
+  toUID: String,
+  timestamp: u64,
+  r#type: u32,
+  data: DataStatus,
+}
+
+#[derive(Serialize, Deserialize)]
+#[serde(untagged)]
+enum ContentMessage {
+  Person(Person),
+  Status(Status),
 }
 
 #[inline(always)]
@@ -212,17 +233,28 @@ pub fn serialize_message(contents: &String) -> Vec<u8> {
   trace!("json string {}", contents);
 
   let mut buf = Vec::new();
-  let json: Person =
+  let mut message: items::Content = items::Content::default();
+  let json: ContentMessage =
     serde_json::from_str(contents).expect("JSON was not well-formatted");
 
-  let mut message: items::Content = items::Content::default();
-  message.to_uid = json.toUID;
-  message.msg_id = json.msgID;
-  message.timestamp = json.timestamp;
-  message.type_message = json.r#type;
-  message.text = json.msg.text;
-  message.file = json.msg.file.unwrap_or(String::new());
-  message.type_file = json.msg.typeFile.unwrap_or(String::new());
+  match json {
+    ContentMessage::Person(person) => {
+      message.to_uid = person.toUID;
+      message.msg_id = person.msgID;
+      message.timestamp = person.timestamp;
+      message.type_message = person.r#type;
+      message.text = person.msg.text;
+      message.file = person.msg.file.unwrap_or(String::new());
+      message.type_file = person.msg.typeFile.unwrap_or(String::new());
+    }
+    ContentMessage::Status(status) => {
+      message.to_uid = status.toUID;
+      message.timestamp = status.timestamp;
+      message.type_message = status.r#type;
+      message.msg_id = status.data.msgID;
+      message.status = status.data.status
+    }
+  }
 
   buf.reserve(message.encoded_len());
   message.encode(&mut buf).unwrap();
@@ -242,32 +274,47 @@ pub fn deserialize_message(buf: &[u8]) -> String {
   let content: items::Content =
     items::Content::decode(&mut Cursor::new(&decompress_bytes)).unwrap();
 
-  let message = Person {
-    toUID: content.to_uid,
-    msgID: content.msg_id,
-    timestamp: content.timestamp,
-    shippingTime: if content.shipping_time == 0 {
+  trace!("status123 {}", content.status);
+
+  if content.status.is_empty() {
+    let message = Person {
+      toUID: content.to_uid,
+      msgID: content.msg_id,
+      timestamp: content.timestamp,
+      shippingTime: if content.shipping_time == 0 {
         None
-    } else {
+      } else {
         Some(content.shipping_time)
-    },
-    r#type: content.type_message,
-    msg: Msg {
-      text: content.text,
-      file: if content.file.is_empty() {
+      },
+      r#type: content.type_message,
+      msg: Msg {
+        text: content.text,
+        file: if content.file.is_empty() {
           None
-      } else {
+        } else {
           Some(content.file)
-      },
-      typeFile: if content.type_file.is_empty() {
+        },
+        typeFile: if content.type_file.is_empty() {
           None
-      } else {
+        } else {
           Some(content.type_file)
+        },
       },
+    };
+    return serde_json::to_string(&message).unwrap();
+  }
+
+  let message = Status {
+    toUID: content.to_uid,
+    timestamp: content.timestamp,
+    r#type: content.type_message,
+    data: DataStatus {
+      status: content.status,
+      msgID: content.msg_id
     },
   };
-
-  serde_json::to_string(&message).unwrap()
+  
+  return serde_json::to_string(&message).unwrap();
 }
 
 #[no_mangle]
@@ -304,6 +351,7 @@ impl RuntimeEvents for RuntimeEventsProxy {
   fn on_new_message(&mut self, peer_id: &PeerId, message: Vec<u8>) {
     unwrap_jni(self.exec.with_attached(|env| {
       let str_message: String = deserialize_message(&message);
+      // let str_message: String = "Hola".to_string();
       let id = env.new_string(peer_id.to_string())?;
       let contents = env.new_string(str_message)?;
 
