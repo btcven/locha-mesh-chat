@@ -313,7 +313,7 @@ pub fn deserialize_message(buf: &[u8]) -> String {
     }
 
     let message = Status {
-        toUID: content.to_uid,
+        to_uid: content.to_uid,
         timestamp: content.timestamp,
         r#type: content.type_message,
         data: DataStatus {
