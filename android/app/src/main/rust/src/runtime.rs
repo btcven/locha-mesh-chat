@@ -66,7 +66,7 @@ struct DataStatus {
 }
 
 #[derive(Serialize, Deserialize)]
-struct Person {
+struct MessageData {
     #[serde(rename = "toUID")]
     to_uid: String,
     #[serde(rename = "msgID")]
@@ -89,7 +89,7 @@ struct Status {
 #[derive(Serialize, Deserialize)]
 #[serde(untagged)]
 enum ContentMessage {
-    Person(Person),
+    Message(MessageData),
     Status(Status),
 }
 
@@ -246,7 +246,7 @@ pub fn serialize_message(contents: &String) -> Vec<u8> {
         serde_json::from_str(contents).expect("JSON was not well-formatted");
 
     match json {
-        ContentMessage::Person(person) => {
+        ContentMessage::Message(person) => {
             message.to_uid = person.to_uid;
             message.msg_id = person.msg_id;
             message.timestamp = person.timestamp;
@@ -286,7 +286,7 @@ pub fn deserialize_message(buf: &[u8]) -> String {
     trace!("status123 {}", content.status);
 
     if content.status.is_empty() {
-        let message = Person {
+        let message = MessageData {
             to_uid: content.to_uid,
             msg_id: content.msg_id,
             timestamp: content.timestamp,
