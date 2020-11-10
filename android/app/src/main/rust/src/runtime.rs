@@ -80,7 +80,8 @@ struct MessageData {
 
 #[derive(Serialize, Deserialize)]
 struct Status {
-    toUID: String,
+    #[serde(rename = "toUID")]
+    to_uid: String,
     timestamp: u64,
     r#type: u32,
     data: DataStatus,
@@ -239,7 +240,7 @@ pub extern "system" fn Java_io_locha_p2p_runtime_Runtime_nativeDial(
 
 pub fn serialize_message(contents: String) -> Vec<u8> {
     trace!("json string {}", contents);
- 
+
     let mut message: items::Content = items::Content::default();
     let json: ContentMessage =
         serde_json::from_str(&contents).expect("JSON was not well-formatted");
