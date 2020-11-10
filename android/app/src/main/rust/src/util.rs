@@ -16,11 +16,13 @@
 
 #![deny(non_snake_case)]
 
-pub use self::conversion::{convert_to_string, java_arrays_to_rust, optional_array_to_java};
+pub use self::conversion::{
+    convert_to_string, java_arrays_to_rust, optional_array_to_java,
+};
 pub use self::errors::{
-    any_to_string, check_error_on_exception, describe_java_exception, get_and_clear_java_exception,
-    get_exception_cause, panic_on_exception, unwrap_exc_or, unwrap_exc_or_default, unwrap_jni,
-    unwrap_jni_verbose,
+    any_to_string, check_error_on_exception, describe_java_exception,
+    get_and_clear_java_exception, get_exception_cause, panic_on_exception,
+    unwrap_exc_or, unwrap_exc_or_default, unwrap_jni, unwrap_jni_verbose,
 };
 pub use self::jni::{get_class_name, get_exception_message};
 

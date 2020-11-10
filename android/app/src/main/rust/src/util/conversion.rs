@@ -41,7 +41,8 @@ where
     let num_elements = env.get_array_length(array)?;
     let mut result = Vec::with_capacity(num_elements as usize);
     for i in 0..num_elements {
-        let array_element = env.auto_local(env.get_object_array_element(array, i)?);
+        let array_element =
+            env.auto_local(env.get_object_array_element(array, i)?);
         let array = to_rust_array(&env, array_element.as_obj().into_inner())?;
         result.push(array);
     }

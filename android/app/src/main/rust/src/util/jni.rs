@@ -52,7 +52,10 @@ pub fn get_class_name(env: &JNIEnv, obj: JObject) -> JniResult<String> {
 /// Returns the message from the exception if it is not null.
 ///
 /// `exception` should extend `java.lang.Throwable` and be not null
-pub fn get_exception_message(env: &JNIEnv, exception: JObject) -> JniResult<Option<String>> {
+pub fn get_exception_message(
+    env: &JNIEnv,
+    exception: JObject,
+) -> JniResult<Option<String>> {
     assert!(!exception.is_null(), "Invalid exception argument");
     let message = env.call_method_unchecked(
         exception,
