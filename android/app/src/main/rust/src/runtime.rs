@@ -256,7 +256,7 @@ pub fn serialize_message(contents: String) -> Vec<u8> {
             message.type_file = person.msg.type_file.unwrap_or(String::new());
         }
         ContentMessage::Status(status) => {
-            message.to_uid = status.toUID;
+            message.to_uid = status.to_uid;
             message.timestamp = status.timestamp;
             message.type_message = status.r#type;
             message.msg_id = status.data.msg_id;
