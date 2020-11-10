@@ -237,13 +237,12 @@ pub extern "system" fn Java_io_locha_p2p_runtime_Runtime_nativeDial(
     unwrap_exc_or_default(&env, res)
 }
 
-pub fn serialize_message(contents: &String) -> Vec<u8> {
+pub fn serialize_message(contents: String) -> Vec<u8> {
     trace!("json string {}", contents);
-
-    let mut buf = Vec::new();
+ 
     let mut message: items::Content = items::Content::default();
     let json: ContentMessage =
-        serde_json::from_str(contents).expect("JSON was not well-formatted");
+        serde_json::from_str(&contents).expect("JSON was not well-formatted");
 
     match json {
         ContentMessage::Message(person) => {
@@ -264,6 +263,7 @@ pub fn serialize_message(contents: &String) -> Vec<u8> {
         }
     }
 
+    let mut buf = Vec::new();
     buf.reserve(message.encoded_len());
     message.encode(&mut buf).unwrap();
     let bytes: &[u8] = &buf;
@@ -282,8 +282,6 @@ pub fn deserialize_message(buf: &[u8]) -> String {
 
     let content: items::Content =
         items::Content::decode(&mut Cursor::new(&decompress_bytes)).unwrap();
-
-    trace!("status123 {}", content.status);
 
     if content.status.is_empty() {
         let message = MessageData {
@@ -337,8 +335,8 @@ pub extern "system" fn Java_io_locha_p2p_runtime_Runtime_nativeSendMessage(
     let res = panic::catch_unwind(|| {
         let runtime = env.get_rust_field::<_, _, Runtime>(class, "handle")?;
         let contents: String = env.get_string(contents)?.into();
-        let serilized: Vec<u8> = serialize_message(&contents);
-        task::block_on(runtime.send_message(serilized));
+        let serialized: Vec<u8> = serialize_message(contents);
+        task::block_on(runtime.send_message(serialized));
         Ok(())
     });
     unwrap_exc_or_default(&env, res)
@@ -359,10 +357,9 @@ impl RuntimeEventsProxy {
 impl RuntimeEvents for RuntimeEventsProxy {
     fn on_new_message(&mut self, peer_id: &PeerId, message: Vec<u8>) {
         unwrap_jni(self.exec.with_attached(|env| {
-            let str_message: String = deserialize_message(&message);
-            // let str_message: String = "Hola".to_string();
+            let message_json = deserialize_message(&message);
             let id = env.new_string(peer_id.to_string())?;
-            let contents = env.new_string(str_message)?;
+            let contents = env.new_string(message_json)?;
 
             env.call_method_unchecked(
                 self.events.as_obj(),
