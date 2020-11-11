@@ -56,7 +56,10 @@ pub fn panic_on_exception<T>(env: &JNIEnv, result: JniResult<T>) -> T {
 /// Panics:
 /// - Panics if there is some JNI error.
 /// - If there is a pending Java exception that is a subclass of `java.lang.Error`.
-pub fn check_error_on_exception<T>(env: &JNIEnv, result: JniResult<T>) -> Result<T, String> {
+pub fn check_error_on_exception<T>(
+    env: &JNIEnv,
+    result: JniResult<T>,
+) -> Result<T, String> {
     result.map_err(|jni_error| match jni_error.0 {
         JniErrorKind::JavaException => {
             let exception = get_and_clear_java_exception(env);
@@ -146,7 +149,11 @@ type ExceptionResult<T> = thread::Result<result::Result<T, JniError>>;
 /// `JniResult` represents the errors during Rust-Java interoperability. Therefore, the function
 /// can't be used for handling __any__ user-defined error type, but supports only a set of
 /// JNI-related errors and also handles unexpected panics.
-pub fn unwrap_exc_or<T>(env: &JNIEnv, res: ExceptionResult<T>, error_val: T) -> T {
+pub fn unwrap_exc_or<T>(
+    env: &JNIEnv,
+    res: ExceptionResult<T>,
+    error_val: T,
+) -> T {
     match res {
         // No panic
         Ok(jni_result) => {
@@ -174,7 +181,10 @@ pub fn unwrap_exc_or<T>(env: &JNIEnv, res: ExceptionResult<T>, error_val: T) -> 
 }
 
 /// Same as `unwrap_exc_or` but returns default value.
-pub fn unwrap_exc_or_default<T: Default>(env: &JNIEnv, res: ExceptionResult<T>) -> T {
+pub fn unwrap_exc_or_default<T: Default>(
+    env: &JNIEnv,
+    res: ExceptionResult<T>,
+) -> T {
     unwrap_exc_or(env, res, T::default())
 }
 
@@ -184,7 +194,10 @@ pub fn unwrap_exc_or_default<T: Default>(env: &JNIEnv, res: ExceptionResult<T>) 
 ///
 /// Does not check for the returned `JObject` being `null`, the caller is
 /// responsible for that.
-pub fn get_exception_cause<'a>(env: &JNIEnv<'a>, exception: JObject<'a>) -> JniResult<JObject<'a>> {
+pub fn get_exception_cause<'a>(
+    env: &JNIEnv<'a>,
+    exception: JObject<'a>,
+) -> JniResult<JObject<'a>> {
     assert!(!exception.is_null(), "Exception is null");
     env.call_method_unchecked(
         exception,
@@ -199,7 +212,9 @@ pub fn get_exception_cause<'a>(env: &JNIEnv<'a>, exception: JObject<'a>) -> JniR
 /// the Java side.
 fn throw(env: &JNIEnv, error_message: &str) {
     // We cannot throw exception from this function, so errors should be written in log instead.
-    if let Err(e) = env.throw_new(&classes_refs::java_lang_runtime_exception(), error_message) {
+    if let Err(e) = env
+        .throw_new(&classes_refs::java_lang_runtime_exception(), error_message)
+    {
         error!(
             "Failed to throw RuntimeException({}): {}",
             error_message,
@@ -244,7 +259,8 @@ mod tests {
 
     #[test]
     fn box_error_any() {
-        let error: Box<dyn Error + Send> = Box::new("e".parse::<i32>().unwrap_err());
+        let error: Box<dyn Error + Send> =
+            Box::new("e".parse::<i32>().unwrap_err());
         let description = error.to_string();
         let error = panic_error(error);
         assert_eq!(description, any_to_string(&error));
@@ -257,6 +273,7 @@ mod tests {
     }
 
     fn panic_error<T: Send + 'static>(val: T) -> Box<dyn Any + Send> {
-        panic::catch_unwind(panic::AssertUnwindSafe(|| panic!(val))).unwrap_err()
+        panic::catch_unwind(panic::AssertUnwindSafe(|| panic!(val)))
+            .unwrap_err()
     }
 }

@@ -29,7 +29,6 @@ import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.facebook.react.bridge.Arguments;
-import com.facebook.react.uimanager.events.EventDispatcher;
 
 import org.json.JSONObject;
 
@@ -62,11 +61,11 @@ public class EventsDispatcher implements RuntimeEvents {
 
     @Override public void onNewMessage(String peerId, String contents) {
         try {
-            Log.d(TAG, "newMessage");
             JSONObject obj = new JSONObject(contents);
             obj.put("fromUID", peerId);
-           
+
             sendEvent(this.reactContext, "newMessage", obj.toString());
+            Log.d(TAG, "newMessage" + obj.toString());
         } catch (Exception err) {
             Log.e(TAG, " something failed trying parse the message JSON:", err );
         }

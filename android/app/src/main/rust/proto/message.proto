@@ -1,0 +1,14 @@
+syntax = "proto3";
+package message.items;
+
+message Content {
+  string toUID = 1;
+  string msgID = 2;
+  uint64 timestamp = 3;
+  uint64 shippingTime = 4;
+  uint32 typeMessage = 5;
+  string text = 6;
+  string typeFile = 7;
+  string file = 8;
+  string status = 9;
+}
