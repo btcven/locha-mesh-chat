@@ -27,86 +27,86 @@ export const ReceiveMessage = ({
   contactInfo,
   selected
 }) => (
-    <TouchableList
-      onLongPress={() => onSelected(item)}
-      onPress={() => onClick(item)}
-      style={{
-        marginVertical: 5,
-        minHeight: 70,
-        width: '100%',
-        alignContent: 'center',
-        flexDirection: 'row'
-      }}
-    >
-      <View style={[styles.receiveContainer, selected]}>
-        {item.toUID === 'broadcast' && !contactInfo && (
-          <Thumbnail
+  <TouchableList
+    onLongPress={() => onSelected(item)}
+    onPress={() => onClick(item)}
+    style={{
+      marginVertical: 5,
+      minHeight: 70,
+      width: '100%',
+      alignContent: 'center',
+      flexDirection: 'row'
+    }}
+  >
+    <View style={[styles.receiveContainer, selected]}>
+      {item.toUID === 'broadcast' && !contactInfo && (
+      <Thumbnail
+        style={{
+          marginLeft: 5,
+
+        }}
+        source={{
+          uri: `${getIcon(item.fromUID)}`
+        }}
+      />
+      )}
+
+      {item.toUID === 'broadcast' && contactInfo && (
+      <Thumbnail
+        style={{
+          marginLeft: 5,
+          marginTop: 5
+        }}
+        source={{
+          uri: `${userInfo.picture ? userInfo.picture : getIcon(item.fromUID)
+          }`
+        }}
+      />
+      )}
+
+      <View style={{ width: '90%', flexDirection: 'row' }}>
+        <View style={styles.textContent1}>
+          {item.name && (
+          <Text
             style={{
-              marginLeft: 5,
-
+              paddingBottom: 7,
+              color: hashGenerateColort(item.fromUID)
             }}
-            source={{
-              uri: `${getIcon(item.fromUID)}`
-            }}
-          />
-        )}
-
-        {item.toUID === 'broadcast' && contactInfo && (
-          <Thumbnail
-            style={{
-              marginLeft: 5,
-              marginTop: 5
-            }}
-            source={{
-              uri: `${userInfo.picture ? userInfo.picture : getIcon(item.fromUID)
-                }`
-            }}
-          />
-        )}
-
-        <View style={{ width: '90%', flexDirection: 'row' }}>
-          <View style={styles.textContent1}>
-            {item.name && (
-              <Text
-                style={{
-                  paddingBottom: 7,
-                  color: hashGenerateColort(item.fromUID)
+          >
+            {userInfo.name}
+          </Text>
+          )}
+          <View style={{ minWidth: 110 }}>
+            {item.file && (
+            <View style={{ minWidth: '80%' }}>
+              <Image
+                style={{ width: '100%', height: 150 }}
+                source={{
+                  resizeMode: 'contain',
+                  uri: item.file.file,
+                  cache: 'force-cache'
                 }}
-              >
-                {userInfo.name}
-              </Text>
-            )}
-            <View style={{ minWidth: 110 }}>
-              {item.file && (
-                <View style={{ minWidth: '80%' }}>
-                  <Image
-                    style={{ width: '100%', height: 150 }}
-                    source={{
-                      resizeMode: 'contain',
-                      uri: item.file.file,
-                      cache: 'force-cache'
-                    }}
-                  />
-                </View>
-              )}
-              <Text style={{ fontSize: 15 }}>{item.msg}</Text>
+              />
             </View>
-            <Text
-              style={{
-                paddingTop: 3,
-                paddingLeft: 10,
-                paddingBottom: 6,
-                fontSize: 12,
-                textAlign: 'right'
-              }}
-            >
-              {Moment(Number(item.timestamp)).format('LT')}
-            </Text>
+            )}
+            <Text style={{ fontSize: 15 }}>{item.msg}</Text>
           </View>
+          <Text
+            style={{
+              paddingTop: 3,
+              paddingLeft: 10,
+              paddingBottom: 6,
+              fontSize: 12,
+              textAlign: 'right'
+            }}
+          >
+            {Moment(Number(item.timestamp)).format('LT')}
+          </Text>
         </View>
       </View>
-    </TouchableList>
-  );
+    </View>
+  </TouchableList>
+);
 
 export const SenderMessage = ({
   onClick,
@@ -157,7 +157,9 @@ export const SenderMessage = ({
             </View>
             <View style={textStyle}>
               <View style={{ flexDirection: 'row' }}>
-                <Text>{Moment(Number(item.timestamp)).format('LT')}</Text>
+                <Text style={styles.timeStyle}>
+                  {Moment(Number(item.timestamp)).format('LT')}
+                </Text>
                 {item.status === 'pending' && !cancelled && (
                   <Icon
                     style={{ color: 'gray', fontSize: 15, marginLeft: 10 }}
@@ -222,7 +224,7 @@ export const SoundMessage = ({
         }}
       >
         <View style={[styles.receiveContainer, selected]}>
-          {!item.toUID && !contactInfo && (
+          {item.toUID === 'broadcast' && !contactInfo && (
             <Thumbnail
               style={{
                 marginLeft: 5,
@@ -234,7 +236,7 @@ export const SoundMessage = ({
             />
           )}
 
-          {!item.toUID && contactInfo && (
+          {item.toUID !== 'broadcast' && contactInfo && (
             <Thumbnail
               style={{
                 marginLeft: 5,
@@ -261,13 +263,7 @@ export const SoundMessage = ({
               )}
               <Player path={item.file.file} />
               <Text
-                style={{
-                  paddingTop: 3,
-                  paddingLeft: 10,
-                  paddingBottom: 6,
-                  fontSize: 12,
-                  textAlign: 'right'
-                }}
+                style={styles.timeStyle}
               >
                 {Moment(Number(item.timestamp)).format('LT')}
               </Text>
@@ -378,5 +374,13 @@ const styles = StyleSheet.create({
     paddingBottom: 6,
     flex: 1,
     alignItems: 'center'
+  },
+
+  timeStyle: {
+    paddingTop: 3,
+    paddingLeft: 10,
+    paddingBottom: 6,
+    fontSize: 12,
+    textAlign: 'right'
   }
 });

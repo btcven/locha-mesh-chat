@@ -1774,7 +1774,7 @@ dependencies = [
 [[package]]
 name = "locha-p2p"
 version = "0.1.0"
-source = "git+https://github.com/btcven/locha-p2p#d0f8f71561ae1c08df9a2cf5596663da8149d1e4"
+source = "git+https://github.com/btcven/locha-p2p?branch=feature/protobuf_to_lochap2pd#246f72e35fa64919b33f608dffb555aa90386b47"
 dependencies = [
  "async-std",
  "futures",
@@ -1782,6 +1782,10 @@ dependencies = [
  "log",
  "miniupnpc",
  "parking_lot",
+ "prost 0.6.1",
+ "prost-build 0.5.0",
+ "serde",
+ "serde_json",
  "void",
  "wasm-timer",
 ]
@@ -1873,7 +1877,7 @@ dependencies = [
 [[package]]
 name = "miniupnpc"
 version = "0.1.0"
-source = "git+https://github.com/btcven/locha-p2p#d0f8f71561ae1c08df9a2cf5596663da8149d1e4"
+source = "git+https://github.com/btcven/locha-p2p?branch=feature/protobuf_to_lochap2pd#246f72e35fa64919b33f608dffb555aa90386b47"
 dependencies = [
  "miniupnpc-sys",
 ]
@@ -1881,7 +1885,7 @@ dependencies = [
 [[package]]
 name = "miniupnpc-sys"
 version = "0.1.0"
-source = "git+https://github.com/btcven/locha-p2p#d0f8f71561ae1c08df9a2cf5596663da8149d1e4"
+source = "git+https://github.com/btcven/locha-p2p?branch=feature/protobuf_to_lochap2pd#246f72e35fa64919b33f608dffb555aa90386b47"
 dependencies = [
  "bindgen",
  "cc",
