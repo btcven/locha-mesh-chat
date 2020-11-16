@@ -94,7 +94,6 @@ jest.mock('react-native-audio', () => {
     checkAuthorizationStatus: jest.fn(() => new Promise((resolve) => { resolve(true); })),
     prepareRecordingAtPath: jest.fn((data, params) => { }),
     startRecording: jest.fn(() => new Promise((resolve) => { resolve(true); })),
-    onProgress: jest.fn((callback) => callback(35)),
   };
 
   return { AudioUtils, AudioRecorder };
