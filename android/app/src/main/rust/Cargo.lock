@@ -1774,7 +1774,7 @@ dependencies = [
 [[package]]
 name = "locha-p2p"
 version = "0.1.0"
-source = "git+https://github.com/btcven/locha-p2p?branch=feature/protobuf_to_lochap2pd#246f72e35fa64919b33f608dffb555aa90386b47"
+source = "git+https://github.com/btcven/locha-p2p#39333ebf9d26571fac585332a200d1cc163ccab2"
 dependencies = [
  "async-std",
  "futures",
@@ -1877,7 +1877,7 @@ dependencies = [
 [[package]]
 name = "miniupnpc"
 version = "0.1.0"
-source = "git+https://github.com/btcven/locha-p2p?branch=feature/protobuf_to_lochap2pd#246f72e35fa64919b33f608dffb555aa90386b47"
+source = "git+https://github.com/btcven/locha-p2p#39333ebf9d26571fac585332a200d1cc163ccab2"
 dependencies = [
  "miniupnpc-sys",
 ]
@@ -1885,7 +1885,7 @@ dependencies = [
 [[package]]
 name = "miniupnpc-sys"
 version = "0.1.0"
-source = "git+https://github.com/btcven/locha-p2p?branch=feature/protobuf_to_lochap2pd#246f72e35fa64919b33f608dffb555aa90386b47"
+source = "git+https://github.com/btcven/locha-p2p#39333ebf9d26571fac585332a200d1cc163ccab2"
 dependencies = [
  "bindgen",
  "cc",
