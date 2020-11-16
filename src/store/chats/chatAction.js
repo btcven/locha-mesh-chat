@@ -25,10 +25,25 @@ import { messageType } from '../../utils/constans';
  */
 
 export const initialChat = (fromUID, data, status) => async (dispatch) => {
+  console.log('paso por aqui');
   database.setMessage(data.toUID, { ...data, fromUID }, status).then((res) => {
     if (!process.env.JEST_WORKER_ID) {
       chatService.send(JSON.stringify(data));
     }
+    console.log('llego aqui123',
+      {
+        type: ActionTypes.NEW_MESSAGE,
+        payload: {
+          name: undefined,
+          ...data,
+          fromUID,
+          time: res.time,
+          shippingTime: res.time,
+          msg: data.msg.text,
+          id: data.msgID,
+          status
+        }
+      });
     dispatch({
       type: ActionTypes.NEW_MESSAGE,
       payload: {
@@ -112,9 +127,9 @@ const saveFile = (obj) => new Promise((resolve) => {
   } else {
     const base64File = obj.file;
     const name = `AUDIO_${new Date().getTime()}`;
-    const directory = `${FileDirectory}/${name}.aac`;
+    const directory = `${FileDirectory}/Audios/${name}.aac`;
     RNFS.writeFile(`${connectiveAddress}${directory}`, base64File, 'base64').then(() => {
-      resolve(`${connectiveAddress}${directory}`);
+      resolve(`${directory}`);
     });
   }
 });

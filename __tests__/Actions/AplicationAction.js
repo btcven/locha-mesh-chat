@@ -4,9 +4,10 @@ import store from '../../src/store';
 import {
   verifyAplicationState,
   loading,
+  createNewAccount
 } from '../../src/store/aplication/aplicationAction';
 import { editContacts, deleteContactAction } from '../../src/store/contacts';
-import { enableBroadcast, disableBroadcast } from '../../src/store/chats';
+import { enableBroadcast, disableBroadcast, initialChat } from '../../src/store/chats';
 import { database } from '../../App';
 
 describe('Aplication actions', () => {
@@ -15,6 +16,11 @@ describe('Aplication actions', () => {
     seed: 'click tag quit book door know comic alone elephant unhappy lunch sun',
     name: 'test'
   };
+
+
+  beforeAll(async () => {
+    await store.dispatch(createNewAccount(obj));
+  });
 
   test('check if the application status is not the initial', async () => {
     await store.dispatch(verifyAplicationState()).then(async () => {
@@ -79,6 +85,26 @@ describe('Aplication actions', () => {
           []
         );
       });
+    });
+  });
+
+  describe('chat action', () => {
+    test('send message', async () => {
+      const sendObject = {
+        toUID: 'broadcast',
+        msg: {
+          text: 'test'
+        },
+        msgID: 'test',
+        timestamp: new Date().getTime(),
+        type: 1
+      };
+
+      const fromUID = 'test123test123';
+
+      await store.dispatch(initialChat(fromUID, sendObject, 'pending'));
+
+      expect(store.getState().chats.chat).toBeDefined();
     });
   });
 });

@@ -66,4 +66,11 @@ describe('chat form component', () => {
       await expect(sendChatMock.mock.calls.length).toBe(1);
     }, 1000);
   });
+
+
+  test('open file modal', () => {
+
+    wrapper.find('ForwardRef').at(0).props().onPress();
+    expect(mockOpenModal.mock.calls.length).toBe(1);
+  });
 });

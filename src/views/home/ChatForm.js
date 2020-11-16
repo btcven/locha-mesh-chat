@@ -60,7 +60,6 @@ export default class ChatForm extends Component {
         AudioEncoding: 'aac',
         AudioEncodingBitRate: 32000,
         IncludeBase64: true,
-        OutputFormat: Platform === 'android' ? undefined : 'aac_adts',
       });
     } catch (err) {
       // eslint-disable-next-line no-console
