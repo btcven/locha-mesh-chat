@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import AudioModule.SoundModule;
 import BitcoinJ.BitcoinModule;
 import LocalNotification.LocalNotificationModule;
 
@@ -28,6 +29,7 @@ public class DeviceInfoPackage implements ReactPackage {
 
         modules.add(new DeviceInfoModule(reactContext));
         modules.add(new BitcoinModule(reactContext));
+        modules.add(new SoundModule(reactContext));
 
         return modules;
     }

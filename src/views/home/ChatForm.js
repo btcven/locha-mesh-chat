@@ -123,6 +123,7 @@ export default class ChatForm extends Component {
         }
       };
     } else {
+      console.warn('entro aqui');
       AudioRecorder.requestAuthorization().then(async (isAuthorised) => {
         this.setState({ recording: false, hasPermission: isAuthorised });
       });
