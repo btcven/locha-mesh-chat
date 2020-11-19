@@ -13,7 +13,6 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
-import com.rnim.rn.audio.StopWatch;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -31,13 +30,13 @@ public class SoundModule extends ReactContextBaseJavaModule {
     private MediaRecorder recorder;
     private final static String TAG = "SoundModule";
     private Boolean isRecording = false;
-    private StopWatch stopWatch;
+    private Chronometer chronometer;
     private Timer timer;
     private String recorderPath;
 
     public SoundModule(ReactApplicationContext reactContext) {
         context = reactContext;
-        stopWatch = new StopWatch();
+        chronometer = new Chronometer();
 
     }
 
@@ -135,8 +134,8 @@ public class SoundModule extends ReactContextBaseJavaModule {
 
         Log.i(TAG, "startRecording:");
         try {
-            stopWatch.reset();
-            stopWatch.start();
+            chronometer.reset();
+            chronometer.start();
             recorder.start();
             startTimer();
         } catch (Exception err ) {
@@ -151,7 +150,7 @@ public class SoundModule extends ReactContextBaseJavaModule {
 
             recorder.stop();
             recorder.release();
-            stopWatch.stop();
+            chronometer.stop();
             stopTimer();
             onFinished();
         } catch (Exception e) {
@@ -164,7 +163,7 @@ public class SoundModule extends ReactContextBaseJavaModule {
 
         timer.schedule( new TimerTask() {
             public void run() {
-                sendEvent("onProgress", stopWatch.getTimeSeconds());
+                sendEvent("onProgress", chronometer.getTimeSeconds());
             }
         }, 0, 1000);
 

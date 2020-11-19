@@ -12,7 +12,6 @@ import {
   Animated,
 } from 'react-native';
 import RNFS from 'react-native-fs';
-import { AudioRecorder, AudioUtils } from 'react-native-audio';
 import * as Animatable from 'react-native-animatable';
 import moment from 'moment';
 import Draggable from '../../components/Draggable';
@@ -108,7 +107,7 @@ export default class ChatForm extends Component {
         this.setState({ recording: false });
       }
     } else {
-      AudioRecorder.requestAuthorization().then(async (isAuthorised) => {
+      audioRecorder.requestRecoderPermision().then(async (isAuthorised) => {
         this.setState({ recording: false, hasPermission: isAuthorised });
       });
     }
