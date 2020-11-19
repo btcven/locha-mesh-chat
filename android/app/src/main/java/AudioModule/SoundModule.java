@@ -4,11 +4,10 @@ import android.media.MediaRecorder;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
+import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
-import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
@@ -25,8 +24,6 @@ import java.io.InputStream;
 import android.util.Base64;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import io.locha.p2p.runtime.Runtime;
 
 public class SoundModule extends ReactContextBaseJavaModule {
 
@@ -125,7 +122,6 @@ public class SoundModule extends ReactContextBaseJavaModule {
 
     }
 
-
     @ReactMethod public void startRecording (Promise promise){
         if(isRecording){
              promise.reject("Error",  "the recording has already started");
@@ -136,16 +132,23 @@ public class SoundModule extends ReactContextBaseJavaModule {
             promise.reject("Error",  "it have not initializated");
         }
 
-        recorder.start();
-        stopWatch.reset();
-        stopWatch.start();
-        startTimer();
+
+        Log.i(TAG, "startRecording:");
+        try {
+            stopWatch.reset();
+            stopWatch.start();
+            recorder.start();
+            startTimer();
+        } catch (Exception err ) {
+            Log.e(TAG, "startRecording: ", err);
+        }
 
     }
 
-
     @ReactMethod public void stopRecording (){
         try {
+            Log.i(TAG, "stopRecording: ");
+
             recorder.stop();
             recorder.release();
             stopWatch.stop();
@@ -155,7 +158,6 @@ public class SoundModule extends ReactContextBaseJavaModule {
             Log.e(TAG, "stopRecording: ", e );
         }
     }
-
 
     private void startTimer(){
         timer = new Timer();
@@ -168,7 +170,6 @@ public class SoundModule extends ReactContextBaseJavaModule {
 
     }
 
-
     private void stopTimer(){
         if (timer != null) {
             timer.cancel();
@@ -176,7 +177,6 @@ public class SoundModule extends ReactContextBaseJavaModule {
             timer = null;
         }
     }
-
 
     private void onFinished(){
         try {
@@ -195,7 +195,11 @@ public class SoundModule extends ReactContextBaseJavaModule {
             bytes = output.toByteArray();
             String base64 = Base64.encodeToString(bytes, Base64.DEFAULT);
 
-            sendEvent('onFinished');
+            WritableMap object = Arguments.createMap();
+
+            object.putString("file",base64 );
+            object.putString("path", recorderPath);
+            sendEvent("onFinished", object);
 
         } catch(FileNotFoundException e) {
             Log.e(TAG, "FAILED TO FIND FILE");
@@ -212,7 +216,7 @@ public class SoundModule extends ReactContextBaseJavaModule {
     }
 
 
-    private  void sendEvent(String eventName, @NonNull String params ) {
+    private  void sendEvent(String eventName, @NonNull WritableMap params ) {
         try {
             context.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
                     .emit(eventName, params);
@@ -220,7 +224,4 @@ public class SoundModule extends ReactContextBaseJavaModule {
             Log.e(TAG, "Fail event because: ", e);
         }
     }
-
-
-
 }

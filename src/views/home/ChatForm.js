@@ -15,10 +15,9 @@ import RNFS from 'react-native-fs';
 import { AudioRecorder, AudioUtils } from 'react-native-audio';
 import * as Animatable from 'react-native-animatable';
 import moment from 'moment';
-import { FileDirectory } from '../../utils/utils';
 import Draggable from '../../components/Draggable';
 import { messageType } from '../../utils/constans';
-import { bitcoin } from '../../../App';
+import { bitcoin, audioRecorder } from '../../../App';
 
 /**
  *
@@ -39,98 +38,83 @@ export default class ChatForm extends Component {
       recording: false,
       moveText: new Animated.ValueXY(),
       cancelRecoding: false,
-      audioPath:
-        `${AudioUtils.DocumentDirectoryPath}/AUDIO_${new Date().getTime()}.aac`,
       hasPermission: undefined
     };
   }
 
+
+  onProgress = () => {
+    audioRecorder.onProgres((data) => {
+      this.setState({ currentTime: Math.floor(data) });
+      if (Math.floor(data.currentTime) >= 30) {
+        this.stop();
+      }
+    });
+  }
+
+  onFinished = () => {
+    audioRecorder.onFinished((data) => {
+      const { user, navigation } = this.props;
+      const toUID = navigation.params ? navigation.params.uid : 'broadcast';
+      if (this.state.currentTime !== 0 && !this.state.cancelRecoding) {
+        RNFS.exists(data.path).then(async () => {
+          const sendObject = {
+            toUID,
+            msg: {
+              text: '',
+              typeFile: 'audio'
+            },
+            timestamp: new Date().getTime(),
+            type: messageType.MESSAGE
+          };
+
+          const id = await bitcoin.sha256(
+            `${user.peerID} + ${toUID}  +  
+            ${sendObject.msg.text
+            }  + ${new Date().getTime()}`
+          );
+
+          this.props.sendMessagesWithSound(
+            user.peerID,
+            { ...sendObject, msgID: id },
+            data.path,
+            data.file
+          );
+        });
+      }
+    });
+  };
+
+
   componentDidMount = async () => {
     this._val = { x: 0, y: 0 };
-    const recoderPermision = await AudioRecorder.checkAuthorizationStatus();
+    const recoderPermision = await audioRecorder.checkRecorderPermisionStatus();
     this.setState({ hasPermission: recoderPermision });
+    this.onProgress();
+    this.onFinished();
   };
 
-  prepareRecordingPath = (audioPath) => {
-    try {
-      AudioRecorder.prepareRecordingAtPath(audioPath, {
-        SampleRate: 22050,
-        Channels: 1,
-        AudioQuality: 'Low',
-        AudioEncoding: 'aac',
-        AudioEncodingBitRate: 32000,
-        IncludeBase64: true,
-      });
-    } catch (err) {
-      // eslint-disable-next-line no-console
-      console.log('error', err);
-    }
-  };
-
-  _record = async () => {
-    const { user, navigation } = this.props;
-    const toUID = navigation.params ? navigation.params.uid : 'broadcast';
-
+  record = async () => {
     if (this.state.hasPermission) {
-      this.prepareRecordingPath(this.state.audioPath);
-
-      AudioRecorder.onProgress = (data) => {
-        this.setState({ currentTime: Math.floor(data.currentTime) });
-        if (Math.floor(data.currentTime) >= 30) {
-          this._stop();
-        }
-      };
-
+      audioRecorder.prepareRecoder();
       try {
         this.setState({
           recording: true,
           cancelRecoding: false
         });
 
-        await AudioRecorder.startRecording();
+        await audioRecorder.startRecording();
       } catch (error) {
         this.setState({ recording: false });
       }
-      AudioRecorder.onFinished = (data) => {
-        if (this.state.currentTime !== 0 && !this.state.cancelRecoding) {
-          const newPath = `${FileDirectory}/Audios/AUDIO_${new Date().getTime()}.aac`;
-          RNFS.exists(this.state.audioPath).then(() => {
-            RNFS.moveFile(this.state.audioPath, newPath).then(async () => {
-              const sendObject = {
-                toUID,
-                msg: {
-                  text: '',
-                  typeFile: 'audio'
-                },
-                timestamp: new Date().getTime(),
-                type: messageType.MESSAGE
-              };
-
-              const id = await bitcoin.sha256(
-                `${user.peerID} + ${toUID}  +  
-                ${sendObject.msg.text
-                }  + ${new Date().getTime()}`
-              );
-
-              this.props.sendMessagesWithSound(
-                user.peerID,
-                { ...sendObject, msgID: id },
-                newPath,
-                data.base64
-              );
-            });
-          });
-        }
-      };
     } else {
-      console.warn('entro aqui');
       AudioRecorder.requestAuthorization().then(async (isAuthorised) => {
         this.setState({ recording: false, hasPermission: isAuthorised });
       });
     }
   };
 
-  _stop = async () => {
+  stop = async () => {
     if (!this.state.recording) {
       return;
     }
@@ -138,23 +122,11 @@ export default class ChatForm extends Component {
       recording: false,
     });
     try {
-      const filePath = await AudioRecorder.stopRecording();
-      if (Platform.OS === 'android') {
-        this._finishRecording(true);
-      }
-      // eslint-disable-next-line consistent-return
-      return filePath;
+      await audioRecorder.stopRecording();
     } catch (error) {
-      // eslint-disable-next-line no-console
       console.log(error);
     }
   };
-
-  // eslint-disable-next-line react/sort-comp
-  _finishRecording(didSucceed) {
-    // eslint-disable-next-line react/no-unused-state
-    this.setState({ finished: didSucceed });
-  }
 
   send = async () => {
     const { user, navigation, setChat } = this.props;
@@ -268,8 +240,8 @@ export default class ChatForm extends Component {
             {this.state.message.length === 0 && (
               <Draggable
                 moveText={this.moveText}
-                onPressIn={() => this._record()}
-                onPressOut={() => this._stop()}
+                onPressIn={() => this.record()}
+                onPressOut={() => this.stop()}
               >
                 <TouchableOpacity activeOpacity={1}>
                   <Icon

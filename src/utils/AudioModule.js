@@ -1,10 +1,11 @@
-import { NativeModules, PermissionsAndroid } from 'react-native';
+import { NativeModules, PermissionsAndroid, NativeEventEmitter } from 'react-native';
+import { FileDirectory } from './utils';
 
 export default class AudioRecoder {
   constructor() {
     this.recoder = NativeModules.SoundMdoule;
     this.device = NativeModules.RNDeviceInfo;
-    this.prepareRecoder();
+    this.event = new NativeEventEmitter(this.recoder);
   }
 
   /**
@@ -12,12 +13,13 @@ export default class AudioRecoder {
    */
   prepareRecoder = async () => {
     await this.recoder.prepareRecoder({
-      path: `${this.device.DocumentDirectoryPath}/AUDIO_${new Date().getTime()}.aac`,
+      path: `${FileDirectory}/Audios/AUDIO_${new Date().getTime()}.aac`,
       SampleRate: 22050,
       Channels: 1,
       AudioQuality: 'Low',
       AudioEncoding: 'aac',
       OutputFormat: 'mpeg_4',
+      AudioSource: 0,
       AudioEncodingBitRate: 32000,
     });
   }
@@ -36,15 +38,45 @@ export default class AudioRecoder {
   })
 
 
+  checkRecorderPermisionStatus = () => new Promise((resolve) => {
+    PermissionsAndroid.check(
+      PermissionsAndroid.PERMISSIONS.RECORD_AUDIO
+    ).then((result) => {
+      resolve(result);
+    });
+  })
+
   /**
    * start recording
    */
   startRecording = () => {
+    this.recoder.startRecording();
+  }
+
+  /**
+   * stop recording
+   */
+  stopRecording = () => {
     this.recoder.stopRecording();
   }
 
+  /**
+   * event receiving the recording duration in seconds
+   * @param {Callback} callback
+   */
+  onProgres = (callback) => {
+    this.event.addListener('onProgress', (seconds) => {
+      callback(seconds);
+    });
+  }
 
-  stopRecording = () => {
-    this.recoder.stopRecording();
+  /**
+   * event return the audio in base64 when the recording finishes executing
+   * @param {Callback} callback
+   */
+  onFinished = (callback) => {
+    this.event.addListener('onFinished', (file) => {
+      callback(file);
+    });
   }
 }

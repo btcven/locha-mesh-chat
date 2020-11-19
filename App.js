@@ -26,7 +26,7 @@ export const database = new Database();
 export const bitcoin = new Bitcoin();
 export const chatService = new ChatService();
 export const notification = new NotifService();
-export const audioRecoder = new AudioModule();
+export const audioRecorder = new AudioModule();
 
 // eslint-disable-next-line react/prefer-stateless-function
 export default class App extends Component {
