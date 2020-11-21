@@ -25,25 +25,10 @@ import { messageType } from '../../utils/constans';
  */
 
 export const initialChat = (fromUID, data, status) => async (dispatch) => {
-  console.log('paso por aqui');
   database.setMessage(data.toUID, { ...data, fromUID }, status).then((res) => {
     if (!process.env.JEST_WORKER_ID) {
       chatService.send(JSON.stringify(data));
     }
-    console.log('llego aqui123',
-      {
-        type: ActionTypes.NEW_MESSAGE,
-        payload: {
-          name: undefined,
-          ...data,
-          fromUID,
-          time: res.time,
-          shippingTime: res.time,
-          msg: data.msg.text,
-          id: data.msgID,
-          status
-        }
-      });
     dispatch({
       type: ActionTypes.NEW_MESSAGE,
       payload: {

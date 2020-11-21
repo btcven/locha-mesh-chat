@@ -41,11 +41,10 @@ export default class ChatForm extends Component {
     };
   }
 
-
   onProgress = () => {
     audioRecorder.onProgres((data) => {
       this.setState({ currentTime: Math.floor(data) });
-      if (Math.floor(data.currentTime) >= 30) {
+      if (Math.floor(data) >= 30) {
         this.stop();
       }
     });
@@ -83,7 +82,6 @@ export default class ChatForm extends Component {
       }
     });
   };
-
 
   componentDidMount = async () => {
     this._val = { x: 0, y: 0 };

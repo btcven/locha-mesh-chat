@@ -5,6 +5,7 @@ import Slider from '@react-native-community/slider';
 import Sound from 'react-native-sound';
 import moment from 'moment';
 import RNFS from 'react-native-fs';
+import PlayerModule from '../utils/audioPlayer';
 
 class Player extends Component {
   constructor(props) {
@@ -20,28 +21,16 @@ class Player extends Component {
 
   componentDidMount = () => {
     RNFS.exists(this.props.path).then(() => {
-      this.sound = new Sound(this.props.path, '', (error) => {
-        if (!error) {
-          if (this.sound) {
-            this.setState({
-              duration: this.sound.getDuration()
-            });
-          }
-        }
-      });
-    });
-  };
-
-  componentWillReceiveProps = (props) => {
-    this.sound = new Sound(props.path, '', (error) => {
-      if (error) {
-        // eslint-disable-next-line no-console
-        console.log('failed to load the sound', error);
-      } else {
+      // eslint-disable-next-line no-new
+      console.log("in the didMount", this.props.path);
+      new PlayerModule(this.props.path, (res) => {
         this.setState({
-          duration: this.sound.getDuration()
+          duration: res
         });
-      }
+      });
+      this.sound = new Sound(this.props.path, '', () => {
+
+      });
     });
   };
 
