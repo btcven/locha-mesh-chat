@@ -6,6 +6,7 @@ import android.media.MediaPlayer;
 import android.util.Log;
 
 import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.WritableMap;
@@ -89,10 +90,87 @@ public class Player  implements  MediaPlayer.OnPreparedListener {
     }
 
 
+    public void play(Promise promise) {
+        if(mediaPlayer == null){
+            promise.reject("Error", "Player is null");
+            return;
+        }
+
+        if(mediaPlayer.isPlaying()){
+            promise.reject("Error", "player has already reproduced");
+        }
+
+        handlerPromise = promise;
+        mediaPlayer.setOnCompletionListener(mCompletionListener);
+
+        mediaPlayer.start();
+
+    }
+
+
+    private MediaPlayer.OnCompletionListener mCompletionListener = new MediaPlayer.OnCompletionListener() {
+        @Override
+        public void onCompletion(MediaPlayer mediaPlayer) {
+            if(!mediaPlayer.isLooping()){
+                Log.i(TAG, "onCompletion listener");
+                if(handlerPromise != null){
+                    handlerPromise.resolve(true);
+                    handlerPromise = null;
+                }
+            }
+        }
+    };
+
+
+    private MediaPlayer.OnErrorListener merrorListener = new MediaPlayer.OnErrorListener() {
+        @Override
+        public boolean onError(MediaPlayer mediaPlayer, int i, int i1) {
+            Log.e(TAG, "onError: ");
+
+            return false;
+        };
+    };
+
+
+    public WritableMap getCurrentTime(){
+
+        WritableMap json = Arguments.createMap();
+        json.putDouble("seconds",  mediaPlayer.getCurrentPosition() * .001);
+        json.putBoolean("isPlaying", mediaPlayer.isPlaying());
+
+        return json;
+    }
+
+    public void setCurrentTime(float sec){
+        if(mediaPlayer != null){
+            mediaPlayer.seekTo((int)Math.round(sec * 1000));
+        }
+    }
+
+    public void pause(Callback callback){
+       if(mediaPlayer != null && mediaPlayer.isPlaying() ) {
+           try{
+               mediaPlayer.pause();
+               callback.invoke(true);
+               return;
+           } catch (Exception e) {
+               Log.e(TAG, "Pause: ", e);
+           }
+
+       }
+
+       callback.invoke(null);
+    }
+
+
+
+
+
     @Override
     public void onPrepared(MediaPlayer mediaPlayer) {
         WritableMap json = getSoundData();
         prepare= true;
         handlerPromise.resolve(json);
+        handlerPromise = null;
     }
 }

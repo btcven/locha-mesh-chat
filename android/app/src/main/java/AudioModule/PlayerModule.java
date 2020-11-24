@@ -1,8 +1,12 @@
 package AudioModule;
 
 
+import android.media.MediaPlayer;
+
 import androidx.annotation.NonNull;
 
+import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
@@ -49,4 +53,58 @@ public class PlayerModule extends ReactContextBaseJavaModule {
         promise.resolve(json);
 
     }
+
+
+    @ReactMethod public void play(String key ,Promise promise ) {
+
+        Player player = playerMap.get(key);
+
+
+        if(player == null){
+            promise.reject("Error", "player not found");
+            return;
+        }
+
+        player.play(promise);
+    }
+
+
+    @ReactMethod
+    public void getCurrentTime(String  key, final Callback callback) {
+        Player player = playerMap.get(key);
+        if (player == null) {
+            WritableMap json = Arguments.createMap();
+            json.putDouble("seconds",-1);
+            json.putBoolean("isPlaying", false);
+            callback.invoke(json);
+            return;
+        }
+
+        callback.invoke(player.getCurrentTime());
+    }
+
+
+
+    @ReactMethod
+    public void pause(String key, final Callback callback) {
+        Player player = playerMap.get(key);
+
+        if(player == null) {
+            callback.invoke(null);
+            return;
+        }
+
+        player.pause(callback);
+
+    }
+
+    @ReactMethod public void setCurrentTime(String key, float sec){
+        Player player = playerMap.get(key);
+
+        if(player != null){
+            player.setCurrentTime(sec);
+        }
+    }
+
+    
 }
