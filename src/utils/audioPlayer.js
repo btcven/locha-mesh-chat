@@ -12,7 +12,9 @@ export default class PlayerModule {
       this.IsPrepared = res.prepared;
       this.PlayerKey = res.key;
       this.duration = res.duration;
-      callback(res.duration);
+      if (callback) {
+        callback(res.duration);
+      }
       console.warn(res.duration, res.key);
     });
   }

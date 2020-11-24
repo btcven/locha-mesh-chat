@@ -1,19 +1,14 @@
 package AudioModule;
 
-import android.media.AudioManager;
-import android.media.MediaPlayer;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.WritableMap;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -41,12 +36,17 @@ public class PlayerModule extends ReactContextBaseJavaModule {
     @ReactMethod public void prepare(String fileName, Promise promise) {
         CryptoLib cryptoLib = new CryptoLib();
         String keyPlayer = cryptoLib.sha256(fileName);
+        Player player;
 
-        Player player = new Player(context, fileName , keyPlayer ,promise);
+        player = playerMap.get(keyPlayer);
+        if(player == null){
+            player = new Player(context, fileName , keyPlayer ,promise);
+            playerMap.put(keyPlayer, player);
+            return;
+        }
 
-        playerMap.put(keyPlayer, player);
+        WritableMap json = player.getSoundData();
+        promise.resolve(json);
+
     }
-
-
-
 }

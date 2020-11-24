@@ -22,6 +22,7 @@ public class Player  implements  MediaPlayer.OnPreparedListener {
     private MediaPlayer mediaPlayer;
     private Promise handlerPromise;
     private String playerKey;
+    private Boolean prepare = true;
 
     public Player(Context reactContext, String path, String key, Promise promise) {
         context = reactContext;
@@ -78,13 +79,20 @@ public class Player  implements  MediaPlayer.OnPreparedListener {
     }
 
 
-    @Override
-    public void onPrepared(MediaPlayer mediaPlayer) {
+    public WritableMap getSoundData() {
         WritableMap json = Arguments.createMap();
         json.putDouble("duration", mediaPlayer.getDuration() * .001);
         json.putString("key", playerKey);
-        json.putBoolean("prepared", true);
+        json.putBoolean("prepared", prepare);
 
+        return json;
+    }
+
+
+    @Override
+    public void onPrepared(MediaPlayer mediaPlayer) {
+        WritableMap json = getSoundData();
+        prepare= true;
         handlerPromise.resolve(json);
     }
 }

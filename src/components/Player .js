@@ -1,13 +1,12 @@
-import React, { Component } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import React, { Component, PureComponent } from 'react';
+import { View, Text, TouchableOpacity, NativeModules } from 'react-native';
 import { Icon } from 'native-base';
 import Slider from '@react-native-community/slider';
 import Sound from 'react-native-sound';
 import moment from 'moment';
-import RNFS from 'react-native-fs';
-import PlayerModule from '../utils/audioPlayer';
+import PlayerModule from '../utils/AudioPlayer';
 
-class Player extends Component {
+class Player extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
@@ -15,26 +14,34 @@ class Player extends Component {
       duration: 0,
       reproduced: 0
     };
+    this.player = NativeModules.PlayerModule;
     // eslint-disable-next-line no-undef
     sound = undefined;
+    this.prepare(props.path);
   }
 
-  componentDidMount = () => {
-    RNFS.exists(this.props.path).then(() => {
-      // eslint-disable-next-line no-new
-      console.log("in the didMount", this.props.path);
-      new PlayerModule(this.props.path, (res) => {
-        this.setState({
-          duration: res
-        });
+  prepare = async () => {
+    const result = await this.player.prepare(this.props.path);
+    if (result) {
+      this.setState({
+        duration: result.duration
       });
-      this.sound = new Sound(this.props.path, '', () => {
-
-      });
+    }
+  }
+  componentDidMount = async () => {
+    this.sound = new Sound(this.props.path, '', () => {
     });
   };
 
-  componentDidUpdate = () => {
+  componentDidUpdate = async (prevProps) => {
+    if (this.props.path !== prevProps.path) {
+      const result = await this.player.prepare(this.props.path);
+      if (result) {
+        this.setState({
+          duration: result.duration
+        });
+      }
+    }
     if (this.state.play) {
       this.sound.getCurrentTime((seconds) => {
         this.setState({ reproduced: seconds });

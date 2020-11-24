@@ -288,6 +288,7 @@ class Chat extends Component {
         a, b
       ) => new Date(b.timestamp) - new Date(a.timestamp))
       : [];
+
     return (
       <Container>
         {viewImages && (
