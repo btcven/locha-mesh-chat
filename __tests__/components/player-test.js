@@ -30,14 +30,17 @@ describe('spinner component', () => {
     });
   });
 
-  // describe('leisurely player', () => {
-  //   test('mock pause button', () => {
-  //     wrapper.find('ForwardRef').at(0).props().onPress();
-  //     expect(wrapper.instance().state.play).toBe(false);
-  //   });
+  describe('leisurely player', () => {
+    test('mock pause button', () => {
+      wrapper.instance().setState({
+        play: false
+      });
+      wrapper.find('ForwardRef').at(0).props().onPress();
+      expect(wrapper.instance().state.play).toBe(true);
+    });
 
-  //   test('play button must be rendered when the player is in pause', () => {
-  //     expect(wrapper.findWhere((node) => node.prop('testID') === 'playButton').exists()).toBe(true);
-  //   });
-  // });
+    test('play button must be rendered when the player is in pause', () => {
+      expect(wrapper.findWhere((node) => node.prop('testID') === 'pauseButton').exists()).toBe(true);
+    });
+  });
 });
