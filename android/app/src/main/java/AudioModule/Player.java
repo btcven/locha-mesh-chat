@@ -33,8 +33,6 @@ public class Player  implements  MediaPlayer.OnPreparedListener {
         this.prepared();
     }
 
-
-
     private void prepared(){
         if(filePath != null){
              mediaPlayer =  createMediaPlayer(filePath);
@@ -69,7 +67,7 @@ public class Player  implements  MediaPlayer.OnPreparedListener {
                 mediaPlayer.setDataSource(filePath);
                 return mediaPlayer;
             } catch (Exception e) {
-
+                Log.e(TAG, "createMediaPlayer failed", e);
             }
         } else {
             Log.e(TAG, "createMediaPlayer: file does not exist" );
@@ -78,7 +76,6 @@ public class Player  implements  MediaPlayer.OnPreparedListener {
 
         return null;
     }
-
 
     public WritableMap getSoundData() {
         WritableMap json = Arguments.createMap();
@@ -89,7 +86,6 @@ public class Player  implements  MediaPlayer.OnPreparedListener {
         return json;
     }
 
-
     public void play(Promise promise) {
         if(mediaPlayer == null){
             promise.reject("Error", "Player is null");
@@ -97,7 +93,7 @@ public class Player  implements  MediaPlayer.OnPreparedListener {
         }
 
         if(mediaPlayer.isPlaying()){
-            promise.reject("Error", "player has already reproduced");
+            promise.reject("Error", "Media player is already running");
         }
 
         handlerPromise = promise;
@@ -106,7 +102,6 @@ public class Player  implements  MediaPlayer.OnPreparedListener {
         mediaPlayer.start();
 
     }
-
 
     private MediaPlayer.OnCompletionListener mCompletionListener = new MediaPlayer.OnCompletionListener() {
         @Override
@@ -121,7 +116,6 @@ public class Player  implements  MediaPlayer.OnPreparedListener {
         }
     };
 
-
     private MediaPlayer.OnErrorListener merrorListener = new MediaPlayer.OnErrorListener() {
         @Override
         public boolean onError(MediaPlayer mediaPlayer, int i, int i1) {
@@ -130,7 +124,6 @@ public class Player  implements  MediaPlayer.OnPreparedListener {
             return false;
         };
     };
-
 
     public WritableMap getCurrentTime(){
 
@@ -161,8 +154,6 @@ public class Player  implements  MediaPlayer.OnPreparedListener {
 
        callback.invoke(null);
     }
-
-
 
    public void release(){
       mediaPlayer.reset();

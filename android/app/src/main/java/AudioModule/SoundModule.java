@@ -88,7 +88,6 @@ public class SoundModule extends ReactContextBaseJavaModule {
         }
     }
 
-
     @ReactMethod
     public void prepareRecoder(ReadableMap recordingSettings, Promise promise) {
 
@@ -200,7 +199,7 @@ public class SoundModule extends ReactContextBaseJavaModule {
             object.putString("path", recorderPath);
             sendEvent("onFinished", object);
 
-        } catch(FileNotFoundException e) {
+        } catch (FileNotFoundException e) {
             Log.e(TAG, "FAILED TO FIND FILE");
         }
     }
@@ -209,17 +208,16 @@ public class SoundModule extends ReactContextBaseJavaModule {
         try {
             context.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
                     .emit(eventName, params);
-        }catch (Exception e){
+        } catch (Exception e){
             Log.e(TAG, "Fail event because: ", e);
         }
     }
-
 
     private  void sendEvent(String eventName, @NonNull WritableMap params ) {
         try {
             context.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
                     .emit(eventName, params);
-        }catch (Exception e){
+        } catch (Exception e){
             Log.e(TAG, "Fail event because: ", e);
         }
     }

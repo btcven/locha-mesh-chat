@@ -138,22 +138,12 @@ export default class SoundMessage extends PureComponent {
   }
 }
 
-
 const styles = StyleSheet.create({
-  container: {
-    minHeight: '100%',
-    backgroundColor: '#eeeeee',
-    paddingBottom: 10
-  },
   senderContainer: {
     width: '100%',
     flexDirection: 'row',
     justifyContent: 'flex-end',
     marginBottom: 10
-  },
-
-  selected: {
-    backgroundColor: 'rgba(255, 235, 59 , 0.5)'
   },
 
   receiveContainer: {
@@ -181,29 +171,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     borderRadius: 7,
     flexDirection: 'column',
-  },
-  styleBody1: {
-    flexDirection: 'row',
-    flex: 1,
-    justifyContent: 'space-between'
-  },
-  styleBody2: {
-    flexDirection: 'column'
-  },
-
-  textStyle1: {
-    paddingTop: 7,
-    paddingLeft: 10,
-    paddingBottom: 6,
-    fontSize: 12,
-    alignItems: 'center'
-  },
-
-  textStyle2: {
-    paddingTop: 5,
-    paddingBottom: 6,
-    flex: 1,
-    alignItems: 'center'
   },
 
   timeStyle: {

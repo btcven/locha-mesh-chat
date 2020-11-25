@@ -24,7 +24,6 @@ export default class AudioRecoder {
     });
   }
 
-
   /**
    * verifying permission for recording
    */
@@ -36,7 +35,6 @@ export default class AudioRecoder {
       else resolve(false);
     });
   })
-
 
   checkRecorderPermisionStatus = () => new Promise((resolve) => {
     PermissionsAndroid.check(
