@@ -52,36 +52,42 @@ export default class ChatForm extends Component {
 
   onFinished = () => {
     audioRecorder.onFinished((data) => {
-      const { user, navigation } = this.props;
-      const toUID = navigation.params ? navigation.params.uid : 'broadcast';
-      if (this.state.currentTime !== 0 && !this.state.cancelRecoding) {
-        RNFS.exists(data.path).then(async () => {
-          const sendObject = {
-            toUID,
-            msg: {
-              text: '',
-              typeFile: 'audio'
-            },
-            timestamp: new Date().getTime(),
-            type: messageType.MESSAGE
-          };
-
-          const id = await bitcoin.sha256(
-            `${user.peerID} + ${toUID}  +  
-            ${sendObject.msg.text
-            }  + ${new Date().getTime()}`
-          );
-
-          this.props.sendMessagesWithSound(
-            user.peerID,
-            { ...sendObject, msgID: id },
-            data.path,
-            data.file
-          );
-        });
-      }
+      this.sendAudio(data);
     });
   };
+
+
+  sendAudio = (data) => {
+    const { user, navigation } = this.props;
+    const toUID = navigation.params ? navigation.params.uid : 'broadcast';
+    if (this.state.currentTime !== 0 && !this.state.cancelRecoding) {
+      RNFS.exists(data.path).then(async () => {
+        const sendObject = {
+          toUID,
+          msg: {
+            text: '',
+            typeFile: 'audio'
+          },
+          timestamp: new Date().getTime(),
+          type: messageType.MESSAGE
+        };
+
+
+        const id = await bitcoin.sha256(
+          `${user.peerID} + ${toUID}  +  
+            ${sendObject.msg.text
+          }  + ${new Date().getTime()}`
+        );
+
+        this.props.sendMessagesWithSound(
+          user.peerID,
+          { ...sendObject, msgID: id },
+          data.path,
+          data.file
+        );
+      });
+    }
+  }
 
   componentDidMount = async () => {
     this._val = { x: 0, y: 0 };
@@ -94,16 +100,11 @@ export default class ChatForm extends Component {
   record = async () => {
     if (this.state.hasPermission) {
       audioRecorder.prepareRecoder();
-      try {
-        this.setState({
-          recording: true,
-          cancelRecoding: false
-        });
-
-        await audioRecorder.startRecording();
-      } catch (error) {
-        this.setState({ recording: false });
-      }
+      this.setState({
+        recording: true,
+        cancelRecoding: false
+      });
+      await audioRecorder.startRecording();
     } else {
       audioRecorder.requestRecoderPermision().then(async (isAuthorised) => {
         this.setState({ recording: false, hasPermission: isAuthorised });
@@ -118,11 +119,7 @@ export default class ChatForm extends Component {
     this.setState({
       recording: false,
     });
-    try {
-      await audioRecorder.stopRecording();
-    } catch (error) {
-      console.log(error);
-    }
+    await audioRecorder.stopRecording();
   };
 
   send = async () => {

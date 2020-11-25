@@ -172,6 +172,11 @@ jest.doMock('react-native', () =>
           release: jest.fn(),
           getCurrentTime: jest.fn((key, callback) => callback({ seconds: 0, isPlaying: false }))
         },
+        SoundMdoule: {
+          prepareRecoder: jest.fn(() => new Promise((resolve) => { resolve('test') })),
+          startRecording: jest.fn(),
+          stopRecording: jest.fn()
+        },
         RNDeviceInfo: {
           VersionInfo: '1',
           getIpv6Andipv4Adress: jest.fn().mockReturnValue(['192.168.0.1'])
@@ -196,6 +201,16 @@ jest.doMock('react-native', () =>
         RNPermissions: {
           ...mock
         }
+      },
+      PermissionsAndroid: {
+        check: jest.fn(() => new Promise((resolve) => { resolve(true); })),
+        request: jest.fn((param) => new Promise((resolve) => { resolve(true); })),
+        PERMISSIONS: {
+          RECORD_AUDIO: true,
+          RESULTS: {
+            GRANTED: true
+          }
+        },
       },
       StyleSheet: {
         create: () => ({}),
