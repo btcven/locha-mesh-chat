@@ -118,7 +118,7 @@ export default class SoundMessage extends PureComponent {
         >
           <View style={[styles.senderContainer, selected]}>
             <View style={styles.textContent2}>
-              <Player player={player} path={item.file.file} index={index} />
+              <Player path={item.file.file} index={index} />
               <Text
                 style={{
                   paddingTop: 7,
