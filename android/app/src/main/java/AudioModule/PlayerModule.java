@@ -1,6 +1,8 @@
 package AudioModule;
 
 
+import android.content.Context;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 
 import androidx.annotation.NonNull;
@@ -84,7 +86,6 @@ public class PlayerModule extends ReactContextBaseJavaModule {
     }
 
 
-
     @ReactMethod
     public void pause(String key, final Callback callback) {
         Player player = playerMap.get(key);
@@ -106,5 +107,15 @@ public class PlayerModule extends ReactContextBaseJavaModule {
         }
     }
 
-    
+
+    @ReactMethod
+    public void release(String key) {
+        Player player = playerMap.get(key);
+        if (player != null) {
+             player.release();
+            playerMap.remove(key);
+            return;
+        }
+    }
+
 }

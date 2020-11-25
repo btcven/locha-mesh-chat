@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { View, StyleSheet, FlatList } from 'react-native';
 import Sound from 'react-native-sound';
 import FileModal from './fileModal';
-import { ReceiveMessage, SenderMessage} from './Messages';
+import { ReceiveMessage, SenderMessage } from './Messages';
 import { songs, messageType } from '../../utils/constans';
 import ImagesView from './imagesView';
-import SoundMessage from '../home/SoundMessage'
+import SoundMessage from './SoundMessage';
 
 /**
  *

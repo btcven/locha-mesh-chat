@@ -85,20 +85,6 @@ jest.mock('react-navigation-stack', () => {
 });
 
 
-jest.mock('react-native-audio', () => {
-  const AudioUtils = {
-    DocumentDirectoryPath: 'test'
-  };
-
-  const AudioRecorder = {
-    checkAuthorizationStatus: jest.fn(() => new Promise((resolve) => { resolve(true); })),
-    prepareRecordingAtPath: jest.fn((data, params) => { }),
-    startRecording: jest.fn(() => new Promise((resolve) => { resolve(true); })),
-  };
-
-  return { AudioUtils, AudioRecorder };
-});
-
 jest.mock('react-native-permissions', () => mock);
 
 jest.mock('@react-native-community/slider', () => {
@@ -181,8 +167,10 @@ jest.doMock('react-native', () =>
         Override: { great: 'success' },
         LocalNotification: {
           requestPermission: jest.fn(),
-
-
+        },
+        PlayerModule: {
+          release: jest.fn(),
+          getCurrentTime: jest.fn((key, callback) => callback({ seconds: 0, isPlaying: false }))
         },
         RNDeviceInfo: {
           VersionInfo: '1',

@@ -1,8 +1,9 @@
-import React, { Component, PureComponent } from 'react';
-import { View, Text, TouchableOpacity, NativeModules } from 'react-native';
+import React, { PureComponent } from 'react';
+import {
+  View, Text, TouchableOpacity, NativeModules
+} from 'react-native';
 import { Icon } from 'native-base';
 import Slider from '@react-native-community/slider';
-import Sound from 'react-native-sound';
 import moment from 'moment';
 
 class Player extends PureComponent {
@@ -28,10 +29,6 @@ class Player extends PureComponent {
       });
     }
   }
-  componentDidMount = async () => {
-    this.sound = new Sound(this.props.path, '', () => {
-    });
-  };
 
   componentDidUpdate = async (prevProps) => {
     if (this.props.path !== prevProps.path) {
@@ -48,6 +45,12 @@ class Player extends PureComponent {
       this.getDuration();
     }
   };
+
+
+  componentWillUnmount = () => {
+    // Audio destructor
+    this.player.release(this.state.keyPlayer);
+  }
 
 
   getDuration = () => {

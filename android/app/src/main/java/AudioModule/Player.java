@@ -164,7 +164,11 @@ public class Player  implements  MediaPlayer.OnPreparedListener {
 
 
 
-
+   public void release(){
+      mediaPlayer.reset();
+      mediaPlayer.release();
+      mediaPlayer = null;
+   }
 
     @Override
     public void onPrepared(MediaPlayer mediaPlayer) {
