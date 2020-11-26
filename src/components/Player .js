@@ -1,12 +1,12 @@
-import React, { Component } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import React, { PureComponent } from 'react';
+import {
+  View, Text, TouchableOpacity, NativeModules
+} from 'react-native';
 import { Icon } from 'native-base';
 import Slider from '@react-native-community/slider';
-import Sound from 'react-native-sound';
 import moment from 'moment';
-import RNFS from 'react-native-fs';
 
-class Player extends Component {
+class Player extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
@@ -14,53 +14,63 @@ class Player extends Component {
       duration: 0,
       reproduced: 0
     };
+    this.player = NativeModules.PlayerModule;
     // eslint-disable-next-line no-undef
     sound = undefined;
+    this.prepare(props.path);
   }
 
-  componentDidMount = () => {
-    RNFS.exists(this.props.path).then(() => {
-      this.sound = new Sound(this.props.path, '', (error) => {
-        if (!error) {
-          if (this.sound) {
-            this.setState({
-              duration: this.sound.getDuration()
-            });
-          }
-        }
+  prepare = async () => {
+    const result = await this.player.prepare(this.props.path);
+    if (result) {
+      this.setState({
+        duration: result.duration,
+        keyPlayer: result.key
       });
-    });
-  };
+    }
+  }
 
-  componentWillReceiveProps = (props) => {
-    this.sound = new Sound(props.path, '', (error) => {
-      if (error) {
-        // eslint-disable-next-line no-console
-        console.log('failed to load the sound', error);
-      } else {
+  componentDidUpdate = async (prevProps) => {
+    if (this.props.path !== prevProps.path) {
+      const result = await this.player.prepare(this.props.path);
+      if (result) {
         this.setState({
-          duration: this.sound.getDuration()
+          duration: result.duration,
+          keyPlayer: result.key
         });
       }
-    });
-  };
+    }
 
-  componentDidUpdate = () => {
-    if (this.state.play) {
-      this.sound.getCurrentTime((seconds) => {
-        this.setState({ reproduced: seconds });
-      });
+    if (this.state.play && !this.interval) {
+      this.getDuration();
     }
   };
 
+
+  componentWillUnmount = () => {
+    // Audio destructor
+    this.player.release(this.state.keyPlayer);
+  }
+
+
+  getDuration = () => {
+    this.interval = setInterval(() => {
+      this.player.getCurrentTime(this.state.keyPlayer, ({ seconds, isPlaying }) => {
+        if (isPlaying) {
+          this.setState({ reproduced: seconds });
+        } else if (!isPlaying) {
+          clearInterval(this.interval);
+          this.interval = null;
+        }
+      });
+    }, 100);
+  }
+
   play = async () => {
     this.setState({ play: true });
-    this.sound.play((success) => {
+    this.player.play(this.state.keyPlayer).then((success) => {
       if (success) {
-        this.setState({ play: false });
-        setTimeout(() => {
-          this.setState({ reproduced: 0 });
-        }, 1);
+        this.setState({ play: false, reproduced: 0 });
       } else {
         // eslint-disable-next-line no-console
         console.log('playback failed due to audio decoding errors');
@@ -69,18 +79,16 @@ class Player extends Component {
   };
 
   pause = () => {
-    if (this.sound) {
-      this.sound.pause();
-    }
-
-    this.setState({ play: false });
+    this.player.pause(this.state.keyPlayer, (success) => {
+      if (success) {
+        this.setState({ play: false });
+      }
+    });
   };
 
   onSliderEditing = (value) => {
-    if (this.sound) {
-      this.sound.setCurrentTime(value);
-      this.setState({ reproduced: value });
-    }
+    this.player.setCurrentTime(this.state.keyPlayer, value);
+    this.setState({ reproduced: value });
   };
 
   render() {

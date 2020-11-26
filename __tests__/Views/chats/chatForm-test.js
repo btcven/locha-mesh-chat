@@ -45,6 +45,9 @@ describe('chat form component', () => {
 
   test('audio button', () => {
     wrapper.find('Draggable').props().onPressIn();
+    wrapper.instance().setState({
+      hasPermission: true
+    });
     expect(wrapper.instance().state.recording).toBe(true);
   });
 
@@ -69,8 +72,35 @@ describe('chat form component', () => {
 
 
   test('open file modal', () => {
-
     wrapper.find('ForwardRef').at(0).props().onPress();
     expect(mockOpenModal.mock.calls.length).toBe(1);
+  });
+
+
+  test('send audio function', async () => {
+    const mockObject = {
+      file: 'test',
+      path: 'test'
+    };
+
+    wrapper.instance().setState({
+      currentTime: 10,
+      recording: false
+    });
+    await wrapper.instance().sendAudio(mockObject);
+    setTimeout(async () => {
+      await expect(sendMessageWithSongMock.mock.calls.length).toBe(1);
+    }, 500);
+  });
+
+
+  test('request permision', async () => {
+    wrapper.instance().setState({
+      hasPermission: false
+    });
+    await wrapper.instance().record();
+    setTimeout(async () => {
+      await expect(wrapper.instance().state.hasPermission).toBe(true);
+    }, 500);
   });
 });

@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { View, StyleSheet, FlatList } from 'react-native';
 import Sound from 'react-native-sound';
 import FileModal from './fileModal';
-import { ReceiveMessage, SenderMessage, SoundMessage } from './Messages';
+import { ReceiveMessage, SenderMessage } from './Messages';
 import { songs, messageType } from '../../utils/constans';
 import ImagesView from './imagesView';
-
+import SoundMessage from './SoundMessage';
 
 /**
  *
@@ -15,7 +15,7 @@ import ImagesView from './imagesView';
  * @extends {Component}
  */
 
-export default class ChatBody extends Component {
+export default class ChatBody extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = {
@@ -162,7 +162,7 @@ export default class ChatBody extends Component {
             return (
               <SoundMessage
                 {...this.props}
-                item={item}
+                item={this.props.chats[index]}
                 rule={rule}
                 contactInfo={contactInfo}
                 userInfo={userInfo}

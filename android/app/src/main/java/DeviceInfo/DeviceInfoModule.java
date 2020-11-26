@@ -55,6 +55,7 @@ public class DeviceInfoModule  extends ReactContextBaseJavaModule {
     public Map<String, Object> getConstants() {
         final Map<String, Object> constants = new HashMap<>();
         constants.put("VersionInfo", getVersionInfo());
+        constants.put("DocumentDirectoryPath",  reactContext.getFilesDir().getAbsolutePath());
         return constants;
     }
 

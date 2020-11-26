@@ -10,6 +10,7 @@ import Bitcoin from './src/utils/Bitcoin';
 import Database from './src/database';
 import ChatService from './src/utils/chatService';
 import NotifService from './src/utils/notificationService';
+import AudioModule from './src/utils/AudioModule';
 
 const WrappedStack = ({ t }) => (
   <RouteContainer
@@ -25,6 +26,7 @@ export const database = new Database();
 export const bitcoin = new Bitcoin();
 export const chatService = new ChatService();
 export const notification = new NotifService();
+export const audioRecorder = new AudioModule();
 
 // eslint-disable-next-line react/prefer-stateless-function
 export default class App extends Component {

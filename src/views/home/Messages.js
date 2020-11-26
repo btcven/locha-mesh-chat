@@ -12,7 +12,6 @@ import Moment from 'moment';
 import { Thumbnail, Icon } from 'native-base';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { getIcon, hashGenerateColort } from '../../utils/utils';
-import Player from '../../components/Player ';
 
 const TouchableList = Platform.select({
   ios: () => TouchableHighlight,
@@ -195,118 +194,6 @@ export const SenderMessage = ({
       </View>
     </TouchableList>
   );
-};
-
-export const SoundMessage = ({
-  onClick,
-  onSelected,
-  userInfo,
-  item,
-  contactInfo,
-  selected,
-  rule,
-  index,
-  chats
-  // eslint-disable-next-line consistent-return
-}) => {
-  if (!rule) {
-    return (
-      <TouchableList
-        key={index}
-        underlayColor="#DDD"
-        onLongPress={() => onSelected(item)}
-        onPress={() => onClick(item)}
-        style={{
-          marginVertical: 5,
-          minHeight: 70,
-          width: '100%',
-          flexDirection: 'row'
-        }}
-      >
-        <View style={[styles.receiveContainer, selected]}>
-          {item.toUID === 'broadcast' && !contactInfo && (
-            <Thumbnail
-              style={{
-                marginLeft: 5,
-                marginTop: 5
-              }}
-              source={{
-                uri: `${getIcon(item.fromUID)}`
-              }}
-            />
-          )}
-
-          {item.toUID !== 'broadcast' && contactInfo && (
-            <Thumbnail
-              style={{
-                marginLeft: 5,
-                marginTop: 5
-              }}
-              source={{
-                uri: userInfo.picture
-                  ? `${userInfo.picture}`
-                  : `${getIcon(item.fromUID)}`
-              }}
-            />
-          )}
-          <View style={{ width: '90%', flexDirection: 'row' }}>
-            <View style={styles.textContent1}>
-              {item.name && (
-                <Text
-                  style={{
-                    paddingBottom: 7,
-                    color: hashGenerateColort(item.fromUID)
-                  }}
-                >
-                  {userInfo.name}
-                </Text>
-              )}
-              <Player path={item.file.file} />
-              <Text
-                style={styles.timeStyle}
-              >
-                {Moment(Number(item.timestamp)).format('LT')}
-              </Text>
-            </View>
-          </View>
-        </View>
-      </TouchableList>
-    );
-  }
-  if (item.file.file === chats[index].file.file) {
-    return (
-      <TouchableList
-        key={index}
-        underlayColor="#DDD"
-        useForeground
-        style={{
-          marginVertical: 5,
-          width: '100%',
-          justifyContent: 'flex-end',
-          flexDirection: 'row'
-        }}
-        onLongPress={() => onSelected(item)}
-        onPress={() => onClick(item)}
-      >
-        <View style={[styles.senderContainer, selected]}>
-          <View style={styles.textContent2}>
-            <Player path={item.file.file} index={index} />
-            <Text
-              style={{
-                paddingTop: 7,
-                paddingLeft: 5,
-                paddingBottom: 6,
-                fontSize: 12,
-                textAlign: 'right'
-              }}
-            >
-              {Moment(Number(item.timestamp)).format('LT')}
-            </Text>
-          </View>
-        </View>
-      </TouchableList>
-    );
-  }
 };
 
 const styles = StyleSheet.create({
