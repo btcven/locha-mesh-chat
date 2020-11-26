@@ -9,6 +9,6 @@ message Content {
   uint32 typeMessage = 5;
   string text = 6;
   string typeFile = 7;
-  string file = 8;
+  bytes file = 8;
   string status = 9;
 }
