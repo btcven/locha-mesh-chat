@@ -7,7 +7,9 @@ import {
   createNewAccount
 } from '../../src/store/aplication/aplicationAction';
 import { editContacts, deleteContactAction } from '../../src/store/contacts';
-import { enableBroadcast, disableBroadcast, initialChat } from '../../src/store/chats';
+import {
+  enableBroadcast, disableBroadcast, initialChat, realoadBroadcastChat
+} from '../../src/store/chats';
 import { database } from '../../App';
 
 describe('Aplication actions', () => {
@@ -105,6 +107,12 @@ describe('Aplication actions', () => {
       await store.dispatch(initialChat(fromUID, sendObject, 'pending'));
 
       expect(store.getState().chats.chat).toBeDefined();
+    });
+
+    test('realoadBroadcastChat', () => {
+      store.dispatch(realoadBroadcastChat([]));
+      const { chat } = store.getState().chats;
+      expect(chat.length).toBe(0);
     });
   });
 });

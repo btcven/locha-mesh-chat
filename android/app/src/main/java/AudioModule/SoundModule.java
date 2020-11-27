@@ -191,12 +191,14 @@ public class SoundModule extends ReactContextBaseJavaModule {
                 Log.e(TAG, "FAILED TO PARSE FILE");
             }
             bytes = output.toByteArray();
-            String base64 = Base64.encodeToString(bytes, Base64.DEFAULT);
+            String base64 = Base64.encodeToString(bytes, Base64.NO_WRAP);
 
             WritableMap object = Arguments.createMap();
 
             object.putString("file",base64 );
             object.putString("path", recorderPath);
+
+            Log.i(TAG, "onFinished: "+ base64);
             sendEvent("onFinished", object);
 
         } catch (FileNotFoundException e) {
