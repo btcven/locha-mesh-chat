@@ -43,7 +43,6 @@ use crate::util::jni_cache::{chat_service_events, classes_refs};
 use crate::util::{unwrap_exc_or, unwrap_exc_or_default, unwrap_jni};
 use crate::{JniError, JniErrorKind};
 
-extern crate base64;
 
 const CHAT_SERVICE_EVENTS_HANDLER_FIELD_TYPE: &str =
     "Lio/locha/p2p/runtime/RuntimeEvents;";
