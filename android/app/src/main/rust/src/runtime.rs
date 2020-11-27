@@ -254,7 +254,7 @@ pub fn serialize_message(contents: String) -> Vec<u8> {
             message.timestamp = person.timestamp;
             message.type_message = person.r#type;
             message.text = person.msg.text;
-            message.file = base64::decode(person.msg.file.unwrap_or(String::new())).expect("base64 no se pudo decodificar");
+            message.file = base64::decode(person.msg.file.unwrap_or(String::new())).expect("base64 could not be decoded");
             message.type_file = person.msg.type_file.unwrap_or(String::new());
         }
         ContentMessage::Status(status) => {
