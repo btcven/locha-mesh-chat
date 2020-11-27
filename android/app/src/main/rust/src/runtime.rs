@@ -286,8 +286,6 @@ pub fn deserialize_message(buf: &[u8]) -> String {
     let content: items::Content =
         items::Content::decode(&mut Cursor::new(&decompress_bytes)).unwrap();
 
-      trace!("received1234 {:?}", content.file.len());
-
     if content.status.is_empty() {
         let message = MessageData {
             to_uid: content.to_uid,
