@@ -43,6 +43,8 @@ use crate::util::jni_cache::{chat_service_events, classes_refs};
 use crate::util::{unwrap_exc_or, unwrap_exc_or_default, unwrap_jni};
 use crate::{JniError, JniErrorKind};
 
+extern crate base64;
+
 const CHAT_SERVICE_EVENTS_HANDLER_FIELD_TYPE: &str =
     "Lio/locha/p2p/runtime/RuntimeEvents;";
 
@@ -252,7 +254,7 @@ pub fn serialize_message(contents: String) -> Vec<u8> {
             message.timestamp = person.timestamp;
             message.type_message = person.r#type;
             message.text = person.msg.text;
-            message.file = person.msg.file.unwrap_or(String::new()).as_bytes().to_vec();
+            message.file = base64::decode(person.msg.file.unwrap_or(String::new())).expect("base64 no se pudo decodificar");
             message.type_file = person.msg.type_file.unwrap_or(String::new());
         }
         ContentMessage::Status(status) => {
@@ -302,7 +304,7 @@ pub fn deserialize_message(buf: &[u8]) -> String {
                 file: if content.file.len() == 0 {
                     None
                 } else {
-                    Some(String::from_utf8(content.file).unwrap())
+                    Some(base64::encode(content.file))
                 },
                 type_file: if content.type_file.is_empty() {
                     None
