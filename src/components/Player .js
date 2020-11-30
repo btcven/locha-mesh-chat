@@ -20,8 +20,9 @@ class Player extends PureComponent {
     this.prepare(props.path);
   }
 
-  prepare = async () => {
+  componentDidMount = () => {
     const result = await this.player.prepare(this.props.path);
+    console.log({})
     if (result) {
       this.setState({
         duration: result.duration,
@@ -49,6 +50,10 @@ class Player extends PureComponent {
 
   componentWillUnmount = () => {
     // Audio destructor
+    this.setState({
+      duration: 0,
+      keyPlayer: null
+    });
     this.player.release(this.state.keyPlayer);
   }
 

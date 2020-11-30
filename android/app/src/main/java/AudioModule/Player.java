@@ -94,6 +94,7 @@ public class Player  implements  MediaPlayer.OnPreparedListener {
 
         if(mediaPlayer.isPlaying()){
             promise.reject("Error", "Media player is already running");
+            return;
         }
 
         handlerPromise = promise;

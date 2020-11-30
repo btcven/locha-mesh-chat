@@ -112,7 +112,7 @@ const saveFile = (obj) => new Promise((resolve) => {
   } else {
     const base64File = obj.file;
     const name = `AUDIO_${new Date().getTime()}`;
-    const directory = `${FileDirectory}/Audios/${name}.aac`;
+    const directory = `${FileDirectory}/Audios/${Math.random(new Date().getTime())}.aac`;
     RNFS.writeFile(`${connectiveAddress}${directory}`, base64File, 'base64').then(() => {
       resolve(`${directory}`);
     });
