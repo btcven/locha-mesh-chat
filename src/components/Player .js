@@ -17,12 +17,10 @@ class Player extends PureComponent {
     this.player = NativeModules.PlayerModule;
     // eslint-disable-next-line no-undef
     sound = undefined;
-    this.prepare(props.path);
   }
 
-  componentDidMount = () => {
+  componentDidMount = async () => {
     const result = await this.player.prepare(this.props.path);
-    console.log({})
     if (result) {
       this.setState({
         duration: result.duration,
