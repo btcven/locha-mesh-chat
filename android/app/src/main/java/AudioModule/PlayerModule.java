@@ -91,7 +91,7 @@ public class PlayerModule extends ReactContextBaseJavaModule {
 
         Log.i(TAG, "pause: dios" + key);
         if(player == null) {
-//            callback.invoke(null);
+            callback.invoke(false);
             return;
         }
 
