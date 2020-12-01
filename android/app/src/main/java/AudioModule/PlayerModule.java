@@ -1,9 +1,7 @@
 package AudioModule;
 
 
-import android.content.Context;
-import android.media.AudioManager;
-import android.media.MediaPlayer;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -59,8 +57,9 @@ public class PlayerModule extends ReactContextBaseJavaModule {
 
     @ReactMethod public void play(String key ,Promise promise ) {
 
-        Player player = playerMap.get(key);
+        Log.i(TAG, "play: dios" + key );
 
+        Player player = playerMap.get(key);
 
         if(player == null){
             promise.reject("Error", "player not found");
@@ -90,8 +89,9 @@ public class PlayerModule extends ReactContextBaseJavaModule {
     public void pause(String key, final Callback callback) {
         Player player = playerMap.get(key);
 
+        Log.i(TAG, "pause: dios" + key);
         if(player == null) {
-            callback.invoke(null);
+            callback.invoke(false);
             return;
         }
 

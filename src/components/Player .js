@@ -17,10 +17,9 @@ class Player extends PureComponent {
     this.player = NativeModules.PlayerModule;
     // eslint-disable-next-line no-undef
     sound = undefined;
-    this.prepare(props.path);
   }
 
-  prepare = async () => {
+  componentDidMount = async () => {
     const result = await this.player.prepare(this.props.path);
     if (result) {
       this.setState({
@@ -49,6 +48,10 @@ class Player extends PureComponent {
 
   componentWillUnmount = () => {
     // Audio destructor
+    this.setState({
+      duration: 0,
+      keyPlayer: null
+    });
     this.player.release(this.state.keyPlayer);
   }
 
