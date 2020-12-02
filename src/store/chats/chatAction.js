@@ -420,7 +420,7 @@ export const removeDisconnedPeers = (peer) => (dispatch, getState) => {
 };
 
 
-export const setNewDials = (nodeAddress, callback) => async (dispatch) => {
+export const setNewDials = (nodeAddress, callback) => async () => {
   try {
     await chatService.dial(nodeAddress);
     callback(true);
@@ -428,6 +428,7 @@ export const setNewDials = (nodeAddress, callback) => async (dispatch) => {
     callback(false);
   }
 };
+
 /**
  * show broadcast chat
  * @param {*} callback
@@ -454,7 +455,6 @@ export const disableBroadcast = (callback) => async (dispatch) => {
   callback();
 };
 
-
 /**
  * will save information in the store for it know what audio message is playing ;
  * @param {Object} data parameters
@@ -470,7 +470,9 @@ export const playAction = (data) => (dispatch, getstate) => {
   }
 };
 
-
+/**
+ * delete the player key and return the isPlaying variable to false
+ */
 export const closedPlayer = () => (dispatch) => {
   dispatch({
     type: ActionTypes.STOP_PLAYBACK

@@ -46,14 +46,12 @@ class Player extends Component {
       this.getDuration();
     }
 
-    const rule1 = prevProps.keyPlay === this.props.keyPlay;
-
     if (this.state.play && this.state.pause) {
       this.setState({
         pause: undefined
       });
     }
-
+    const rule1 = prevProps.keyPlay === this.props.keyPlay;
     if (
       prevProps.keyPlay
       && rule1

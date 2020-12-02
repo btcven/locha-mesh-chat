@@ -3,14 +3,15 @@ import React from 'react';
 import renderer from 'react-test-renderer';
 import { shallow } from 'enzyme';
 import Player from '../../src/components/Player ';
+import store from '../../src/store';
 
 describe('spinner component', () => {
   test('Spinner component rendering', () => {
-    const rendered = renderer.create(<Player path="http:///test" />).toJSON();
+    const rendered = renderer.create(<Player store={store} path="http:///test" />).toJSON();
     expect(rendered).toBeTruthy();
   });
 
-  const wrapper = shallow(<Player path="http:///test" />);
+  const wrapper = shallow(<Player store={store} path="http:///test" />).childAt(0).dive();
   test('execute componentWillUnmount', async () => {
     wrapper.instance().componentWillUnmount();
   });
