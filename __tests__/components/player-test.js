@@ -16,6 +16,13 @@ describe('spinner component', () => {
     wrapper.instance().componentWillUnmount();
   });
 
+  test('execute componentDidMount', async () => {
+    wrapper.instance().componentDidMount();
+
+    expect(wrapper.instance().state.keyPlayer).toBe('test');
+  });
+
+
   describe('test when the player is activated', () => {
     test('play button simulation', () => {
       wrapper.find('ForwardRef').at(0).props().onPress();
@@ -29,6 +36,31 @@ describe('spinner component', () => {
     test('pause button must be rendered when the player is in play', () => {
       expect(wrapper.findWhere((node) => node.prop('testID') === 'playButton').exists()).toBe(false);
     });
+  });
+
+  test('execute initial componentDidUpdate', async () => {
+    wrapper.setState({
+      play: true,
+      pause: true
+    });
+    await wrapper.instance().componentDidUpdate({ path: 'test2' }, null, null);
+    expect(wrapper.instance().state.keyPlayer).toBe('test');
+  });
+
+
+  test('execute getDuration', () => {
+    wrapper.instance().getDuration();
+    expect(wrapper.instance().interval).toBeDefined();
+    clearInterval(wrapper.instance().interval);
+  });
+
+  test('execute onSliderEditing', () => {
+    wrapper.instance().setState({
+      duration: 20
+    });
+    wrapper.instance().onSliderEditing(10);
+
+    expect(wrapper.instance().state.reproduced).toBe(10);
   });
 
   describe('leisurely player', () => {

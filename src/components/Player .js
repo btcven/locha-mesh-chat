@@ -32,6 +32,7 @@ class Player extends Component {
   }
 
   componentDidUpdate = async (prevProps) => {
+    console.log('execute update');
     if (this.props.path !== prevProps.path) {
       const result = await this.player.prepare(this.props.path);
       if (result) {
