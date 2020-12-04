@@ -6,7 +6,9 @@ const AplicationState = {
   chat: [],
   chatService: false,
   peersConnected: [],
-  broadcast: false
+  broadcast: false,
+  player: false,
+  keyPlayer: null
 };
 
 export const chatReducer = (state = AplicationState, action) => {
@@ -206,6 +208,21 @@ export const chatReducer = (state = AplicationState, action) => {
 
     case ActionTypes.DISABLE_BROADCAST: {
       return { ...state, broadcast: false };
+    }
+
+    case ActionTypes.MESSAGE_IS_PLAYING: {
+      return {
+        ...state,
+        keyPlayer: action.payload.keyPlayer,
+        player: action.payload.isPlaying
+      };
+    }
+    case ActionTypes.STOP_PLAYBACK: {
+      return {
+        ...state,
+        keyPlayer: null,
+        player: false
+      };
     }
 
     default: {

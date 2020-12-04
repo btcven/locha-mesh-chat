@@ -8,7 +8,7 @@ import {
 } from '../../src/store/aplication/aplicationAction';
 import { editContacts, deleteContactAction } from '../../src/store/contacts';
 import {
-  enableBroadcast, disableBroadcast, initialChat, realoadBroadcastChat
+  enableBroadcast, disableBroadcast, initialChat, realoadBroadcastChat, playAction, closedPlayer
 } from '../../src/store/chats';
 import { database } from '../../App';
 
@@ -113,6 +113,21 @@ describe('Aplication actions', () => {
       store.dispatch(realoadBroadcastChat([]));
       const { chat } = store.getState().chats;
       expect(chat.length).toBe(0);
+    });
+
+    test('play action function', () => {
+      store.dispatch(playAction({
+        keyPlayer: 'test',
+        isPlaying: true
+      }));
+
+      expect(store.getState().chats.keyPlayer).toBe('test');
+    });
+
+    test('function to stop playback', () => {
+      store.dispatch(closedPlayer());
+
+      expect(store.getState().chats.keyPlayer).toBe(null);
     });
   });
 });

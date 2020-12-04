@@ -1,12 +1,14 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import {
   View, Text, TouchableOpacity, NativeModules
 } from 'react-native';
 import { Icon } from 'native-base';
 import Slider from '@react-native-community/slider';
 import moment from 'moment';
+import { connect } from 'react-redux';
+import { playAction, closedPlayer } from '../store/chats/chatAction';
 
-class Player extends PureComponent {
+class Player extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -30,6 +32,7 @@ class Player extends PureComponent {
   }
 
   componentDidUpdate = async (prevProps) => {
+    console.log('execute update');
     if (this.props.path !== prevProps.path) {
       const result = await this.player.prepare(this.props.path);
       if (result) {
@@ -42,6 +45,25 @@ class Player extends PureComponent {
 
     if (this.state.play && !this.interval) {
       this.getDuration();
+    }
+
+    if (this.state.play && this.state.pause) {
+      this.setState({
+        pause: undefined
+      });
+    }
+    const rule1 = prevProps.keyPlay === this.props.keyPlay;
+    if (
+      prevProps.keyPlay
+      && rule1
+      && this.state.play
+      && !this.state.pause) {
+      if (this.props.keyPlay !== this.state.keyPlayer && this.props.keyPlay && this.state.reproduced > 0) {
+        this.props.closedPlayer();
+        clearInterval(this.interval);
+        this.interval = null;
+        this.pause();
+      }
     }
   };
 
@@ -71,9 +93,14 @@ class Player extends PureComponent {
 
   play = async () => {
     this.setState({ play: true });
+    this.props.playAction({
+      keyPlayer: this.state.keyPlayer,
+      isPlaying: true
+    });
     this.player.play(this.state.keyPlayer).then((success) => {
       if (success) {
-        this.setState({ play: false, reproduced: 0 });
+        this.props.closedPlayer();
+        this.setState({ play: false, reproduced: 0, pause: undefined });
       } else {
         // eslint-disable-next-line no-console
         console.log('playback failed due to audio decoding errors');
@@ -84,7 +111,7 @@ class Player extends PureComponent {
   pause = () => {
     this.player.pause(this.state.keyPlayer, (success) => {
       if (success) {
-        this.setState({ play: false });
+        this.setState({ play: false, pause: true });
       }
     });
   };
@@ -138,5 +165,9 @@ class Player extends PureComponent {
   }
 }
 
+const mapStateToProps = (state) => ({
+  isPlaying: state.chats.player,
+  keyPlay: state.chats.keyPlayer
+});
 
-export default Player;
+export default connect(mapStateToProps, { playAction, closedPlayer })(Player);

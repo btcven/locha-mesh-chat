@@ -3,16 +3,23 @@ import React from 'react';
 import renderer from 'react-test-renderer';
 import { shallow } from 'enzyme';
 import Player from '../../src/components/Player ';
+import store from '../../src/store';
 
 describe('spinner component', () => {
   test('Spinner component rendering', () => {
-    const rendered = renderer.create(<Player path="http:///test" />).toJSON();
+    const rendered = renderer.create(<Player store={store} path="http:///test" />).toJSON();
     expect(rendered).toBeTruthy();
   });
 
-  const wrapper = shallow(<Player path="http:///test" />);
+  const wrapper = shallow(<Player store={store} path="http:///test" />).childAt(0).dive();
   test('execute componentWillUnmount', async () => {
     wrapper.instance().componentWillUnmount();
+  });
+
+  test('execute componentDidMount', async () => {
+    wrapper.instance().componentDidMount();
+
+    expect(wrapper.instance().state.keyPlayer).toBe('test');
   });
 
   describe('test when the player is activated', () => {
@@ -28,6 +35,30 @@ describe('spinner component', () => {
     test('pause button must be rendered when the player is in play', () => {
       expect(wrapper.findWhere((node) => node.prop('testID') === 'playButton').exists()).toBe(false);
     });
+  });
+
+  test('execute initial componentDidUpdate', async () => {
+    wrapper.setState({
+      play: true,
+      pause: true
+    });
+    await wrapper.instance().componentDidUpdate({ path: 'test2' }, null, null);
+    expect(wrapper.instance().state.keyPlayer).toBe('test');
+  });
+  
+  test('execute getD xration', () => {
+    wrapper.instance().getDuration();
+    expect(wrapper.instance().interval).toBeDefined();
+    clearInterval(wrapper.instance().interval);
+  });
+
+  test('execute onSliderEditing', () => {
+    wrapper.instance().setState({
+      duration: 20
+    });
+    wrapper.instance().onSliderEditing(10);
+
+    expect(wrapper.instance().state.reproduced).toBe(10);
   });
 
   describe('leisurely player', () => {

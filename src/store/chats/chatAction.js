@@ -419,7 +419,8 @@ export const removeDisconnedPeers = (peer) => (dispatch, getState) => {
   });
 };
 
-export const setNewDials = (nodeAddress, callback) => async (dispatch) => {
+
+export const setNewDials = (nodeAddress, callback) => async () => {
   try {
     await chatService.dial(nodeAddress);
     callback(true);
@@ -428,6 +429,10 @@ export const setNewDials = (nodeAddress, callback) => async (dispatch) => {
   }
 };
 
+/**
+ * show broadcast chat
+ * @param {*} callback
+ */
 export const enableBroadcast = (callback) => async (dispatch) => {
   await AsyncStorage.setItem('broadcast', String(true));
   dispatch({
@@ -437,6 +442,10 @@ export const enableBroadcast = (callback) => async (dispatch) => {
   callback();
 };
 
+/**
+ * hidden broadcast chat
+ * @param {Callback} callback
+ */
 export const disableBroadcast = (callback) => async (dispatch) => {
   await AsyncStorage.removeItem('broadcast');
   dispatch({
@@ -444,4 +453,28 @@ export const disableBroadcast = (callback) => async (dispatch) => {
     payload: false
   });
   callback();
+};
+
+/**
+ * will save information in the store for it know what audio message is playing ;
+ * @param {Object} data parameters
+ * @param {String} data.keyPlayer Player Key
+ * @param {boolean} data.isPlaying
+ */
+export const playAction = (data) => (dispatch, getstate) => {
+  if (getstate().chats.keyPlayer !== data.keyPlayer) {
+    dispatch({
+      type: ActionTypes.MESSAGE_IS_PLAYING,
+      payload: data
+    });
+  }
+};
+
+/**
+ * delete the player key and return the isPlaying variable to false
+ */
+export const closedPlayer = () => (dispatch) => {
+  dispatch({
+    type: ActionTypes.STOP_PLAYBACK
+  });
 };

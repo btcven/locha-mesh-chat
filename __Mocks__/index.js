@@ -170,10 +170,18 @@ jest.doMock('react-native', () =>
         },
         PlayerModule: {
           release: jest.fn(),
-          getCurrentTime: jest.fn((key, callback) => callback({ seconds: 0, isPlaying: false }))
+          getCurrentTime: jest.fn((key, callback) => callback({ seconds: 0, isPlaying: false })),
+          play: jest.fn(() => new Promise((resolve) => { resolve(true); })),
+          setCurrentTime: jest.fn(),
+          prepare: jest.fn(() => new Promise((resolve) => {
+            resolve({
+              duration: 0,
+              key: 'test'
+            });
+          })),
         },
         SoundMdoule: {
-          prepareRecoder: jest.fn(() => new Promise((resolve) => { resolve('test') })),
+          prepareRecoder: jest.fn(() => new Promise((resolve) => { resolve('test'); })),
           startRecording: jest.fn(),
           stopRecording: jest.fn()
         },
