@@ -22,7 +22,6 @@ describe('spinner component', () => {
     expect(wrapper.instance().state.keyPlayer).toBe('test');
   });
 
-
   describe('test when the player is activated', () => {
     test('play button simulation', () => {
       wrapper.find('ForwardRef').at(0).props().onPress();
@@ -46,9 +45,8 @@ describe('spinner component', () => {
     await wrapper.instance().componentDidUpdate({ path: 'test2' }, null, null);
     expect(wrapper.instance().state.keyPlayer).toBe('test');
   });
-
-
-  test('execute getDuration', () => {
+  
+  test('execute getD xration', () => {
     wrapper.instance().getDuration();
     expect(wrapper.instance().interval).toBeDefined();
     clearInterval(wrapper.instance().interval);
