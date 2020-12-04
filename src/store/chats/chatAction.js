@@ -478,3 +478,12 @@ export const closedPlayer = () => (dispatch) => {
     type: ActionTypes.STOP_PLAYBACK
   });
 };
+
+/**
+ *  function for stopping player message is executed when it was select a file
+ * @param {boolean} data
+ */
+export const stopPlaying = (data) => ({
+  type: ActionTypes.STOP_PLAYING,
+  payload: data
+});

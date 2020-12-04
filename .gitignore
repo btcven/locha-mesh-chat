@@ -38,6 +38,7 @@ gradle.properties
 # node.js
 #
 node_modules/
+mockDatabase/
 coverage/
 npm-debug.log
 yarn-error.log

@@ -29,6 +29,9 @@ export default class App extends React.Component {
       images: this.props.images
     };
     this.props.sendFileWithImage(obj, () => {
+      this.setState({
+        message: ''
+      });
       this.props.close();
     });
   };
@@ -78,8 +81,8 @@ export default class App extends React.Component {
               backgroundColor: 'black',
               minHeight: 50,
               paddingHorizontal: 10,
-              paddingBottom: '3%',
-              alignItems: 'flex-end',
+              alignItems: 'center',
+              justifyContent: 'center',
               flexDirection: 'row',
             }}
           >
@@ -123,7 +126,5 @@ const styles = StyleSheet.create({
   iconChatStyle: {
     color: '#fbc233',
     fontSize: 32,
-    paddingHorizontal: 5,
-    paddingBottom: 7
   }
 });

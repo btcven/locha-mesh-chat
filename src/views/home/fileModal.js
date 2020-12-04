@@ -46,9 +46,9 @@ export default class FileModal extends Component {
         base64: image.data,
         width: Dimensions.get('window').width
       });
+      this.props.setImageView(imageArray);
+      this.props.close();
     });
-    this.props.setImageView(imageArray);
-    this.props.close();
   };
 
   /**
@@ -65,18 +65,16 @@ export default class FileModal extends Component {
       cropping: true,
       includeBase64: true
     }).then((image) => {
-      const newPath = `${FileDirectory}/Pictures/IMG_${new Date().getTime()}.jpg `;
-      setTimeout(() => {
-        const imagesView = [
-          {
-            url: image.path,
-            base64: image.data,
-            width: Dimensions.get('window').width
-          }
-        ];
-        this.props.setImageView(imagesView);
-        this.props.close();
-      }, 200);
+      const imagesView = [
+        {
+          url: image.path,
+          base64: image.data,
+          width: Dimensions.get('window').width
+        }
+      ];
+      this.props.setImageView(imagesView);
+      this.props.close();
+
       // });
     });
   };

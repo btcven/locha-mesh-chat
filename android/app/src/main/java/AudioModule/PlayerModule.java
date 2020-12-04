@@ -86,16 +86,14 @@ public class PlayerModule extends ReactContextBaseJavaModule {
 
 
     @ReactMethod
-    public void pause(String key, final Callback callback) {
+    public void pause(String key, final Promise promise) {
         Player player = playerMap.get(key);
-
-        Log.i(TAG, "pause: dios" + key);
         if(player == null) {
-            callback.invoke(false);
+            promise.reject("Error", "player not found");
             return;
         }
 
-        player.pause(callback);
+        player.pause(promise);
 
     }
 

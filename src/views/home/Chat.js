@@ -17,8 +17,9 @@ import {
   setView,
   sendReadMessageStatus,
   sendAgain,
-  setNewDials
-} from '../../store/chats';
+  setNewDials,
+  stopPlaying
+} from '../../store/chats/chatAction';
 import { messageType } from '../../utils/constans';
 
 import ImagesView from './imagesView';
@@ -196,6 +197,9 @@ class Chat extends Component {
    */
 
   openFileModal = () => {
+    if (!this.props.forcedPause) {
+      this.props.stopPlaying(true);
+    }
     this.setState({ fileModal: true });
   };
 
@@ -206,6 +210,9 @@ class Chat extends Component {
    */
 
   closeFileModal = () => {
+    if (this.props.forcedPause) {
+      this.props.stopPlaying(false);
+    }
     this.setState({ fileModal: false });
   };
 
@@ -341,6 +348,7 @@ const mapStateToProps = (state) => ({
   userData: state.config,
   chat: state.chats.chat,
   chatSelected: state.chats.seletedChat,
+  forcedPause: state.chats.forcedPause,
   contact: Object.values(state.contacts.contacts)
 });
 
@@ -353,5 +361,6 @@ export default connect(mapStateToProps, {
   sendReadMessageStatus,
   sendAgain,
   verifyImage,
+  stopPlaying,
   setNewDials
 })(Chat);
