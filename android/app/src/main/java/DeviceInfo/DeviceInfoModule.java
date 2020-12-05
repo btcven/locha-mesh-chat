@@ -2,6 +2,8 @@ package DeviceInfo;
 
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.media.MediaScannerConnection;
+import android.net.Uri;
 import android.util.Log;
 
 import com.facebook.react.bridge.Arguments;
@@ -10,7 +12,9 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.WritableArray;
+import com.lochameshchat.MainActivity;
 
+import java.io.File;
 import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -104,8 +108,6 @@ public class DeviceInfoModule  extends ReactContextBaseJavaModule {
         promise.reject("Error", "error");
     }
 
-
-
    @ReactMethod public void getIpv6Andipv4Adress(Promise promise){
 
         List<String> ipInterface =  Utils.getAllIps();
@@ -118,6 +120,24 @@ public class DeviceInfoModule  extends ReactContextBaseJavaModule {
 
        promise.resolve(array);
    }
+
+    @ReactMethod public void scanFile(String path) {
+        Log.i(TAG, "scanFile:  " + reactContext.getFilesDir().getAbsolutePath());
+        File file = new File(path);
+        if(!file.exists()){
+            Log.e(TAG, "scanFile: file doesn't exists" + path);
+            return;
+        }
+
+        MediaScannerConnection.scanFile(reactContext,
+                new String[] { path }, null,
+                new MediaScannerConnection.OnScanCompletedListener() {
+
+                    public void onScanCompleted(String path, Uri uri) {
+                        Log.i("TAG", "Finished scanning" + path);
+                    }
+                });
+    }
 
     /**
      * close the app completely

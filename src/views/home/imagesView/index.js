@@ -8,6 +8,7 @@ import {
   TouchableHighlight
 } from 'react-native';
 import ImageViewer from 'react-native-image-zoom-viewer';
+import RNFS from 'react-native-fs';
 import {
   Icon, Header, Left, Body,
 } from 'native-base';
@@ -36,6 +37,15 @@ export default class App extends React.Component {
     });
   };
 
+  back = async () => {
+    if (this.props.sendFileWithImage) {
+      await RNFS.unlink(this.props.images[0].url).catch((err) => {
+        this.props.close();
+      });
+    }
+    this.props.close();
+  }
+
   render() {
     const { screenProps } = this.props;
     return (
@@ -61,7 +71,7 @@ export default class App extends React.Component {
                     borderRadius: 100
                   }}
                   onPress={() => {
-                    this.props.close();
+                    this.back()
                   }}
                 >
                   <Icon
