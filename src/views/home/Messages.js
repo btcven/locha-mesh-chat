@@ -26,86 +26,86 @@ export const ReceiveMessage = ({
   contactInfo,
   selected
 }) => (
-  <TouchableList
-    onLongPress={() => onSelected(item)}
-    onPress={() => onClick(item)}
-    style={{
-      marginVertical: 5,
-      minHeight: 70,
-      width: '100%',
-      alignContent: 'center',
-      flexDirection: 'row'
-    }}
-  >
-    <View style={[styles.receiveContainer, selected]}>
-      {item.toUID === 'broadcast' && !contactInfo && (
-      <Thumbnail
-        style={{
-          marginLeft: 5,
-
-        }}
-        source={{
-          uri: `${getIcon(item.fromUID)}`
-        }}
-      />
-      )}
-
-      {item.toUID === 'broadcast' && contactInfo && (
-      <Thumbnail
-        style={{
-          marginLeft: 5,
-          marginTop: 5
-        }}
-        source={{
-          uri: `${userInfo.picture ? userInfo.picture : getIcon(item.fromUID)
-          }`
-        }}
-      />
-      )}
-
-      <View style={{ width: '90%', flexDirection: 'row' }}>
-        <View style={styles.textContent1}>
-          {item.name && (
-          <Text
+    <TouchableList
+      onLongPress={() => onSelected(item)}
+      onPress={() => onClick(item)}
+      style={{
+        marginVertical: 5,
+        minHeight: 70,
+        width: '100%',
+        alignContent: 'center',
+        flexDirection: 'row'
+      }}
+    >
+      <View style={[styles.receiveContainer, selected]}>
+        {item.toUID === 'broadcast' && !contactInfo && (
+          <Thumbnail
             style={{
-              paddingBottom: 7,
-              color: hashGenerateColort(item.fromUID)
+              marginLeft: 5,
+
             }}
-          >
-            {userInfo.name}
-          </Text>
-          )}
-          <View style={{ minWidth: 110 }}>
-            {item.file && (
-            <View style={{ minWidth: '80%' }}>
-              <Image
-                style={{ width: '100%', height: 150 }}
-                source={{
-                  resizeMode: 'contain',
-                  uri: item.file.file,
-                  cache: 'force-cache'
+            source={{
+              uri: `${getIcon(item.fromUID)}`
+            }}
+          />
+        )}
+
+        {item.toUID === 'broadcast' && contactInfo && (
+          <Thumbnail
+            style={{
+              marginLeft: 5,
+              marginTop: 5
+            }}
+            source={{
+              uri: `${userInfo.picture ? userInfo.picture : getIcon(item.fromUID)
+                }`
+            }}
+          />
+        )}
+
+        <View style={{ width: '90%', flexDirection: 'row' }}>
+          <View style={styles.textContent1}>
+            {item.name && (
+              <Text
+                style={{
+                  paddingBottom: 7,
+                  color: hashGenerateColort(item.fromUID)
                 }}
-              />
-            </View>
+              >
+                {userInfo.name}
+              </Text>
             )}
-            <Text style={{ fontSize: 15 }}>{item.msg}</Text>
+            <View style={{ minWidth: 110 }}>
+              {item.file && (
+                <View style={{ minWidth: '80%' }}>
+                  <Image
+                    style={{ width: '100%', height: 150 }}
+                    source={{
+                      resizeMode: 'contain',
+                      uri: item.file.file,
+                      cache: 'force-cache'
+                    }}
+                  />
+                </View>
+              )}
+              <Text style={{ fontSize: 15 }}>{item.msg}</Text>
+            </View>
+            <Text
+              style={{
+                paddingTop: 3,
+                paddingLeft: 10,
+                paddingBottom: 6,
+                fontSize: 12,
+                textAlign: 'right'
+              }}
+            >
+              {Moment(Number(item.timestamp)).format('LT')}
+            </Text>
           </View>
-          <Text
-            style={{
-              paddingTop: 3,
-              paddingLeft: 10,
-              paddingBottom: 6,
-              fontSize: 12,
-              textAlign: 'right'
-            }}
-          >
-            {Moment(Number(item.timestamp)).format('LT')}
-          </Text>
         </View>
       </View>
-    </View>
-  </TouchableList>
-);
+    </TouchableList>
+  );
 
 export const SenderMessage = ({
   onClick,
@@ -122,6 +122,7 @@ export const SenderMessage = ({
 
   const textStyle = item.msg.length < 20 ? styles.textStyle1 : styles.textStyle2;
 
+  const timeStyle = item.msg.length < 20 ? styles.timeStyle : styles.timeStyle2;
   const iconName = item.toUID ? 'checkmark' : 'user-check';
   const IconType = iconName === 'checkmark' ? 'Ionicons' : 'FontAwesome5';
   return (
@@ -156,12 +157,12 @@ export const SenderMessage = ({
             </View>
             <View style={textStyle}>
               <View style={{ flexDirection: 'row' }}>
-                <Text style={styles.timeStyle}>
+                <Text style={timeStyle}>
                   {Moment(Number(item.timestamp)).format('LT')}
                 </Text>
                 {item.status === 'pending' && !cancelled && (
                   <Icon
-                    style={{ color: 'gray', fontSize: 15, marginLeft: 10 }}
+                    style={{ color: 'gray', fontSize: 15, marginLeft: 10, }}
                     name="time"
                   />
                 )}
@@ -182,7 +183,7 @@ export const SenderMessage = ({
                   <TouchableOpacity onPress={() => retry(item)}>
                     <Icon
                       type="MaterialIcons"
-                      style={{ color: 'gray', fontSize: 16, marginLeft: 10 }}
+                      style={{ color: 'gray', fontSize: 16, marginLeft: 10, marginTop: 2 }}
                       name="error"
                     />
                   </TouchableOpacity>
@@ -245,7 +246,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between'
   },
   styleBody2: {
-    flexDirection: 'column'
+    flexDirection: 'column',
   },
 
   textStyle1: {
@@ -262,12 +263,17 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center'
   },
-
+  timeStyle2: {
+    width: '90%',
+    textAlign: 'right',
+    fontSize: 12,
+    paddingTop: 2
+  },
   timeStyle: {
     paddingTop: 3,
     paddingLeft: 10,
     paddingBottom: 6,
     fontSize: 12,
-    textAlign: 'right'
+    backgroundColor: 'red'
   }
 });

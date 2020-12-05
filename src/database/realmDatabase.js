@@ -344,8 +344,6 @@ export default class CoreDatabase {
           return result;
         });
 
-        console.log("chat123", JSON.stringify(messages[0]));
-
         this.db.delete(messages);
         resolve();
       } catch (error) {
