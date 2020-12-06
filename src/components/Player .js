@@ -103,9 +103,6 @@ class Player extends Component {
       if (success) {
         this.props.closedPlayer();
         this.setState({ play: false, reproduced: 0, pause: undefined });
-      } else {
-        // eslint-disable-next-line no-console
-        console.log('playback failed due to audio decoding errors');
       }
     });
   };
