@@ -6,11 +6,11 @@ import {
   TouchableNativeFeedback,
   TouchableHighlight,
   Image,
-  Platform
+  Platform,
+  TouchableOpacity
 } from 'react-native';
 import Moment from 'moment';
 import { Thumbnail, Icon } from 'native-base';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import { getIcon, hashGenerateColort } from '../../utils/utils';
 
 const TouchableList = Platform.select({
@@ -183,7 +183,9 @@ export const SenderMessage = ({
                   <TouchableOpacity onPress={() => retry(item)}>
                     <Icon
                       type="MaterialIcons"
-                      style={{ color: 'gray', fontSize: 16, marginLeft: 10, marginTop: 2 }}
+                      style={{
+                        color: 'gray', fontSize: 16, marginLeft: 10, marginTop: 2
+                      }}
                       name="error"
                     />
                   </TouchableOpacity>

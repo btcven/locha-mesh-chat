@@ -1,7 +1,7 @@
 import '../../../__Mocks__';
 import React from 'react';
 import { shallow } from 'enzyme';
-import { ReceiveMessage } from '../../../src/views/home/Messages';
+import { ReceiveMessage, SenderMessage } from '../../../src/views/home/Messages';
 
 const mockMessage = [{
   fromUID: '16Uiu2HAm9JHK1iG6g2nLNw2fmAWerGiVoKMnjcvEs6pJVnd6STPC',
@@ -43,6 +43,22 @@ describe('message component', () => {
 
     />
   );
+
+  const wrapper2 = shallow(
+    <SenderMessage
+      screenProps={screenProps}
+      item={mockMessage[0]}
+      contactInfo={mockContact}
+      onClick={onPressMock}
+      onSelected={onLongPressMock}
+    />
+  );
+
+
+  test('render SenderMessage', () => {
+    expect(wrapper2).toMatchSnapshot();
+  });
+
 
   test('render all component', () => {
     expect(wrapper.instance()).toBeDefined();
