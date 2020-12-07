@@ -7,7 +7,6 @@ import store from '../../../src/store';
 
 
 describe('chat container test', () => {
-
   const wrapper = shallow(
     <Chat store={store} />
 
@@ -16,4 +15,4 @@ describe('chat container test', () => {
   test('render chat container', () => {
     expect(wrapper.instance()).toBeDefined();
   });
-})
+});
