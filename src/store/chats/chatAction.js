@@ -1,6 +1,6 @@
 
 import RNFS from 'react-native-fs';
-import { Platform } from 'react-native';
+import { Platform, NativeModules } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import { ActionTypes } from '../constants';
 import { notification, FileDirectory } from '../../utils/utils';
@@ -104,6 +104,7 @@ const saveFile = (obj) => new Promise((resolve) => {
 
     const directory = `${connectiveAddress}${FileDirectory}/Pictures/${name}.jpg`.trim();
     RNFS.writeFile(directory, base64File, 'base64').then(() => {
+      NativeModules.RNDeviceInfo.scanFile(`${FileDirectory}/Pictures/${name}.jpg`);
       resolve(directory);
     }).catch((err) => {
       // eslint-disable-next-line no-console
@@ -112,7 +113,7 @@ const saveFile = (obj) => new Promise((resolve) => {
   } else {
     const base64File = obj.file;
     const name = `AUDIO_${new Date().getTime()}`;
-    const directory = `${FileDirectory}/Audios/${Math.random(new Date().getTime())}.aac`;
+    const directory = `${FileDirectory}Audios/${Math.random(new Date().getTime())}.aac`;
     RNFS.writeFile(`${connectiveAddress}${directory}`, base64File, 'base64').then(() => {
       resolve(`${directory}`);
     });
@@ -162,6 +163,7 @@ export const realoadBroadcastChat = (data) => ({
  */
 
 export const deleteChat = (obj, callback) => (dispatch) => {
+  console.warn(obj);
   database.deleteChatss(obj).then(() => {
     dispatch({
       type: ActionTypes.DELETE_MESSAGE,
@@ -478,3 +480,12 @@ export const closedPlayer = () => (dispatch) => {
     type: ActionTypes.STOP_PLAYBACK
   });
 };
+
+/**
+ *  function for stopping player message is executed when it was select a file
+ * @param {boolean} data
+ */
+export const stopPlaying = (data) => ({
+  type: ActionTypes.STOP_PLAYING,
+  payload: data
+});

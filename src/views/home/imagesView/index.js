@@ -8,6 +8,7 @@ import {
   TouchableHighlight
 } from 'react-native';
 import ImageViewer from 'react-native-image-zoom-viewer';
+import RNFS from 'react-native-fs';
 import {
   Icon, Header, Left, Body,
 } from 'native-base';
@@ -29,9 +30,21 @@ export default class App extends React.Component {
       images: this.props.images
     };
     this.props.sendFileWithImage(obj, () => {
+      this.setState({
+        message: ''
+      });
       this.props.close();
     });
   };
+
+  back = async () => {
+    if (this.props.sendFileWithImage) {
+      await RNFS.unlink(this.props.images[0].url).catch((err) => {
+        this.props.close();
+      });
+    }
+    this.props.close();
+  }
 
   render() {
     const { screenProps } = this.props;
@@ -58,7 +71,7 @@ export default class App extends React.Component {
                     borderRadius: 100
                   }}
                   onPress={() => {
-                    this.props.close();
+                    this.back()
                   }}
                 >
                   <Icon
@@ -78,8 +91,8 @@ export default class App extends React.Component {
               backgroundColor: 'black',
               minHeight: 50,
               paddingHorizontal: 10,
-              paddingBottom: '3%',
-              alignItems: 'flex-end',
+              alignItems: 'center',
+              justifyContent: 'center',
               flexDirection: 'row',
             }}
           >
@@ -123,7 +136,5 @@ const styles = StyleSheet.create({
   iconChatStyle: {
     color: '#fbc233',
     fontSize: 32,
-    paddingHorizontal: 5,
-    paddingBottom: 7
   }
 });

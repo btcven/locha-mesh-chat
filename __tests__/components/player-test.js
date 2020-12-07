@@ -45,12 +45,18 @@ describe('spinner component', () => {
     await wrapper.instance().componentDidUpdate({ path: 'test2' }, null, null);
     expect(wrapper.instance().state.keyPlayer).toBe('test');
   });
-  
-  test('execute getD xration', () => {
+
+  test('execute getDuration', () => {
     wrapper.instance().getDuration();
     expect(wrapper.instance().interval).toBeDefined();
-    clearInterval(wrapper.instance().interval);
+    // clearInterval(wrapper.instance().interval);
   });
+
+  test('pause function', async () => {
+    await wrapper.instance().pause();
+    expect(wrapper.instance().state.pause).toBe(true);
+  });
+
 
   test('execute onSliderEditing', () => {
     wrapper.instance().setState({
@@ -60,6 +66,7 @@ describe('spinner component', () => {
 
     expect(wrapper.instance().state.reproduced).toBe(10);
   });
+
 
   describe('leisurely player', () => {
     test('mock pause button', () => {

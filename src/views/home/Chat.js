@@ -2,13 +2,13 @@ import React, { Component } from 'react';
 import { Container } from 'native-base';
 import { connect } from 'react-redux';
 import {
-  Alert, Clipboard, Dimensions, KeyboardAvoidingView, Platform, View,
+  Alert, Clipboard, Dimensions, KeyboardAvoidingView, Platform, View, NativeModules
 } from 'react-native';
 import { verifyImage } from '../../store/contacts/contactsActions';
 import Header from '../../components/Header';
 import ChatBody from './ChatBody';
 import ChatForm from './ChatForm';
-import { toast } from '../../utils/utils';
+import { FileDirectory, toast } from '../../utils/utils';
 import {
   initialChat,
   cleanAllChat,
@@ -17,8 +17,9 @@ import {
   setView,
   sendReadMessageStatus,
   sendAgain,
-  setNewDials
-} from '../../store/chats';
+  setNewDials,
+  stopPlaying
+} from '../../store/chats/chatAction';
 import { messageType } from '../../utils/constans';
 
 import ImagesView from './imagesView';
@@ -196,6 +197,9 @@ class Chat extends Component {
    */
 
   openFileModal = () => {
+    if (!this.props.forcedPause) {
+      this.props.stopPlaying(true);
+    }
     this.setState({ fileModal: true });
   };
 
@@ -206,6 +210,9 @@ class Chat extends Component {
    */
 
   closeFileModal = () => {
+    if (this.props.forcedPause) {
+      this.props.stopPlaying(false);
+    }
     this.setState({ fileModal: false });
   };
 
@@ -241,6 +248,7 @@ class Chat extends Component {
         `${userData.peerID} + ${toUID}  +  ${sendObject.msg.text
         + sendObject.msg.file}  + ${new Date().getTime()}`
       );
+      NativeModules.RNDeviceInfo.scanFile(`${FileDirectory}/Pictures/${image.name}.jpg`);
       if (data.position === key) {
         const sendData = { ...sendObject };
 
@@ -341,6 +349,7 @@ const mapStateToProps = (state) => ({
   userData: state.config,
   chat: state.chats.chat,
   chatSelected: state.chats.seletedChat,
+  forcedPause: state.chats.forcedPause,
   contact: Object.values(state.contacts.contacts)
 });
 
@@ -353,5 +362,6 @@ export default connect(mapStateToProps, {
   sendReadMessageStatus,
   sendAgain,
   verifyImage,
+  stopPlaying,
   setNewDials
 })(Chat);

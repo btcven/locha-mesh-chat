@@ -8,7 +8,8 @@ const AplicationState = {
   peersConnected: [],
   broadcast: false,
   player: false,
-  keyPlayer: null
+  keyPlayer: null,
+  forcedPause: false
 };
 
 export const chatReducer = (state = AplicationState, action) => {
@@ -222,6 +223,13 @@ export const chatReducer = (state = AplicationState, action) => {
         ...state,
         keyPlayer: null,
         player: false
+      };
+    }
+
+    case ActionTypes.STOP_PLAYING: {
+      return {
+        ...state,
+        forcedPause: action.payload
       };
     }
 

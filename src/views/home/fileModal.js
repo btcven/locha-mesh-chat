@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Modal from 'react-native-modal';
 import {
-  View, Text, TouchableOpacity, Dimensions
+  View, Text, TouchableOpacity, Dimensions, NativeModules
 } from 'react-native';
 import { Thumbnail } from 'native-base';
 import ImagePicker from 'react-native-image-crop-picker';
@@ -34,21 +34,25 @@ export default class FileModal extends Component {
 
   getPhotosFromGallery = () => {
     const imageArray = [];
-    // this.props.close()
     ImagePicker.openPicker({
       includeBase64: true,
       width: 400,
       height: 400,
       cropping: true
     }).then((image) => {
-      imageArray.push({
-        url: image.path,
-        base64: image.data,
-        width: Dimensions.get('window').width
+      const name = `IMG_${new Date().getTime()}`;
+      const newPath = `file://${FileDirectory}/Pictures/IMG_${name}.jpg`;
+      RNFS.moveFile(image.path, newPath).then(() => {
+        imageArray.push({
+          url: newPath,
+          base64: image.data,
+          name,
+          width: Dimensions.get('window').width
+        });
+        this.props.setImageView(imageArray);
+        this.props.close();
       });
     });
-    this.props.setImageView(imageArray);
-    this.props.close();
   };
 
   /**
@@ -65,19 +69,20 @@ export default class FileModal extends Component {
       cropping: true,
       includeBase64: true
     }).then((image) => {
-      const newPath = `${FileDirectory}/Pictures/IMG_${new Date().getTime()}.jpg `;
-      setTimeout(() => {
+      const name = `IMG_${new Date().getTime()}`;
+      const newPath = `file://${FileDirectory}/Pictures/IMG_${name}.jpg`;
+      RNFS.moveFile(image.path, newPath).then(() => {
         const imagesView = [
           {
-            url: image.path,
+            url: newPath,
             base64: image.data,
+            name,
             width: Dimensions.get('window').width
           }
         ];
         this.props.setImageView(imagesView);
         this.props.close();
-      }, 200);
-      // });
+      });
     });
   };
 

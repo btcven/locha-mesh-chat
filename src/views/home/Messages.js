@@ -6,11 +6,11 @@ import {
   TouchableNativeFeedback,
   TouchableHighlight,
   Image,
-  Platform
+  Platform,
+  TouchableOpacity
 } from 'react-native';
 import Moment from 'moment';
 import { Thumbnail, Icon } from 'native-base';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import { getIcon, hashGenerateColort } from '../../utils/utils';
 
 const TouchableList = Platform.select({
@@ -122,6 +122,7 @@ export const SenderMessage = ({
 
   const textStyle = item.msg.length < 20 ? styles.textStyle1 : styles.textStyle2;
 
+  const timeStyle = item.msg.length < 20 ? styles.timeStyle : styles.timeStyle2;
   const iconName = item.toUID ? 'checkmark' : 'user-check';
   const IconType = iconName === 'checkmark' ? 'Ionicons' : 'FontAwesome5';
   return (
@@ -156,12 +157,12 @@ export const SenderMessage = ({
             </View>
             <View style={textStyle}>
               <View style={{ flexDirection: 'row' }}>
-                <Text style={styles.timeStyle}>
+                <Text style={timeStyle}>
                   {Moment(Number(item.timestamp)).format('LT')}
                 </Text>
                 {item.status === 'pending' && !cancelled && (
                   <Icon
-                    style={{ color: 'gray', fontSize: 15, marginLeft: 10 }}
+                    style={{ color: 'gray', fontSize: 15, marginLeft: 10, }}
                     name="time"
                   />
                 )}
@@ -182,7 +183,9 @@ export const SenderMessage = ({
                   <TouchableOpacity onPress={() => retry(item)}>
                     <Icon
                       type="MaterialIcons"
-                      style={{ color: 'gray', fontSize: 16, marginLeft: 10 }}
+                      style={{
+                        color: 'gray', fontSize: 16, marginLeft: 10, marginTop: 2
+                      }}
                       name="error"
                     />
                   </TouchableOpacity>
@@ -245,7 +248,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between'
   },
   styleBody2: {
-    flexDirection: 'column'
+    flexDirection: 'column',
   },
 
   textStyle1: {
@@ -262,12 +265,17 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center'
   },
-
+  timeStyle2: {
+    width: '90%',
+    textAlign: 'right',
+    fontSize: 12,
+    paddingTop: 2
+  },
   timeStyle: {
     paddingTop: 3,
     paddingLeft: 10,
     paddingBottom: 6,
     fontSize: 12,
-    textAlign: 'right'
+    backgroundColor: 'red'
   }
 });

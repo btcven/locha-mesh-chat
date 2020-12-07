@@ -173,6 +173,7 @@ jest.doMock('react-native', () =>
           getCurrentTime: jest.fn((key, callback) => callback({ seconds: 0, isPlaying: false })),
           play: jest.fn(() => new Promise((resolve) => { resolve(true); })),
           setCurrentTime: jest.fn(),
+          pause: jest.fn(() => new Promise((resolve) => { resolve(true); })),
           prepare: jest.fn(() => new Promise((resolve) => {
             resolve({
               duration: 0,

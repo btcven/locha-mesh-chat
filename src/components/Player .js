@@ -32,7 +32,6 @@ class Player extends Component {
   }
 
   componentDidUpdate = async (prevProps) => {
-    console.log('execute update');
     if (this.props.path !== prevProps.path) {
       const result = await this.player.prepare(this.props.path);
       if (result) {
@@ -47,26 +46,30 @@ class Player extends Component {
       this.getDuration();
     }
 
-    if (this.state.play && this.state.pause) {
-      this.setState({
-        pause: undefined
-      });
-    }
-    const rule1 = prevProps.keyPlay === this.props.keyPlay;
-    if (
-      prevProps.keyPlay
-      && rule1
-      && this.state.play
-      && !this.state.pause) {
-      if (this.props.keyPlay !== this.state.keyPlayer && this.props.keyPlay && this.state.reproduced > 0) {
-        this.props.closedPlayer();
-        clearInterval(this.interval);
-        this.interval = null;
-        this.pause();
+    if (!this.props.forcedPause) {
+      if (this.state.play && this.state.pause) {
+        this.setState({
+          pause: undefined
+        });
       }
+      const rule1 = prevProps.keyPlay === this.props.keyPlay;
+      if (
+        prevProps.keyPlay
+        && rule1
+        && this.state.play
+        && !this.state.pause) {
+        if (this.props.keyPlay !== this.state.keyPlayer
+          && this.props.keyPlay
+          && this.state.reproduced > 0
+        ) {
+          this.props.closedPlayer();
+          this.pause();
+        }
+      }
+    } else if (this.props.forcedPause && this.state.play && !this.state.pause) {
+      this.pause();
     }
   };
-
 
   componentWillUnmount = () => {
     // Audio destructor
@@ -76,7 +79,6 @@ class Player extends Component {
     });
     this.player.release(this.state.keyPlayer);
   }
-
 
   getDuration = () => {
     this.interval = setInterval(() => {
@@ -101,16 +103,15 @@ class Player extends Component {
       if (success) {
         this.props.closedPlayer();
         this.setState({ play: false, reproduced: 0, pause: undefined });
-      } else {
-        // eslint-disable-next-line no-console
-        console.log('playback failed due to audio decoding errors');
       }
     });
   };
 
   pause = () => {
-    this.player.pause(this.state.keyPlayer, (success) => {
+    this.player.pause(this.state.keyPlayer).then((success) => {
       if (success) {
+        clearInterval(this.interval);
+        this.interval = null;
         this.setState({ play: false, pause: true });
       }
     });
@@ -167,7 +168,8 @@ class Player extends Component {
 
 const mapStateToProps = (state) => ({
   isPlaying: state.chats.player,
-  keyPlay: state.chats.keyPlayer
+  keyPlay: state.chats.keyPlayer,
+  forcedPause: state.chats.forcedPause,
 });
 
 export default connect(mapStateToProps, { playAction, closedPlayer })(Player);

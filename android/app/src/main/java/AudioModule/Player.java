@@ -141,19 +141,17 @@ public class Player  implements  MediaPlayer.OnPreparedListener {
         }
     }
 
-    public void pause(Callback callback){
+    public void pause(Promise promise){
        if(mediaPlayer != null && mediaPlayer.isPlaying() ) {
            try{
                mediaPlayer.pause();
-               callback.invoke(true);
+               promise.resolve(true);
                return;
            } catch (Exception e) {
+               promise.reject("error", e);
                Log.e(TAG, "Pause: ", e);
            }
-
        }
-
-       callback.invoke(null);
     }
 
    public void release(){
