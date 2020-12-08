@@ -2,6 +2,7 @@
 /* eslint-disable consistent-return */
 
 import moment from 'moment';
+import RNSF from 'react-native-fs';
 import { bitcoin } from '../../App';
 
 let utilsFuntions;
@@ -316,6 +317,7 @@ export default class CoreDatabase {
       });
 
       chat.forEach((msg) => {
+        console.warn('data', msg);
         this.db.delete(msg.messages);
       });
 
@@ -339,7 +341,15 @@ export default class CoreDatabase {
       try {
         const chat = this.db.objectForPrimaryKey('Chat', id);
         const messages = chat.messages.filter((data) => {
-          const result = obj.find((message) => message.id === data.id);
+          const result = obj.find(async (message) => {
+            if (message.id === data.id) {
+              if (message.file) {
+                RNSF.unlink(message.file.file).then(() => message);
+              } else {
+                return message;
+              }
+            }
+          });
 
           return result;
         });

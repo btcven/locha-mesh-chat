@@ -211,11 +211,9 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     marginBottom: 10
   },
-
   selected: {
     backgroundColor: 'rgba(255, 235, 59 , 0.5)'
   },
-
   receiveContainer: {
     width: '100%',
     alignItems: 'center',
@@ -250,7 +248,6 @@ const styles = StyleSheet.create({
   styleBody2: {
     flexDirection: 'column',
   },
-
   textStyle1: {
     paddingTop: 7,
     paddingLeft: 10,
@@ -258,7 +255,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     alignItems: 'center'
   },
-
   textStyle2: {
     paddingTop: 5,
     paddingBottom: 6,
@@ -272,10 +268,8 @@ const styles = StyleSheet.create({
     paddingTop: 2
   },
   timeStyle: {
-    paddingTop: 3,
+    paddingTop: 2,
     paddingLeft: 10,
-    paddingBottom: 6,
     fontSize: 12,
-    backgroundColor: 'red'
   }
 });

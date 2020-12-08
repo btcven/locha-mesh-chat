@@ -163,7 +163,6 @@ export const realoadBroadcastChat = (data) => ({
  */
 
 export const deleteChat = (obj, callback) => (dispatch) => {
-  console.warn(obj);
   database.deleteChatss(obj).then(() => {
     dispatch({
       type: ActionTypes.DELETE_MESSAGE,
@@ -198,6 +197,7 @@ export const cleanAllChat = (id) => async (dispatch) => {
  */
 
 export const sendMessageWithFile = (fromUID, data, path, base64) => (dispatch) => {
+  console.warn("execute");
   const uidChat = data.toUID ? data.toUID : 'broadcast';
   const saveDatabase = { ...data };
   saveDatabase.msg.file = path;
@@ -221,7 +221,7 @@ export const sendMessageWithFile = (fromUID, data, path, base64) => (dispatch) =
 };
 
 export const deleteMessages = (id, data, callback) => async (dispatch) => {
-  database.deleteMessage(id, data).then(() => {
+  database.deleteMessage(id, data).then((message) => {
     dispatch({
       type: ActionTypes.DELETE_SELECTED_MESSAGE,
       id,
