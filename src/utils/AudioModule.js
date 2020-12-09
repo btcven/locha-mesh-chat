@@ -6,6 +6,9 @@ export default class AudioRecoder {
     this.recoder = NativeModules.SoundMdoule;
     this.device = NativeModules.RNDeviceInfo;
     this.event = new NativeEventEmitter(this.recoder);
+
+    this.onCloseEmiter = null;
+    this.onProgressEmiter = null;
   }
 
   /**
@@ -63,7 +66,7 @@ export default class AudioRecoder {
    * @param {Callback} callback
    */
   onProgres = (callback) => {
-    this.event.addListener('onProgress', (seconds) => {
+    this.onProgressEmiter = this.event.addListener('onProgress', (seconds) => {
       callback(seconds);
     });
   }
@@ -73,8 +76,18 @@ export default class AudioRecoder {
    * @param {Callback} callback
    */
   onFinished = (callback) => {
-    this.event.addListener('onFinished', (file) => {
+    this.onCloseEmiter = this.event.addListener('onFinished', (file) => {
       callback(file);
     });
+  }
+
+
+  removeListener = () => {
+    if (this.onCloseEmiter) {
+      this.onCloseEmiter.remove();
+    }
+    if (this.onProgressEmiter) {
+      this.onProgressEmiter.remove();
+    }
   }
 }

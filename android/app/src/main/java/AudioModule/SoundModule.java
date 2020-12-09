@@ -217,6 +217,7 @@ public class SoundModule extends ReactContextBaseJavaModule {
 
     private  void sendEvent(String eventName, @NonNull WritableMap params ) {
         try {
+            Log.i(TAG, "sendEvent: " + eventName);
             context.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
                     .emit(eventName, params);
         } catch (Exception e){

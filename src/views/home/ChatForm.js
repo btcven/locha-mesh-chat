@@ -151,6 +151,14 @@ export default class ChatForm extends Component {
     this.state.moveText.setValue(value.__getValue());
   };
 
+
+  componentWillUnmount = () => {
+    audioRecorder.removeListener();
+    this.setState = () => {
+      return;
+    };
+  }
+
   render() {
     const { screenProps } = this.props;
     return (
