@@ -197,7 +197,6 @@ export const cleanAllChat = (id) => async (dispatch) => {
  */
 
 export const sendMessageWithFile = (fromUID, data, path, base64) => (dispatch) => {
-  console.warn("execute");
   const uidChat = data.toUID ? data.toUID : 'broadcast';
   const saveDatabase = { ...data };
   saveDatabase.msg.file = path;
@@ -221,7 +220,7 @@ export const sendMessageWithFile = (fromUID, data, path, base64) => (dispatch) =
 };
 
 export const deleteMessages = (id, data, callback) => async (dispatch) => {
-  database.deleteMessage(id, data).then((message) => {
+  database.deleteMessage(id, data).then(() => {
     dispatch({
       type: ActionTypes.DELETE_SELECTED_MESSAGE,
       id,

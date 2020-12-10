@@ -317,7 +317,6 @@ export default class CoreDatabase {
       });
 
       chat.forEach((msg) => {
-        console.warn('data', msg);
         this.db.delete(msg.messages);
       });
 
@@ -329,8 +328,20 @@ export default class CoreDatabase {
   cleanChat = (id) => new Promise((resolve) => {
     this.db.write(() => {
       const chat = this.db.objectForPrimaryKey('Chat', id);
+      const promise = new Promise((solve) => {
+        chat.messages.forEach(async (msg, index, array) => {
+          if (msg.file) {
+            await RNSF.unlink(msg.file.file);
+          }
+          if (index === array.length - 1) solve(array);
+        });
+      });
 
-      this.db.delete(chat.messages);
+      promise.then((array) => {
+        this.db.write(() => {
+          this.db.delete(array);
+        });
+      });
       resolve(true);
     });
   });
