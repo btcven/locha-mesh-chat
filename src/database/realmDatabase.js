@@ -316,14 +316,27 @@ export default class CoreDatabase {
         }
       });
 
-      chat.forEach((msg) => {
-        this.db.delete(msg.messages);
+      const promise = new Promise((solve) => {
+        chat.forEach(async (msg) => {
+          msg.messages.forEach(async (message, index, array) => {
+            if (message.file) {
+              await RNSF.unlink(message.file.file);
+            }
+            if (index === array.length - 1) solve(array);
+          });
+        });
       });
 
+      promise.then(() => {
+        this.db.write(() => {
+          chat.forEach((mes) => {
+            this.db.delete(mes.messages);
+          });
+        });
+      });
       resolve(obj);
     });
   });
-
 
   cleanChat = (id) => new Promise((resolve) => {
     this.db.write(() => {
