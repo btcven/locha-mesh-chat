@@ -4,6 +4,7 @@ import { ActionTypes } from '../constants';
 
 const AplicationState = {
   chat: [],
+  insideChat: [],
   chatService: false,
   peersConnected: [],
   broadcast: false,
@@ -39,21 +40,7 @@ export const chatReducer = (state = AplicationState, action) => {
     }
 
     case ActionTypes.NEW_MESSAGE: {
-      const chat = Object.values(state.chat);
-      const chatUID = action.payload.toUID ? action.payload.toUID : 'broadcast';
-      const chatFromUID = action.payload.fromUID;
-      const result = chat.findIndex(
-        (chatItem) => chatItem.toUID === chatUID
-          || chatItem.toUID === chatFromUID
-      );
-
-      const messages = Object.values(chat[result].messages);
-
-      chat[result].messages = messages.length
-        ? messages.concat(action.payload)
-        : [action.payload];
-
-      return { ...state, chat: chat.slice() };
+      return { ...state, chat: action.payload.slice() };
     }
 
     case ActionTypes.RELOAD_BROADCAST_CHAT: {
@@ -119,16 +106,6 @@ export const chatReducer = (state = AplicationState, action) => {
     }
 
     case ActionTypes.IN_VIEW: {
-      const index = Object.values(state.chat).findIndex((chat) => chat.toUID === action.payload);
-
-      if (index !== -1) {
-        state.chat[index] = {
-          ...state.chat[index],
-          queue: []
-        };
-
-        return { ...state, chat: Object.values(state.chat) };
-      }
       return state;
     }
 

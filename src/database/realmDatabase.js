@@ -18,7 +18,32 @@ export default class CoreDatabase {
   getUserData = () => new Promise((resolve) => {
     const user = this.db.objects('user');
 
-    resolve(user.slice(0, 1));
+    const chats = [];
+
+    const promise = new Promise((solve) => {
+      user[0].chats.slice(0, 15).forEach((msg, index, array) => {
+        chats.push({
+          fromUID: msg.fromUID,
+          toUID: msg.toUID,
+          timestamp: msg.timestamp,
+          queue: msg.queue,
+          messages: msg.messages.sorted('timestamp', true).slice(0, 1),
+        });
+
+        if (index === array.length - 1) solve();
+      });
+    });
+
+    promise.then(() => {
+      resolve({
+        uid: user[0].uid,
+        peerID: user[0].peerID,
+        name: user[0].name,
+        picture: user[0].picture,
+        contacts: user[0].contacts,
+        chats
+      });
+    });
   });
 
   writteUser = (obj) => new Promise((resolve, reject) => {
@@ -104,7 +129,7 @@ export default class CoreDatabase {
         const chat = this.db.objectForPrimaryKey('Chat', id);
         const notRead = this.converToString(chat.queue);
         chat.queue = [];
-        resolve(notRead);
+        resolve(chat.messages.slice(0, 50));
       } catch (err) {
         console.log('cancel unread', err);
       }
@@ -183,7 +208,7 @@ export default class CoreDatabase {
           status
         });
         chat.timestamp = time;
-        resolve({ file, time });
+        resolve(chat.messages.slice(0, 50));
       } catch (err) {
         // eslint-disable-next-line no-console
         console.warn(['en el setFile', err]);

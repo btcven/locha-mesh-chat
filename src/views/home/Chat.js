@@ -62,12 +62,12 @@ class Chat extends Component {
 
 
   componentDidMount = () => {
-    const chatSelected = this.props.chat[this.props.chatSelected.index].toUID;
+    const { params } = this.props.navigation.state;
     try {
-      const contactNodeAddress = this.props.navigation.state.params.nodeAddress;
-      this.props.setView(chatSelected, contactNodeAddress);
+      const contactNodeAddress = params.contacts.noneAddress;
+      this.props.setView(params.chatUID, contactNodeAddress);
     } catch (err) {
-      this.props.setView(chatSelected, null);
+      this.props.setView(params.chatUID, null);
     }
   };
 
@@ -289,12 +289,9 @@ class Chat extends Component {
   render() {
     const { navigation, screenProps } = this.props;
     const viewImages = this.state.imagesView.length !== 0;
-    const chatSelected = this.props.chat[this.props.chatSelected.index];
 
-    const messages = Object.values(chatSelected.messages).length
-      ? Object.values(chatSelected.messages).sort((
-        a, b
-      ) => new Date(b.timestamp) - new Date(a.timestamp))
+    const messages = Object.values(this.props.chat).length
+      ? Object.values(this.props.chat)
       : [];
 
     return (
@@ -347,7 +344,7 @@ class Chat extends Component {
 
 const mapStateToProps = (state) => ({
   userData: state.config,
-  chat: state.chats.chat,
+  chat: state.chats.insideChat,
   chatSelected: state.chats.seletedChat,
   forcedPause: state.chats.forcedPause,
   contact: Object.values(state.contacts.contacts)

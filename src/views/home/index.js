@@ -52,10 +52,8 @@ class index extends Component {
 
   selectedChat = (info, obj) => {
     if (this.state.selected.length === 0) {
-      const result = this.getContactInformation(obj);
-      const contacts = result.name === 'broadcast' ? undefined : result;
       this.props.selectedChat(obj);
-      this.props.navigation.push('chat', contacts);
+      this.props.navigation.push('chat', { contacts: obj, chatUID: obj.toUID });
       return;
     }
 
@@ -207,7 +205,7 @@ class index extends Component {
 
             if (messages.length !== 0 || (infoData.name === 'broadcast' && this.props.broadcast)) {
               const message = messages[messages.length - 1]
-                ? messages[messages.length - 1]
+                ? messages[0]
                 : broadcastInfo.lastMessage;
 
               //  getting last message

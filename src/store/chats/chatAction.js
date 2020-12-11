@@ -1,3 +1,4 @@
+/* eslint-disable no-shadow */
 
 import RNFS from 'react-native-fs';
 import { Platform, NativeModules } from 'react-native';
@@ -31,16 +32,7 @@ export const initialChat = (fromUID, data, status) => async (dispatch) => {
     }
     dispatch({
       type: ActionTypes.NEW_MESSAGE,
-      payload: {
-        name: undefined,
-        ...data,
-        fromUID,
-        time: res.time,
-        shippingTime: res.time,
-        msg: data.msg.text,
-        id: data.msgID,
-        status
-      }
+      payload: res
     });
   });
 };
@@ -68,17 +60,18 @@ export const getChat = (parse) => async (dispatch) => {
   const uidChat = parse.toUID === 'broadcast' ? parse.toUID : parse.fromUID;
   const name = infoMensagge ? infoMensagge.name : undefined;
   database.setMessage(uidChat, { ...parse, name }, 'delivered').then((res) => {
-    dispatch({
-      type: ActionTypes.NEW_MESSAGE,
-      payload: {
-        name,
-        ...parse,
-        msg: parse.msg.text,
-        id: parse.msgID,
-        file: res.file,
-        time: res.time
-      }
-    });
+    console.log("here123", res);
+    // dispatch({
+    //   type: ActionTypes.NEW_MESSAGE,
+    //   payload: {
+    //     name,
+    //     ...parse,
+    //     msg: parse.msg.text,
+    //     id: parse.msgID,
+    //     file: res.file,
+    //     time: res.time
+    //   }
+    // });
   });
 };
 
@@ -287,41 +280,31 @@ export const sendStatus = (data) => {
  * @returns {object}
  */
 
-export const setView = (idChat, nodeAddress) => async (dispatch) => {
+export const setView = (idChat, nodeAddress) => async (dispatch, getState) => {
   if (nodeAddress) {
     await chatService.dial(nodeAddress);
   }
 
   if (!idChat) {
-    dispatch({
-      type: ActionTypes.IN_VIEW,
-      payload: idChat
-    });
     return;
   }
   database.cancelUnreadMessages(idChat).then((res) => {
-    if (!process.env.JEST_WORKER_ID) {
-      // eslint-disable-next-line global-require
-      const store = require('..');
-      const state = store.default.getState();
-      if (idChat && res.length > 0) {
-        const chat = Object.values(state.chats.chat).find((itemChat) => itemChat.toUID === idChat);
-        // eslint-disable-next-line no-shadow
-        const sendStatus = {
-          toUID: chat.toUID,
-          timestamp: new Date().getTime(),
-          data: {
-            status: 'read',
-            msgID: res
-          },
-          type: messageType.STATUS
-        };
-        chatService.send(JSON.stringify(sendStatus));
-      }
-    }
+
+    const sendStatus = {
+      toUID: idChat,
+      timestamp: new Date().getTime(),
+      data: {
+        status: 'read',
+        msgID: res
+      },
+      type: messageType.STATUS
+    };
+    chatService.send(JSON.stringify(sendStatus));
+
     dispatch({
       type: ActionTypes.IN_VIEW,
-      payload: idChat
+      payload: idChat,
+      messages: res
     });
   });
 };
