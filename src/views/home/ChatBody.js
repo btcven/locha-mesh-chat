@@ -24,42 +24,33 @@ export default class ChatBody extends React.PureComponent {
     };
   }
 
-  componentDidMount = () => {
-    this.sound = new Sound(songs.song3.url, (error) => {
-      if (error) {
-        // eslint-disable-next-line no-console
-        console.warn('failed to load the sound', error);
-      }
-    });
-  };
-
   componentDidUpdate = (prevProps) => {
-    if (this.props.chats.length > 0) {
-      const rule1 = prevProps
-        ? this.props.chats.length !== prevProps.chats.length
-        : false;
+    // if (this.props.chats.length > 0) {
+    //   const rule1 = prevProps
+    //     ? this.props.chats.length !== prevProps.chats.length
+    //     : false;
 
-      const lastMessage = this.props.chats[0];
-      if (rule1) {
-        if (this.props.user.peerID !== lastMessage.fromUID) {
-          this.sound.setVolume(0.1).play();
-          const sendStatus = {
-            fromUID: this.props.user.peerID,
-            toUID: lastMessage.fromUID,
-            timestamp: new Date().getTime(),
-            data: {
-              status: 'read',
-              msgID: lastMessage.id
-            },
-            type: messageType.STATUS
-          };
+    //   const lastMessage = this.props.chats[0];
+    //   if (rule1) {
+    //     if (this.props.user.peerID !== lastMessage.fromUID) {
+    //       this.sound.setVolume(0.1).play();
+    //       const sendStatus = {
+    //         fromUID: this.props.user.peerID,
+    //         toUID: lastMessage.fromUID,
+    //         timestamp: new Date().getTime(),
+    //         data: {
+    //           status: 'read',
+    //           msgID: lastMessage.id
+    //         },
+    //         type: messageType.STATUS
+    //       };
 
-          if (lastMessage.toUID) {
-            this.props.sendReadMessageStatus(sendStatus);
-          }
-        }
-      }
-    }
+    //       if (lastMessage.toUID) {
+    //         this.props.sendReadMessageStatus(sendStatus);
+    //       }
+    //     }
+    //   }
+    // }
   };
 
   getContactInfo = (infoItem) => {

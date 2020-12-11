@@ -228,7 +228,6 @@ class Chat extends Component {
 
   componentWillUnmount = () => {
     this.props.setView(undefined);
-    clearInterval(this.interval);
   };
 
   sendFileWithImage = (data, callback) => {

@@ -5,6 +5,7 @@ import { ActionTypes } from '../constants';
 const AplicationState = {
   chat: [],
   insideChat: [],
+  view: null,
   chatService: false,
   peersConnected: [],
   broadcast: false,
@@ -40,23 +41,11 @@ export const chatReducer = (state = AplicationState, action) => {
     }
 
     case ActionTypes.NEW_MESSAGE: {
-      return { ...state, chat: action.payload.slice() };
+      return { ...state, insideChat: action.payload };
     }
 
     case ActionTypes.RELOAD_BROADCAST_CHAT: {
       return { ...state, chat: action.payload };
-    }
-
-    case ActionTypes.SELECTED_CHAT: {
-      const result = Object.values(
-        state.chat
-      ).findIndex(
-        (chat) => chat.toUID === action.payload.toUID
-      );
-      return {
-        ...state,
-        seletedChat: { index: result, id: state.chat[result].id }
-      };
     }
 
     case ActionTypes.DELETE_MESSAGE: {
@@ -106,7 +95,10 @@ export const chatReducer = (state = AplicationState, action) => {
     }
 
     case ActionTypes.IN_VIEW: {
-      return state;
+      return {
+        ...state,
+        insideChat: action.messages
+      };
     }
 
     case ActionTypes.SET_STATUS_MESSAGE: {

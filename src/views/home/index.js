@@ -52,7 +52,6 @@ class index extends Component {
 
   selectedChat = (info, obj) => {
     if (this.state.selected.length === 0) {
-      this.props.selectedChat(obj);
       this.props.navigation.push('chat', { contacts: obj, chatUID: obj.toUID });
       return;
     }

@@ -129,7 +129,7 @@ export default class CoreDatabase {
         const chat = this.db.objectForPrimaryKey('Chat', id);
         const notRead = this.converToString(chat.queue);
         chat.queue = [];
-        resolve(chat.messages.slice(0, 50));
+        resolve(chat.messages.sorted('timestamp', true).slice(0, 30));
       } catch (err) {
         console.log('cancel unread', err);
       }
@@ -208,7 +208,7 @@ export default class CoreDatabase {
           status
         });
         chat.timestamp = time;
-        resolve(chat.messages.slice(0, 50));
+        resolve(chat.messages.sorted('timestamp', true).slice(0, 50));
       } catch (err) {
         // eslint-disable-next-line no-console
         console.warn(['en el setFile', err]);

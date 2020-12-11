@@ -4,7 +4,7 @@ import RNFS from 'react-native-fs';
 import { Platform, NativeModules } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import { ActionTypes } from '../constants';
-import { notification, FileDirectory } from '../../utils/utils';
+import { FileDirectory } from '../../utils/utils';
 import { database, chatService } from '../../../App';
 import { messageType } from '../../utils/constans';
 
@@ -52,26 +52,20 @@ export const initialChat = (fromUID, data, status) => async (dispatch) => {
 export const getChat = (parse) => async (dispatch) => {
   let infoMensagge;
   if (!process.env.JEST_WORKER_ID) {
-    sendStatus(parse);
+    //  sendStatus(parse);
   }
   if (parse.msg.file) {
     parse.msg.file = await saveFile(parse.msg);
   }
+
+  // console.warn("aqui");
   const uidChat = parse.toUID === 'broadcast' ? parse.toUID : parse.fromUID;
   const name = infoMensagge ? infoMensagge.name : undefined;
   database.setMessage(uidChat, { ...parse, name }, 'delivered').then((res) => {
-    console.log("here123", res);
-    // dispatch({
-    //   type: ActionTypes.NEW_MESSAGE,
-    //   payload: {
-    //     name,
-    //     ...parse,
-    //     msg: parse.msg.text,
-    //     id: parse.msgID,
-    //     file: res.file,
-    //     time: res.time
-    //   }
-    // });
+    dispatch({
+      type: ActionTypes.NEW_MESSAGE,
+      payload: res
+    });
   });
 };
 
@@ -105,36 +99,12 @@ const saveFile = (obj) => new Promise((resolve) => {
     });
   } else {
     const base64File = obj.file;
-    const name = `AUDIO_${new Date().getTime()}`;
     const directory = `${FileDirectory}Audios/${Math.random(new Date().getTime())}.aac`;
     RNFS.writeFile(`${connectiveAddress}${directory}`, base64File, 'base64').then(() => {
       resolve(`${directory}`);
     });
   }
 });
-
-/**
- * @function
- * @description This function is executed every time a new message arrives
- * from the socket and saves it in the database.
- * @param {object} data Information about the message
- * @param {string} data.toUID address where the message will be sent
- * @param {string} data.fromUID uid who is sending the message
- * @param {object} data.msg  message content
- * @param {number} data.timestamp sent date
- * @param  {string} data.type type message
- * @returns {object}
- */
-
-export const selectedChat = (obj) => (dispatch) => {
-  if (!process.env.JEST_WORKER_ID) {
-    notification.cancelAll();
-  }
-  dispatch({
-    type: ActionTypes.SELECTED_CHAT,
-    payload: obj
-  });
-};
 
 /**
  * @function
@@ -280,26 +250,30 @@ export const sendStatus = (data) => {
  * @returns {object}
  */
 
-export const setView = (idChat, nodeAddress) => async (dispatch, getState) => {
+export const setView = (idChat, nodeAddress) => async (dispatch) => {
   if (nodeAddress) {
     await chatService.dial(nodeAddress);
   }
 
   if (!idChat) {
+    dispatch({
+      type: ActionTypes.IN_VIEW,
+      payload: idChat,
+      messages: []
+    });
     return;
   }
   database.cancelUnreadMessages(idChat).then((res) => {
-
-    const sendStatus = {
-      toUID: idChat,
-      timestamp: new Date().getTime(),
-      data: {
-        status: 'read',
-        msgID: res
-      },
-      type: messageType.STATUS
-    };
-    chatService.send(JSON.stringify(sendStatus));
+    // const sendStatus = {
+    //   toUID: idChat,
+    //   timestamp: new Date().getTime(),
+    //   data: {
+    //     status: 'read',
+    //     msgID: res
+    //   },
+    //   type: messageType.STATUS
+    // };
+    // chatService.send(JSON.stringify(sendStatus));
 
     dispatch({
       type: ActionTypes.IN_VIEW,
