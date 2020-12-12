@@ -70,16 +70,12 @@ export const chatReducer = (state = AplicationState, action) => {
       return { ...state, chat: Object.values(state.chat).slice() };
     }
     case ActionTypes.DELETE_SELECTED_MESSAGE: {
-      const chat = state.chat[state.seletedChat.index];
-      const messages = Object.values(chat.messages).filter((message) => {
+      const messages = state.insideChat.filter((message) => {
         const res = action.payload.find((payload) => message.id === payload.id);
-
         return !res;
       });
 
-      state.chat[state.seletedChat.index].messages = messages;
-
-      return { ...state, chat: Object.values(state.chat).slice() };
+      return { ...state, insideChat: messages };
     }
 
     case ActionTypes.UNREAD_MESSAGES: {

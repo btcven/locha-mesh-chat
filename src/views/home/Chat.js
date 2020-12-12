@@ -178,12 +178,13 @@ class Chat extends Component {
     const { selected } = this.state;
 
     Clipboard.setString(selected[this.state.selected.length - 1].msg);
+    this.setState({ selected: [] });
     toast('Mensaje copiado');
   };
 
   delete = () => {
-    const chatSelected = this.props.chat[this.props.chatSelected.index];
-    this.props.deleteMessages(chatSelected.toUID, this.state.selected, () => {
+    const { params } = this.props.navigation.state;
+    this.props.deleteMessages(params.chatUID, this.state.selected, () => {
       this.setState({ selected: [] });
     });
   };

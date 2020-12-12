@@ -183,14 +183,14 @@ export const sendMessageWithFile = (fromUID, data, path, base64) => (dispatch) =
 };
 
 export const deleteMessages = (id, data, callback) => async (dispatch) => {
-  database.deleteMessage(id, data).then(() => {
-    dispatch({
-      type: ActionTypes.DELETE_SELECTED_MESSAGE,
-      id,
-      payload: data
-    });
-    callback();
+  dispatch({
+    type: ActionTypes.DELETE_SELECTED_MESSAGE,
+    payload: data
   });
+  callback();
+  setTimeout(() => {
+    database.deleteMessage(id, data);
+  }, 10);
 };
 
 /**

@@ -390,27 +390,24 @@ export default class CoreDatabase {
       try {
         const chat = this.db.objectForPrimaryKey('Chat', id);
         const messages = chat.messages.filter((data) => {
-          const result = obj.find(async (message) => {
+          const result = obj.find((message) => {
             if (message.id === data.id) {
               if (message.file) {
                 RNSF.unlink(message.file.file).then(() => message);
-              } else {
                 return message;
               }
+              return message;
             }
           });
-
           return result;
         });
-
         this.db.delete(messages);
         resolve();
       } catch (error) {
-        // console.log(error);
+        console.warn(error);
       }
     });
   });
-
 
   unreadMessages = (id, idMessage) => new Promise((resolve) => {
     this.db.write(() => {
