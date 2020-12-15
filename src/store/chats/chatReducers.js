@@ -62,12 +62,7 @@ export const chatReducer = (state = AplicationState, action) => {
     }
 
     case ActionTypes.DELETE_ALL_MESSAGE: {
-      Object.values(state.chat).forEach((chat, key) => {
-        if (chat.toUID === action.payload) {
-          state.chat[key].messages = [];
-        }
-      });
-      return { ...state, chat: Object.values(state.chat).slice() };
+      return { ...state, insideChat: [] };
     }
     case ActionTypes.DELETE_SELECTED_MESSAGE: {
       const messages = state.insideChat.filter((message) => {
@@ -195,6 +190,12 @@ export const chatReducer = (state = AplicationState, action) => {
       return {
         ...state,
         forcedPause: action.payload
+      };
+    }
+
+    case ActionTypes.GET_MORE_MESSAGES: {
+      return {
+        ...state, insideChat: action.payload
       };
     }
 

@@ -1,3 +1,5 @@
+/* eslint-disable consistent-return */
+/* eslint-disable react/require-render-return */
 import React from 'react';
 import {
   View,
@@ -18,186 +20,188 @@ const TouchableList = Platform.select({
   android: () => TouchableNativeFeedback,
 })();
 
-export const ReceiveMessage = ({
-  onClick,
-  onSelected,
-  userInfo,
-  item,
-  contactInfo,
-  selected
-}) => (
-  <TouchableList
-    onLongPress={() => onSelected(item)}
-    onPress={() => onClick(item)}
-    style={{
-      marginVertical: 5,
-      minHeight: 70,
-      width: '100%',
-      alignContent: 'center',
-      flexDirection: 'row'
-    }}
-  >
-    <View style={[styles.receiveContainer, selected]}>
-      {item.toUID === 'broadcast' && !contactInfo && (
-      <Thumbnail
-        style={{
-          marginLeft: 5,
 
-        }}
-        source={{
-          uri: `${getIcon(item.fromUID)}`
-        }}
-      />
-      )}
+export default class Messages extends React.PureComponent {
+  render() {
+    const {
+      onClick,
+      onSelected,
+      userInfo,
+      item,
+      contactInfo,
+      selected,
+      view,
+      retry
+    } = this.props;
 
-      {item.toUID === 'broadcast' && contactInfo && (
-      <Thumbnail
-        style={{
-          marginLeft: 5,
-          marginTop: 5
-        }}
-        source={{
-          uri: `${userInfo.picture ? userInfo.picture : getIcon(item.fromUID)
-          }`
-        }}
-      />
-      )}
+    if (view === 'receive') {
+      return (
+        <TouchableList
+          onLongPress={() => onSelected(item)}
+          onPress={() => onClick(item)}
+          style={{
+            marginVertical: 5,
+            minHeight: 70,
+            width: '100%',
+            alignContent: 'center',
+            flexDirection: 'row'
+          }}
+        >
+          <View style={[styles.receiveContainer, selected]}>
+            {item.toUID === 'broadcast' && !contactInfo && (
+              <Thumbnail
+                style={{
+                  marginLeft: 5,
 
-      <View style={{ width: '90%', flexDirection: 'row' }}>
-        <View style={styles.textContent1}>
-          {item.name && (
-          <Text
-            style={{
-              paddingBottom: 7,
-              color: hashGenerateColort(item.fromUID)
-            }}
-          >
-            {userInfo.name}
-          </Text>
-          )}
-          <View style={{ minWidth: 110 }}>
-            {item.file && (
-            <View style={{ minWidth: '80%' }}>
-              <Image
-                style={{ width: '100%', height: 150 }}
+                }}
                 source={{
-                  resizeMode: 'contain',
-                  uri: item.file.file,
-                  cache: 'force-cache'
+                  uri: `${getIcon(item.fromUID)}`
                 }}
               />
-            </View>
             )}
-            <Text style={{ fontSize: 15 }}>{item.msg}</Text>
-          </View>
-          <Text
-            style={{
-              paddingTop: 3,
-              paddingLeft: 10,
-              paddingBottom: 6,
-              fontSize: 12,
-              textAlign: 'right'
-            }}
-          >
-            {Moment(Number(item.timestamp)).format('LT')}
-          </Text>
-        </View>
-      </View>
-    </View>
-  </TouchableList>
-);
 
-export const SenderMessage = ({
-  onClick,
-  onSelected,
-  item,
-  selected,
-  retry
-}) => {
-  const timeCreated = Moment(item.shippingTime);
-  const cancelled = !!((Moment().diff(timeCreated, 's') > 30 && item.status === 'pending')
-    || item.status === 'not sent');
-
-  const styleBody = item.msg.length < 20 ? styles.styleBody1 : styles.styleBody2;
-
-  const textStyle = item.msg.length < 20 ? styles.textStyle1 : styles.textStyle2;
-
-  const timeStyle = item.msg.length < 20 ? styles.timeStyle : styles.timeStyle2;
-  const iconName = item.toUID ? 'checkmark' : 'user-check';
-  const IconType = iconName === 'checkmark' ? 'Ionicons' : 'FontAwesome5';
-  return (
-    <TouchableList
-      underlayColor="#DDD"
-      style={{
-        marginVertical: 5,
-        width: '100%',
-        justifyContent: 'flex-end',
-        flexDirection: 'row'
-      }}
-      onLongPress={() => onSelected(item)}
-      onPress={() => onClick(item)}
-    >
-      <View style={[styles.senderContainer, selected]}>
-        <View style={styles.textContent2}>
-          {item.file && (
-            <View style={{ minWidth: '80%' }}>
-              <Image
-                style={{ width: '100%', height: 150 }}
+            {item.toUID === 'broadcast' && contactInfo && (
+              <Thumbnail
+                style={{
+                  marginLeft: 5,
+                  marginTop: 5
+                }}
                 source={{
-                  resizeMode: 'contain',
-                  uri: item.file.file,
-                  cache: 'force-cache'
+                  uri: `${userInfo.picture ? userInfo.picture : getIcon(item.fromUID)}`
                 }}
               />
-            </View>
-          )}
-          <View style={styleBody}>
-            <View>
-              <Text style={{ fontSize: 15 }}>{item.msg}</Text>
-            </View>
-            <View style={textStyle}>
-              <View style={{ flexDirection: 'row' }}>
-                <Text style={timeStyle}>
+            )}
+
+            <View style={{ width: '90%', flexDirection: 'row' }}>
+              <View style={styles.textContent1}>
+                {item.name && (
+                  <Text
+                    style={{
+                      paddingBottom: 7,
+                      color: hashGenerateColort(item.fromUID)
+                    }}
+                  >
+                    {userInfo.name}
+                  </Text>
+                )}
+                <View style={{ minWidth: 110 }}>
+                  {item.file && (
+                    <View style={{ minWidth: '80%' }}>
+                      <Image
+                        style={{ width: '100%', height: 150 }}
+                        source={{
+                          resizeMode: 'contain',
+                          uri: item.file.file,
+                          cache: 'force-cache'
+                        }}
+                      />
+                    </View>
+                  )}
+                  <Text style={{ fontSize: 15 }}>{item.msg}</Text>
+                </View>
+                <Text
+                  style={{
+                    paddingTop: 3,
+                    paddingLeft: 10,
+                    paddingBottom: 6,
+                    fontSize: 12,
+                    textAlign: 'right'
+                  }}
+                >
                   {Moment(Number(item.timestamp)).format('LT')}
                 </Text>
-                {item.status === 'pending' && !cancelled && (
-                  <Icon
-                    style={{ color: 'gray', fontSize: 15, marginLeft: 10, }}
-                    name="time"
-                  />
-                )}
-                {item.status === 'delivered' && (
-                  <Icon
-                    style={{ color: 'gray', fontSize: 15, marginLeft: 10 }}
-                    type={IconType}
-                    name={iconName}
-                  />
-                )}
-                {item.status === 'read' && (
-                  <Icon
-                    style={{ color: 'gray', fontSize: 15, marginLeft: 10 }}
-                    name="done-all"
-                  />
-                )}
-                {cancelled && (
-                  <TouchableOpacity onPress={() => retry(item)}>
-                    <Icon
-                      type="MaterialIcons"
-                      style={{
-                        color: 'gray', fontSize: 16, marginLeft: 10, marginTop: 2
-                      }}
-                      name="error"
-                    />
-                  </TouchableOpacity>
-                )}
               </View>
             </View>
           </View>
-        </View>
-      </View>
-    </TouchableList>
-  );
-};
+        </TouchableList>
+      );
+    } if (view === 'sender') {
+      const timeCreated = Moment(item.shippingTime);
+      const cancelled = !!((Moment().diff(timeCreated, 's') > 30 && item.status === 'pending')
+        || item.status === 'not sent');
+
+      const styleBody = item.msg.length < 20 ? styles.styleBody1 : styles.styleBody2;
+
+      const textStyle = item.msg.length < 20 ? styles.textStyle1 : styles.textStyle2;
+
+      const timeStyle = item.msg.length < 20 ? styles.timeStyle : styles.timeStyle2;
+      const iconName = item.toUID ? 'checkmark' : 'user-check';
+      const IconType = iconName === 'checkmark' ? 'Ionicons' : 'FontAwesome5';
+      return (
+        <TouchableList
+          underlayColor="#DDD"
+          style={{
+            marginVertical: 5,
+            width: '100%',
+            justifyContent: 'flex-end',
+            flexDirection: 'row'
+          }}
+          onLongPress={() => onSelected(item)}
+          onPress={() => onClick(item)}
+        >
+          <View style={[styles.senderContainer, selected]}>
+            <View style={styles.textContent2}>
+              {item.file && (
+                <View style={{ minWidth: '80%' }}>
+                  <Image
+                    style={{ width: '100%', height: 150 }}
+                    source={{
+                      resizeMode: 'contain',
+                      uri: item.file.file,
+                      cache: 'force-cache'
+                    }}
+                  />
+                </View>
+              )}
+              <View style={styleBody}>
+                <View>
+                  <Text style={{ fontSize: 15 }}>{item.msg}</Text>
+                </View>
+                <View style={textStyle}>
+                  <View style={{ flexDirection: 'row' }}>
+                    <Text style={timeStyle}>
+                      {Moment(Number(item.timestamp)).format('LT')}
+                    </Text>
+                    {item.status === 'pending' && !cancelled && (
+                      <Icon
+                        style={{ color: 'gray', fontSize: 15, marginLeft: 10, }}
+                        name="time"
+                      />
+                    )}
+                    {item.status === 'delivered' && (
+                      <Icon
+                        style={{ color: 'gray', fontSize: 15, marginLeft: 10 }}
+                        type={IconType}
+                        name={iconName}
+                      />
+                    )}
+                    {item.status === 'read' && (
+                      <Icon
+                        style={{ color: 'gray', fontSize: 15, marginLeft: 10 }}
+                        name="done-all"
+                      />
+                    )}
+                    {cancelled && (
+                      <TouchableOpacity onPress={() => retry(item)}>
+                        <Icon
+                          type="MaterialIcons"
+                          style={{
+                            color: 'gray', fontSize: 16, marginLeft: 10, marginTop: 2
+                          }}
+                          name="error"
+                        />
+                      </TouchableOpacity>
+                    )}
+                  </View>
+                </View>
+              </View>
+            </View>
+          </View>
+        </TouchableList>
+      );
+    }
+  }
+}
 
 const styles = StyleSheet.create({
   container: {

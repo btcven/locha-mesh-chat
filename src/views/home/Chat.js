@@ -18,7 +18,8 @@ import {
   sendReadMessageStatus,
   sendAgain,
   setNewDials,
-  stopPlaying
+  stopPlaying,
+  getMoreMessages
 } from '../../store/chats/chatAction';
 import { messageType } from '../../utils/constans';
 
@@ -89,7 +90,7 @@ class Chat extends Component {
    */
   cleanAllMessages = (close) => {
     const { screenProps } = this.props;
-    const chat = this.props.chat[this.props.chatSelected.index];
+    const { params } = this.props.navigation.state;
     Alert.alert(
       `${screenProps.t('Chats:titleDelete')}`,
       `${screenProps.t('Chats:deleteBody')}`,
@@ -101,7 +102,7 @@ class Chat extends Component {
         },
         {
           text: 'OK',
-          onPress: () => this.props.cleanAllChat(chat.toUID)
+          onPress: () => this.props.cleanAllChat(params.chatUID)
         }
       ],
       { cancelable: false }
@@ -325,6 +326,7 @@ class Chat extends Component {
             sendFileWithImage={this.sendFileWithImage}
             sendReadMessageStatus={this.props.sendReadMessageStatus}
             sendAgain={this.props.sendAgain}
+            getMoreMessages={this.props.getMoreMessages}
             screenProps={screenProps}
           />
           <ChatForm
@@ -360,5 +362,6 @@ export default connect(mapStateToProps, {
   sendAgain,
   verifyImage,
   stopPlaying,
-  setNewDials
+  setNewDials,
+  getMoreMessages
 })(Chat);

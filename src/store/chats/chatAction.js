@@ -142,11 +142,9 @@ export const deleteChat = (obj, callback) => (dispatch) => {
  */
 
 export const cleanAllChat = (id) => async (dispatch) => {
-  database.cleanChat(id).then(() => {
-    dispatch({
-      type: ActionTypes.DELETE_ALL_MESSAGE,
-      payload: id
-    });
+  database.cleanChat(id);
+  dispatch({
+    type: ActionTypes.DELETE_ALL_MESSAGE,
   });
 };
 
@@ -445,3 +443,14 @@ export const stopPlaying = (data) => ({
   type: ActionTypes.STOP_PLAYING,
   payload: data
 });
+
+export const getMoreMessages = (number) => (dispatch, getState) => {
+  const idView = getState().aplication.view;
+  console.warn("action", idView);
+  database.getMoreMessages(number, idView).then((newMessages) => {
+    dispatch({
+      type: ActionTypes.GET_MORE_MESSAGES,
+      payload: newMessages
+    });
+  });
+};

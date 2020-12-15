@@ -27,7 +27,7 @@ export default class CoreDatabase {
           toUID: msg.toUID,
           timestamp: msg.timestamp,
           queue: msg.queue,
-          messages: msg.messages.sorted('timestamp', true).slice(0, 1),
+          messages: msg.messages.sorted('timestamp', true).slice(0, 0),
         });
 
         if (index === array.length - 1) solve();
@@ -483,6 +483,20 @@ export default class CoreDatabase {
       result.picture = path;
       result.imageHash = imageHash;
       resolve();
+    });
+  })
+
+
+  getMoreMessages = (number, id) => new Promise((resolve) => {
+    this.db.write(() => {
+      try {
+        const moreMessage = this.db.objectForPrimaryKey('Chat', id);
+        resolve(moreMessage.messages
+          .sorted('timestamp', true)
+          .slice(0, number));
+      } catch (error) {
+        console.warn(error);
+      }
     });
   })
 }

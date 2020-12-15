@@ -1,9 +1,12 @@
-import React from 'react';
+/* eslint-disable class-methods-use-this */
+/* eslint-disable react/jsx-no-bind */
+/* eslint-disable react/sort-comp */
+import React, { useCallback } from 'react';
 import { View, StyleSheet, FlatList } from 'react-native';
 import Sound from 'react-native-sound';
 import FileModal from './fileModal';
-import { ReceiveMessage, SenderMessage } from './Messages';
-import { songs, messageType } from '../../utils/constans';
+import Messages from './Messages';
+// import { songs, messageType } from '../../utils/constans';
 import ImagesView from './imagesView';
 import SoundMessage from './SoundMessage';
 
@@ -20,6 +23,7 @@ export default class ChatBody extends React.PureComponent {
     super(props);
     this.state = {
       selected: [],
+      columnNumber: 50,
       imagesView: []
     };
   }
@@ -91,6 +95,60 @@ export default class ChatBody extends React.PureComponent {
     this.setState({ imagesView: [] });
   };
 
+
+  handleMoreRequest = () => {
+    const columns = this.state.columnNumber + 50;
+    this.setState({
+      columnNumber: columns
+    });
+    this.props.getMoreMessages(columns);
+  }
+
+
+  renderItem({ item }) {
+    const contactInfo = this.getContactInfo(item);
+    const selected = this.props.selected.length > 0 ? this.verifySelected(item) : null;
+    const userInfo = contactInfo || item;
+    const file = item.file ? item.file.fileType : undefined;
+
+    const view = this.props.user.peerID === item.fromUID ? 'sender' : 'receive';
+
+    if (file !== 'audio') {
+      return (
+        <Messages
+          {...this.props}
+          item={item}
+          contactInfo={contactInfo}
+          userInfo={userInfo}
+          selected={selected}
+          index={item.key}
+          retry={this.retry}
+          view={view}
+        >
+          {item.key}
+        </Messages>
+      );
+    }
+    return (
+      <SoundMessage
+        {...this.props}
+        item={this.props.chats[item.key]}
+        contactInfo={contactInfo}
+        userInfo={userInfo}
+        selected={selected}
+        index={item.key}
+      >
+        {item.key}
+      </SoundMessage>
+    );
+  }
+
+
+  getKey(item, index) {
+    return index.toString();
+  }
+
+
   render() {
     const { screenProps } = this.props;
     const { imagesView } = this.state;
@@ -119,49 +177,11 @@ export default class ChatBody extends React.PureComponent {
           inverted
           contentContainerStyle={styles.container}
           data={this.props.chats}
-          keyExtractor={(item, index) => index.toString()}
-          renderItem={({ item, index }) => {
-            const contactInfo = this.getContactInfo(item);
-            const selected = this.props.selected.length > 0 ? this.verifySelected(item) : null;
-            const userInfo = contactInfo || item;
-            const file = item.file ? item.file.fileType : undefined;
-
-            const rule = this.props.user.peerID === item.fromUID;
-
-            if (!rule && file !== 'audio') {
-              return (
-                <ReceiveMessage
-                  {...this.props}
-                  item={item}
-                  contactInfo={contactInfo}
-                  userInfo={userInfo}
-                  selected={selected}
-                  index={index}
-                />
-              );
-            } if (rule && file !== 'audio') {
-              return (
-                <SenderMessage
-                  {...this.props}
-                  item={item}
-                  selected={selected}
-                  index={index}
-                  retry={this.retry}
-                />
-              );
-            }
-            return (
-              <SoundMessage
-                {...this.props}
-                item={this.props.chats[index]}
-                rule={rule}
-                contactInfo={contactInfo}
-                userInfo={userInfo}
-                selected={selected}
-                index={index}
-              />
-            );
-          }}
+          onEndReached={this.handleMoreRequest}
+          removeClippedSubviews
+          onEndReachedThreshold={2}
+          keyExtractor={this.getKey}
+          renderItem={this.renderItem.bind(this)}
         />
       </View>
     );

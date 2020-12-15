@@ -35,7 +35,6 @@ export default class SoundMessage extends PureComponent {
       rule,
       index,
       chats,
-      player
     } = this.props;
     if (!rule) {
       return (
