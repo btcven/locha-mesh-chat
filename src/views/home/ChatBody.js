@@ -85,10 +85,6 @@ export default class ChatBody extends React.PureComponent {
     this.props.sendAgain(retryItem);
   };
 
-  closeView = () => {
-    this.setState({ imagesView: [] });
-  };
-
 
   handleMoreRequest = () => {
     const columns = this.state.columnNumber + 50;
@@ -109,7 +105,6 @@ export default class ChatBody extends React.PureComponent {
     if (file !== 'audio') {
       return (
         <Messages
-          {...this.props}
           item={item}
           contactInfo={contactInfo}
           userInfo={userInfo}
@@ -124,8 +119,7 @@ export default class ChatBody extends React.PureComponent {
     }
     return (
       <SoundMessage
-        {...this.props}
-        item={this.props.chats[item.key]}
+        item={item}
         contactInfo={contactInfo}
         userInfo={userInfo}
         selected={selected}
@@ -170,7 +164,7 @@ export default class ChatBody extends React.PureComponent {
           sendFileWithImage={this.props.sendFileWithImage}
           open={viewImages}
           images={imagesView}
-          close={this.closeView}
+          close={this.props.closeView}
           screenProps={screenProps}
         />
 

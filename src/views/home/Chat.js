@@ -199,10 +199,10 @@ class Chat extends Component {
    */
 
   openFileModal = () => {
-    // if (!this.props.forcedPause) {
-    //   this.props.stopPlaying(true);
-    // }
     this.setState({ fileModal: true });
+    if (!this.props.forcedPause) {
+      this.props.stopPlaying(true);
+    }
   };
 
   /**
@@ -212,10 +212,10 @@ class Chat extends Component {
    */
 
   closeFileModal = () => {
+    this.setState({ fileModal: false });
     if (this.props.forcedPause) {
       this.props.stopPlaying(false);
     }
-    this.setState({ fileModal: false });
   };
 
   /**
@@ -292,6 +292,10 @@ class Chat extends Component {
   }
 
 
+  closeView = () => {
+    this.setState({ imagesView: [] });
+  };
+
   render() {
     const { navigation, screenProps } = this.props;
     const viewImages = this.state.imagesView.length !== 0;
@@ -336,6 +340,7 @@ class Chat extends Component {
             close={this.closeFileModal}
             open={this.state.fileModal}
             sendFileWithImage={this.sendFileWithImage}
+            closeView={this.closeView}
             sendReadMessageStatus={this.props.sendReadMessageStatus}
             sendAgain={this.props.sendAgain}
             getMoreMessages={this.props.getMoreMessages}

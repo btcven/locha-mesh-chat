@@ -166,16 +166,7 @@ export const sendMessageWithFile = (fromUID, data, path, base64) => (dispatch) =
     chatService.send(JSON.stringify(saveDatabase));
     dispatch({
       type: ActionTypes.NEW_MESSAGE,
-      payload: {
-        name: undefined,
-        ...data,
-        fromUID,
-        msg: data.msg.text,
-        id: data.msgID,
-        file: res.file,
-        shippingTime: res.time,
-        status: 'pending'
-      }
+      payload: res
     });
   });
 };

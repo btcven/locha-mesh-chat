@@ -33,7 +33,6 @@ export default class FileModal extends Component {
    */
 
   getPhotosFromGallery = () => {
-    const imageArray = [];
     ImagePicker.openPicker({
       includeBase64: true,
       width: 400,
@@ -41,16 +40,17 @@ export default class FileModal extends Component {
       cropping: true
     }).then((image) => {
       const name = `IMG_${new Date().getTime()}`;
-      const newPath = `${FileDirectory}/Pictures/IMG_${name}.jpg`;
+      const newPath = `file://${FileDirectory}/Pictures/IMG_${name}.jpg`;
       RNFS.moveFile(image.path, newPath).then(() => {
-        imageArray.push({
-          url: newPath,
-          base64: image.data,
-          name,
-          width: Dimensions.get('window').width
-        });
-        console.warn("other");
-        this.props.setImageView(imageArray);
+        const imagesView = [
+          {
+            url: newPath,
+            base64: image.data,
+            name,
+            width: Dimensions.get('window').width
+          }
+        ];
+        this.props.setImageView(imagesView);
         this.props.close();
       });
     });
@@ -70,7 +70,6 @@ export default class FileModal extends Component {
       cropping: true,
       includeBase64: true
     }).then((image) => {
-      console.warn('aquii',);
       const name = `IMG_${new Date().getTime()}`;
       const newPath = `file://${FileDirectory}/Pictures/IMG_${name}.jpg`;
       RNFS.moveFile(image.path, newPath).then(() => {
