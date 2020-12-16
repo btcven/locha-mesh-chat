@@ -22,7 +22,7 @@ import {
   getMoreMessages
 } from '../../store/chats/chatAction';
 import { messageType } from '../../utils/constans';
-
+import FileModal from './fileModal';
 import ImagesView from './imagesView';
 import { bitcoin } from '../../../App';
 
@@ -199,9 +199,9 @@ class Chat extends Component {
    */
 
   openFileModal = () => {
-    if (!this.props.forcedPause) {
-      this.props.stopPlaying(true);
-    }
+    // if (!this.props.forcedPause) {
+    //   this.props.stopPlaying(true);
+    // }
     this.setState({ fileModal: true });
   };
 
@@ -287,6 +287,11 @@ class Chat extends Component {
     this.setState({ imagesView: [] });
   };
 
+  setImageView = (imageArray) => {
+    this.setState({ imagesView: imageArray });
+  }
+
+
   render() {
     const { navigation, screenProps } = this.props;
     const viewImages = this.state.imagesView.length !== 0;
@@ -305,6 +310,13 @@ class Chat extends Component {
             screenProps={screenProps}
           />
         )}
+        <FileModal
+          open={this.state.fileModal}
+          close={this.closeFileModal}
+          sendFileWithImage={this.sendFileWithImage}
+          screenProps={screenProps}
+          setImageView={this.setImageView}
+        />
         <Header
           {...this.props}
           menu={this.state.menu}
@@ -328,6 +340,7 @@ class Chat extends Component {
             sendAgain={this.props.sendAgain}
             getMoreMessages={this.props.getMoreMessages}
             screenProps={screenProps}
+            imagesView={this.state.imagesView}
           />
           <ChatForm
             user={this.props.userData}

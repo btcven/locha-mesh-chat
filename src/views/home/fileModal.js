@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Modal from 'react-native-modal';
 import {
-  View, Text, TouchableOpacity, Dimensions, NativeModules
+  View, Text, TouchableOpacity, Dimensions,
 } from 'react-native';
 import { Thumbnail } from 'native-base';
 import ImagePicker from 'react-native-image-crop-picker';
@@ -41,7 +41,7 @@ export default class FileModal extends Component {
       cropping: true
     }).then((image) => {
       const name = `IMG_${new Date().getTime()}`;
-      const newPath = `file://${FileDirectory}/Pictures/IMG_${name}.jpg`;
+      const newPath = `${FileDirectory}/Pictures/IMG_${name}.jpg`;
       RNFS.moveFile(image.path, newPath).then(() => {
         imageArray.push({
           url: newPath,
@@ -49,6 +49,7 @@ export default class FileModal extends Component {
           name,
           width: Dimensions.get('window').width
         });
+        console.warn("other");
         this.props.setImageView(imageArray);
         this.props.close();
       });
@@ -69,6 +70,7 @@ export default class FileModal extends Component {
       cropping: true,
       includeBase64: true
     }).then((image) => {
+      console.warn('aquii',);
       const name = `IMG_${new Date().getTime()}`;
       const newPath = `file://${FileDirectory}/Pictures/IMG_${name}.jpg`;
       RNFS.moveFile(image.path, newPath).then(() => {

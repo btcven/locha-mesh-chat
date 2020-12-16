@@ -1,10 +1,9 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable react/jsx-no-bind */
 /* eslint-disable react/sort-comp */
-import React, { useCallback } from 'react';
+import React from 'react';
 import { View, StyleSheet, FlatList } from 'react-native';
-import Sound from 'react-native-sound';
-import FileModal from './fileModal';
+// import Sound from 'react-native-sound';
 import Messages from './Messages';
 // import { songs, messageType } from '../../utils/constans';
 import ImagesView from './imagesView';
@@ -24,6 +23,7 @@ export default class ChatBody extends React.PureComponent {
     this.state = {
       selected: [],
       columnNumber: 50,
+      scroll: 0,
       imagesView: []
     };
   }
@@ -85,12 +85,6 @@ export default class ChatBody extends React.PureComponent {
     this.props.sendAgain(retryItem);
   };
 
-  setImageView = (imageArray) => {
-    setTimeout(() => {
-      this.setState({ imagesView: imageArray });
-    }, 200);
-  }
-
   closeView = () => {
     this.setState({ imagesView: [] });
   };
@@ -103,7 +97,6 @@ export default class ChatBody extends React.PureComponent {
     });
     this.props.getMoreMessages(columns);
   }
-
 
   renderItem({ item }) {
     const contactInfo = this.getContactInfo(item);
@@ -149,22 +142,30 @@ export default class ChatBody extends React.PureComponent {
   }
 
 
+  onScroll(e) {
+    if (this.state.scroll < e.nativeEvent.contentOffset.y) {
+      this.setState({
+        scroll: e.nativeEvent.contentOffset.y
+      });
+    }
+
+    const halfScroll = this.state.scroll / 2;
+    if (e.nativeEvent.contentOffset.y <= halfScroll && this.state.columnNumber > 100) {
+      const halfColumnNumbers = this.state.columnNumber / 2;
+      this.setState({
+        scroll: parseInt(halfScroll, 10),
+        columnNumber: halfColumnNumbers
+      });
+      this.props.getMoreMessages(parseInt(this.state.columnNumber / 2, 10));
+    }
+  }
+
   render() {
-    const { screenProps } = this.props;
-    const { imagesView } = this.state;
+    const { screenProps, imagesView } = this.props;
+
     const viewImages = imagesView.length !== 0;
     return (
       <View style={{ flex: 1 }}>
-        {this.props.open && (
-          <FileModal
-            open={this.props.open}
-            close={this.props.close}
-            sendFileWithImage={this.props.sendFileWithImage}
-            screenProps={screenProps}
-            setImageView={this.setImageView}
-          />
-        )}
-
         <ImagesView
           sendFileWithImage={this.props.sendFileWithImage}
           open={viewImages}
@@ -179,8 +180,9 @@ export default class ChatBody extends React.PureComponent {
           data={this.props.chats}
           onEndReached={this.handleMoreRequest}
           removeClippedSubviews
-          onEndReachedThreshold={2}
+          onEndReachedThreshold={0.1}
           keyExtractor={this.getKey}
+          onScroll={this.onScroll.bind(this)}
           renderItem={this.renderItem.bind(this)}
         />
       </View>

@@ -48,6 +48,7 @@ export default class App extends React.Component {
 
   render() {
     const { screenProps } = this.props;
+    console.warn(this.props.images);
     return (
       <Modal
         visible={this.props.open}

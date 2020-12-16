@@ -446,7 +446,6 @@ export const stopPlaying = (data) => ({
 
 export const getMoreMessages = (number) => (dispatch, getState) => {
   const idView = getState().aplication.view;
-  console.warn("action", idView);
   database.getMoreMessages(number, idView).then((newMessages) => {
     dispatch({
       type: ActionTypes.GET_MORE_MESSAGES,
