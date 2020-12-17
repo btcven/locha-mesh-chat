@@ -79,10 +79,7 @@ export default class ChatBody extends React.PureComponent {
   };
 
   retry = (retryItem) => {
-    // eslint-disable-next-line no-param-reassign
-    retryItem.shippingTime = new Date().getTime();
-
-    this.props.sendAgain(retryItem);
+    this.props.sendAgain(retryItem, new Date().getTime());
   };
 
 

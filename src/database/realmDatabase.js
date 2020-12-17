@@ -440,23 +440,19 @@ export default class CoreDatabase {
     });
   });
 
-  updateMessage = (message) => new Promise((resolve) => {
+  updateMessage = (message, time) => new Promise((resolve) => {
     this.db.write(() => {
-      try {
-        this.db.create(
-          'Message',
-          {
-            ...message,
-            status: 'pending'
-          },
-          true
-        );
-        const msg = this.db.objectForPrimaryKey('Message', message.id);
-        resolve(msg);
-      } catch (err) {
-        // eslint-disable-next-line no-console
-        console.log('in the cath', err);
-      }
+      this.db.create(
+        'Message',
+        {
+          id: message.id,
+          status: 'pending',
+          shippingTime: time,
+        },
+        true
+      );
+      const msg = this.db.objectForPrimaryKey('Message', message.id);
+      resolve(msg);
     });
   });
 

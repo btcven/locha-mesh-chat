@@ -48,7 +48,7 @@ export const restoreAccountWithPin = (pin, callback) => async (dispatch) => {
   const shaPing = await bitcoin.sha256(pin);
   database.restoreWithPin(shaPing).then(async (data) => {
     bitcoin.createWallet(data.seed[0].seed);
-    await chatService.startService();
+    // await chatService.startService();
     const broadcast = await AsyncStorage.getItem('broadcast');
     callback(true);
     dispatch(writeAction(data.user));

@@ -102,8 +102,7 @@ export const chatReducer = (state = AplicationState, action) => {
         (chat) => chat.id === action.payload.id
       );
 
-      state.insideChat[index].timestamp = action.payload.timestamp;
-      state.insideChat[index].status = 'pending';
+      state.insideChat[index] = action.payload;
       return { ...state, insideChat: state.insideChat.slice() };
     }
 

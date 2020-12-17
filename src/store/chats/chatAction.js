@@ -278,8 +278,9 @@ export const sendReadMessageStatus = (sendStatus) => () => {
   chatService.send(JSON.stringify(sendStatus));
 };
 
-export const sendAgain = (message) => (dispatch) => {
-  database.updateMessage(message).then((res) => {
+export const sendAgain = (message, sendAgain) => (dispatch) => {
+  database.updateMessage(message, sendAgain).then((res) => {
+    console.log("paso el warn", res);
     const sendObject = {
       toUID: res.toUID,
       msg: {
@@ -293,7 +294,7 @@ export const sendAgain = (message) => (dispatch) => {
     chatService.send(JSON.stringify(sendObject));
     dispatch({
       type: ActionTypes.SEND_AGAIN,
-      payload: message
+      payload: res
     });
   });
 };
