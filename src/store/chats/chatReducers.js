@@ -93,55 +93,18 @@ export const chatReducer = (state = AplicationState, action) => {
     }
 
     case ActionTypes.SET_STATUS_MESSAGE: {
-      try {
-        const index = Object.values(
-          state.chat
-        ).findIndex(
-          (chat) => chat.toUID === action.payload.fromUID
-        );
-
-        if (Array.isArray(action.payload.data.msgID)) {
-          // eslint-disable-next-line array-callback-return
-          action.payload.data.msgID.map((id) => {
-            const messageIndex = Object.values(
-              state.chat[index].messages
-            ).findIndex((message) => message.id === id);
-
-            state.chat[index].messages[messageIndex].status = action.payload.data.status;
-          });
-        } else {
-          const messageIndex = Object.values(
-            state.chat[index].messages
-          ).findIndex((message) => message.id === action.payload.data.msgID);
-
-          state.chat[index].messages[messageIndex].status = action.payload.data.status;
-        }
-
-        return { ...state, chat: state.chat.slice() };
-      } catch (err) {
-        const messageIndex = Object.values(state.chat[0].messages).findIndex(
-          (message) => message.id === action.payload.data.msgID
-        );
-
-        state.chat[0].messages[messageIndex].status = action.payload.data.status;
-
-        return { ...state, chat: state.chat.slice() };
-      }
+      state.insideChat[0] = action.payload;
+      return { ...state, insideChat: state.insideChat.slice() };
     }
 
     case ActionTypes.SEND_AGAIN: {
-      let index = Object.values(
-        state.chat
-      ).findIndex(
-        (chat) => chat.toUID === action.payload.toUID
+      const index = state.insideChat.findIndex(
+        (chat) => chat.id === action.payload.id
       );
-      index = index === -1 ? 0 : index;
-      const messageIndex = Object.values(state.chat[index].messages).findIndex(
-        (message) => message.id === action.payload.id
-      );
-      state.chat[index].messages[messageIndex].timestamp = action.payload.timestamp;
-      state.chat[index].messages[messageIndex].status = 'pending';
-      return { ...state, chat: state.chat.slice() };
+
+      state.insideChat[index].timestamp = action.payload.timestamp;
+      state.insideChat[index].status = 'pending';
+      return { ...state, insideChat: state.insideChat.slice() };
     }
 
     case ActionTypes.UPDATE_STATE: {

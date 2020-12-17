@@ -52,13 +52,12 @@ export const initialChat = (fromUID, data, status) => async (dispatch) => {
 export const getChat = (parse) => async (dispatch) => {
   let infoMensagge;
   if (!process.env.JEST_WORKER_ID) {
-    //  sendStatus(parse);
+    sendStatus(parse);
   }
   if (parse.msg.file) {
     parse.msg.file = await saveFile(parse.msg);
   }
 
-  // console.warn("aqui");
   const uidChat = parse.toUID === 'broadcast' ? parse.toUID : parse.fromUID;
   const name = infoMensagge ? infoMensagge.name : undefined;
   database.setMessage(uidChat, { ...parse, name }, 'delivered').then((res) => {
@@ -70,10 +69,10 @@ export const getChat = (parse) => async (dispatch) => {
 };
 
 export const setStatusMessage = (statusData) => async (dispatch) => {
-  database.addStatusOnly(statusData).then(() => {
+  database.addStatusOnly(statusData).then((res) => {
     dispatch({
       type: ActionTypes.SET_STATUS_MESSAGE,
-      payload: statusData
+      payload: res
     });
   });
 };
@@ -99,7 +98,7 @@ const saveFile = (obj) => new Promise((resolve) => {
     });
   } else {
     const base64File = obj.file;
-    const directory = `${FileDirectory}Audios/${Math.random(new Date().getTime())}.aac`;
+    const directory = `${FileDirectory}/Audios/${Math.random(new Date().getTime())}.aac`;
     RNFS.writeFile(`${connectiveAddress}${directory}`, base64File, 'base64').then(() => {
       resolve(`${directory}`);
     });
@@ -124,7 +123,6 @@ export const realoadBroadcastChat = (data) => ({
  * @param {obj} obj
  * @param {callback} callback
  */
-
 export const deleteChat = (obj, callback) => (dispatch) => {
   database.deleteChatss(obj).then(() => {
     dispatch({

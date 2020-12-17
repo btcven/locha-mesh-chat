@@ -101,10 +101,11 @@ export default class ChatBody extends React.PureComponent {
     const file = item.file ? item.file.fileType : undefined;
 
     const view = this.props.user.peerID === item.fromUID ? 'sender' : 'receive';
-
     if (file !== 'audio') {
       return (
         <Messages
+          onClick={this.props.onClick}
+          onSelected={this.props.onSelected}
           item={item}
           contactInfo={contactInfo}
           userInfo={userInfo}
@@ -119,9 +120,12 @@ export default class ChatBody extends React.PureComponent {
     }
     return (
       <SoundMessage
+        onClick={this.props.onClick}
+        onSelected={this.props.onSelected}
         item={item}
         contactInfo={contactInfo}
         userInfo={userInfo}
+        view={view}
         selected={selected}
         index={item.key}
       >
@@ -130,11 +134,9 @@ export default class ChatBody extends React.PureComponent {
     );
   }
 
-
   getKey(item, index) {
     return index.toString();
   }
-
 
   onScroll(e) {
     if (this.state.scroll < e.nativeEvent.contentOffset.y) {

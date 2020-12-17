@@ -19,7 +19,6 @@ import { messageType } from '../../utils/constans';
 import { bitcoin, audioRecorder } from '../../../App';
 
 /**
- *
  * @export
  * @class ChatForm
  * @description component where is the form to write the message send notes from you and files
@@ -122,9 +121,7 @@ export default class ChatForm extends Component {
 
   send = async () => {
     const { user, navigation, setChat } = this.props;
-
     const toUID = navigation.params.chatUID;
-
     const sendObject = {
       toUID,
       msg: {

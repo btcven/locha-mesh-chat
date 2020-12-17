@@ -292,10 +292,6 @@ class Chat extends Component {
   }
 
 
-  closeView = () => {
-    this.setState({ imagesView: [] });
-  };
-
   render() {
     const { navigation, screenProps } = this.props;
     const viewImages = this.state.imagesView.length !== 0;

@@ -19,7 +19,6 @@ import ChatService from './chatService';
  * @module Utils
  */
 
-
 export const getChatserviceInstance = () => new ChatService();
 
 export const notification = new NotifService();
@@ -107,7 +106,6 @@ export const notifyRedirect = (data) => {
  * is activated when a new message is received filters the data necessary for the notification
  * @param {object} res
  */
-
 export const onNotification = (res) => {
   const state = store.getState();
   const view = res.fromUID;

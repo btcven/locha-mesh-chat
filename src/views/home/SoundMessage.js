@@ -32,11 +32,11 @@ export default class SoundMessage extends PureComponent {
       item,
       contactInfo,
       selected,
-      rule,
+      view,
       index,
-      chats,
     } = this.props;
-    if (!rule) {
+    console.log('props', this.props);
+    if (view === 'receive') {
       return (
         <TouchableList
           key={index}
@@ -100,40 +100,38 @@ export default class SoundMessage extends PureComponent {
         </TouchableList>
       );
     }
-    if (item.file.file === chats[index].file.file) {
-      return (
-        <TouchableList
-          key={index}
-          underlayColor="#DDD"
-          useForeground
-          style={{
-            marginVertical: 5,
-            width: '100%',
-            justifyContent: 'flex-end',
-            flexDirection: 'row'
-          }}
-          onLongPress={() => onSelected(item)}
-          onPress={() => onClick(item)}
-        >
-          <View style={[styles.senderContainer, selected]}>
-            <View style={styles.textContent2}>
-              <Player path={item.file.file} index={index} />
-              <Text
-                style={{
-                  paddingTop: 7,
-                  paddingLeft: 5,
-                  paddingBottom: 6,
-                  fontSize: 12,
-                  textAlign: 'right'
-                }}
-              >
-                {Moment(Number(item.timestamp)).format('LT')}
-              </Text>
-            </View>
+    return (
+      <TouchableList
+        key={index}
+        underlayColor="#DDD"
+        useForeground
+        style={{
+          marginVertical: 5,
+          width: '100%',
+          justifyContent: 'flex-end',
+          flexDirection: 'row'
+        }}
+        onLongPress={() => onSelected(item)}
+        onPress={() => onClick(item)}
+      >
+        <View style={[styles.senderContainer, selected]}>
+          <View style={styles.textContent2}>
+            <Player path={item.file.file} index={index} />
+            <Text
+              style={{
+                paddingTop: 7,
+                paddingLeft: 5,
+                paddingBottom: 6,
+                fontSize: 12,
+                textAlign: 'right'
+              }}
+            >
+              {Moment(Number(item.timestamp)).format('LT')}
+            </Text>
           </View>
-        </TouchableList>
-      );
-    }
+        </View>
+      </TouchableList>
+    );
   }
 }
 

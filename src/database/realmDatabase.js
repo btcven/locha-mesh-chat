@@ -433,16 +433,9 @@ export default class CoreDatabase {
         );
         message.status = eventStatus.data.status;
 
-        resolve();
+        resolve(message);
       } catch (err) {
-        if (Array.isArray(eventStatus.data.msgID)) {
-          // eslint-disable-next-line array-callback-return
-          eventStatus.data.msgID.map((id) => {
-            const message = this.db.objectForPrimaryKey('Message', id);
-            message.status = eventStatus.data.status;
-          });
-          resolve();
-        }
+        console.warn('error', err);
       }
     });
   });
