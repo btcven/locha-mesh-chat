@@ -49,10 +49,10 @@ export const initialChat = (fromUID, data, status) => async (dispatch) => {
  * @param  {string} data.type type message
  * @returns {object}
  */
-export const getChat = (parse) => async (dispatch) => {
+export const getChat = (parse) => async (dispatch, getState) => {
   let infoMensagge;
   if (!process.env.JEST_WORKER_ID) {
-    sendStatus(parse);
+    sendStatus(parse, getState);
   }
   if (parse.msg.file) {
     parse.msg.file = await saveFile(parse.msg);
@@ -197,12 +197,7 @@ export const messageQueue = (index, id, view) => async (dispatch) => {
   });
 };
 
-
-export const sendStatus = (data) => {
-  // eslint-disable-next-line global-require
-  const store = require('..');
-  const state = store.default.getState();
-  // eslint-disable-next-line no-shadow
+export const sendStatus = (data, state) => {
   const sendStatus = {
     timestamp: new Date().getTime(),
     data: {
@@ -215,18 +210,8 @@ export const sendStatus = (data) => {
     sendStatus.toUID = 'broadcast';
     chatService.send(JSON.stringify(sendStatus));
   } else {
-    try {
-      const contacts = Object.values(state.contacts.contacts);
-      contacts.forEach((contact) => {
-        if (data.fromUID === contact.uid) {
-          sendStatus.toUID = contact.uid;
-          chatService.send(JSON.stringify(sendStatus));
-        }
-      });
-    } catch (err) {
-      // eslint-disable-next-line no-console
-      console.log('entro en el catch', err);
-    }
+    sendStatus.toUID = data.fromUID;
+    chatService.send(JSON.stringify(sendStatus));
   }
 };
 
@@ -280,7 +265,6 @@ export const sendReadMessageStatus = (sendStatus) => () => {
 
 export const sendAgain = (message, sendAgain) => (dispatch) => {
   database.updateMessage(message, sendAgain).then((res) => {
-    console.log("paso el warn", res);
     const sendObject = {
       toUID: res.toUID,
       msg: {

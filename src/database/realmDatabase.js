@@ -27,7 +27,7 @@ export default class CoreDatabase {
           toUID: msg.toUID,
           timestamp: msg.timestamp,
           queue: msg.queue,
-          messages: msg.messages.sorted('timestamp', true).slice(0, 0),
+          messages: msg.messages.sorted('timestamp', true).slice(0, 1),
         });
 
         if (index === array.length - 1) solve();

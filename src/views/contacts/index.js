@@ -57,11 +57,15 @@ class Contacts extends Component {
     this.setState({ openModal: false });
   };
 
-  onSelect = (contact, chat) => {
+  onSelect = (contact) => {
     if (this.state.selected.length === 0) {
-      this.props.selectedChat(chat);
       this.props.navigation.push('chat', {
-        ...contact
+        contacts: {
+          ...contact,
+        },
+        chatUID: contact.uid,
+        hashUID: contact.hashUID,
+        name: contact.name
       });
       return;
     }
@@ -145,7 +149,6 @@ class Contacts extends Component {
         {this.state.openModal && (
           <AddContact {...this.props} close={this.closeModal} {...this.state} />
         )}
-
         <Content>
           {result.map((contact) => {
             const chatInfo = this.getContactChat(contact);
@@ -213,7 +216,7 @@ class Contacts extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  contacts: Object.values(state.contacts.contacts),
+  contacts: state.contacts.contacts,
   chat: state.chats.chat,
   userData: state.config
 });

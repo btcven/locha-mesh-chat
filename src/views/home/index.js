@@ -308,7 +308,7 @@ class index extends Component {
 
 const mapStateToProps = (state) => ({
   chats: state.chats.chat,
-  contacts: Object.values(state.contacts.contacts),
+  contacts: state.contacts.contacts,
   broadcast: state.chats.broadcast
 });
 
