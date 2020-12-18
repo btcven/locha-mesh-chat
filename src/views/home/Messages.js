@@ -20,7 +20,6 @@ const TouchableList = Platform.select({
   android: () => TouchableNativeFeedback,
 })();
 
-
 export default class Messages extends React.PureComponent {
   render() {
     const {

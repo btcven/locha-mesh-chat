@@ -1,7 +1,7 @@
 import '../../../__Mocks__';
 import React from 'react';
 import { shallow } from 'enzyme';
-import { ReceiveMessage, SenderMessage } from '../../../src/views/home/Messages';
+import Messages from '../../../src/views/home/Messages';
 
 const mockMessage = [{
   fromUID: '16Uiu2HAm9JHK1iG6g2nLNw2fmAWerGiVoKMnjcvEs6pJVnd6STPC',
@@ -34,23 +34,24 @@ const onPressMock = jest.fn();
 
 describe('message component', () => {
   const wrapper = shallow(
-    <ReceiveMessage
+    <Messages
       screenProps={screenProps}
       item={mockMessage}
       contactInfo={mockContact}
       onClick={onPressMock}
       onSelected={onLongPressMock}
-
+      view="receive"
     />
   );
 
   const wrapper2 = shallow(
-    <SenderMessage
+    <Messages
       screenProps={screenProps}
       item={mockMessage[0]}
       contactInfo={mockContact}
       onClick={onPressMock}
       onSelected={onLongPressMock}
+      view="sender"
     />
   );
 
