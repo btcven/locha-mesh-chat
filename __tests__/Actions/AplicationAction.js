@@ -1,4 +1,5 @@
 import '../../__Mocks__';
+import { date } from 'yup';
 import MockData from '../../__Mocks__/dataMock';
 import store from '../../src/store';
 import {
@@ -19,7 +20,8 @@ import {
   startManualService,
   deleteChat,
   cleanAllChat,
-  deleteMessages
+  deleteMessages,
+  sendAgain
 } from '../../src/store/chats';
 import { database } from '../../App';
 
@@ -32,13 +34,15 @@ describe('Aplication actions', () => {
   const sendObject = {
     toUID: 'broadcast',
     msg: {
-      text: 'test'
+      text: 'test',
+      typeFile: 'image',
+      file: 'test'
     },
+    id: 'test',
     msgID: 'test',
     timestamp: new Date().getTime(),
     type: 1
   };
-
 
 
   beforeAll(async () => {
@@ -124,12 +128,15 @@ describe('Aplication actions', () => {
     });
 
     test('send message', async () => {
-
       const fromUID = 'test123test123';
 
       await store.dispatch(initialChat(fromUID, sendObject, 'pending'));
 
       expect(store.getState().chats.chat).toBeDefined();
+    });
+
+    test('send again', async () => {
+      await store.dispatch(sendAgain(sendObject, new Date().getTime()));
     });
 
     test('delete message inside the view chat', async () => {

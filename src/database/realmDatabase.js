@@ -387,25 +387,21 @@ export default class CoreDatabase {
 
   deleteMessage = (id, obj) => new Promise((resolve) => {
     this.db.write(() => {
-      try {
-        const chat = this.db.objectForPrimaryKey('Chat', id);
-        const messages = chat.messages.filter((data) => {
-          const result = obj.find((message) => {
-            if (message.id === data.id) {
-              if (message.file) {
-                RNSF.unlink(message.file.file).then(() => message);
-                return message;
-              }
+      const chat = this.db.objectForPrimaryKey('Chat', id);
+      const messages = chat.messages.filter((data) => {
+        const result = obj.find((message) => {
+          if (message.id === data.id) {
+            if (message.file) {
+              RNSF.unlink(message.file.file).then(() => message);
               return message;
             }
-          });
-          return result;
+            return message;
+          }
         });
-        this.db.delete(messages);
-        resolve();
-      } catch (error) {
-        console.warn(error);
-      }
+        return result;
+      });
+      this.db.delete(messages);
+      resolve();
     });
   });
 
@@ -426,17 +422,13 @@ export default class CoreDatabase {
 
   addStatusOnly = (eventStatus) => new Promise((resolve) => {
     this.db.write(() => {
-      try {
-        const message = this.db.objectForPrimaryKey(
-          'Message',
-          eventStatus.data.msgID
-        );
-        message.status = eventStatus.data.status;
+      const message = this.db.objectForPrimaryKey(
+        'Message',
+        eventStatus.data.msgID
+      );
+      message.status = eventStatus.data.status;
 
-        resolve(message);
-      } catch (err) {
-        console.warn('error', err);
-      }
+      resolve(message);
     });
   });
 
