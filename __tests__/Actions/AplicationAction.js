@@ -4,7 +4,8 @@ import store from '../../src/store';
 import {
   verifyAplicationState,
   loading,
-  createNewAccount
+  createNewAccount,
+  restoreAccountWithPin
 } from '../../src/store/aplication/aplicationAction';
 import { editContacts, deleteContactAction } from '../../src/store/contacts';
 import {
@@ -37,6 +38,11 @@ describe('Aplication actions', () => {
 
       expect(newState.aplication.appStatus).toBe('created');
     });
+  });
+
+  test('restore account with pin', async () => {
+    await store.dispatch(restoreAccountWithPin(obj.pin, () => { }));
+    expect(store.getState().config.name).toBe('test');
   });
 
   test('loading action', async () => {
@@ -124,7 +130,7 @@ describe('Aplication actions', () => {
 
 
     test('send message', () => {
-      
+
     });
 
     test('realoadBroadcastChat', () => {
