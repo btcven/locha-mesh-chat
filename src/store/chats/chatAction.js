@@ -154,7 +154,6 @@ export const cleanAllChat = (id) => async (dispatch) => {
  * @param {String} path
  * @param {String} base64
  */
-
 export const sendMessageWithFile = (fromUID, data, path, base64) => (dispatch) => {
   const uidChat = data.toUID ? data.toUID : 'broadcast';
   const saveDatabase = { ...data };
@@ -223,6 +222,7 @@ export const sendStatus = (data, state) => {
  */
 
 export const setView = (idChat, nodeAddress) => async (dispatch) => {
+  console.warn(nodeAddress);
   if (nodeAddress) {
     await chatService.dial(nodeAddress);
   }

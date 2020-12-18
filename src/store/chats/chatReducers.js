@@ -1,3 +1,4 @@
+/* eslint-disable prefer-destructuring */
 /* eslint-disable no-param-reassign */
 /* eslint-disable import/prefer-default-export */
 import { ActionTypes } from '../constants';
@@ -41,7 +42,13 @@ export const chatReducer = (state = AplicationState, action) => {
     }
 
     case ActionTypes.NEW_MESSAGE: {
-      return { ...state, insideChat: action.payload };
+      const homeChat = state.chat.findIndex((chat) => chat.toUID === action.payload[0].toUID
+        || chat.toUID === action.payload[0].fromUID);
+
+      state.chat[homeChat].messages = [action.payload[0]];
+      return {
+        ...state, insideChat: action.payload, chat: state.chat.slice()
+      };
     }
 
     case ActionTypes.RELOAD_BROADCAST_CHAT: {
