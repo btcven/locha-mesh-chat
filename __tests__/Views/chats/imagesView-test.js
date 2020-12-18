@@ -20,6 +20,5 @@ describe('imagesView component', () => {
         navigation={navigationPops}
       />
     ).toJSON();
-    // expect(rendered).toBeTruthy();
   });
 });

@@ -8,7 +8,14 @@ import {
 } from '../../src/store/aplication/aplicationAction';
 import { editContacts, deleteContactAction } from '../../src/store/contacts';
 import {
-  enableBroadcast, disableBroadcast, initialChat, realoadBroadcastChat, playAction, closedPlayer, stopPlaying
+  enableBroadcast,
+  disableBroadcast,
+  initialChat,
+  realoadBroadcastChat,
+  playAction,
+  closedPlayer,
+  stopPlaying,
+  startManualService
 } from '../../src/store/chats';
 import { database } from '../../App';
 
@@ -91,6 +98,13 @@ describe('Aplication actions', () => {
   });
 
   describe('chat action', () => {
+
+    test('start manual service', () => {
+      store.dispatch(startManualService((res) => {
+        expect(res).toBe(true);
+      }));
+    });
+
     test('send message', async () => {
       const sendObject = {
         toUID: 'broadcast',

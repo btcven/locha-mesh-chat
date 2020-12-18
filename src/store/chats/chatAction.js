@@ -222,7 +222,6 @@ export const sendStatus = (data, state) => {
  */
 
 export const setView = (idChat, nodeAddress) => async (dispatch) => {
-  console.warn(nodeAddress);
   if (nodeAddress) {
     await chatService.dial(nodeAddress);
   }
