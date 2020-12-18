@@ -13,7 +13,7 @@ import {
   Icon, Header, Left, Body,
 } from 'native-base';
 
-export default class App extends React.Component {
+export default class ImageView extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -39,9 +39,7 @@ export default class App extends React.Component {
 
   back = async () => {
     if (this.props.sendFileWithImage) {
-      await RNFS.unlink(this.props.images[0].url).catch((err) => {
-        this.props.close();
-      });
+      await RNFS.unlink(this.props.images[0].url);
     }
     this.props.close();
   }
@@ -49,7 +47,7 @@ export default class App extends React.Component {
   render() {
     const { screenProps } = this.props;
     return (
-      <>
+      <View>
         {this.props.images.length > 0
           && (
             <Modal
@@ -129,7 +127,7 @@ export default class App extends React.Component {
               )}
             </Modal>
           )}
-      </>
+      </View>
     );
   }
 }
