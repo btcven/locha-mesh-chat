@@ -47,7 +47,6 @@ export default class ChatService {
    * @param {Object} message message data
    */
   send = (message) => {
-    console.warn('sendMessage', message);
     this.service.sendMessage(message);
   }
 

@@ -98,7 +98,6 @@ describe('Aplication actions', () => {
   });
 
   describe('chat action', () => {
-
     test('start manual service', () => {
       store.dispatch(startManualService((res) => {
         expect(res).toBe(true);
@@ -121,6 +120,11 @@ describe('Aplication actions', () => {
       await store.dispatch(initialChat(fromUID, sendObject, 'pending'));
 
       expect(store.getState().chats.chat).toBeDefined();
+    });
+
+
+    test('send message', () => {
+      
     });
 
     test('realoadBroadcastChat', () => {
