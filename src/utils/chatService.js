@@ -47,6 +47,7 @@ export default class ChatService {
    * @param {Object} message message data
    */
   send = (message) => {
+    
     this.service.sendMessage(message);
   }
 
