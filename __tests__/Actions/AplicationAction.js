@@ -16,7 +16,10 @@ import {
   playAction,
   closedPlayer,
   stopPlaying,
-  startManualService
+  startManualService,
+  deleteChat,
+  cleanAllChat,
+  deleteMessages
 } from '../../src/store/chats';
 import { database } from '../../App';
 
@@ -26,6 +29,16 @@ describe('Aplication actions', () => {
     seed: 'click tag quit book door know comic alone elephant unhappy lunch sun',
     name: 'test'
   };
+  const sendObject = {
+    toUID: 'broadcast',
+    msg: {
+      text: 'test'
+    },
+    msgID: 'test',
+    timestamp: new Date().getTime(),
+    type: 1
+  };
+
 
 
   beforeAll(async () => {
@@ -111,15 +124,6 @@ describe('Aplication actions', () => {
     });
 
     test('send message', async () => {
-      const sendObject = {
-        toUID: 'broadcast',
-        msg: {
-          text: 'test'
-        },
-        msgID: 'test',
-        timestamp: new Date().getTime(),
-        type: 1
-      };
 
       const fromUID = 'test123test123';
 
@@ -128,9 +132,31 @@ describe('Aplication actions', () => {
       expect(store.getState().chats.chat).toBeDefined();
     });
 
+    test('delete message inside the view chat', async () => {
+      await store.dispatch(deleteChat([sendObject], () => { }));
 
-    test('send message', () => {
+      setTimeout(() => {
+        expect(store.getState().chats.chat.length).toBe(0);
+      }, 200);
+    });
 
+    test('clean chat', async () => {
+      const fromUID = 'test123test123';
+      await store.dispatch(initialChat(fromUID, sendObject, 'pending'));
+      setTimeout(async () => {
+        await store.dispatch(cleanAllChat('broadcast'));
+        expect(store.getState().chats.insideChat.length).toBe(0);
+      }, 200);
+    });
+
+    test('delete selected messages', async () => {
+      const fromUID = 'test123test123';
+      await store.dispatch(initialChat(fromUID, sendObject, 'pending'));
+
+      setTimeout(() => {
+        deleteMessages('broadcast', [sendObject], () => { });
+        expect(store.getState().chats.insideChat.length).toBe(0);
+      }, 200);
     });
 
     test('realoadBroadcastChat', () => {

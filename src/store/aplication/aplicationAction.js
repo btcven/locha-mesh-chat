@@ -50,7 +50,6 @@ export const restoreAccountWithPin = (pin, callback) => async (dispatch) => {
     bitcoin.createWallet(data.seed[0].seed);
     await chatService.startService();
     const broadcast = await AsyncStorage.getItem('broadcast');
-    console.log("diosss123", data.user);
     callback(true);
     dispatch(writeAction(data.user));
     if (broadcast) {
@@ -130,13 +129,11 @@ const writeAction = (data) => ({
   payload: data
 });
 
-
 /**
  * @function
  * @description open the application spinner
  * @returns {object}
  */
-
 export const loading = () => (dispatch) => {
   dispatch({
     type: ActionTypes.LOADING_ON

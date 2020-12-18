@@ -239,8 +239,11 @@ class Chat extends Component {
       fromUID: userData.peerID,
       toUID,
       msg: {
-        text: ''
+        text: '',
+        file: 'test',
+        typefile: 'test'
       },
+
       timestamp: new Date().getTime(),
       type: messageType.MESSAGE
     };
