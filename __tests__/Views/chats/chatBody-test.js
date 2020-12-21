@@ -34,6 +34,24 @@ const item = {
   viewed: null,
 };
 
+
+const itemTwo = {
+  file: {
+    fileType: 'audio',
+    file: 'test'
+  },
+  fromUID: '16Uiu2HAkyxLaH7HapKCJU4sBwxvjSYN2kEe6Q1fzzsnaSSVrocVG',
+  id: '77f51ae45ef28f5505854bcc54bd7b3729b404030c2aec83e9c13a577c1aba8a',
+  msg: 'hola',
+  name: null,
+  shippingTime: 1608234696620,
+  status: 'pending',
+  timestamp: 1608225235218,
+  toUID: 'broadcast',
+  type: 1,
+  viewed: null,
+};
+
 const user = {
   image: null,
   imageHash: null,
@@ -71,5 +89,36 @@ describe('test to the chat body', () => {
 
   test('render item', () => {
     wrapper.instance().renderItem({ item });
+  });
+
+  test('audio type message', () => {
+    expect(wrapper.instance().renderItem({ item: itemTwo })).toBeDefined();
+  });
+
+  test('verifySelected function', () => {
+    expect(wrapper.instance().verifySelected(item)).toBe(undefined);
+    wrapper.setProps({
+      selected: [item]
+    });
+    expect(wrapper.instance().verifySelected(item)).toBe(undefined);
+  });
+
+  test('sendAgain function', () => {
+    wrapper.instance().retry();
+    expect(sendAgain.mock.calls.length).toBe(1);
+  });
+
+  test('onSelected function', () => {
+    wrapper.instance().onSelected(item);
+    expect(wrapper.instance().state.selected.length).toBe(1);
+  });
+
+  test('handleMoreRequest function', () => {
+    wrapper.instance().handleMoreRequest();
+    expect(getMoreMessages.mock.calls.length).toBe(1);
+  });
+
+  test('getKey Function', () => {
+    expect(wrapper.instance().getKey(item, 1)).toBe('1');
   });
 });

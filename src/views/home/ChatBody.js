@@ -28,35 +28,6 @@ export default class ChatBody extends React.PureComponent {
     };
   }
 
-  componentDidUpdate = (prevProps) => {
-    // if (this.props.chats.length > 0) {
-    //   const rule1 = prevProps
-    //     ? this.props.chats.length !== prevProps.chats.length
-    //     : false;
-
-    //   const lastMessage = this.props.chats[0];
-    //   if (rule1) {
-    //     if (this.props.user.peerID !== lastMessage.fromUID) {
-    //       this.sound.setVolume(0.1).play();
-    //       const sendStatus = {
-    //         fromUID: this.props.user.peerID,
-    //         toUID: lastMessage.fromUID,
-    //         timestamp: new Date().getTime(),
-    //         data: {
-    //           status: 'read',
-    //           msgID: lastMessage.id
-    //         },
-    //         type: messageType.STATUS
-    //       };
-
-    //       if (lastMessage.toUID) {
-    //         this.props.sendReadMessageStatus(sendStatus);
-    //       }
-    //     }
-    //   }
-    // }
-  };
-
   getContactInfo = (infoItem) => {
     const result = this.props.contacts.find((contact) => infoItem.fromUID === contact.uid);
 
@@ -71,7 +42,6 @@ export default class ChatBody extends React.PureComponent {
 
   verifySelected = (item) => {
     const result = this.props.selected.find((select) => select.id === item.id);
-
     if (result) {
       return styles.selected;
     }
