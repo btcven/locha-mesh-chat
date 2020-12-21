@@ -46,7 +46,6 @@ exports[`test home componente render home component 1`] = `
     }
     search={[Function]}
     selected={Array []}
-    selectedChat={[Function]}
     store={
       Object {
         "dispatch": [Function],

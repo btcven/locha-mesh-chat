@@ -1,9 +1,12 @@
+/* eslint-disable prefer-destructuring */
 /* eslint-disable no-param-reassign */
 /* eslint-disable import/prefer-default-export */
 import { ActionTypes } from '../constants';
 
 const AplicationState = {
   chat: [],
+  insideChat: [],
+  view: null,
   chatService: false,
   peersConnected: [],
   broadcast: false,
@@ -39,37 +42,17 @@ export const chatReducer = (state = AplicationState, action) => {
     }
 
     case ActionTypes.NEW_MESSAGE: {
-      const chat = Object.values(state.chat);
-      const chatUID = action.payload.toUID ? action.payload.toUID : 'broadcast';
-      const chatFromUID = action.payload.fromUID;
-      const result = chat.findIndex(
-        (chatItem) => chatItem.toUID === chatUID
-          || chatItem.toUID === chatFromUID
-      );
+      const homeChat = state.chat.findIndex((chat) => chat.toUID === action.payload[0].toUID
+        || chat.toUID === action.payload[0].fromUID);
 
-      const messages = Object.values(chat[result].messages);
-
-      chat[result].messages = messages.length
-        ? messages.concat(action.payload)
-        : [action.payload];
-
-      return { ...state, chat: chat.slice() };
+      state.chat[homeChat].messages = [action.payload[0]];
+      return {
+        ...state, insideChat: action.payload, chat: state.chat.slice()
+      };
     }
 
     case ActionTypes.RELOAD_BROADCAST_CHAT: {
       return { ...state, chat: action.payload };
-    }
-
-    case ActionTypes.SELECTED_CHAT: {
-      const result = Object.values(
-        state.chat
-      ).findIndex(
-        (chat) => chat.toUID === action.payload.toUID
-      );
-      return {
-        ...state,
-        seletedChat: { index: result, id: state.chat[result].id }
-      };
     }
 
     case ActionTypes.DELETE_MESSAGE: {
@@ -86,24 +69,15 @@ export const chatReducer = (state = AplicationState, action) => {
     }
 
     case ActionTypes.DELETE_ALL_MESSAGE: {
-      Object.values(state.chat).forEach((chat, key) => {
-        if (chat.toUID === action.payload) {
-          state.chat[key].messages = [];
-        }
-      });
-      return { ...state, chat: Object.values(state.chat).slice() };
+      return { ...state, insideChat: [] };
     }
     case ActionTypes.DELETE_SELECTED_MESSAGE: {
-      const chat = state.chat[state.seletedChat.index];
-      const messages = Object.values(chat.messages).filter((message) => {
+      const messages = state.insideChat.filter((message) => {
         const res = action.payload.find((payload) => message.id === payload.id);
-
         return !res;
       });
 
-      state.chat[state.seletedChat.index].messages = messages;
-
-      return { ...state, chat: Object.values(state.chat).slice() };
+      return { ...state, insideChat: messages };
     }
 
     case ActionTypes.UNREAD_MESSAGES: {
@@ -119,69 +93,24 @@ export const chatReducer = (state = AplicationState, action) => {
     }
 
     case ActionTypes.IN_VIEW: {
-      const index = Object.values(state.chat).findIndex((chat) => chat.toUID === action.payload);
-
-      if (index !== -1) {
-        state.chat[index] = {
-          ...state.chat[index],
-          queue: []
-        };
-
-        return { ...state, chat: Object.values(state.chat) };
-      }
-      return state;
+      return {
+        ...state,
+        insideChat: action.messages
+      };
     }
 
     case ActionTypes.SET_STATUS_MESSAGE: {
-      try {
-        const index = Object.values(
-          state.chat
-        ).findIndex(
-          (chat) => chat.toUID === action.payload.fromUID
-        );
-
-        if (Array.isArray(action.payload.data.msgID)) {
-          // eslint-disable-next-line array-callback-return
-          action.payload.data.msgID.map((id) => {
-            const messageIndex = Object.values(
-              state.chat[index].messages
-            ).findIndex((message) => message.id === id);
-
-            state.chat[index].messages[messageIndex].status = action.payload.data.status;
-          });
-        } else {
-          const messageIndex = Object.values(
-            state.chat[index].messages
-          ).findIndex((message) => message.id === action.payload.data.msgID);
-
-          state.chat[index].messages[messageIndex].status = action.payload.data.status;
-        }
-
-        return { ...state, chat: state.chat.slice() };
-      } catch (err) {
-        const messageIndex = Object.values(state.chat[0].messages).findIndex(
-          (message) => message.id === action.payload.data.msgID
-        );
-
-        state.chat[0].messages[messageIndex].status = action.payload.data.status;
-
-        return { ...state, chat: state.chat.slice() };
-      }
+      state.insideChat[0] = action.payload;
+      return { ...state, insideChat: state.insideChat.slice() };
     }
 
     case ActionTypes.SEND_AGAIN: {
-      let index = Object.values(
-        state.chat
-      ).findIndex(
-        (chat) => chat.toUID === action.payload.toUID
+      const index = state.insideChat.findIndex(
+        (chat) => chat.id === action.payload.id
       );
-      index = index === -1 ? 0 : index;
-      const messageIndex = Object.values(state.chat[index].messages).findIndex(
-        (message) => message.id === action.payload.id
-      );
-      state.chat[index].messages[messageIndex].timestamp = action.payload.timestamp;
-      state.chat[index].messages[messageIndex].status = 'pending';
-      return { ...state, chat: state.chat.slice() };
+
+      state.insideChat[index] = action.payload;
+      return { ...state, insideChat: state.insideChat.slice() };
     }
 
     case ActionTypes.UPDATE_STATE: {
@@ -230,6 +159,12 @@ export const chatReducer = (state = AplicationState, action) => {
       return {
         ...state,
         forcedPause: action.payload
+      };
+    }
+
+    case ActionTypes.GET_MORE_MESSAGES: {
+      return {
+        ...state, insideChat: action.payload
       };
     }
 

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Modal from 'react-native-modal';
 import {
-  View, Text, TouchableOpacity, Dimensions, NativeModules
+  View, Text, TouchableOpacity, Dimensions,
 } from 'react-native';
 import { Thumbnail } from 'native-base';
 import ImagePicker from 'react-native-image-crop-picker';
@@ -33,7 +33,6 @@ export default class FileModal extends Component {
    */
 
   getPhotosFromGallery = () => {
-    const imageArray = [];
     ImagePicker.openPicker({
       includeBase64: true,
       width: 400,
@@ -43,13 +42,15 @@ export default class FileModal extends Component {
       const name = `IMG_${new Date().getTime()}`;
       const newPath = `file://${FileDirectory}/Pictures/IMG_${name}.jpg`;
       RNFS.moveFile(image.path, newPath).then(() => {
-        imageArray.push({
-          url: newPath,
-          base64: image.data,
-          name,
-          width: Dimensions.get('window').width
-        });
-        this.props.setImageView(imageArray);
+        const imagesView = [
+          {
+            url: newPath,
+            base64: image.data,
+            name,
+            width: Dimensions.get('window').width
+          }
+        ];
+        this.props.setImageView(imagesView);
         this.props.close();
       });
     });

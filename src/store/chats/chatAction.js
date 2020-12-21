@@ -1,9 +1,10 @@
+/* eslint-disable no-shadow */
 
 import RNFS from 'react-native-fs';
 import { Platform, NativeModules } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import { ActionTypes } from '../constants';
-import { notification, FileDirectory } from '../../utils/utils';
+import { FileDirectory } from '../../utils/utils';
 import { database, chatService } from '../../../App';
 import { messageType } from '../../utils/constans';
 
@@ -31,16 +32,7 @@ export const initialChat = (fromUID, data, status) => async (dispatch) => {
     }
     dispatch({
       type: ActionTypes.NEW_MESSAGE,
-      payload: {
-        name: undefined,
-        ...data,
-        fromUID,
-        time: res.time,
-        shippingTime: res.time,
-        msg: data.msg.text,
-        id: data.msgID,
-        status
-      }
+      payload: res
     });
   });
 };
@@ -57,36 +49,30 @@ export const initialChat = (fromUID, data, status) => async (dispatch) => {
  * @param  {string} data.type type message
  * @returns {object}
  */
-export const getChat = (parse) => async (dispatch) => {
+export const getChat = (parse) => async (dispatch, getState) => {
   let infoMensagge;
   if (!process.env.JEST_WORKER_ID) {
-    sendStatus(parse);
+    sendStatus(parse, getState);
   }
   if (parse.msg.file) {
     parse.msg.file = await saveFile(parse.msg);
   }
+
   const uidChat = parse.toUID === 'broadcast' ? parse.toUID : parse.fromUID;
   const name = infoMensagge ? infoMensagge.name : undefined;
   database.setMessage(uidChat, { ...parse, name }, 'delivered').then((res) => {
     dispatch({
       type: ActionTypes.NEW_MESSAGE,
-      payload: {
-        name,
-        ...parse,
-        msg: parse.msg.text,
-        id: parse.msgID,
-        file: res.file,
-        time: res.time
-      }
+      payload: res
     });
   });
 };
 
 export const setStatusMessage = (statusData) => async (dispatch) => {
-  database.addStatusOnly(statusData).then(() => {
+  database.addStatusOnly(statusData).then((res) => {
     dispatch({
       type: ActionTypes.SET_STATUS_MESSAGE,
-      payload: statusData
+      payload: res
     });
   });
 };
@@ -112,36 +98,12 @@ const saveFile = (obj) => new Promise((resolve) => {
     });
   } else {
     const base64File = obj.file;
-    const name = `AUDIO_${new Date().getTime()}`;
-    const directory = `${FileDirectory}Audios/${Math.random(new Date().getTime())}.aac`;
+    const directory = `${FileDirectory}/Audios/${Math.random(new Date().getTime())}.aac`;
     RNFS.writeFile(`${connectiveAddress}${directory}`, base64File, 'base64').then(() => {
       resolve(`${directory}`);
     });
   }
 });
-
-/**
- * @function
- * @description This function is executed every time a new message arrives
- * from the socket and saves it in the database.
- * @param {object} data Information about the message
- * @param {string} data.toUID address where the message will be sent
- * @param {string} data.fromUID uid who is sending the message
- * @param {object} data.msg  message content
- * @param {number} data.timestamp sent date
- * @param  {string} data.type type message
- * @returns {object}
- */
-
-export const selectedChat = (obj) => (dispatch) => {
-  if (!process.env.JEST_WORKER_ID) {
-    notification.cancelAll();
-  }
-  dispatch({
-    type: ActionTypes.SELECTED_CHAT,
-    payload: obj
-  });
-};
 
 /**
  * @function
@@ -161,9 +123,7 @@ export const realoadBroadcastChat = (data) => ({
  * @param {obj} obj
  * @param {callback} callback
  */
-
 export const deleteChat = (obj, callback) => (dispatch) => {
-  console.warn(obj);
   database.deleteChatss(obj).then(() => {
     dispatch({
       type: ActionTypes.DELETE_MESSAGE,
@@ -180,11 +140,9 @@ export const deleteChat = (obj, callback) => (dispatch) => {
  */
 
 export const cleanAllChat = (id) => async (dispatch) => {
-  database.cleanChat(id).then(() => {
-    dispatch({
-      type: ActionTypes.DELETE_ALL_MESSAGE,
-      payload: id
-    });
+  database.cleanChat(id);
+  dispatch({
+    type: ActionTypes.DELETE_ALL_MESSAGE,
   });
 };
 
@@ -196,7 +154,6 @@ export const cleanAllChat = (id) => async (dispatch) => {
  * @param {String} path
  * @param {String} base64
  */
-
 export const sendMessageWithFile = (fromUID, data, path, base64) => (dispatch) => {
   const uidChat = data.toUID ? data.toUID : 'broadcast';
   const saveDatabase = { ...data };
@@ -206,29 +163,20 @@ export const sendMessageWithFile = (fromUID, data, path, base64) => (dispatch) =
     chatService.send(JSON.stringify(saveDatabase));
     dispatch({
       type: ActionTypes.NEW_MESSAGE,
-      payload: {
-        name: undefined,
-        ...data,
-        fromUID,
-        msg: data.msg.text,
-        id: data.msgID,
-        file: res.file,
-        shippingTime: res.time,
-        status: 'pending'
-      }
+      payload: res
     });
   });
 };
 
 export const deleteMessages = (id, data, callback) => async (dispatch) => {
-  database.deleteMessage(id, data).then(() => {
-    dispatch({
-      type: ActionTypes.DELETE_SELECTED_MESSAGE,
-      id,
-      payload: data
-    });
-    callback();
+  dispatch({
+    type: ActionTypes.DELETE_SELECTED_MESSAGE,
+    payload: data
   });
+  callback();
+  setTimeout(() => {
+    database.deleteMessage(id, data);
+  }, 10);
 };
 
 /**
@@ -248,12 +196,7 @@ export const messageQueue = (index, id, view) => async (dispatch) => {
   });
 };
 
-
-export const sendStatus = (data) => {
-  // eslint-disable-next-line global-require
-  const store = require('..');
-  const state = store.default.getState();
-  // eslint-disable-next-line no-shadow
+export const sendStatus = (data, state) => {
   const sendStatus = {
     timestamp: new Date().getTime(),
     data: {
@@ -266,18 +209,8 @@ export const sendStatus = (data) => {
     sendStatus.toUID = 'broadcast';
     chatService.send(JSON.stringify(sendStatus));
   } else {
-    try {
-      const contacts = Object.values(state.contacts.contacts);
-      contacts.forEach((contact) => {
-        if (data.fromUID === contact.uid) {
-          sendStatus.toUID = contact.uid;
-          chatService.send(JSON.stringify(sendStatus));
-        }
-      });
-    } catch (err) {
-      // eslint-disable-next-line no-console
-      console.log('entro en el catch', err);
-    }
+    sendStatus.toUID = data.fromUID;
+    chatService.send(JSON.stringify(sendStatus));
   }
 };
 
@@ -296,33 +229,27 @@ export const setView = (idChat, nodeAddress) => async (dispatch) => {
   if (!idChat) {
     dispatch({
       type: ActionTypes.IN_VIEW,
-      payload: idChat
+      payload: idChat,
+      messages: []
     });
     return;
   }
   database.cancelUnreadMessages(idChat).then((res) => {
-    if (!process.env.JEST_WORKER_ID) {
-      // eslint-disable-next-line global-require
-      const store = require('..');
-      const state = store.default.getState();
-      if (idChat && res.length > 0) {
-        const chat = Object.values(state.chats.chat).find((itemChat) => itemChat.toUID === idChat);
-        // eslint-disable-next-line no-shadow
-        const sendStatus = {
-          toUID: chat.toUID,
-          timestamp: new Date().getTime(),
-          data: {
-            status: 'read',
-            msgID: res
-          },
-          type: messageType.STATUS
-        };
-        chatService.send(JSON.stringify(sendStatus));
-      }
-    }
+    // const sendStatus = {
+    //   toUID: idChat,
+    //   timestamp: new Date().getTime(),
+    //   data: {
+    //     status: 'read',
+    //     msgID: res
+    //   },
+    //   type: messageType.STATUS
+    // };
+    // chatService.send(JSON.stringify(sendStatus));
+
     dispatch({
       type: ActionTypes.IN_VIEW,
-      payload: idChat
+      payload: idChat,
+      messages: res
     });
   });
 };
@@ -335,8 +262,8 @@ export const sendReadMessageStatus = (sendStatus) => () => {
   chatService.send(JSON.stringify(sendStatus));
 };
 
-export const sendAgain = (message) => (dispatch) => {
-  database.updateMessage(message).then((res) => {
+export const sendAgain = (message, sendAgain) => (dispatch) => {
+  database.updateMessage(message, sendAgain).then((res) => {
     const sendObject = {
       toUID: res.toUID,
       msg: {
@@ -350,7 +277,7 @@ export const sendAgain = (message) => (dispatch) => {
     chatService.send(JSON.stringify(sendObject));
     dispatch({
       type: ActionTypes.SEND_AGAIN,
-      payload: message
+      payload: res
     });
   });
 };
@@ -489,3 +416,13 @@ export const stopPlaying = (data) => ({
   type: ActionTypes.STOP_PLAYING,
   payload: data
 });
+
+export const getMoreMessages = (number) => (dispatch, getState) => {
+  const idView = getState().aplication.view;
+  database.getMoreMessages(number, idView).then((newMessages) => {
+    dispatch({
+      type: ActionTypes.GET_MORE_MESSAGES,
+      payload: newMessages
+    });
+  });
+};

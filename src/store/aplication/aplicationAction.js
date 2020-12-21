@@ -7,7 +7,6 @@ import { STORAGE_KEY } from '../../utils/constans';
 import { createFolder } from '../../utils/utils';
 import { bitcoin, database, chatService } from '../../../App';
 
-
 /**
  * in this module are the global actions of the application
  * @module AplicationAction
@@ -15,7 +14,6 @@ import { bitcoin, database, chatService } from '../../../App';
 
 // eslint-disable-next-line import/no-mutable-exports
 export let ws;
-
 
 /**
  *@function
@@ -52,9 +50,8 @@ export const restoreAccountWithPin = (pin, callback) => async (dispatch) => {
     bitcoin.createWallet(data.seed[0].seed);
     await chatService.startService();
     const broadcast = await AsyncStorage.getItem('broadcast');
-
     callback(true);
-    dispatch(writeAction(JSON.parse(JSON.stringify(data.user[0]))));
+    dispatch(writeAction(data.user));
     if (broadcast) {
       dispatch({
         type: ActionTypes.ENABLE_BROADCAST
@@ -132,13 +129,11 @@ const writeAction = (data) => ({
   payload: data
 });
 
-
 /**
  * @function
  * @description open the application spinner
  * @returns {object}
  */
-
 export const loading = () => (dispatch) => {
   dispatch({
     type: ActionTypes.LOADING_ON

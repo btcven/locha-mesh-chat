@@ -1,9 +1,11 @@
+/* eslint-disable class-methods-use-this */
+/* eslint-disable react/jsx-no-bind */
+/* eslint-disable react/sort-comp */
 import React from 'react';
 import { View, StyleSheet, FlatList } from 'react-native';
-import Sound from 'react-native-sound';
-import FileModal from './fileModal';
-import { ReceiveMessage, SenderMessage } from './Messages';
-import { songs, messageType } from '../../utils/constans';
+// import Sound from 'react-native-sound';
+import Messages from './Messages';
+// import { songs, messageType } from '../../utils/constans';
 import ImagesView from './imagesView';
 import SoundMessage from './SoundMessage';
 
@@ -20,47 +22,11 @@ export default class ChatBody extends React.PureComponent {
     super(props);
     this.state = {
       selected: [],
+      columnNumber: 50,
+      scroll: 0,
       imagesView: []
     };
   }
-
-  componentDidMount = () => {
-    this.sound = new Sound(songs.song3.url, (error) => {
-      if (error) {
-        // eslint-disable-next-line no-console
-        console.warn('failed to load the sound', error);
-      }
-    });
-  };
-
-  componentDidUpdate = (prevProps) => {
-    if (this.props.chats.length > 0) {
-      const rule1 = prevProps
-        ? this.props.chats.length !== prevProps.chats.length
-        : false;
-
-      const lastMessage = this.props.chats[0];
-      if (rule1) {
-        if (this.props.user.peerID !== lastMessage.fromUID) {
-          this.sound.setVolume(0.1).play();
-          const sendStatus = {
-            fromUID: this.props.user.peerID,
-            toUID: lastMessage.fromUID,
-            timestamp: new Date().getTime(),
-            data: {
-              status: 'read',
-              msgID: lastMessage.id
-            },
-            type: messageType.STATUS
-          };
-
-          if (lastMessage.toUID) {
-            this.props.sendReadMessageStatus(sendStatus);
-          }
-        }
-      }
-    }
-  };
 
   getContactInfo = (infoItem) => {
     const result = this.props.contacts.find((contact) => infoItem.fromUID === contact.uid);
@@ -76,7 +42,6 @@ export default class ChatBody extends React.PureComponent {
 
   verifySelected = (item) => {
     const result = this.props.selected.find((select) => select.id === item.id);
-
     if (result) {
       return styles.selected;
     }
@@ -84,43 +49,91 @@ export default class ChatBody extends React.PureComponent {
   };
 
   retry = (retryItem) => {
-    // eslint-disable-next-line no-param-reassign
-    retryItem.shippingTime = new Date().getTime();
-
-    this.props.sendAgain(retryItem);
+    this.props.sendAgain(retryItem, new Date().getTime());
   };
 
-  setImageView = (imageArray) => {
-    setTimeout(() => {
-      this.setState({ imagesView: imageArray });
-    }, 200);
+
+  handleMoreRequest = () => {
+    const columns = this.state.columnNumber + 50;
+    this.setState({
+      columnNumber: columns
+    });
+    this.props.getMoreMessages(columns);
   }
 
-  closeView = () => {
-    this.setState({ imagesView: [] });
-  };
+  renderItem({ item }) {
+    const contactInfo = this.getContactInfo(item);
+    const selected = this.props.selected.length > 0 ? this.verifySelected(item) : null;
+    const userInfo = contactInfo || item;
+    const file = item.file ? item.file.fileType : undefined;
+
+    const view = this.props.user.peerID === item.fromUID ? 'sender' : 'receive';
+    if (file !== 'audio') {
+      return (
+        <Messages
+          onClick={this.props.onClick}
+          onSelected={this.props.onSelected}
+          item={item}
+          contactInfo={contactInfo}
+          userInfo={userInfo}
+          selected={selected}
+          index={item.key}
+          retry={this.retry}
+          view={view}
+        >
+          {item.key}
+        </Messages>
+      );
+    }
+    return (
+      <SoundMessage
+        onClick={this.props.onClick}
+        onSelected={this.props.onSelected}
+        item={item}
+        contactInfo={contactInfo}
+        userInfo={userInfo}
+        view={view}
+        selected={selected}
+        index={item.key}
+      >
+        {item.key}
+      </SoundMessage>
+    );
+  }
+
+  getKey(item, index) {
+    return index.toString();
+  }
+
+  onScroll(e) {
+    if (this.state.scroll < e.nativeEvent.contentOffset.y) {
+      this.setState({
+        scroll: e.nativeEvent.contentOffset.y
+      });
+    }
+
+    const halfScroll = this.state.scroll / 2;
+    if (e.nativeEvent.contentOffset.y <= halfScroll && this.state.columnNumber > 100) {
+      const halfColumnNumbers = this.state.columnNumber / 2;
+      this.setState({
+        scroll: parseInt(halfScroll, 10),
+        columnNumber: halfColumnNumbers
+      });
+      this.props.getMoreMessages(parseInt(this.state.columnNumber / 2, 10));
+    }
+  }
 
   render() {
-    const { screenProps } = this.props;
-    const { imagesView } = this.state;
+    const { screenProps, imagesView } = this.props;
+
     const viewImages = imagesView.length !== 0;
     return (
       <View style={{ flex: 1 }}>
-        {this.props.open && (
-          <FileModal
-            open={this.props.open}
-            close={this.props.close}
-            sendFileWithImage={this.props.sendFileWithImage}
-            screenProps={screenProps}
-            setImageView={this.setImageView}
-          />
-        )}
-
         <ImagesView
           sendFileWithImage={this.props.sendFileWithImage}
           open={viewImages}
           images={imagesView}
-          close={this.closeView}
+          close={this.props.closeView}
           screenProps={screenProps}
         />
 
@@ -128,49 +141,12 @@ export default class ChatBody extends React.PureComponent {
           inverted
           contentContainerStyle={styles.container}
           data={this.props.chats}
-          keyExtractor={(item, index) => index.toString()}
-          renderItem={({ item, index }) => {
-            const contactInfo = this.getContactInfo(item);
-            const selected = this.props.selected.length > 0 ? this.verifySelected(item) : null;
-            const userInfo = contactInfo || item;
-            const file = item.file ? item.file.fileType : undefined;
-
-            const rule = this.props.user.peerID === item.fromUID;
-
-            if (!rule && file !== 'audio') {
-              return (
-                <ReceiveMessage
-                  {...this.props}
-                  item={item}
-                  contactInfo={contactInfo}
-                  userInfo={userInfo}
-                  selected={selected}
-                  index={index}
-                />
-              );
-            } if (rule && file !== 'audio') {
-              return (
-                <SenderMessage
-                  {...this.props}
-                  item={item}
-                  selected={selected}
-                  index={index}
-                  retry={this.retry}
-                />
-              );
-            }
-            return (
-              <SoundMessage
-                {...this.props}
-                item={this.props.chats[index]}
-                rule={rule}
-                contactInfo={contactInfo}
-                userInfo={userInfo}
-                selected={selected}
-                index={index}
-              />
-            );
-          }}
+          onEndReached={this.handleMoreRequest}
+          removeClippedSubviews
+          onEndReachedThreshold={0.1}
+          keyExtractor={this.getKey}
+          onScroll={this.onScroll.bind(this)}
+          renderItem={this.renderItem.bind(this)}
         />
       </View>
     );

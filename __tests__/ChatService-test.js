@@ -53,6 +53,16 @@ describe('test chat service component', () => {
     );
   });
 
+  test('send message', () => {
+    const service = getChatserviceInstance();
+    service.send('test');
+  });
+
+  test('send native dial', () => {
+    const service = getChatserviceInstance();
+    service.dial('test');
+  });
+
   test('onMessage test', async () => {
     const service = getChatserviceInstance();
     await service.onMessage(JSON.stringify(mockMessage));

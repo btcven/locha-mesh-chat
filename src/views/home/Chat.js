@@ -18,10 +18,11 @@ import {
   sendReadMessageStatus,
   sendAgain,
   setNewDials,
-  stopPlaying
+  stopPlaying,
+  getMoreMessages
 } from '../../store/chats/chatAction';
 import { messageType } from '../../utils/constans';
-
+import FileModal from './fileModal';
 import ImagesView from './imagesView';
 import { bitcoin } from '../../../App';
 
@@ -62,12 +63,12 @@ class Chat extends Component {
 
 
   componentDidMount = () => {
-    const chatSelected = this.props.chat[this.props.chatSelected.index].toUID;
+    const { params } = this.props.navigation.state;
     try {
-      const contactNodeAddress = this.props.navigation.state.params.nodeAddress;
-      this.props.setView(chatSelected, contactNodeAddress);
+      const contactNodeAddress = params.contacts.noneAddress;
+      this.props.setView(params.chatUID, contactNodeAddress);
     } catch (err) {
-      this.props.setView(chatSelected, null);
+      this.props.setView(params.chatUID, null);
     }
   };
 
@@ -89,7 +90,7 @@ class Chat extends Component {
    */
   cleanAllMessages = (close) => {
     const { screenProps } = this.props;
-    const chat = this.props.chat[this.props.chatSelected.index];
+    const { params } = this.props.navigation.state;
     Alert.alert(
       `${screenProps.t('Chats:titleDelete')}`,
       `${screenProps.t('Chats:deleteBody')}`,
@@ -101,7 +102,7 @@ class Chat extends Component {
         },
         {
           text: 'OK',
-          onPress: () => this.props.cleanAllChat(chat.toUID)
+          onPress: () => this.props.cleanAllChat(params.chatUID)
         }
       ],
       { cancelable: false }
@@ -178,12 +179,13 @@ class Chat extends Component {
     const { selected } = this.state;
 
     Clipboard.setString(selected[this.state.selected.length - 1].msg);
+    this.setState({ selected: [] });
     toast('Mensaje copiado');
   };
 
   delete = () => {
-    const chatSelected = this.props.chat[this.props.chatSelected.index];
-    this.props.deleteMessages(chatSelected.toUID, this.state.selected, () => {
+    const { params } = this.props.navigation.state;
+    this.props.deleteMessages(params.chatUID, this.state.selected, () => {
       this.setState({ selected: [] });
     });
   };
@@ -197,10 +199,10 @@ class Chat extends Component {
    */
 
   openFileModal = () => {
+    this.setState({ fileModal: true });
     if (!this.props.forcedPause) {
       this.props.stopPlaying(true);
     }
-    this.setState({ fileModal: true });
   };
 
   /**
@@ -210,10 +212,10 @@ class Chat extends Component {
    */
 
   closeFileModal = () => {
+    this.setState({ fileModal: false });
     if (this.props.forcedPause) {
       this.props.stopPlaying(false);
     }
-    this.setState({ fileModal: false });
   };
 
   /**
@@ -228,18 +230,20 @@ class Chat extends Component {
 
   componentWillUnmount = () => {
     this.props.setView(undefined);
-    clearInterval(this.interval);
   };
 
   sendFileWithImage = (data, callback) => {
     const { userData, navigation } = this.props;
-    const toUID = navigation.state.params ? navigation.state.params.uid : 'broadcast';
+    const { params } = navigation.state;
+    const toUID = params.chatUID;
     const sendObject = {
-      fromUID: userData.peerID,
       toUID,
       msg: {
-        text: ''
+        text: '',
+        file: 'test',
+        typefile: 'test'
       },
+
       timestamp: new Date().getTime(),
       type: messageType.MESSAGE
     };
@@ -286,15 +290,17 @@ class Chat extends Component {
     this.setState({ imagesView: [] });
   };
 
+  setImageView = (imageArray) => {
+    this.setState({ imagesView: imageArray });
+  }
+
+
   render() {
     const { navigation, screenProps } = this.props;
     const viewImages = this.state.imagesView.length !== 0;
-    const chatSelected = this.props.chat[this.props.chatSelected.index];
 
-    const messages = Object.values(chatSelected.messages).length
-      ? Object.values(chatSelected.messages).sort((
-        a, b
-      ) => new Date(b.timestamp) - new Date(a.timestamp))
+    const messages = Object.values(this.props.chat).length
+      ? Object.values(this.props.chat)
       : [];
 
     return (
@@ -307,6 +313,13 @@ class Chat extends Component {
             screenProps={screenProps}
           />
         )}
+        <FileModal
+          open={this.state.fileModal}
+          close={this.closeFileModal}
+          sendFileWithImage={this.sendFileWithImage}
+          screenProps={screenProps}
+          setImageView={this.setImageView}
+        />
         <Header
           {...this.props}
           menu={this.state.menu}
@@ -326,9 +339,12 @@ class Chat extends Component {
             close={this.closeFileModal}
             open={this.state.fileModal}
             sendFileWithImage={this.sendFileWithImage}
+            closeView={this.closeView}
             sendReadMessageStatus={this.props.sendReadMessageStatus}
             sendAgain={this.props.sendAgain}
+            getMoreMessages={this.props.getMoreMessages}
             screenProps={screenProps}
+            imagesView={this.state.imagesView}
           />
           <ChatForm
             user={this.props.userData}
@@ -347,7 +363,7 @@ class Chat extends Component {
 
 const mapStateToProps = (state) => ({
   userData: state.config,
-  chat: state.chats.chat,
+  chat: state.chats.insideChat,
   chatSelected: state.chats.seletedChat,
   forcedPause: state.chats.forcedPause,
   contact: Object.values(state.contacts.contacts)
@@ -363,5 +379,6 @@ export default connect(mapStateToProps, {
   sendAgain,
   verifyImage,
   stopPlaying,
-  setNewDials
+  setNewDials,
+  getMoreMessages
 })(Chat);

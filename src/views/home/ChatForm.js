@@ -19,8 +19,6 @@ import { messageType } from '../../utils/constans';
 import { bitcoin, audioRecorder } from '../../../App';
 
 /**
- *
- *
  * @export
  * @class ChatForm
  * @description component where is the form to write the message send notes from you and files
@@ -56,10 +54,9 @@ export default class ChatForm extends Component {
     });
   };
 
-
   sendAudio = (data) => {
     const { user, navigation } = this.props;
-    const toUID = navigation.params ? navigation.params.uid : 'broadcast';
+    const toUID = navigation.params.chatUID;
     if (this.state.currentTime !== 0 && !this.state.cancelRecoding) {
       RNFS.exists(data.path).then(async () => {
         const sendObject = {
@@ -124,7 +121,7 @@ export default class ChatForm extends Component {
 
   send = async () => {
     const { user, navigation, setChat } = this.props;
-    const toUID = navigation.params ? navigation.params.uid : 'broadcast';
+    const toUID = navigation.params.chatUID;
 
     const sendObject = {
       toUID,
@@ -150,6 +147,14 @@ export default class ChatForm extends Component {
     }
     this.state.moveText.setValue(value.__getValue());
   };
+
+
+  componentWillUnmount = () => {
+    audioRecorder.removeListener();
+    this.setState = () => {
+      return;
+    };
+  }
 
   render() {
     const { screenProps } = this.props;

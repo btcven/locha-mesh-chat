@@ -2,6 +2,7 @@
 /* eslint-disable consistent-return */
 
 import moment from 'moment';
+import RNSF from 'react-native-fs';
 import { bitcoin } from '../../App';
 
 let utilsFuntions;
@@ -17,7 +18,32 @@ export default class CoreDatabase {
   getUserData = () => new Promise((resolve) => {
     const user = this.db.objects('user');
 
-    resolve(user.slice(0, 1));
+    const chats = [];
+
+    const promise = new Promise((solve) => {
+      user[0].chats.slice(0, 15).forEach((msg, index, array) => {
+        chats.push({
+          fromUID: msg.fromUID,
+          toUID: msg.toUID,
+          timestamp: msg.timestamp,
+          queue: msg.queue,
+          messages: msg.messages.sorted('timestamp', true).slice(0, 1),
+        });
+
+        if (index === array.length - 1) solve();
+      });
+    });
+
+    promise.then(() => {
+      resolve({
+        uid: user[0].uid,
+        peerID: user[0].peerID,
+        name: user[0].name,
+        picture: user[0].picture,
+        contacts: user[0].contacts,
+        chats
+      });
+    });
   });
 
   writteUser = (obj) => new Promise((resolve, reject) => {
@@ -103,7 +129,7 @@ export default class CoreDatabase {
         const chat = this.db.objectForPrimaryKey('Chat', id);
         const notRead = this.converToString(chat.queue);
         chat.queue = [];
-        resolve(notRead);
+        resolve(chat.messages.sorted('timestamp', true).slice(0, 30));
       } catch (err) {
         console.log('cancel unread', err);
       }
@@ -182,7 +208,7 @@ export default class CoreDatabase {
           status
         });
         chat.timestamp = time;
-        resolve({ file, time });
+        resolve(chat.messages.sorted('timestamp', true).slice(0, 50));
       } catch (err) {
         // eslint-disable-next-line no-console
         console.warn(['en el setFile', err]);
@@ -315,20 +341,45 @@ export default class CoreDatabase {
         }
       });
 
-      chat.forEach((msg) => {
-        this.db.delete(msg.messages);
+      const promise = new Promise((solve) => {
+        chat.forEach(async (msg) => {
+          msg.messages.forEach(async (message, index, array) => {
+            if (message.file) {
+              await RNSF.unlink(message.file.file);
+            }
+            if (index === array.length - 1) solve(array);
+          });
+        });
       });
 
+      promise.then(() => {
+        this.db.write(() => {
+          chat.forEach((mes) => {
+            this.db.delete(mes.messages);
+          });
+        });
+      });
       resolve(obj);
     });
   });
 
-
   cleanChat = (id) => new Promise((resolve) => {
     this.db.write(() => {
       const chat = this.db.objectForPrimaryKey('Chat', id);
+      const promise = new Promise((solve) => {
+        chat.messages.forEach(async (msg, index, array) => {
+          if (msg.file) {
+            await RNSF.unlink(msg.file.file);
+          }
+          if (index === array.length - 1) solve(array);
+        });
+      });
 
-      this.db.delete(chat.messages);
+      promise.then((array) => {
+        this.db.write(() => {
+          this.db.delete(array);
+        });
+      });
       resolve(true);
     });
   });
@@ -336,22 +387,23 @@ export default class CoreDatabase {
 
   deleteMessage = (id, obj) => new Promise((resolve) => {
     this.db.write(() => {
-      try {
-        const chat = this.db.objectForPrimaryKey('Chat', id);
-        const messages = chat.messages.filter((data) => {
-          const result = obj.find((message) => message.id === data.id);
-
-          return result;
+      const chat = this.db.objectForPrimaryKey('Chat', id);
+      const messages = chat.messages.filter((data) => {
+        const result = obj.find((message) => {
+          if (message.id === data.id) {
+            if (message.file) {
+              RNSF.unlink(message.file.file).then(() => message);
+              return message;
+            }
+            return message;
+          }
         });
-
-        this.db.delete(messages);
-        resolve();
-      } catch (error) {
-        // console.log(error);
-      }
+        return result;
+      });
+      this.db.delete(messages);
+      resolve();
     });
   });
-
 
   unreadMessages = (id, idMessage) => new Promise((resolve) => {
     this.db.write(() => {
@@ -370,44 +422,29 @@ export default class CoreDatabase {
 
   addStatusOnly = (eventStatus) => new Promise((resolve) => {
     this.db.write(() => {
-      try {
-        const message = this.db.objectForPrimaryKey(
-          'Message',
-          eventStatus.data.msgID
-        );
-        message.status = eventStatus.data.status;
+      const message = this.db.objectForPrimaryKey(
+        'Message',
+        eventStatus.data.msgID
+      );
+      message.status = eventStatus.data.status;
 
-        resolve();
-      } catch (err) {
-        if (Array.isArray(eventStatus.data.msgID)) {
-          // eslint-disable-next-line array-callback-return
-          eventStatus.data.msgID.map((id) => {
-            const message = this.db.objectForPrimaryKey('Message', id);
-            message.status = eventStatus.data.status;
-          });
-          resolve();
-        }
-      }
+      resolve(message);
     });
   });
 
-  updateMessage = (message) => new Promise((resolve) => {
+  updateMessage = (message, time) => new Promise((resolve) => {
     this.db.write(() => {
-      try {
-        this.db.create(
-          'Message',
-          {
-            ...message,
-            status: 'pending'
-          },
-          true
-        );
-        const msg = this.db.objectForPrimaryKey('Message', message.id);
-        resolve(msg);
-      } catch (err) {
-        // eslint-disable-next-line no-console
-        console.log('in the cath', err);
-      }
+      this.db.create(
+        'Message',
+        {
+          id: message.id,
+          status: 'pending',
+          shippingTime: time,
+        },
+        true
+      );
+      const msg = this.db.objectForPrimaryKey('Message', message.id);
+      resolve(msg);
     });
   });
 
@@ -427,6 +464,20 @@ export default class CoreDatabase {
       result.picture = path;
       result.imageHash = imageHash;
       resolve();
+    });
+  })
+
+
+  getMoreMessages = (number, id) => new Promise((resolve) => {
+    this.db.write(() => {
+      try {
+        const moreMessage = this.db.objectForPrimaryKey('Chat', id);
+        resolve(moreMessage.messages
+          .sorted('timestamp', true)
+          .slice(0, number));
+      } catch (error) {
+        console.warn(error);
+      }
     });
   })
 }

@@ -49,13 +49,17 @@ class index extends Component {
     drawerLabel: 'Home'
   };
 
-
   selectedChat = (info, obj) => {
     if (this.state.selected.length === 0) {
-      const result = this.getContactInformation(obj);
-      const contacts = result.name === 'broadcast' ? undefined : result;
-      this.props.selectedChat(obj);
-      this.props.navigation.push('chat', contacts);
+      this.props.navigation.push('chat',
+        {
+          contacts: {
+            ...obj,
+          },
+          chatUID: obj.toUID,
+          hashUID: info.hashUID,
+          name: info.name
+        });
       return;
     }
 
@@ -93,7 +97,7 @@ class index extends Component {
   };
 
   getContactInformation = (data) => {
-    if (data.toUID === broadcastInfo.name) {
+    if (data.toUID === broadcastInfo.name.toLowerCase()) {
       return {
         name: broadcastInfo.name,
         picture: null,
@@ -205,9 +209,9 @@ class index extends Component {
             const messages = Object.values(chat.messages);
 
 
-            if (messages.length !== 0 || (infoData.name === 'broadcast' && this.props.broadcast)) {
+            if (messages.length !== 0 || (infoData.name.toLowerCase() === 'broadcast' && this.props.broadcast)) {
               const message = messages[messages.length - 1]
-                ? messages[messages.length - 1]
+                ? messages[0]
                 : broadcastInfo.lastMessage;
 
               //  getting last message
@@ -304,7 +308,7 @@ class index extends Component {
 
 const mapStateToProps = (state) => ({
   chats: state.chats.chat,
-  contacts: Object.values(state.contacts.contacts),
+  contacts: state.contacts.contacts,
   broadcast: state.chats.broadcast
 });
 

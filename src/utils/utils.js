@@ -13,12 +13,12 @@ import NotifService from './notificationService';
 import NavigationService from './navigationService';
 import store from '../store';
 import ChatService from './chatService';
+import sha256 from 'js-sha256'
 
 /**
  * global functions used in multiple places in the app
  * @module Utils
  */
-
 
 export const getChatserviceInstance = () => new ChatService();
 
@@ -107,7 +107,6 @@ export const notifyRedirect = (data) => {
  * is activated when a new message is received filters the data necessary for the notification
  * @param {object} res
  */
-
 export const onNotification = (res) => {
   const state = store.getState();
   const view = res.fromUID;
@@ -263,14 +262,12 @@ export const getSha256 = (data, callback) => {
 };
 
 export const getIcon = (data) => {
-  try {
-    const icon = new Identicon(data, {
-      background: [255, 255, 255, 255],
-      size: 100
-    }).toString();
+  const sha256Data = sha256(data);
+  console.warn(sha256Data);
+  const icon = new Identicon(sha256Data, {
+    background: [255, 255, 255, 255],
+    size: 100
+  }).toString();
 
-    return `data:image/png;base64,${icon}`;
-  } catch (error) {
-    throw new Error(error);
-  }
+  return `data:image/png;base64,${icon}`;
 };

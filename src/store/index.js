@@ -7,7 +7,7 @@ let middleWare;
 if (process.env.JEST_WORKER_ID) {
   middleWare = applyMiddleware(ReduxThunk)(createStore);
 } else {
-  middleWare = applyMiddleware(ReduxThunk, logger)(createStore);
+  middleWare = applyMiddleware(ReduxThunk)(createStore);
 }
 
 

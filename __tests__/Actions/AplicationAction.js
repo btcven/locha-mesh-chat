@@ -1,14 +1,27 @@
 import '../../__Mocks__';
+import { date } from 'yup';
 import MockData from '../../__Mocks__/dataMock';
 import store from '../../src/store';
 import {
   verifyAplicationState,
   loading,
-  createNewAccount
+  createNewAccount,
+  restoreAccountWithPin
 } from '../../src/store/aplication/aplicationAction';
 import { editContacts, deleteContactAction } from '../../src/store/contacts';
 import {
-  enableBroadcast, disableBroadcast, initialChat, realoadBroadcastChat, playAction, closedPlayer, stopPlaying
+  enableBroadcast,
+  disableBroadcast,
+  initialChat,
+  realoadBroadcastChat,
+  playAction,
+  closedPlayer,
+  stopPlaying,
+  startManualService,
+  deleteChat,
+  cleanAllChat,
+  deleteMessages,
+  sendAgain
 } from '../../src/store/chats';
 import { database } from '../../App';
 
@@ -17,6 +30,18 @@ describe('Aplication actions', () => {
     pin: '123456',
     seed: 'click tag quit book door know comic alone elephant unhappy lunch sun',
     name: 'test'
+  };
+  const sendObject = {
+    toUID: 'broadcast',
+    msg: {
+      text: 'test',
+      typeFile: 'image',
+      file: 'test'
+    },
+    id: 'test',
+    msgID: 'test',
+    timestamp: new Date().getTime(),
+    type: 1
   };
 
 
@@ -30,6 +55,11 @@ describe('Aplication actions', () => {
 
       expect(newState.aplication.appStatus).toBe('created');
     });
+  });
+
+  test('restore account with pin', async () => {
+    await store.dispatch(restoreAccountWithPin(obj.pin, () => { }));
+    expect(store.getState().config.name).toBe('test');
   });
 
   test('loading action', async () => {
@@ -91,22 +121,49 @@ describe('Aplication actions', () => {
   });
 
   describe('chat action', () => {
-    test('send message', async () => {
-      const sendObject = {
-        toUID: 'broadcast',
-        msg: {
-          text: 'test'
-        },
-        msgID: 'test',
-        timestamp: new Date().getTime(),
-        type: 1
-      };
+    test('start manual service', () => {
+      store.dispatch(startManualService((res) => {
+        expect(res).toBe(true);
+      }));
+    });
 
+    test('send message', async () => {
       const fromUID = 'test123test123';
 
       await store.dispatch(initialChat(fromUID, sendObject, 'pending'));
 
       expect(store.getState().chats.chat).toBeDefined();
+    });
+
+    test('send again', async () => {
+      await store.dispatch(sendAgain(sendObject, new Date().getTime()));
+    });
+
+    test('delete message inside the view chat', async () => {
+      await store.dispatch(deleteChat([sendObject], () => { }));
+
+      setTimeout(() => {
+        expect(store.getState().chats.chat.length).toBe(0);
+      }, 200);
+    });
+
+    test('clean chat', async () => {
+      const fromUID = 'test123test123';
+      await store.dispatch(initialChat(fromUID, sendObject, 'pending'));
+      setTimeout(async () => {
+        await store.dispatch(cleanAllChat('broadcast'));
+        expect(store.getState().chats.insideChat.length).toBe(0);
+      }, 200);
+    });
+
+    test('delete selected messages', async () => {
+      const fromUID = 'test123test123';
+      await store.dispatch(initialChat(fromUID, sendObject, 'pending'));
+
+      setTimeout(() => {
+        deleteMessages('broadcast', [sendObject], () => { });
+        expect(store.getState().chats.insideChat.length).toBe(0);
+      }, 200);
     });
 
     test('realoadBroadcastChat', () => {

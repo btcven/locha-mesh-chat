@@ -1,9 +1,9 @@
 import '../../../__Mocks__';
 import React from 'react';
 import { shallow } from 'enzyme';
-import Messages from '../../../src/views/home/Messages';
+import SoundMessage from '../../../src/views/home/SoundMessage';
 
-const mockMessage = [{
+const mockMessage = {
   fromUID: '16Uiu2HAm9JHK1iG6g2nLNw2fmAWerGiVoKMnjcvEs6pJVnd6STPC',
   id: 'ad7ae2f9dc672c55095e60f2e8367393261088972af35c49c007be0c642fda24',
   msg: 'Hola',
@@ -13,9 +13,13 @@ const mockMessage = [{
   status: 'pending',
   time: 1602013395803,
   timestamp: 1602013395786,
+  file: {
+    typeFile: 'sound',
+    file: 'test'
+  },
   toUID: 'broadcast',
   type: 1
-}];
+};
 
 const screenProps = {
   t: (data) => data
@@ -34,44 +38,18 @@ const onPressMock = jest.fn();
 
 describe('message component', () => {
   const wrapper = shallow(
-    <Messages
+    <SoundMessage
       screenProps={screenProps}
       item={mockMessage}
       contactInfo={mockContact}
       onClick={onPressMock}
       onSelected={onLongPressMock}
-      view="receive"
-    />
-  );
-
-  const wrapper2 = shallow(
-    <Messages
-      screenProps={screenProps}
-      item={mockMessage[0]}
-      contactInfo={mockContact}
-      onClick={onPressMock}
-      onSelected={onLongPressMock}
       view="sender"
     />
+
   );
 
-
-  test('render SenderMessage', () => {
-    expect(wrapper2).toBeDefined();
-  });
-
-
-  test('render all component', () => {
-    expect(wrapper.instance()).toBeDefined();
-  });
-
-  test('onLongPress button message', () => {
-    wrapper.find('ForwardRef').at(0).props().onLongPress();
-    expect(onLongPressMock.mock.calls.length).toBe(1);
-  });
-
-  test('onPress button message', () => {
-    wrapper.find('ForwardRef').at(0).props().onPress();
-    expect(onPressMock.mock.calls.length).toBe(1);
+  test('render soundComponent component', () => {
+    expect(wrapper).toBeDefined();
   });
 });
