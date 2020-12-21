@@ -234,9 +234,9 @@ class Chat extends Component {
 
   sendFileWithImage = (data, callback) => {
     const { userData, navigation } = this.props;
-    const toUID = navigation.state.params ? navigation.state.params.uid : 'broadcast';
+    const { params } = navigation.state;
+    const toUID = params.chatUID;
     const sendObject = {
-      fromUID: userData.peerID,
       toUID,
       msg: {
         text: '',

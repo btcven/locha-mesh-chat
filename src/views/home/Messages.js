@@ -227,7 +227,7 @@ const styles = StyleSheet.create({
     maxWidth: '82%',
     backgroundColor: '#fff',
     minHeight: 30,
-    paddingTop: 5,
+    paddingTop: 10,
     paddingHorizontal: 10,
     marginHorizontal: 10,
     borderRadius: 7,
