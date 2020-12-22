@@ -65,7 +65,7 @@ public class EventsDispatcher implements RuntimeEvents {
             obj.put("fromUID", peerId);
 
             sendEvent(this.reactContext, "newMessage", obj.toString());
-            Log.d(TAG, "newMessage" + obj.toString());
+            Log.d(TAG, "newMessage" + obj);
         } catch (Exception err) {
             Log.e(TAG, " something failed trying parse the message JSON:", err );
         }

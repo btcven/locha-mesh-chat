@@ -54,7 +54,7 @@ export default class Messages extends React.PureComponent {
 
                 }}
                 source={{
-                  uri: `${getIcon(item.fromUID)}`
+                  uri: `${getIcon(item.idHash)}`
                 }}
               />
             )}
@@ -66,7 +66,7 @@ export default class Messages extends React.PureComponent {
                   marginTop: 5
                 }}
                 source={{
-                  uri: `${userInfo.picture ? userInfo.picture : getIcon(item.fromUID)}`
+                  uri: `${userInfo.picture ? userInfo.picture : getIcon(item.idHash)}`
                 }}
               />
             )}

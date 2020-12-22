@@ -33,6 +33,7 @@ export const messageSquema = {
     shippingTime: 'int',
     viewed: 'int?',
     status: 'string?',
+    idHash: 'string?',
     type: 'int'
   }
 };
