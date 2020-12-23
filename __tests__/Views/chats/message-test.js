@@ -52,7 +52,7 @@ describe('message component', () => {
   const wrapper = shallow(
     <Messages
       screenProps={screenProps}
-      item={mockMessage}
+      item={mockMessage[0]}
       contactInfo={mockContact}
       onClick={onPressMock}
       onSelected={onLongPressMock}
