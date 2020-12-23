@@ -13,6 +13,7 @@ const mockMessage = [{
   status: 'pending',
   time: 1602013395803,
   timestamp: 1602013395786,
+  idHash: 'ad7ae2f9dc672c55095e60f2e8367393261088972af35c49c007be0c642fda24',
   toUID: 'broadcast',
   type: 1
 }];
