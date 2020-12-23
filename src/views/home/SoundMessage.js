@@ -35,7 +35,6 @@ export default class SoundMessage extends PureComponent {
       view,
       index,
     } = this.props;
-    console.log('props', this.props);
     if (view === 'receive') {
       return (
         <TouchableList
@@ -58,7 +57,7 @@ export default class SoundMessage extends PureComponent {
                   marginTop: 5
                 }}
                 source={{
-                  uri: `${getIcon(item.fromUID)}`
+                  uri: `${getIcon(item.idHash)}`
                 }}
               />
             )}
@@ -72,7 +71,7 @@ export default class SoundMessage extends PureComponent {
                 source={{
                   uri: userInfo.picture
                     ? `${userInfo.picture}`
-                    : `${getIcon(item.fromUID)}`
+                    : `${getIcon(item.idHash)}`
                 }}
               />
             )}

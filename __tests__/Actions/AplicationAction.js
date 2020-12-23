@@ -21,7 +21,8 @@ import {
   deleteChat,
   cleanAllChat,
   deleteMessages,
-  sendAgain
+  sendAgain,
+  getChat
 } from '../../src/store/chats';
 import { database } from '../../App';
 
@@ -125,6 +126,24 @@ describe('Aplication actions', () => {
       store.dispatch(startManualService((res) => {
         expect(res).toBe(true);
       }));
+    });
+
+
+    test('getChat function', () => {
+      const sendObject2 = {
+        toUID: 'broadcast',
+        msg: {
+          text: 'test',
+          typeFile: 'image',
+          file: 'test'
+        },
+        id: 'test',
+        msgID: 'test2',
+        timestamp: new Date().getTime(),
+        type: 1
+      };
+      store.dispatch(getChat(JSON.stringify(sendObject2)));
+      expect(store.getState().chats.chat.length).toBe(1);
     });
 
     test('send message', async () => {

@@ -262,9 +262,7 @@ export const getSha256 = (data, callback) => {
 };
 
 export const getIcon = (data) => {
-  const sha256Data = sha256(data);
-  console.warn(sha256Data);
-  const icon = new Identicon(sha256Data, {
+  const icon = new Identicon(data, {
     background: [255, 255, 255, 255],
     size: 100
   }).toString();

@@ -5,7 +5,7 @@ import { Platform, NativeModules } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import { ActionTypes } from '../constants';
 import { FileDirectory } from '../../utils/utils';
-import { database, chatService } from '../../../App';
+import { database, chatService, bitcoin } from '../../../App';
 import { messageType } from '../../utils/constans';
 
 
@@ -60,7 +60,8 @@ export const getChat = (parse) => async (dispatch, getState) => {
 
   const uidChat = parse.toUID === 'broadcast' ? parse.toUID : parse.fromUID;
   const name = infoMensagge ? infoMensagge.name : undefined;
-  database.setMessage(uidChat, { ...parse, name }, 'delivered').then((res) => {
+  const idHash = await bitcoin.sha256(parse.fromUID);
+  database.setMessage(uidChat, { ...parse, name, idHash }, 'delivered').then((res) => {
     dispatch({
       type: ActionTypes.NEW_MESSAGE,
       payload: res

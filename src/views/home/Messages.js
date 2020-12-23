@@ -54,7 +54,7 @@ export default class Messages extends React.PureComponent {
 
                 }}
                 source={{
-                  uri: `${getIcon(item.fromUID)}`
+                  uri: `${getIcon(item.idHash)}`
                 }}
               />
             )}
@@ -66,7 +66,7 @@ export default class Messages extends React.PureComponent {
                   marginTop: 5
                 }}
                 source={{
-                  uri: `${userInfo.picture ? userInfo.picture : getIcon(item.fromUID)}`
+                  uri: `${userInfo.picture ? userInfo.picture : getIcon(item.idHash)}`
                 }}
               />
             )}
@@ -120,9 +120,7 @@ export default class Messages extends React.PureComponent {
         || item.status === 'not sent');
 
       const styleBody = item.msg.length < 20 ? styles.styleBody1 : styles.styleBody2;
-
       const textStyle = item.msg.length < 20 ? styles.textStyle1 : styles.textStyle2;
-
       const timeStyle = item.msg.length < 20 ? styles.timeStyle : styles.timeStyle2;
       const iconName = item.toUID ? 'checkmark' : 'user-check';
       const IconType = iconName === 'checkmark' ? 'Ionicons' : 'FontAwesome5';
