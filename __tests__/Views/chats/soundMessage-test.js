@@ -70,6 +70,7 @@ describe('message component', () => {
     <SoundMessage
       screenProps={screenProps}
       userInfo={mockContact[0]}
+      contactInfo={mockContact}
       item={mockMessage2[0]}
       onClick={onPressMock}
       onSelected={onLongPressMock}

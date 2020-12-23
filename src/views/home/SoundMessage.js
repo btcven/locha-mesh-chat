@@ -57,7 +57,7 @@ export default class SoundMessage extends PureComponent {
                   marginTop: 5
                 }}
                 source={{
-                  uri: `${getIcon(item.getIcon)}`
+                  uri: `${getIcon(item.idHash)}`
                 }}
               />
             )}
@@ -71,7 +71,7 @@ export default class SoundMessage extends PureComponent {
                 source={{
                   uri: userInfo.picture
                     ? `${userInfo.picture}`
-                    : `${getIcon(item.getIcon)}`
+                    : `${getIcon(item.idHash)}`
                 }}
               />
             )}
