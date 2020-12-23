@@ -35,7 +35,6 @@ export default class SoundMessage extends PureComponent {
       view,
       index,
     } = this.props;
-    console.log('props', this.props);
     if (view === 'receive') {
       return (
         <TouchableList

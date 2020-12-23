@@ -46,10 +46,35 @@ describe('message component', () => {
       onSelected={onLongPressMock}
       view="sender"
     />
-
   );
 
-  test('render soundComponent component', () => {
+  const wrapper2 = shallow(
+    <SoundMessage
+      screenProps={screenProps}
+      item={mockMessage}
+      contactInfo={mockContact}
+      onClick={onPressMock}
+      onSelected={onLongPressMock}
+      view="receive"
+    />
+  );
+
+  test('render sender soundComponent component', () => {
     expect(wrapper).toBeDefined();
+  });
+
+
+  test('sender receive soundComponent component', () => {
+    expect(wrapper2).toBeDefined();
+  });
+
+  test('onLongPress button message in sender', () => {
+    wrapper.find('ForwardRef').at(0).props().onLongPress();
+    expect(onLongPressMock.mock.calls.length).toBe(1);
+  });
+
+  test('onPress button message in sender', () => {
+    wrapper.find('ForwardRef').at(0).props().onPress();
+    expect(onPressMock.mock.calls.length).toBe(1);
   });
 });
