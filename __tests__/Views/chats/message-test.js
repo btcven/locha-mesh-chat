@@ -55,6 +55,7 @@ describe('message component', () => {
       item={mockMessage[0]}
       contactInfo={mockContact}
       onClick={onPressMock}
+      userInfo={mockContact[0]}
       onSelected={onLongPressMock}
       view="receive"
     />
