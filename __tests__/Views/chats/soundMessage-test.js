@@ -21,6 +21,24 @@ const mockMessage = {
   type: 1
 };
 
+const mockMessage2 = [{
+  fromUID: '16Uiu2HAm9JHK1iG6g2nLNw2fmAWerGiVoKMnjcvEs6pJVnd6STPC',
+  id: 'ad7ae2f9dc672c55095e60f2e8367393261088972af35c49c007be0c642fda24',
+  msg: 'Hola',
+  msgID: 'ad7ae2f9dc672c55095e60f2e8367393261088972af35c49c007be0c642fda24',
+  name: undefined,
+  shippingTime: 1602013395803,
+  status: 'pending',
+  time: 1602013395803,
+  timestamp: 1602013395786,
+  idHash: 'ad7ae2f9dc672c55095e60f2e8367393261088972af35c49c007be0c642fda24',
+  toUID: '16Uiu2HAm2BXA1TTUE7vvSu3U4YURxb4FwTYjfrwnZN618jrYBpNS',
+  type: 1,
+  file: {
+    file: 'test'
+  }
+}];
+
 const screenProps = {
   t: (data) => data
 };
@@ -41,7 +59,7 @@ describe('message component', () => {
     <SoundMessage
       screenProps={screenProps}
       item={mockMessage}
-      contactInfo={mockContact}
+      userInfo={mockContact[0]}
       onClick={onPressMock}
       onSelected={onLongPressMock}
       view="sender"
@@ -51,8 +69,8 @@ describe('message component', () => {
   const wrapper2 = shallow(
     <SoundMessage
       screenProps={screenProps}
-      item={mockMessage}
-      contactInfo={mockContact}
+      userInfo={mockContact[0]}
+      item={mockMessage2[0]}
       onClick={onPressMock}
       onSelected={onLongPressMock}
       view="receive"
