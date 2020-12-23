@@ -262,6 +262,7 @@ export const getSha256 = (data, callback) => {
 };
 
 export const getIcon = (data) => {
+  console.log('dios1231241', data);
   const icon = new Identicon(data, {
     background: [255, 255, 255, 255],
     size: 100
