@@ -125,6 +125,7 @@ export const realoadBroadcastChat = (data) => ({
  * @param {callback} callback
  */
 export const deleteChat = (obj, callback) => (dispatch) => {
+
   database.deleteChatss(obj).then(() => {
     dispatch({
       type: ActionTypes.DELETE_MESSAGE,
@@ -144,6 +145,7 @@ export const cleanAllChat = (id) => async (dispatch) => {
   database.cleanChat(id);
   dispatch({
     type: ActionTypes.DELETE_ALL_MESSAGE,
+    payload: id
   });
 };
 
