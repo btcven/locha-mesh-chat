@@ -167,6 +167,15 @@ public class EventsDispatcher implements RuntimeEvents {
         sendEvent(reactContext, "externalAddress" , address);
     }
 
+
+    public void isConnected(boolean isConnected) {
+        sendEvent(reactContext, "isConnect" , isConnected );
+    }
+
+    public void connectionChanged(boolean isConnected){
+        sendEvent(reactContext, "ConnectionChanged" , isConnected );
+    }
+
     /**
      * Sends the given event to React Native
      *
@@ -205,6 +214,27 @@ public class EventsDispatcher implements RuntimeEvents {
         reactContext
                 .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
                 .emit(eventName, params);
+        }catch (Exception e){
+            Log.e(TAG, "Fail event because: ", e);
+        }
+    }
+
+    /**
+     * Sends the given event to React Native
+     *
+     * This function is overloaded, it will send a WritableMap as parameter
+     *
+     * @param reactContext Context activity
+     * @param eventName Event name
+     * @param params Parameters to send
+     */
+    private static void sendEvent(@NonNull ReactContext reactContext,
+                                  String eventName,
+                                  @Nullable boolean params) {
+        try {
+            reactContext
+                    .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                    .emit(eventName, params);
         }catch (Exception e){
             Log.e(TAG, "Fail event because: ", e);
         }

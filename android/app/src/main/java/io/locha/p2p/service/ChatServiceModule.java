@@ -38,6 +38,7 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.WritableArray;
+import com.facebook.react.bridge.WritableMap;
 
 import java.net.Inet4Address;
 import java.net.Inet6Address;
@@ -63,6 +64,8 @@ public class ChatServiceModule extends ReactContextBaseJavaModule {
     private String peerId = null;
     private Promise mPromise;
     private boolean isServiceStarted = false;
+    private boolean wifiConnection = true;
+    private boolean mobileConnection = true;
     EventsDispatcher event;
     private final static  int  RECHARGE_TIME = 6000;
     private final static  int  WAIT_TIME = 2000;
@@ -307,8 +310,10 @@ public class ChatServiceModule extends ReactContextBaseJavaModule {
                 mPromise.resolve(peerId);
 
                 if(!Utils.isConnected(context)){
-                    stop();
+                    event.isConnected(Utils.isConnected(context));
+                    return;
                 }
+                event.isConnected(Utils.isConnected(context));
                 try {
                     spawnExternalIpAddrThread();
                 } catch (Exception e) {
@@ -354,12 +359,9 @@ public class ChatServiceModule extends ReactContextBaseJavaModule {
                             .getSystemService(Context.CONNECTIVITY_SERVICE);
 
                     NetworkInfo[] netInfo = connectivity.getAllNetworkInfo();
-                    for (NetworkInfo ni : netInfo) {
-                        if (ni.getTypeName().equalsIgnoreCase("WIFI"))
-                            Log.i(TAG, "onReceive: wifi " + ni.isConnected());
-                        if (ni.getTypeName().equalsIgnoreCase("MOBILE"))
-                            Log.i(TAG, "onReceive:  mobile" + ni.isConnected() );
-                    }
+
+                    Log.i(TAG, "ConnetionChanged: " + Utils.isConnected(context));
+                    event.connectionChanged(Utils.isConnected(context));
             }
 
         }
