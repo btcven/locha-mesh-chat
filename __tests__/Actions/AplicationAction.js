@@ -163,18 +163,16 @@ describe('Aplication actions', () => {
 
       setTimeout(() => {
         expect(store.getState().chats.chat.length).toBe(0);
+        const fromUID = 'test123test123';
+        store.dispatch(initialChat(fromUID, sendObject, 'pending'));
       }, 200);
     });
 
     test('clean chat', async () => {
-      const fromUID = 'test123test123';
-      await store.dispatch(initialChat(fromUID, sendObject, 'pending'));
-      setTimeout(async () => {
-        store.dispatch(cleanAllChat('broadcast'));
-        setTimeout(async () => {
-          await expect(store.getState().chats.insideChat.length).toBe(1);
-        }, 200);
-      }, 100);
+      store.dispatch(cleanAllChat('broadcast'));
+
+      expect(store.getState().chats.insideChat.length).toBe(0);
+
     });
 
     test('delete selected messages', async () => {
