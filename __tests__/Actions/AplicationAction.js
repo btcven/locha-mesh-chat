@@ -170,9 +170,11 @@ describe('Aplication actions', () => {
       const fromUID = 'test123test123';
       await store.dispatch(initialChat(fromUID, sendObject, 'pending'));
       setTimeout(async () => {
-        await store.dispatch(cleanAllChat('broadcast'));
-        await expect(store.getState().chats.insideChat.length).toBe(1);
-      }, 300);
+        store.dispatch(cleanAllChat('broadcast'));
+        setTimeout(async () => {
+          await expect(store.getState().chats.insideChat.length).toBe(1);
+        }, 200);
+      }, 100);
     });
 
     test('delete selected messages', async () => {
@@ -180,9 +182,9 @@ describe('Aplication actions', () => {
       await store.dispatch(initialChat(fromUID, sendObject, 'pending'));
 
       setTimeout(() => {
-        deleteMessages('broadcast', [sendObject], () => { });
+        store.dispatch(deleteMessages('broadcast', [sendObject], () => { }));
         expect(store.getState().chats.insideChat.length).toBe(1);
-      }, 200);
+      }, 100);
     });
 
     test('realoadBroadcastChat', () => {
