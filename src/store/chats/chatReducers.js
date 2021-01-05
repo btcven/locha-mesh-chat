@@ -69,6 +69,7 @@ export const chatReducer = (state = AplicationState, action) => {
     }
 
     case ActionTypes.DELETE_ALL_MESSAGE: {
+      console.log('aquii123', index);
       const index = state.chat.findIndex((chat) => {
         return chat.toUID === action.payload;
       });

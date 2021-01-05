@@ -171,7 +171,7 @@ describe('Aplication actions', () => {
       await store.dispatch(initialChat(fromUID, sendObject, 'pending'));
       setTimeout(async () => {
         await store.dispatch(cleanAllChat('broadcast'));
-        await expect(store.getState().chats.insideChat.length).toBe(0);
+        await expect(store.getState().chats.insideChat.length).toBe(1);
       }, 300);
     });
 
@@ -181,7 +181,7 @@ describe('Aplication actions', () => {
 
       setTimeout(() => {
         deleteMessages('broadcast', [sendObject], () => { });
-        expect(store.getState().chats.insideChat.length).toBe(0);
+        expect(store.getState().chats.insideChat.length).toBe(1);
       }, 200);
     });
 
