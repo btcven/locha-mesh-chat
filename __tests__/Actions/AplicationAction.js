@@ -171,8 +171,8 @@ describe('Aplication actions', () => {
       await store.dispatch(initialChat(fromUID, sendObject, 'pending'));
       setTimeout(async () => {
         await store.dispatch(cleanAllChat('broadcast'));
-        expect(store.getState().chats.insideChat.length).toBe(0);
-      }, 200);
+        await expect(store.getState().chats.insideChat.length).toBe(0);
+      }, 300);
     });
 
     test('delete selected messages', async () => {
