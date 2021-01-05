@@ -308,11 +308,6 @@ public class ChatServiceModule extends ReactContextBaseJavaModule {
                 peerId = intent.getStringExtra("peerId");
                 assert peerId != null;
                 mPromise.resolve(peerId);
-
-                if(!Utils.isConnected(context)){
-                    event.isConnected(Utils.isConnected(context));
-                    return;
-                }
                 event.isConnected(Utils.isConnected(context));
                 try {
                     spawnExternalIpAddrThread();
