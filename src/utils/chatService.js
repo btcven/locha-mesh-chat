@@ -13,7 +13,7 @@ export default class ChatService {
     if (ChatService.instance) {
       return ChatService.instance;
     }
-
+    this.connected = true;
     this.service = NativeModules.ChatService;
     this.event = new NativeEventEmitter(this.service);
     this.onNewMessage();
@@ -21,8 +21,12 @@ export default class ChatService {
     this.onConnectionEstablished();
     this.onConnectionClosed();
     this.onNewExternalAddress();
+    this.isConnected();
+    this.connectionChanged();
     this.IsActiveUpnp = false;
     this.store = require('../store').default;
+    this.mobile = false;
+    this.wifi = false;
     ChatService.instance = this;
     return this;
   }
@@ -84,6 +88,28 @@ export default class ChatService {
     this.event.addListener('newMessage', (async (message) => {
       this.onMessage(message);
     }));
+  }
+
+
+  isConnected = () => {
+    this.event.addListener('isConnect', (res) => {
+      if (!res) {
+        this.connected = res;
+        this.stop();
+      }
+    });
+  }
+
+  connectionChanged = () => {
+    this.event.addListener('ConnectionChanged', (res) => {
+      if (res) {
+        this.stop().then(() => {
+          this.startService();
+        });
+      } else {
+        this.stop();
+      }
+    });
   }
 
   /**

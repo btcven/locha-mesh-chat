@@ -23,6 +23,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 
@@ -36,6 +38,7 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.WritableArray;
+import com.facebook.react.bridge.WritableMap;
 
 import java.net.Inet4Address;
 import java.net.Inet6Address;
@@ -61,6 +64,8 @@ public class ChatServiceModule extends ReactContextBaseJavaModule {
     private String peerId = null;
     private Promise mPromise;
     private boolean isServiceStarted = false;
+    private boolean wifiConnection = true;
+    private boolean mobileConnection = true;
     EventsDispatcher event;
     private final static  int  RECHARGE_TIME = 6000;
     private final static  int  WAIT_TIME = 2000;
@@ -84,6 +89,7 @@ public class ChatServiceModule extends ReactContextBaseJavaModule {
         filter.addAction(ChatService.SERVICE_NOT_STARTED);
         filter.addAction(ChatService.SERVICE_STOPPED);
         filter.addAction(ChatService.CLICK_FOREGROUND_NOTIFICATION);
+        filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
 
         this.reactContext.registerReceiver(broadcastReceiver, filter);
     }
@@ -302,6 +308,7 @@ public class ChatServiceModule extends ReactContextBaseJavaModule {
                 peerId = intent.getStringExtra("peerId");
                 assert peerId != null;
                 mPromise.resolve(peerId);
+                event.isConnected(Utils.isConnected(context));
                 try {
                     spawnExternalIpAddrThread();
                 } catch (Exception e) {
@@ -320,7 +327,9 @@ public class ChatServiceModule extends ReactContextBaseJavaModule {
             if (action.equals(ChatService.SERVICE_STOPPED)) {
                 Log.d(TAG, "ChatService successfully stopped");
                 isServiceStarted = false;
-                mPromise.resolve(null);
+                if(mPromise != null){
+                    mPromise.resolve(null);
+                }
                 return;
             }
 
@@ -338,6 +347,18 @@ public class ChatServiceModule extends ReactContextBaseJavaModule {
                     Log.e(TAG, "Couldn't start application details settings", e);
                 }
             }
+
+            if(action.equals(ConnectivityManager.CONNECTIVITY_ACTION)){
+
+                    ConnectivityManager connectivity = (ConnectivityManager) context
+                            .getSystemService(Context.CONNECTIVITY_SERVICE);
+
+                    NetworkInfo[] netInfo = connectivity.getAllNetworkInfo();
+
+                    Log.i(TAG, "ConnetionChanged: " + Utils.isConnected(context));
+                    event.connectionChanged(Utils.isConnected(context));
+            }
+
         }
     };
 }
