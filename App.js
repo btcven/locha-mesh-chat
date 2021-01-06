@@ -11,9 +11,13 @@ import Database from './src/database';
 import ChatService from './src/utils/chatService';
 import NotifService from './src/utils/notificationService';
 import AudioModule from './src/utils/AudioModule';
+import NativationService from './src/utils/navigationService';
 
 const WrappedStack = ({ t }) => (
   <RouteContainer
+    ref={(ref) => {
+      NativationService.setTopLevelNavigator(ref);
+    }}
     screenProps={{ t }}
   />
 );

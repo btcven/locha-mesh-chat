@@ -237,18 +237,8 @@ export const setView = (idChat, nodeAddress) => async (dispatch) => {
     });
     return;
   }
-  database.cancelUnreadMessages(idChat).then((res) => {
-    // const sendStatus = {
-    //   toUID: idChat,
-    //   timestamp: new Date().getTime(),
-    //   data: {
-    //     status: 'read',
-    //     msgID: res
-    //   },
-    //   type: messageType.STATUS
-    // };
-    // chatService.send(JSON.stringify(sendStatus));
 
+  database.cancelUnreadMessages(idChat).then((res) => {
     dispatch({
       type: ActionTypes.IN_VIEW,
       payload: idChat,
