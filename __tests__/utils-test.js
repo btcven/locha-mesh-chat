@@ -3,7 +3,7 @@ import '../__Mocks__';
 
 import MockData from '../__Mocks__/dataMock';
 import {
-  hashGenerateColort, getIcon, unSelect
+  hashGenerateColort, getIcon, unSelect, onNotification, getPhotoBase64
 } from '../src/utils/utils';
 
 describe('generate hexadecimal color', () => {
@@ -54,5 +54,27 @@ describe('function to select chat and contacts', () => {
 
   test('check with the wrong parameter', () => {
     expect(() => unSelect(MockData.mockContact2, MockData.mockContact1)).toThrow();
+  });
+
+
+  test('onNotification function', () => {
+    const sendObject = {
+      toUID: 'broadcast',
+      msg: {
+        text: 'test',
+        typeFile: 'image',
+        file: 'test'
+      },
+      id: 'test',
+      msgID: 'test',
+      timestamp: new Date().getTime(),
+      type: 1
+    };
+    onNotification(sendObject);
+  });
+
+  test('get base64 photo function', async () => {
+    const path = await getPhotoBase64('test');
+    expect(path).toBe('test');
   });
 });

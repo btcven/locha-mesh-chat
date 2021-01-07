@@ -41,14 +41,6 @@ async function requestStoragePermission() {
   }
 }
 
-export const pendingObservable = () => {
-  BackgroundTimer.runBackgroundTimer(() => {
-    database.cancelMessages().then(() => {
-      store.dispatch(updateState());
-    });
-  }, 10000);
-};
-
 export const FileDirectory = Platform.select({
   ios: () => `${RNFS.DocumentDirectoryPath}/LochaMesh`,
   android: () => `${RNFS.ExternalStorageDirectoryPath}/LochaMesh`
@@ -60,7 +52,6 @@ export const FileDirectory = Platform.select({
  * @param path address in the image to be extracted
  * @returns {String}
  */
-
 export const getPhotoBase64 = async (path) => {
   const photoBase64 = await RNFS.readFile(path, 'base64');
   return photoBase64;
