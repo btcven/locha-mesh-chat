@@ -181,7 +181,7 @@ describe('Aplication actions', () => {
 
       setTimeout(() => {
         store.dispatch(deleteMessages('broadcast', [sendObject], () => { }));
-        expect(store.getState().chats.insideChat.length).toBe(1);
+        expect(store.getState().chats.insideChat.length).toBe(0);
       }, 100);
     });
 
