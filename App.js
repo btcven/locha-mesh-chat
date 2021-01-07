@@ -40,7 +40,6 @@ export default class App extends Component {
 
   render() {
     store.dispatch(verifyAplicationState());
-    // store.dispatch(loading());
     return (
       <Provider store={store}>
         <Root>
