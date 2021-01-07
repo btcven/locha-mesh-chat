@@ -228,7 +228,6 @@ export const setView = (idChat, nodeAddress) => async (dispatch) => {
   if (nodeAddress) {
     await chatService.dial(nodeAddress);
   }
-
   if (!idChat) {
     dispatch({
       type: ActionTypes.IN_VIEW,
@@ -237,7 +236,7 @@ export const setView = (idChat, nodeAddress) => async (dispatch) => {
     });
     return;
   }
-
+  
   database.cancelUnreadMessages(idChat).then((res) => {
     dispatch({
       type: ActionTypes.IN_VIEW,

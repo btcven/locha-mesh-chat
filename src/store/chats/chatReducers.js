@@ -103,6 +103,7 @@ export const chatReducer = (state = AplicationState, action) => {
       if (index !== -1) {
         state.chat[index].queue = [];
       }
+      console.log('pasateporaca?', index, action.messages);
       return {
         ...state,
         insideChat: action.messages,
