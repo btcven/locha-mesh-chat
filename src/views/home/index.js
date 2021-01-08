@@ -51,7 +51,7 @@ class index extends Component {
 
   selectedChat = (info, obj) => {
     if (this.state.selected.length === 0) {
-      this.props.navigation.push('chat',
+      this.props.navigation.navigate('chat',
         {
           contacts: {
             ...obj,
@@ -292,7 +292,7 @@ class index extends Component {
           })}
         </Content>
         <FloatButton
-          add={() => this.props.navigation.push('contacts')}
+          add={() => this.props.navigation.navigate('contacts')}
           icon={(
             <Icon
               type="MaterialIcons"

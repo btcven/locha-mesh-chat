@@ -13,7 +13,6 @@ import NotifService from './notificationService';
 import NavigationService from './navigationService';
 import store from '../store';
 import ChatService from './chatService';
-import sha256 from 'js-sha256'
 
 /**
  * global functions used in multiple places in the app
@@ -34,10 +33,10 @@ async function requestStoragePermission() {
     await PermissionsAndroid.request(
       PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE
     );
-  } catch (err) {
+  } catch (err) { 
     // eslint-disable-next-line no-console
     console.warn(err);
-  }
+  }  
 }
 
 export const pendingObservable = () => {
