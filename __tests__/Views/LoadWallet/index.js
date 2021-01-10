@@ -1,8 +1,6 @@
 import '../../../__Mocks__';
 import React from 'react';
-import renderer from 'react-test-renderer';
 import { shallow } from 'enzyme';
-import { Provider } from 'react-redux';
 import InitialStep from '../../../src/views/LoadWallet/index';
 import store from '../../../src/store';
 import { navigationPops } from '../../components/heder-test';
@@ -10,15 +8,6 @@ import { navigationPops } from '../../components/heder-test';
 const screenProps = {
   t: (data) => data
 };
-test('render main component to create account', () => {
-  const rendered = renderer.create(
-    <Provider store={store}>
-      <InitialStep screenProps={screenProps} navigation={navigationPops} />
-    </Provider>
-  ).toJSON();
-  expect(rendered).toBeTruthy();
-});
-
 describe(' testing the main  createWallet', () => {
   const wrapper = shallow(
     <InitialStep

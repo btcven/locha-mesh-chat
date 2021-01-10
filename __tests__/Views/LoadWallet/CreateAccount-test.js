@@ -14,20 +14,6 @@ const screenProps = {
 const words = 'cactus spatial damp canvas coach income wool doll mail radio senior mixed'.split(' ');
 const stringWords = 'cactus spatial damp canvas coach income wool doll mail radio senior mixed';
 const back = jest.fn();
-test('render component create account', () => {
-  const rendered = renderer.create(
-    <Provider store={store}>
-      <CreateAccount
-        screenProps={screenProps}
-        navigation={navigationPops}
-        phrases={words}
-        stringPhrases={stringWords}
-      />
-    </Provider>
-  ).toJSON();
-  expect(rendered).toBeTruthy();
-});
-
 
 describe('test component createAccount', () => {
   const initial = shallow(

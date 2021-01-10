@@ -13,17 +13,6 @@ const navigationPops = {
   navigate: jest.fn(),
 };
 
-it('renders drawer component', () => {
-  const rendered = renderer.create(
-    <Drawer
-      screenProps={screenProps}
-      store={store}
-      navigation={navigationPops}
-    />
-  ).toJSON();
-  expect(rendered).toBeTruthy();
-});
-
 describe('test all of functions to the drawer component', () => {
   const wrapper = shallow(
     <Drawer

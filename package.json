@@ -126,7 +126,7 @@
     "coverageDirectory": "./coverage/",
     "collectCoverage": true,
     "transformIgnorePatterns": [
-      "node_modules/(?!react-native|native-base-shoutem-theme|@shoutem/animation|@shoutem/ui|tcomb-form-native|react-navigation)"
+      "node_modules/(?!react-native|native-base-shoutem-theme|@shoutem/animation|@shoutem/ui|tcomb-form-native|react-navigation|@codler)"
     ],
     "setupFilesAfterEnv": [
       "<rootDir>/testSetup.js",

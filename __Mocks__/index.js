@@ -1,3 +1,6 @@
+/* eslint-disable import/no-unresolved */
+/* eslint-disable global-require */
+/* eslint-disable react/prefer-stateless-function */
 /* eslint-disable no-unused-vars */
 /* eslint-disable max-classes-per-file */
 /* eslint-disable import/no-extraneous-dependencies */
@@ -75,10 +78,18 @@ jest.mock('react-native-sound', () => class Sound {
   }
 });
 
+jest.mock('@react-native-community/datetimepicker', () => {
+  // code here
+});
+
+jest.mock('@react-native-picker/picker', () => {
+  // code here
+});
 
 jest.mock('react-native-gesture-handler', () => {
   // code here
 });
+
 
 jest.mock('react-navigation-stack', () => {
   // code here
@@ -86,6 +97,7 @@ jest.mock('react-navigation-stack', () => {
 
 
 jest.mock('react-native-permissions', () => mock);
+
 
 jest.mock('@react-native-community/slider', () => {
   const data = () => null;
