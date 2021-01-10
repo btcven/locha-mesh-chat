@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Provider } from 'react-redux';
 import { translate } from 'react-i18next';
-import { YellowBox } from 'react-native';
+import { LogBox, YellowBox } from 'react-native';
 import { Root } from 'native-base';
 import RouteContainer from './src/routes';
 import store from './src/store';
@@ -30,9 +30,6 @@ export const audioRecorder = new AudioModule();
 
 // eslint-disable-next-line react/prefer-stateless-function
 export default class App extends Component {
-  componentDidMount() {
-    YellowBox.ignoreWarnings(['Animated: `useNativeDriver`']);
-  }
 
   render() {
     store.dispatch(verifyAplicationState());
