@@ -22,7 +22,8 @@ import {
   cleanAllChat,
   deleteMessages,
   sendAgain,
-  getChat
+  getChat,
+  setView
 } from '../../src/store/chats';
 import { database } from '../../App';
 
@@ -128,7 +129,6 @@ describe('Aplication actions', () => {
       }));
     });
 
-
     test('getChat function', () => {
       const sendObject2 = {
         toUID: 'broadcast',
@@ -144,6 +144,11 @@ describe('Aplication actions', () => {
       };
       store.dispatch(getChat(JSON.stringify(sendObject2)));
       expect(store.getState().chats.chat.length).toBe(1);
+    });
+
+    test('set View actions', async () => {
+      await store.dispatch(setView('broadcast', 'test'));
+      expect(store.getState().chats.chat[0].queue.length).toBe(0);
     });
 
     test('send message', async () => {
@@ -181,7 +186,7 @@ describe('Aplication actions', () => {
 
       setTimeout(() => {
         store.dispatch(deleteMessages('broadcast', [sendObject], () => { }));
-        expect(store.getState().chats.insideChat.length).toBe(1);
+        expect(store.getState().chats.insideChat.length).toBe(0);
       }, 100);
     });
 

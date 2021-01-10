@@ -228,7 +228,6 @@ export const setView = (idChat, nodeAddress) => async (dispatch) => {
   if (nodeAddress) {
     await chatService.dial(nodeAddress);
   }
-
   if (!idChat) {
     dispatch({
       type: ActionTypes.IN_VIEW,
@@ -237,18 +236,8 @@ export const setView = (idChat, nodeAddress) => async (dispatch) => {
     });
     return;
   }
+  
   database.cancelUnreadMessages(idChat).then((res) => {
-    // const sendStatus = {
-    //   toUID: idChat,
-    //   timestamp: new Date().getTime(),
-    //   data: {
-    //     status: 'read',
-    //     msgID: res
-    //   },
-    //   type: messageType.STATUS
-    // };
-    // chatService.send(JSON.stringify(sendStatus));
-
     dispatch({
       type: ActionTypes.IN_VIEW,
       payload: idChat,
