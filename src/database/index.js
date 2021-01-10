@@ -105,6 +105,7 @@ export default class Database extends CoreDatabase {
       this.db = new Realm(optionsDatabase);
       this.listener = new Realm(optionsDatabase);
       const userData = await this.getUserData();
+      this.realmObservable();
       resolve({ user: userData, seed: this.seed.objects('Seed') });
     } catch (err) {
       reject(err);
@@ -125,7 +126,7 @@ export default class Database extends CoreDatabase {
           id,
           seed: phrases
         }, true);
-
+        this.realmObservable();
         resolve();
       });
     } catch (err) {
@@ -143,6 +144,7 @@ export default class Database extends CoreDatabase {
   restoreWithPhrase = (pin, phrase) => new Promise(async (resolve) => {
     this.getRealm(await bitcoin.sha256(pin), await bitcoin.sha256(phrase)).then(() => {
       this.setDataSeed(phrase).then(() => {
+        this.realmObservable();
         resolve();
       });
     });
@@ -201,6 +203,7 @@ export default class Database extends CoreDatabase {
           chats,
           contacts
         });
+        this.realmObservable();
         resolve();
       } catch (err) {
         // eslint-disable-next-line no-console

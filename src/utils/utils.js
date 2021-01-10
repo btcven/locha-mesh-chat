@@ -2,17 +2,15 @@ import RNFS from 'react-native-fs';
 import { ToastAndroid, PermissionsAndroid, Platform } from 'react-native';
 import { Toast } from 'native-base';
 import Identicon from 'identicon.js';
-import BackgroundTimer from 'react-native-background-timer';
 import { database, bitcoin } from '../../App';
 import {
-  selectedChat,
   messageQueue,
-  updateState
 } from '../store/chats';
 import NotifService from './notificationService';
 import NavigationService from './navigationService';
 import store from '../store';
 import ChatService from './chatService';
+import { broadcastInfo } from './constans';
 
 /**
  * global functions used in multiple places in the app
@@ -39,14 +37,6 @@ async function requestStoragePermission() {
   }  
 }
 
-export const pendingObservable = () => {
-  BackgroundTimer.runBackgroundTimer(() => {
-    database.cancelMessages().then(() => {
-      store.dispatch(updateState());
-    });
-  }, 10000);
-};
-
 export const FileDirectory = Platform.select({
   ios: () => `${RNFS.DocumentDirectoryPath}/LochaMesh`,
   android: () => `${RNFS.ExternalStorageDirectoryPath}/LochaMesh`
@@ -58,7 +48,6 @@ export const FileDirectory = Platform.select({
  * @param path address in the image to be extracted
  * @returns {String}
  */
-
 export const getPhotoBase64 = async (path) => {
   const photoBase64 = await RNFS.readFile(path, 'base64');
   return photoBase64;
@@ -91,14 +80,14 @@ export const createFolder = async () => {
 
 export const notifyRedirect = (data) => {
   const result = getInfoMessage(Number(data.id));
-  store.dispatch(selectedChat({ toUID: result.toUID }));
-  const contact = {
-    hashUID: result.hashUID,
-    name: result.name,
-    picture: result.picture,
-    uid: result.uid
-  };
-  NavigationService.navigate('chat', contact);
+  NavigationService.navigate('chat', {
+    contacts: {
+      ...result.contact,
+    },
+    chatUID: result.toUID,
+    hashUID: result.contact.hashUID,
+    name: result.contact.name
+  });
 };
 
 /**
@@ -108,9 +97,9 @@ export const notifyRedirect = (data) => {
  */
 export const onNotification = (res) => {
   const state = store.getState();
-  const view = res.fromUID;
+  const view = res.toUID === 'broadcast' ? res.toUID : res.fromUID;
   const rule = state.aplication.view !== view;
-  unreadMessages(rule, state, view, res);
+  unreadMessages(rule, state.chats, view, res);
   if (state.config.peerID !== res.fromUID && rule) {
     const id = parseInt((view), 16);
 
@@ -121,8 +110,7 @@ export const onNotification = (res) => {
 };
 
 export const unreadMessages = (rule, state, view, data) => {
-  const index = state.chats.chat.findIndex((chat) => chat.toUID === view);
-
+  const index = state.chat.findIndex((chat) => chat.toUID === view);
   if (rule) {
     store.dispatch(messageQueue(index, data.id, view));
   }
@@ -183,11 +171,18 @@ const getInfoMessage = (id) => {
     const sub = parseInt((data.toUID), 16);
     return sub === id;
   });
-  const contact = Object.values(
-    state.contacts.contacts
-  ).find((itemContact) => itemContact.uid === result.toUID);
+  let contact;
+  if (result.toUID !== 'broadcast') {
+    contact = state.contacts.contacts.find((itemContact) => itemContact.uid === result.toUID);
+  } else {
+    contact = {
+      ...broadcastInfo,
+      file: null
+    };
+  }
 
-  return { toUID: result.toUID, ...contact };
+  // console.warn(contact);
+  return { toUID: result.toUID, contact };
 };
 
 /**

@@ -97,9 +97,16 @@ export const chatReducer = (state = AplicationState, action) => {
     }
 
     case ActionTypes.IN_VIEW: {
+      const index = state.chat.findIndex((chat) => {
+        return chat.toUID === action.payload;
+      });
+      if (index !== -1) {
+        state.chat[index].queue = [];
+      }
       return {
         ...state,
-        insideChat: action.messages
+        insideChat: action.messages,
+        chat: state.chat.slice()
       };
     }
 
