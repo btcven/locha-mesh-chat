@@ -69,4 +69,10 @@ describe('test home componente', () => {
     });
     expect(wrapper.instance().props.chats).toBeDefined();
   });
+
+
+  test('selectedChat function', () => {
+    wrapper.instance().selectedChat(mockContact[0], mockChat[0]);
+    expect(navigationPops.navigate.mock.calls.length).toBe(1);
+  });
 });
