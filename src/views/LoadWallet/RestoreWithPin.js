@@ -177,7 +177,9 @@ class RestoreWithPin extends Component {
   }
 }
 
-export default connect(null, { restoreAccountWithPin, newPin })(RestoreWithPin);
+const mapStateToProps = () => ({});
+
+export default connect(mapStateToProps, { restoreAccountWithPin, newPin })(RestoreWithPin);
 
 const styles = StyleSheet.create({
   container: {
