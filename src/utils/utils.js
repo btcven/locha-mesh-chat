@@ -2,13 +2,9 @@ import RNFS from 'react-native-fs';
 import { ToastAndroid, PermissionsAndroid, Platform } from 'react-native';
 import { Toast } from 'native-base';
 import Identicon from 'identicon.js';
-import BackgroundTimer from 'react-native-background-timer';
-import sha256 from 'js-sha256';
 import { database, bitcoin } from '../../App';
 import {
-  selectedChat,
   messageQueue,
-  updateState
 } from '../store/chats';
 import NotifService from './notificationService';
 import NavigationService from './navigationService';
@@ -35,10 +31,10 @@ async function requestStoragePermission() {
     await PermissionsAndroid.request(
       PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE
     );
-  } catch (err) {
+  } catch (err) { 
     // eslint-disable-next-line no-console
     console.warn(err);
-  }
+  }  
 }
 
 export const FileDirectory = Platform.select({
