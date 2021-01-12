@@ -68,6 +68,8 @@ struct DataStatus {
 
 #[derive(Serialize, Deserialize)]
 struct MessageData {
+    #[serde(rename = "fromUID")]
+    from_uid: String,
     #[serde(rename = "toUID")]
     to_uid: String,
     #[serde(rename = "msgID")]
@@ -81,6 +83,8 @@ struct MessageData {
 
 #[derive(Serialize, Deserialize)]
 struct Status {
+    #[serde(rename = "fromUID")]
+    from_uid: String,
     #[serde(rename = "toUID")]
     to_uid: String,
     timestamp: u64,
@@ -248,6 +252,7 @@ pub fn serialize_message(contents: String) -> Vec<u8> {
 
     match json {
         ContentMessage::Message(person) => {
+            message.from_uid = person.from_uid;
             message.to_uid = person.to_uid;
             message.msg_id = person.msg_id;
             message.timestamp = person.timestamp;
@@ -257,6 +262,7 @@ pub fn serialize_message(contents: String) -> Vec<u8> {
             message.type_file = person.msg.type_file.unwrap_or(String::new());
         }
         ContentMessage::Status(status) => {
+            message.from_uid = status.from_uid;
             message.to_uid = status.to_uid;
             message.timestamp = status.timestamp;
             message.type_message = status.r#type;
@@ -287,6 +293,7 @@ pub fn deserialize_message(buf: &[u8]) -> String {
 
     if content.status.is_empty() {
         let message = MessageData {
+            from_uid: content.from_uid,
             to_uid: content.to_uid,
             msg_id: content.msg_id,
             timestamp: content.timestamp,
@@ -314,6 +321,7 @@ pub fn deserialize_message(buf: &[u8]) -> String {
     }
 
     let message = Status {
+        from_uid: content.from_uid,
         to_uid: content.to_uid,
         timestamp: content.timestamp,
         r#type: content.type_message,

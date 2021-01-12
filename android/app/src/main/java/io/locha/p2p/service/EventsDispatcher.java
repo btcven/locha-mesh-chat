@@ -62,7 +62,9 @@ public class EventsDispatcher implements RuntimeEvents {
     @Override public void onNewMessage(String peerId, String contents) {
         try {
             JSONObject obj = new JSONObject(contents);
-            obj.put("fromUID", peerId);
+            if(obj.getString("fromUID" ) == null){
+                obj.put("fromUID", peerId);
+            }
 
             sendEvent(this.reactContext, "newMessage", obj.toString());
             Log.d(TAG, "newMessage" + obj);

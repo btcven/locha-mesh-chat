@@ -237,6 +237,7 @@ class Chat extends Component {
     const { params } = navigation.state;
     const toUID = params.chatUID;
     const sendObject = {
+      fromUID: userData.peerID,
       toUID,
       msg: {
         text: '',

@@ -11,4 +11,5 @@ message Content {
   string typeFile = 7;
   bytes file = 8;
   string status = 9;
+  string from_uid = 10;
 }
