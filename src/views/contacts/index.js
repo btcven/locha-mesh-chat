@@ -59,7 +59,7 @@ class Contacts extends Component {
 
   onSelect = (contact) => {
     if (this.state.selected.length === 0) {
-      this.props.navigation.push('chat', {
+      this.props.navigation.navigate('chat', {
         contacts: {
           ...contact,
         },

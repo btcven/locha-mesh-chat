@@ -74,7 +74,7 @@ class Config extends Component {
   }
 
   navigate = () => {
-    this.props.navigation.push('deviceSettings');
+    this.props.navigation.navigate('deviceSettings');
   }
 
   render() {

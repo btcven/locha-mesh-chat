@@ -36,7 +36,9 @@ jest.mock('react-native-fs', () => ({
   readdir: jest.fn(),
   setReadable: jest.fn(),
   stat: jest.fn(),
-  readFile: jest.fn(),
+  readFile: jest.fn((path) => new Promise((resolve) => {
+    resolve(path);
+  })),
   read: jest.fn(),
   readFileAssets: jest.fn(),
   hash: jest.fn(),

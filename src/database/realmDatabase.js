@@ -21,12 +21,12 @@ export default class CoreDatabase {
     const chats = [];
 
     const promise = new Promise((solve) => {
-      user[0].chats.slice(0, 15).forEach((msg, index, array) => {
+      user[0].chats.sorted('timestamp', true).slice(0, 15).forEach((msg, index, array) => {
         chats.push({
           fromUID: msg.fromUID,
           toUID: msg.toUID,
           timestamp: msg.timestamp,
-          queue: msg.queue,
+          queue: { ...msg.queue },
           messages: msg.messages.sorted('timestamp', true).slice(0, 1),
         });
 
@@ -326,7 +326,6 @@ export default class CoreDatabase {
 
   realmObservable = () => {
     const chats = this.listener.objects('Message');
-
     chats.addListener(this.listenerr);
   };
 

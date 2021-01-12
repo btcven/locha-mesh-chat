@@ -45,5 +45,11 @@ describe('main component of configurations', () => {
       wrapper.find('ForwardRef').at(6).props().onPress();
       expect(wrapper.instance().state.pin).toBe(true);
     });
+
+
+    test('navigate function', () => {
+      wrapper.instance().navigate();
+      expect(navigationPops.navigate.mock.calls.length).toBe(1);
+    });
   });
 });

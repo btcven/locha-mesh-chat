@@ -51,4 +51,9 @@ describe('tests to the main component of contacts', () => {
     fbWrapper.find('ForwardRef').first().props().onPress();
     expect(wrapper.find('AddContact').exists()).toBeTruthy();
   });
+
+  test('onSelected function', () => {
+    wrapper.instance().onSelect(arrayContact[0]);
+    expect(navigationPops.navigate.mock.calls.length).toBe(1);
+  });
 });
