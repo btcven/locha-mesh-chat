@@ -7,6 +7,7 @@ const device = NativeModules.RNDeviceInfo;
 
 const errorHandler = (e, isFatal) => {
   if (isFatal) {
+    console.log('diosss123', e);
     Alert.alert(
       'An error has occurred',
       `An unexpected fatal error has occurred, it is necessary to restart the application.

@@ -10,13 +10,6 @@ const screenProps = {
 };
 
 describe('Edit naame component', () => {
-  test('render the component', () => {
-    const rendered = renderer.create(
-      <EditName screenProps={screenProps} />
-    ).toJSON();
-    expect(rendered).toBeTruthy();
-  });
-
   describe('Functions editName component', () => {
     const wrapper = shallow(<EditName screenProps={screenProps} />);
 

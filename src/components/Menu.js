@@ -41,7 +41,7 @@ export default class MenuComponent extends Component {
           ref={this.setMenuRef}
           button={(
             <Button onPress={this.showMenu} transparent>
-              {!this.props.item && <Icon testID="defaulIcon" name="more" />}
+              {!this.props.item && <Icon testID="defaulIcon" name="ellipsis-vertical" />}
               {this.props.item && this.props.item}
             </Button>
           )}

@@ -226,7 +226,7 @@ export default class ChatForm extends Component {
                       ]}
                     >
                       <Icon
-                        name="arrow-dropleft"
+                        name="arrow-back"
                         style={{ marginHorizontal: 10, color: '#9e9e9e' }}
                       />
                       <Text>{screenProps.t('Chats:cancelAudio')}</Text>

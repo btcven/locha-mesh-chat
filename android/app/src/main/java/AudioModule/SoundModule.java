@@ -98,7 +98,6 @@ public class SoundModule extends ReactContextBaseJavaModule {
             destFile.getParentFile().mkdirs();
         }
         recorder = new MediaRecorder();
-
         recorder.setAudioSource(recordingSettings.getInt("AudioSource"));
         int outputFormat = getOutputFormatFromString(recordingSettings.getString("OutputFormat"));
         recorder.setOutputFormat(outputFormat);
@@ -107,13 +106,13 @@ public class SoundModule extends ReactContextBaseJavaModule {
         recorder.setAudioSamplingRate(recordingSettings.getInt("SampleRate"));
         recorder.setAudioChannels(recordingSettings.getInt("Channels"));
         recorder.setAudioEncodingBitRate(recordingSettings.getInt("AudioEncodingBitRate"));
-        recorder.setOutputFile(destFile.getPath());
+        recorder.setOutputFile(recordingSettings.getString("path"));
 
         recorderPath = recordingSettings.getString("path");
 
         recorder.prepare();
         promise.resolve(null);
-        } catch (IOException e) {
+        } catch (Exception e) {
             Log.e(TAG, "prepareRecoder: ", e);
             promise.reject("Error", e);
         }
