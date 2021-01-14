@@ -1774,7 +1774,7 @@ dependencies = [
 [[package]]
 name = "locha-p2p"
 version = "0.1.0"
-source = "git+https://github.com/btcven/locha-p2p?branch=feature/add-fromUID-protobuff#0eec4e45b74635eb0767079f61be080e3e0c59c5"
+source = "git+https://github.com/btcven/locha-p2p#e97a304bd05e8e388e548b31872f0d7b41ef7e67"
 dependencies = [
  "async-std",
  "base64 0.13.0",
@@ -1879,7 +1879,7 @@ dependencies = [
 [[package]]
 name = "miniupnpc"
 version = "0.1.0"
-source = "git+https://github.com/btcven/locha-p2p?branch=feature/add-fromUID-protobuff#0eec4e45b74635eb0767079f61be080e3e0c59c5"
+source = "git+https://github.com/btcven/locha-p2p#e97a304bd05e8e388e548b31872f0d7b41ef7e67"
 dependencies = [
  "miniupnpc-sys",
 ]
@@ -1887,7 +1887,7 @@ dependencies = [
 [[package]]
 name = "miniupnpc-sys"
 version = "0.1.0"
-source = "git+https://github.com/btcven/locha-p2p?branch=feature/add-fromUID-protobuff#0eec4e45b74635eb0767079f61be080e3e0c59c5"
+source = "git+https://github.com/btcven/locha-p2p#e97a304bd05e8e388e548b31872f0d7b41ef7e67"
 dependencies = [
  "bindgen",
  "cc",
