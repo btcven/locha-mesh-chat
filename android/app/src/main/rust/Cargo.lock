@@ -1774,9 +1774,10 @@ dependencies = [
 [[package]]
 name = "locha-p2p"
 version = "0.1.0"
-source = "git+https://github.com/btcven/locha-p2p#39333ebf9d26571fac585332a200d1cc163ccab2"
+source = "git+https://github.com/btcven/locha-p2p#e97a304bd05e8e388e548b31872f0d7b41ef7e67"
 dependencies = [
  "async-std",
+ "base64 0.13.0",
  "futures",
  "libp2p",
  "log",
@@ -1878,7 +1879,7 @@ dependencies = [
 [[package]]
 name = "miniupnpc"
 version = "0.1.0"
-source = "git+https://github.com/btcven/locha-p2p#39333ebf9d26571fac585332a200d1cc163ccab2"
+source = "git+https://github.com/btcven/locha-p2p#e97a304bd05e8e388e548b31872f0d7b41ef7e67"
 dependencies = [
  "miniupnpc-sys",
 ]
@@ -1886,7 +1887,7 @@ dependencies = [
 [[package]]
 name = "miniupnpc-sys"
 version = "0.1.0"
-source = "git+https://github.com/btcven/locha-p2p#39333ebf9d26571fac585332a200d1cc163ccab2"
+source = "git+https://github.com/btcven/locha-p2p#e97a304bd05e8e388e548b31872f0d7b41ef7e67"
 dependencies = [
  "bindgen",
  "cc",

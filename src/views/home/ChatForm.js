@@ -60,6 +60,7 @@ export default class ChatForm extends Component {
     if (this.state.currentTime !== 0 && !this.state.cancelRecoding) {
       RNFS.exists(data.path).then(async () => {
         const sendObject = {
+          fromUID: user.peerID,
           toUID,
           msg: {
             text: '',
@@ -124,6 +125,7 @@ export default class ChatForm extends Component {
     const toUID = navigation.params.chatUID;
 
     const sendObject = {
+      fromUID: user.peerID,
       toUID,
       msg: {
         text: this.state.message

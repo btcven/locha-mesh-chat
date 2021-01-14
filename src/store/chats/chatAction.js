@@ -202,6 +202,7 @@ export const messageQueue = (index, id, view) => async (dispatch) => {
 export const sendStatus = (data, state) => {
   const sendStatus = {
     timestamp: new Date().getTime(),
+    fromUID: data.fromUID,
     data: {
       status: 'delivered',
       msgID: data.msgID
@@ -236,7 +237,7 @@ export const setView = (idChat, nodeAddress) => async (dispatch) => {
     });
     return;
   }
-  
+
   database.cancelUnreadMessages(idChat).then((res) => {
     dispatch({
       type: ActionTypes.IN_VIEW,
@@ -257,6 +258,7 @@ export const sendReadMessageStatus = (sendStatus) => () => {
 export const sendAgain = (message, sendAgain) => (dispatch) => {
   database.updateMessage(message, sendAgain).then((res) => {
     const sendObject = {
+      fromUID: message.fromUID,
       toUID: res.toUID,
       msg: {
         text: res.msg
