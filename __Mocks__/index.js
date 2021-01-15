@@ -121,10 +121,6 @@ jest.mock('react-navigation', () => ({
   }
 }));
 
-jest.mock('react-native-background-timer', () => {
-  // code here
-});
-
 jest.mock('rn-fetch-blob', () => ({
   config: jest.fn().mockReturnValue(() => {
     jest.fn().mockReturnValue(() => new Promise());
