@@ -248,7 +248,6 @@ dependencies {
     implementation project(':react-native-share')
     implementation project(':react-native-document-picker')
     implementation project(':@react-native-community_slider')
-    implementation project(':react-native-sound')
     implementation project(':react-native-randombytes')
     implementation project(':react-native-svg')
     implementation project(':realm')
