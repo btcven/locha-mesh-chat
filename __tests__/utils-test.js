@@ -3,7 +3,7 @@ import '../__Mocks__';
 
 import MockData from '../__Mocks__/dataMock';
 import {
-  hashGenerateColort, getIcon, unSelect, onNotification, getPhotoBase64
+  hashGenerateColort, getIcon, unSelect, getPhotoBase64, onNotification
 } from '../src/utils/utils';
 
 describe('generate hexadecimal color', () => {

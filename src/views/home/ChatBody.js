@@ -3,7 +3,6 @@
 /* eslint-disable react/sort-comp */
 import React from 'react';
 import { View, StyleSheet, FlatList } from 'react-native';
-// import Sound from 'react-native-sound';
 import Messages from './Messages';
 // import { songs, messageType } from '../../utils/constans';
 import ImagesView from './imagesView';

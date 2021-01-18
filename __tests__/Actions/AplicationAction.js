@@ -1,5 +1,4 @@
 import '../../__Mocks__';
-import { date } from 'yup';
 import MockData from '../../__Mocks__/dataMock';
 import store from '../../src/store';
 import {

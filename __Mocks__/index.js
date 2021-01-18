@@ -66,19 +66,6 @@ jest.mock('react-native-share', () => {
   // code here
 });
 
-jest.mock('react-native-sound', () => class Sound {
-  constructor(path, enconde, callback) {
-    this.path = path;
-    this.enconde = enconde;
-    callback(false);
-  }
-
-  getDuration = () => 20
-
-  pause = () => {
-    jest.fn();
-  }
-});
 
 jest.mock('@react-native-community/datetimepicker', () => {
   // code here
@@ -120,10 +107,6 @@ jest.mock('react-navigation', () => ({
     navigate: jest.fn().mockImplementation((x) => x),
   }
 }));
-
-jest.mock('react-native-background-timer', () => {
-  // code here
-});
 
 jest.mock('rn-fetch-blob', () => ({
   config: jest.fn().mockReturnValue(() => {

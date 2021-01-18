@@ -252,7 +252,7 @@ class Config extends Component {
                         paddingVertical: 10,
                         paddingHorizontal: 10
                       }}
-                      name="arrow-dropright"
+                      name="caret-forward"
                     />
                   </TouchableOpacity>
                 </Right>
@@ -298,7 +298,7 @@ class Config extends Component {
                       paddingVertical: 10,
                       paddingHorizontal: 10
                     }}
-                    name="arrow-dropright"
+                    name="caret-forward"
                   />
                 </TouchableOpacity>
               </Right>
@@ -336,7 +336,7 @@ class Config extends Component {
                         paddingVertical: 10,
                         paddingHorizontal: 10
                       }}
-                      name="arrow-dropright"
+                      name="caret-forward"
                     />
                   </TouchableOpacity>
                 </Right>
@@ -372,7 +372,7 @@ class Config extends Component {
                       paddingVertical: 10,
                       paddingHorizontal: 10
                     }}
-                    name="arrow-dropright"
+                    name="caret-forward"
                   />
                 </Right>
 
