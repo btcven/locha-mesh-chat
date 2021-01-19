@@ -64,11 +64,11 @@ export const restoreAccountWithPin = (pin, callback) => async (dispatch) => {
 };
 
 export const createNewAccount = (obj, callback) => async (dispatch) => {
+  await createFolder();
   const shaPing = await bitcoin.sha256(obj.pin);
   const shaSeed = await bitcoin.sha256(obj.seed);
   await database.getRealm(shaPing, shaSeed);
   await database.setDataSeed(obj.seed);
-  await createFolder();
   await AsyncStorage.setItem('upnp', String(true));
   const result = await bitcoin.createWallet(obj.seed);
   const peerID = await chatService.startService();
