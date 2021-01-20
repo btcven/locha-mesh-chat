@@ -21,8 +21,7 @@ export const getPhotosFromUser = (id, callback) => async (dispatch) => {
     width: 500,
     height: 500
   }).then(async (images) => {
-    const name = await getName(images);
-    const newPath = `file://${FileDirectory}/Pictures/${name}`;
+    const newPath = `file://${FileDirectory}/Pictures/user_${new Date().getTime()}.jpg`;
     RNFS.moveFile(images.path, newPath).then(async () => {
       await deletePhotoFromPhone();
       database.saveUserPhoto({ uid: id, picture: newPath }).then(async () => {
@@ -37,24 +36,12 @@ export const getPhotosFromUser = (id, callback) => async (dispatch) => {
   });
 };
 
-/**
- * @function
- * @description function to get the photo of the gallery cut and move to the app folder
- * @param {object} id information of the photograph obtained
- * @returns {string}
- */
-
-const getName = (data) => {
-  const result = data.path.split('/');
-  return result[result.length - 1];
-};
 
 /**
  * @function
  * @description verify that the user has a photo added and if it exists, delete it
  *
  */
-
 const deletePhotoFromPhone = async () => {
   database.getUserData('user').then(async (res) => {
     const parse = JSON.parse(JSON.stringify(res));
@@ -80,8 +67,7 @@ export const openCamera = (id, callback) => async (dispatch) => {
     height: 500,
     cropping: true
   }).then(async (images) => {
-    const name = await getName(images);
-    const newPath = `file://${FileDirectory}/Pictures/${name}`;
+    const newPath = `file://${FileDirectory}/Pictures/user_${new Date().getTime()}.jpg`;
     RNFS.moveFile(images.path, newPath).then(async () => {
       await deletePhotoFromPhone();
       database.saveUserPhoto({

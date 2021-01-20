@@ -101,7 +101,7 @@ export default class CoreDatabase {
           'user',
           {
             ...obj,
-            imageHash: obj.picture ? await bitcoin.sha256(obj.picture) : null
+            imageHash: null
           },
           true
         );
