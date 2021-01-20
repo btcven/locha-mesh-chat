@@ -27,12 +27,12 @@ export const chatReducer = (state = AplicationState, action) => {
 
     case ActionTypes.ADD_CONTACTS: {
       const payload = action.chat;
-
-      return { ...state, chat: Object.values(state.chat).concat(payload) };
+      console.warn(payload);
+      return { ...state, chat: state.chat.concat(payload) };
     }
 
     case ActionTypes.DELETE_CONTACT: {
-      const res = Object.values(state.chat).filter((obj) => {
+      const res = state.chat.filter((obj) => {
         const result = action.payload.find((payload) => obj.toUID !== payload.uid);
 
         return result;

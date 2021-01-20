@@ -265,7 +265,7 @@ class HeaderComponent extends Component {
               }}
               onPress={this.props.edit}
             >
-              <Icon style={styles.iconStyle} name="edit" />
+              <Icon style={styles.iconStyle} name="pencil" />
             </TouchableHighlight>
           )}
         </Right>

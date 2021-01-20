@@ -161,27 +161,22 @@ export default class CoreDatabase {
       try {
         const user = this.db.objectForPrimaryKey('user', uid);
         user.contacts.push({
-          uid: obj[0].uid,
-          name: obj[0].name,
-          picture: obj[0].picture,
-          hashUID: obj[0].hashUID,
-          nodeAddress: obj[0].nodeAddress
+          uid: obj.uid,
+          name: obj.name,
+          picture: obj.picture,
+          hashUID: obj.hashUID,
+          nodeAddress: obj.nodeAddress
         });
 
         if (!update) {
           user.chats.push({
             fromUID: uid,
-            toUID: obj[0].uid,
+            toUID: obj.uid,
             messages: [],
             queue: []
           });
         }
-        resolve({
-          fromUID: uid,
-          toUID: obj[0].uid,
-          messages: {},
-          queue: []
-        });
+        resolve(user.contacts);
       } catch (error) {
         console.log('error', error);
       }

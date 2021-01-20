@@ -209,7 +209,7 @@ class index extends Component {
             const messages = Object.values(chat.messages);
 
 
-            if (messages.length !== 0 || (infoData.name.toLowerCase() === 'broadcast' && this.props.broadcast)) {
+            if (messages.length !== 0 || (infoData && infoData.name.toLowerCase() === 'broadcast' && this.props.broadcast)) {
               const message = messages[messages.length - 1]
                 ? messages[0]
                 : broadcastInfo.lastMessage;

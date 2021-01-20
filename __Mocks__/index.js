@@ -9,8 +9,6 @@ import * as ReactNative from 'react-native';
 import enzyme from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 import mock from 'react-native-permissions/mock';
-import mockAsyncStorage from '@react-native-community/async-storage/jest/async-storage-mock';
-
 
 // enzyme.configure({ adapter: new Adapter() });
 jest.mock('react-native-fs', () => ({
@@ -71,9 +69,9 @@ jest.mock('@react-native-community/datetimepicker', () => {
   // code here
 });
 
-jest.mock('@react-native-picker/picker', () => {
-  // code here
-});
+// jest.mock('@react-native-picker/picker', () => {
+//   // code here
+// });
 
 jest.mock('react-native-gesture-handler', () => {
   // code here
