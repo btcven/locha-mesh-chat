@@ -21,14 +21,12 @@ export const contactsReducer = (state = AplicationState, action) => {
     }
 
     case ActionTypes.DELETE_CONTACT: {
-      const contacts = Object.values(state.contacts);
-      const result = contacts.filter((data) => {
+      const result = state.contacts.filter((data) => {
         const payload = action.payload.find((contact) => contact.uid === data.uid);
-
         return !payload;
       });
 
-      return { contacts: result };
+      return { ...state, contacts: result.slice() };
     }
 
     case ActionTypes.EDIT_CONTACT: {
@@ -37,14 +35,6 @@ export const contactsReducer = (state = AplicationState, action) => {
 
       contacts[result] = action.payload;
 
-      return { ...state, contacts: contacts.slice() };
-    }
-
-    case ActionTypes.SAVE_PHOTO: {
-      const contacts = Object.values(state.contacts);
-      const index = contacts.findIndex((contact) => contact.hashUID === action.id);
-      contacts[index].picture = action.payload;
-      contacts[index].imageHash = action.imageHash;
       return { ...state, contacts: contacts.slice() };
     }
     default: {

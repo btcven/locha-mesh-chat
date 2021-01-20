@@ -119,14 +119,14 @@ class Config extends Component {
           <ScrollView>
             <View style={styles.sectionContainer}>
               <View style={styles.imageContainer}>
-                {this.props.config.image && (
+                {this.props.config.picture && (
                   <TouchableHighlight
                     style={styles.touchable}
                     underlayColor="#eeeeee"
                   >
                     <Thumbnail
                       source={{
-                        uri: this.props.config.image,
+                        uri: this.props.config.picture,
                         cache: 'force-cache'
                       }}
                       style={styles.imageStyle}
@@ -134,7 +134,7 @@ class Config extends Component {
                   </TouchableHighlight>
                 )}
 
-                {!this.props.config.image && (
+                {!this.props.config.picture && (
                   <TouchableHighlight
                     style={styles.touchable}
                     underlayColor="#eeeeee"

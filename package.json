@@ -20,6 +20,7 @@
     "@react-native-community/async-storage": "^1.12.0",
     "@react-native-community/cameraroll": "^1.1.1",
     "@react-native-community/slider": "^2.0.9",
+    "@react-native-picker/picker": "^1.9.10",
     "@testing-library/react": "^9.5.0",
     "@testing-library/react-native": "^5.0.3",
     "formik": "^1.4.3",
@@ -79,7 +80,7 @@
     "@babel/core": "^7.8.4",
     "@babel/runtime": "^7.8.4",
     "@react-native-community/eslint-config": "^1.1.0",
-    "babel-jest": "^24.9.0",
+    "babel-jest": "^26.6.3",
     "better-docs": "^1.3.3",
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.2",
@@ -102,8 +103,11 @@
     "preset": "react-native",
     "coverageDirectory": "./coverage/",
     "collectCoverage": true,
+    "transform": {
+      "\\.[jt]sx?$": "babel-jest"
+    },
     "transformIgnorePatterns": [
-      "node_modules/(?!react-native|native-base-shoutem-theme|@shoutem/animation|@shoutem/ui|tcomb-form-native|react-navigation|@codler)"
+      "node_modules/(?!(react-native|native-base|react-native-image-pan-zoom|react-native-image-zoom-viewer|react-native-qrcode-svg|react-native-camera|react-native-modal|react-native-qrcode-scanner|react-native-material-menu|react-native-iphone-x-helper|react-native-easy-grid|native-base-shoutem-theme|@shoutem/animation|@shoutem/ui|react-native-image-crop-picker|tcomb-form-native|react-navigation|@codler|react-native-vector-icons|@react-native-picker|react-native-animatable|react-native-drawer|react-native-permissions)/)"
     ],
     "setupFilesAfterEnv": [
       "<rootDir>/testSetup.js",
@@ -114,7 +118,8 @@
       "tsx",
       "js",
       "jsx",
-      "json"
+      "json",
+      "node"
     ],
     "testPathIgnorePatterns": [
       "/node_modules/"

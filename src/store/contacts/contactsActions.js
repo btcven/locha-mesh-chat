@@ -30,28 +30,27 @@ export const saveContact = (
   if (data.picture) {
     await RNFS.moveFile(data.picture, newPath);
   }
-  const obj = [
-    {
-      ...data,
-      picture: !data.picture ? null : newPath
-    }
-  ];
-  database.addContacts(id, obj).then((res) => {
-    obj.push(...lastContact);
+
+  const newContact = {
+    ...data,
+    picture: !data.picture ? null : newPath
+  };
+
+  database.addContacts(id, newContact).then((res) => {
     dispatch({
       type: ActionTypes.ADD_CONTACTS,
-      payload: obj,
-      chat: res
+      payload: res,
+      chat: {
+        fromUID: id,
+        toUID: newContact.uid,
+        messages: {},
+        queue: []
+      }
     });
     callback();
   });
 };
 
-/**
- * function to get all contacts
- * @function
- * @returns {Object}
- */
 
 /**
  * function to delete multiple contacts
@@ -62,11 +61,11 @@ export const saveContact = (
  */
 
 export const deleteContactAction = (data, callback) => async (dispatch) => {
+  dispatch({
+    type: ActionTypes.DELETE_CONTACT,
+    payload: data
+  });
   database.deleteContact(data).then(() => {
-    dispatch({
-      type: ActionTypes.DELETE_CONTACT,
-      payload: data
-    });
     callback();
   });
 };
@@ -78,7 +77,6 @@ export const deleteContactAction = (data, callback) => async (dispatch) => {
   * @param {callback} callback
  * @returns {{type:String  , payload: Object }}
  */
-
 export const editContacts = (obj, callback) => async (dispatch) => {
   database.editContact(obj).then((res) => {
     callback();

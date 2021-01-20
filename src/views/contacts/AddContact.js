@@ -100,7 +100,6 @@ export default class AddContact extends Component {
               this.props.screenProps.t('Contacts:contactSuccessfully')
             );
             this.props.close();
-            // this.props.requestImage(sha256(this.state.uid));
           }
         );
       } else {

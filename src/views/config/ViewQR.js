@@ -4,7 +4,7 @@ import {
   View, StyleSheet, TouchableOpacity, Clipboard
 } from 'react-native';
 import QRCode from 'react-native-qrcode-svg';
-import { Text, Form, Picker } from 'native-base';
+import { Text, Form,  } from 'native-base';
 import { toast } from '../../utils/utils';
 
 /**
@@ -85,7 +85,7 @@ export default class ViewQR extends Component {
               </View>
 
               <View style={styles.dropDownStyle}>
-                <Picker
+                {/* <Picker
                   mode="dropdown"
                   selectedValue={this.state.address}
                   onValueChange={this.onValueChange}
@@ -98,7 +98,7 @@ export default class ViewQR extends Component {
                       value={address}
                     />
                   ))}
-                </Picker>
+                </Picker> */}
               </View>
 
 
