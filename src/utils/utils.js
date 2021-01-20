@@ -31,10 +31,10 @@ async function requestStoragePermission() {
     await PermissionsAndroid.request(
       PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE
     );
-  } catch (err) { 
+  } catch (err) {
     // eslint-disable-next-line no-console
     console.warn(err);
-  }  
+  }
 }
 
 export const FileDirectory = Platform.select({
@@ -67,9 +67,9 @@ export const createFolder = async () => {
   }
   const pictureDirectory = `${FileDirectory}/Pictures`;
   const audioDirectory = `${FileDirectory}/Audios`;
-  await RNFS.mkdir(FileDirectory.toString());
-  await RNFS.mkdir(pictureDirectory.toString());
-  await RNFS.mkdir(audioDirectory.toString());
+  await RNFS.mkdir(`file://${FileDirectory.toString()}`);
+  await RNFS.mkdir(`file://${pictureDirectory.toString()}`);
+  await RNFS.mkdir(`file://${audioDirectory.toString()}`);
 };
 
 /**
