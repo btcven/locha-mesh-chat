@@ -46,5 +46,21 @@ describe('main component of configurations', () => {
       wrapper.instance().navigate();
       expect(navigationPops.navigate.mock.calls.length).toBe(1);
     });
+
+    test('picture defined', () => {
+      wrapper.setProps({
+        config: {
+          picture: 'test',
+          name: 'name'
+        }
+      });
+      expect(wrapper.findWhere((node) => node.prop('testID') === 'pictureDefined').exists()).toBe(true);
+    });
+
+    test('closed function', () => {
+      wrapper.setState({ network: true })
+      wrapper.instance().close('network');
+      expect(wrapper.instance().state.network).toBe(false);
+    });
   });
 });

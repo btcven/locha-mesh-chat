@@ -121,6 +121,7 @@ class Config extends Component {
               <View style={styles.imageContainer}>
                 {this.props.config.picture && (
                   <TouchableHighlight
+                    testID="pictureDefined"
                     style={styles.touchable}
                     underlayColor="#eeeeee"
                   >
