@@ -36,13 +36,8 @@ describe('main component of configurations', () => {
       expect(wrapper.instance().state.viewQR).toBe(true);
     });
 
-    test('open modal language', () => {
-      wrapper.find('ForwardRef').at(5).props().onPress();
-      expect(wrapper.instance().state.language).toBe(true);
-    });
-
     test('open modal pin', () => {
-      wrapper.find('ForwardRef').at(6).props().onPress();
+      wrapper.find('ForwardRef').at(5).props().onPress();
       expect(wrapper.instance().state.pin).toBe(true);
     });
 

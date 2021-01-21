@@ -64,16 +64,16 @@ class DrawerComponent extends Component {
             source={images.logo.url}
           />
 
-          {this.props.user.image && (
+          {this.props.user.picture && (
             <Thumbnail
               source={{
-                uri: `${this.props.user.image}?${new Date().getDate()}`,
+                uri: `${this.props.user.picture}?${new Date().getDate()}`,
                 cache: 'force-cache'
               }}
               style={styles.imageStyle}
             />
           )}
-          {!this.props.user.image && (
+          {!this.props.user.picture && (
             <Thumbnail source={images.noPhoto.url} style={styles.imageStyle} />
           )}
           <Text style={styles.textTitle}>{this.props.user.name}</Text>

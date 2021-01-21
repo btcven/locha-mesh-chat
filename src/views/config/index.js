@@ -238,12 +238,9 @@ class Config extends Component {
                     top: 5
                   }}
                 >
-                  <TouchableOpacity
+                  <View
                     style={styles.touchable}
                     underlayColor="#eeeeee"
-                    onPress={() => {
-                      this.setState({ language: true });
-                    }}
                   >
                     <Icon
                       style={{
@@ -254,7 +251,7 @@ class Config extends Component {
                       }}
                       name="caret-forward"
                     />
-                  </TouchableOpacity>
+                  </View>
                 </Right>
 
               </View>
