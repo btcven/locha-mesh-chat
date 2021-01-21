@@ -36,13 +36,8 @@ describe('main component of configurations', () => {
       expect(wrapper.instance().state.viewQR).toBe(true);
     });
 
-    test('open modal language', () => {
-      wrapper.find('ForwardRef').at(5).props().onPress();
-      expect(wrapper.instance().state.language).toBe(true);
-    });
-
     test('open modal pin', () => {
-      wrapper.find('ForwardRef').at(6).props().onPress();
+      wrapper.find('ForwardRef').at(5).props().onPress();
       expect(wrapper.instance().state.pin).toBe(true);
     });
 
@@ -50,6 +45,22 @@ describe('main component of configurations', () => {
     test('navigate function', () => {
       wrapper.instance().navigate();
       expect(navigationPops.navigate.mock.calls.length).toBe(1);
+    });
+
+    test('picture defined', () => {
+      wrapper.setProps({
+        config: {
+          picture: 'test',
+          name: 'name'
+        }
+      });
+      expect(wrapper.findWhere((node) => node.prop('testID') === 'pictureDefined').exists()).toBe(true);
+    });
+
+    test('closed function', () => {
+      wrapper.setState({ network: true })
+      wrapper.instance().close('network');
+      expect(wrapper.instance().state.network).toBe(false);
     });
   });
 });
