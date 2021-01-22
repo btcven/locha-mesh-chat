@@ -202,6 +202,7 @@ const androidToast = (message) => {
 
 
 const iOSToast = (message) => {
+  if (process.env.JEST_WORKER_ID) return;
   Toast.show({
     text: message,
     style: { zIndex: 99999999999999 }

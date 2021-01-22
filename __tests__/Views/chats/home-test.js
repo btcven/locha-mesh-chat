@@ -21,7 +21,7 @@ const mockMessage = [{
   status: 'pending',
   time: 1602013395803,
   timestamp: 1602013395786,
-  toUID: '16Uiu2HAm2BXA1TTUE7vvSu3U4YURxb4FwTYjfrwnZN618jrYBpNS',
+  toUID: 'broadcast',
   type: 1
 }];
 
@@ -29,7 +29,7 @@ const mockChat = [{
   fromUID: '02ce1eeb78647383eac7998e929aa72240cc3d908f682f0375738330ab128bdea7',
   messages: { ...mockMessage },
   queue: [],
-  toUID: '16Uiu2HAm2BXA1TTUE7vvSu3U4YURxb4FwTYjfrwnZN618jrYBpNS'
+  toUID: 'broadcast'
 }];
 
 

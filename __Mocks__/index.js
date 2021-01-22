@@ -239,6 +239,7 @@ jest.doMock('react-native', () =>
         create: () => ({}),
         flatten: () => ({})
       },
+      Clipboard: { setString: jest.fn() },
       Platform: {
         OS: 'ios',
         select: jest.fn((selector) => selector.ios),
