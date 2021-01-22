@@ -49,7 +49,7 @@ const mockChat = [{
 const mockSetView = jest.fn();
 const mockDeleteMessages = jest.fn();
 const mockStopPlaying = jest.fn();
-
+const mocksendMessageWithFile = jest.fn();
 describe('chat container test', () => {
   const wrapper = shallow(
     <Chat
@@ -148,5 +148,24 @@ describe('chat container test', () => {
   test('executing componentWillUnmount', () => {
     wrapper.instance().componentWillUnmount('test');
     expect(mockSetView.mock.calls.length).toBe(3);
+  });
+
+
+  test('sendFileWithImage function', async () => {
+
+    wrapper.setProps({
+      sendMessageWithFile: mocksendMessageWithFile,
+      userData: {
+        peerID: 'test'
+      }
+    });
+    await wrapper.instance().sendFileWithImage({
+      message: 'test',
+      name: 'test',
+      url: 'test',
+      base64: 'test'
+    }, () => {});
+
+    expect(mocksendMessageWithFile.mock.calls.length).toBe(1);
   });
 });

@@ -201,7 +201,8 @@ jest.doMock('react-native', () =>
         },
         RNDeviceInfo: {
           VersionInfo: '1',
-          getIpv6Andipv4Adress: jest.fn().mockReturnValue(['192.168.0.1'])
+          getIpv6Andipv4Adress: jest.fn().mockReturnValue(['192.168.0.1']),
+          scanFile: jest.fn()
         },
         ChatService: {
           start: jest.fn(() => new Promise((resolve) => {
