@@ -24,33 +24,12 @@ import i18n from '../../i18n';
  * @extends {Component}
  */
 export default class Lenguajes extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      name: ''
-    };
-  }
 
   async onChangeLang(lang) {
     i18n.changeLanguage(lang);
-    try {
-      await AsyncStorage.setItem('@APP:languageCode', lang);
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.log(` Hi Errorrrr : ${error}`);
-    }
-
+    await AsyncStorage.setItem('@APP:languageCode', lang);
     this.props.close('language');
   }
-
-  saveName = () => {
-    this.props.editName(
-      { name: this.state.name, uid: this.props.config.uid },
-      () => {
-        this.props.close('viewQR');
-      }
-    );
-  };
 
   render() {
     const { open, close, screenProps } = this.props;

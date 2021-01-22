@@ -52,4 +52,5 @@ describe('EditPhoto Component', () => {
     expect(mockClose.mock.calls.length).toBe(3);
   });
 
+
 });
