@@ -22,7 +22,6 @@ export default class AddName extends Component {
           marginHorizontal: 5
         }}
       >
-
         <Form>
           <Text style={{ position: 'absolute', top: '40%', right: '5%' }}>
             {12 - name.length}
