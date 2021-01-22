@@ -51,4 +51,5 @@ describe('EditPhoto Component', () => {
     wrapper.find('ReactNativeModal').at(0).props().onBackdropPress();
     expect(mockClose.mock.calls.length).toBe(3);
   });
+
 });
