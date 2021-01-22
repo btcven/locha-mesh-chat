@@ -47,7 +47,7 @@ describe('EditPhoto Component', () => {
   });
 
 
-  test('', () => {
+  test('close modal button', () => {
     wrapper.find('ReactNativeModal').at(0).props().onBackdropPress();
     expect(mockClose.mock.calls.length).toBe(3);
   });
