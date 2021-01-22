@@ -15,8 +15,7 @@ const event = {
       height: 30
     }
   }
-}
-
+};
 const sendFileWithImage = jest.fn().mockImplementation((obj, cb) => {
   cb();
 });
