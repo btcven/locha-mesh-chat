@@ -74,11 +74,36 @@ describe('tests to the main component of contacts', () => {
     expect(wrapper.instance().state.openModal).toBe(true);
   });
 
-  test('da', () => {
+  test('onLongPress function', () => {
     wrapper.find('Styled(ListItem)').at(0).props().onLongPress();
+    expect(wrapper.instance().state.selected.length).toBe(1);
   });
 
-  test('123', () => {
+  test('onPress function', () => {
     wrapper.find('Styled(ListItem)').at(0).props().onPress();
+  });
+
+  test('onPress function', () => {
+    const arrayContact2 = [{
+      name: 'test',
+      picture: undefined,
+      uid: 'test',
+      hashUID: 'test'
+    }];
+    wrapper.instance().setState({
+      selected: arrayContact2
+    });
+    wrapper.find('Styled(ListItem)').at(0).props().onPress();
+    expect(wrapper.instance().state.selected.length).toBe(2);
+  });
+
+  test('search function', () => {
+    wrapper.instance().search('test');
+    expect(wrapper.instance().state.search).toBe('test');
+  });
+
+  test('close selected function', () => {
+    wrapper.instance().closeSelected();
+    expect(wrapper.instance().state.selected.length).toBe(0);
   });
 });
