@@ -13,7 +13,9 @@ import mock from 'react-native-permissions/mock';
 // enzyme.configure({ adapter: new Adapter() });
 jest.mock('react-native-fs', () => ({
   mkdir: jest.fn(),
-  moveFile: jest.fn(),
+  moveFile: jest.fn(() => new Promise((resolve) => {
+    resolve(true);
+  })),
   copyFile: jest.fn(),
   pathForBundle: jest.fn(),
   pathForGroup: jest.fn(),
@@ -90,6 +92,22 @@ jest.mock('@react-native-community/slider', () => {
   const data = () => null;
   return data;
 });
+
+
+jest.mock('react-native-image-crop-picker', () => ({
+  openPicker: jest.fn(() => new Promise((resolve) => {
+    resolve({
+      data: 'test',
+      path: 'test'
+    });
+  })),
+  openCamera: jest.fn(() => new Promise((resolve) => {
+    resolve({
+      data: 'test',
+      path: 'test'
+    });
+  })),
+}));
 
 
 jest.mock('react-navigation', () => ({

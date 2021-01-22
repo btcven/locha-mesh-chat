@@ -34,6 +34,7 @@ describe('tests to the main component of contacts', () => {
       store={store}
       screenProps={screenProps}
       navigation={navigationPops}
+      contacts={arrayContact}
     />
   ).childAt(0).dive();
 
@@ -55,5 +56,29 @@ describe('tests to the main component of contacts', () => {
   test('onSelected function', () => {
     wrapper.instance().onSelect(arrayContact[0]);
     expect(navigationPops.navigate.mock.calls.length).toBe(1);
+  });
+
+
+  test('open add contacts', () => {
+    wrapper.instance().openModal();
+    expect(wrapper.instance().state.openModal).toBe(true);
+  });
+
+  test('close add contacts', () => {
+    wrapper.instance().closeModal();
+    expect(wrapper.instance().state.openModal).toBe(false);
+  });
+
+  test('editContact function', () => {
+    wrapper.instance().editContact();
+    expect(wrapper.instance().state.openModal).toBe(true);
+  });
+
+  test('da', () => {
+    wrapper.find('Styled(ListItem)').at(0).props().onLongPress();
+  });
+
+  test('123', () => {
+    wrapper.find('Styled(ListItem)').at(0).props().onPress();
   });
 });
