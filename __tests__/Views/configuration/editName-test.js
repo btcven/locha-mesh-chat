@@ -52,6 +52,5 @@ describe('Edit naame component', () => {
       wrapper.find('Styled(Button)').at(0).props().onPress();
       expect(mockClose.mock.calls.length).toBe(3);
     });
-
   });
 });
