@@ -162,6 +162,18 @@ jest.mock('@react-native-community/async-storage', () => ({
 }));
 
 
+jest.mock('react-native-document-picker', () => ({
+  pick: jest.fn(() => new Promise((resolve) => {
+    resolve({
+      uri: 'test'
+    });
+  })),
+  types: {
+    allFiles: true
+  }
+}));
+
+
 jest.mock('react-native-exception-handler', () => ({
   setJSExceptionHandler: jest.fn((callback) => callback({
     message: 'test'
@@ -219,8 +231,11 @@ jest.doMock('react-native', () =>
               privKey: '5c28fab375d47994b30190b01338ea48daa0b307909a3d465a597772469633e1'
             });
           })),
-          sha256: new Promise((resolve) => { resolve('5c28fab375d47994b30190b01338ea48daa0b307909a3d465a597772469633e1'); }),
-          getPrivateKey: jest.fn(() => new Promise((resolve) => { resolve('test'); }))
+          sha256: jest.fn(() => new Promise((resolve) => { resolve('test'); })),
+          getPrivateKey: jest.fn(() => new Promise((resolve) => { resolve('test'); })),
+          decrypt: jest.fn(() => new Promise((resolve) => {
+            resolve('{"test":"test"}');
+          })),
         },
         RNPermissions: {
           ...mock

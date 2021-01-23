@@ -1,8 +1,6 @@
 import '../../../__Mocks__';
 import React from 'react';
-import renderer from 'react-test-renderer';
 import { shallow } from 'enzyme';
-import { Provider } from 'react-redux';
 import CreateAccount from '../../../src/views/LoadWallet/CreateAccount';
 import store from '../../../src/store';
 import { navigationPops } from '../../components/heder-test';
@@ -15,6 +13,12 @@ const words = 'cactus spatial damp canvas coach income wool doll mail radio seni
 const stringWords = 'cactus spatial damp canvas coach income wool doll mail radio senior mixed';
 const back = jest.fn();
 
+const mockCreateAccount = jest.fn().mockImplementation((obj, cb) => {
+  cb();
+});
+const restoreWithPhraseMock = jest.fn();
+
+const MockrestoreWithFile = jest.fn();
 describe('test component createAccount', () => {
   const initial = shallow(
     <CreateAccount
@@ -23,6 +27,9 @@ describe('test component createAccount', () => {
       navigation={navigationPops}
       phrases={words}
       stringPhrases={stringWords}
+      createNewAccount={mockCreateAccount}
+      restoreWithFile={MockrestoreWithFile}
+      restoreWithPhrase={restoreWithPhraseMock}
       close={back}
     />
   );
@@ -122,6 +129,83 @@ describe('test component createAccount', () => {
     test('restore button must be rendered', () => {
       const restoreWrapper = initial.dive();
       expect(restoreWrapper.findWhere((node) => node.prop('testID') === 'ButtonRestore').exists()).toBeTruthy();
+    });
+
+
+    test('executed componentWillUnmount ', () => {
+      initial.instance().componentWillUnmount();
+      expect(initial.instance().state.file).toBe(null);
+    });
+
+    test('setName function', () => {
+      initial.instance().setName('test');
+      expect(initial.instance().state.name).toBe('test');
+    });
+
+    test('getFile function', async () => {
+      await initial.instance().getFile();
+      expect(initial.instance().state.file).toBe('test');
+    });
+
+    test('continue function', () => {
+      initial.setProps({
+        restore: true
+      });
+      initial.setState({
+        step: 4
+      });
+      initial.instance().continue(words);
+      expect(initial.instance().state.step).toBe(3);
+      initial.setState({
+        step: 3
+      });
+      initial.instance().continue(words);
+      expect(initial.instance().state.step).toBe(5);
+
+
+      initial.setState({
+        step: 4
+      });
+      words[1] = '';
+      initial.instance().continue(words);
+      expect(initial.instance().state.step).toBe(4);
+    });
+
+    test('createAccount function', () => {
+      initial.instance().createAccount('123456', () => { });
+      expect(mockCreateAccount.mock.calls.length).toBe(1);
+    });
+
+    test('closePin function', async () => {
+      initial.instance().closePin();
+      expect(initial.instance().state.file).toBe(null);
+      initial.setState({
+        file: 'test'
+      });
+      await initial.instance().restoreAccountWithFile('123456');
+    });
+
+    test('restoreAccountWithFile function', async () => {
+      await initial.instance().copyPhrases();
+      expect(MockrestoreWithFile.mock.calls.length).toBe(1);
+    });
+
+    test('close modal button', () => {
+      wrapper.find('ReactNativeModal').at(0).props().onBackdropPress();
+      expect(back.mock.calls.length).toBe(3);
+    });
+
+    test('back funtion', () => {
+      initial.setState({
+        step: 5
+      });
+      initial.instance().back();
+      expect(initial.instance().state.step).toBe(4);
+    });
+
+    test('back funtion', () => {
+      initial.instance().restoreAccount('12345', words);
+      expect(restoreWithPhraseMock.mock.calls.length).toBe(1);
     });
   });
 });
