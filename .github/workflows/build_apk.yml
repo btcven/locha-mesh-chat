@@ -51,9 +51,9 @@ jobs:
     - name: Build Android Release
       run: yarn release
 
-    # Upload to Artifact
-    - name: Upload Artifact
-      uses: actions/upload-artifact@v1
+    - uses: eine/tip@master
       with:
-        name: app-release.apk
-        path: android/app/build/outputs/apk/release/
+        token: ${{ secrets.GITHUB_TOKEN }}
+        tag: 'nightly'
+        files: |
+          android/app/build/outputs/apk/release/app-release.apk
