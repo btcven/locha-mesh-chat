@@ -27,7 +27,7 @@ export default class ImageView extends React.Component {
     const obj = {
       position: this.state.postition,
       message: this.state.message,
-      images: this.props.images
+      ...this.props.images[0]
     };
     this.props.sendFileWithImage(obj, () => {
       this.setState({

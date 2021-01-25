@@ -68,7 +68,7 @@ describe('test new Address Listen component', () => {
   test('simulate save button', async () => {
     await wrapper.find('Styled(Button)').at(1).props().onPress();
 
-    expect(mockCloseFunction.mock.calls.length).toBe(2);
+    expect(mockCloseFunction.mock.calls.length).toBe(3);
 
     await wrapper.instance().save();
   });

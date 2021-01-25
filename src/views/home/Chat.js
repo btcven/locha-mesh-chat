@@ -232,7 +232,7 @@ class Chat extends Component {
     this.props.setView(undefined);
   };
 
-  sendFileWithImage = (data, callback) => {
+  sendFileWithImage = async (data, callback) => {
     const { userData, navigation } = this.props;
     const { params } = navigation.state;
     const toUID = params.chatUID;
@@ -240,51 +240,29 @@ class Chat extends Component {
       fromUID: userData.peerID,
       toUID,
       msg: {
-        text: '',
+        text: data.message,
         file: 'test',
-        typefile: 'test'
+        typeFile: 'image'
       },
-
       timestamp: new Date().getTime(),
       type: messageType.MESSAGE
     };
-    data.images.forEach(async (image, key) => {
-      const id = await bitcoin.sha256(
-        `${userData.peerID} + ${toUID}  +  ${sendObject.msg.text
-        + sendObject.msg.file}  + ${new Date().getTime()}`
-      );
-      NativeModules.RNDeviceInfo.scanFile(`${FileDirectory}/Pictures/${image.name}.jpg`);
-      if (data.position === key) {
-        const sendData = { ...sendObject };
 
-        sendData.msg = {
-          text: data.message,
-          typeFile: 'image'
-        };
+    const id = await bitcoin.sha256(
+      `${userData.peerID} + ${toUID}  +  ${sendObject.msg.text
+      + sendObject.msg.file}  + ${new Date().getTime()}`
+    );
 
-        this.props.sendMessageWithFile(
-          userData.peerID,
-          { ...sendData, msgID: id },
-          image.url,
-          image.base64
-        );
-      } else {
-        const sendData = { ...sendObject };
-        sendData.msg.text = '';
-        sendData.msg.file = image.base64;
-        sendData.msg.typeFile = 'image';
-        this.props.sendMessageWithFile(
-          { ...sendData, msgID: id },
-          image.url,
-          image.base64
-        );
-      }
+    NativeModules.RNDeviceInfo.scanFile(`${FileDirectory}/Pictures/${data.name}.jpg`);
+    this.props.sendMessageWithFile(
+      userData.peerID,
+      { ...sendObject, msgID: id },
+      data.url,
+      data.base64
+    );
 
-      if (data.images.length === key + 1) {
-        callback();
-        this.closeFileModal();
-      }
-    });
+    callback();
+    this.closeFileModal();
   };
 
   closeView = () => {

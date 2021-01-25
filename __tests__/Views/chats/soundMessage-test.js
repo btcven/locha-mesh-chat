@@ -96,4 +96,15 @@ describe('message component', () => {
     wrapper.find('ForwardRef').at(0).props().onPress();
     expect(onPressMock.mock.calls.length).toBe(1);
   });
+
+
+  test('onLongPress button message in receiver', () => {
+    wrapper2.find('ForwardRef').at(0).props().onLongPress();
+    expect(onLongPressMock.mock.calls.length).toBe(2);
+  });
+
+  test('onPress button message in sender', () => {
+    wrapper2.find('ForwardRef').at(0).props().onPress();
+    expect(onPressMock.mock.calls.length).toBe(2);
+  });
 });
