@@ -34,6 +34,7 @@ describe('tests to the main component of contacts', () => {
       store={store}
       screenProps={screenProps}
       navigation={navigationPops}
+      contacts={arrayContact}
     />
   ).childAt(0).dive();
 
@@ -55,5 +56,54 @@ describe('tests to the main component of contacts', () => {
   test('onSelected function', () => {
     wrapper.instance().onSelect(arrayContact[0]);
     expect(navigationPops.navigate.mock.calls.length).toBe(1);
+  });
+
+
+  test('open add contacts', () => {
+    wrapper.instance().openModal();
+    expect(wrapper.instance().state.openModal).toBe(true);
+  });
+
+  test('close add contacts', () => {
+    wrapper.instance().closeModal();
+    expect(wrapper.instance().state.openModal).toBe(false);
+  });
+
+  test('editContact function', () => {
+    wrapper.instance().editContact();
+    expect(wrapper.instance().state.openModal).toBe(true);
+  });
+
+  test('onLongPress function', () => {
+    wrapper.find('Styled(ListItem)').at(0).props().onLongPress();
+    expect(wrapper.instance().state.selected.length).toBe(1);
+  });
+
+  test('onPress function', () => {
+    wrapper.find('Styled(ListItem)').at(0).props().onPress();
+  });
+
+  test('onPress function', () => {
+    const arrayContact2 = [{
+      name: 'test',
+      picture: undefined,
+      uid: 'test',
+      hashUID: 'test'
+    }];
+    wrapper.instance().setState({
+      selected: arrayContact2
+    });
+    wrapper.find('Styled(ListItem)').at(0).props().onPress();
+    expect(wrapper.instance().state.selected.length).toBe(2);
+  });
+
+  test('search function', () => {
+    wrapper.instance().search('test');
+    expect(wrapper.instance().state.search).toBe('test');
+  });
+
+  test('close selected function', () => {
+    wrapper.instance().closeSelected();
+    expect(wrapper.instance().state.selected.length).toBe(0);
   });
 });

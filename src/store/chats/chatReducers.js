@@ -27,7 +27,6 @@ export const chatReducer = (state = AplicationState, action) => {
 
     case ActionTypes.ADD_CONTACTS: {
       const payload = action.chat;
-      console.warn(payload);
       return { ...state, chat: state.chat.concat(payload) };
     }
 

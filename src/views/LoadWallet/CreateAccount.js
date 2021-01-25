@@ -8,6 +8,7 @@ import {
 import Modal from 'react-native-modal';
 import { Formik } from 'formik';
 import RNFS from "react-native-fs";
+import DocumentPicker from 'react-native-document-picker';
 import RestoreFile from './RestoreWithPin';
 import AddName from "./AddName";
 import Phrases from "./Phrases";
@@ -85,7 +86,7 @@ export default class CreateAccount extends Component {
     this.setState({ step: 3 });
   }
 
-  createAccount = (pin, values, callback) => {
+  createAccount = (pin, callback) => {
     this.props.createNewAccount({
       pin,
       seed: this.props.stringPhrases,
@@ -100,38 +101,22 @@ export default class CreateAccount extends Component {
   }
 
   getFile = async () => {
-    // eslint-disable-next-line global-require
-    const DocumentPicker = require('react-native-document-picker').default;
-    // this.props.close()
-    try {
-      const res = await DocumentPicker.pick({
-        type: [DocumentPicker.types.allFiles],
-      });
+    const res = await DocumentPicker.pick({
+      type: [DocumentPicker.types.allFiles],
+    });
 
-      this.setState({ file: res.uri });
-    } catch (err) {
-      if (DocumentPicker.isCancel(err)) {
-        // User cancelled the picker, exit any dialogs or menus and move on
-      } else {
-        throw err;
-      }
-    }
+    this.setState({ file: res.uri });
   }
 
   restoreAccountWithFile = (pin) => {
-    try {
-      RNFS.readFile(this.state.file).then(async (res) => {
-        const bytes = await bitcoin.decrypt(res, await bitcoin.sha256(pin));
-        const decryptedData = JSON.parse(bytes);
-        this.setState({ file: null });
-        this.props.restoreWithFile(pin, decryptedData);
-      }).catch(() => {
-        toast(this.props.screenProps.t("Initial:error1"));
-      });
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.log('data', error);
-    }
+    RNFS.readFile(this.state.file).then(async (res) => {
+      const bytes = await bitcoin.decrypt(res, await bitcoin.sha256(pin));
+      const decryptedData = JSON.parse(bytes);
+      this.setState({ file: null });
+      this.props.restoreWithFile(pin, decryptedData);
+    }).catch(() => {
+      toast(this.props.screenProps.t("Initial:error1"));
+    });
   }
 
   restoreAccount = (pin, values) => {

@@ -13,7 +13,9 @@ import mock from 'react-native-permissions/mock';
 // enzyme.configure({ adapter: new Adapter() });
 jest.mock('react-native-fs', () => ({
   mkdir: jest.fn(),
-  moveFile: jest.fn(),
+  moveFile: jest.fn(() => new Promise((resolve) => {
+    resolve(true);
+  })),
   copyFile: jest.fn(),
   pathForBundle: jest.fn(),
   pathForGroup: jest.fn(),
@@ -92,6 +94,22 @@ jest.mock('@react-native-community/slider', () => {
 });
 
 
+jest.mock('react-native-image-crop-picker', () => ({
+  openPicker: jest.fn(() => new Promise((resolve) => {
+    resolve({
+      data: 'test',
+      path: 'test'
+    });
+  })),
+  openCamera: jest.fn(() => new Promise((resolve) => {
+    resolve({
+      data: 'test',
+      path: 'test'
+    });
+  })),
+}));
+
+
 jest.mock('react-navigation', () => ({
   createAppContainer: jest.fn().mockReturnValue(() => null),
   createDrawerNavigator: jest.fn(),
@@ -144,6 +162,18 @@ jest.mock('@react-native-community/async-storage', () => ({
 }));
 
 
+jest.mock('react-native-document-picker', () => ({
+  pick: jest.fn(() => new Promise((resolve) => {
+    resolve({
+      uri: 'test'
+    });
+  })),
+  types: {
+    allFiles: true
+  }
+}));
+
+
 jest.mock('react-native-exception-handler', () => ({
   setJSExceptionHandler: jest.fn((callback) => callback({
     message: 'test'
@@ -183,7 +213,8 @@ jest.doMock('react-native', () =>
         },
         RNDeviceInfo: {
           VersionInfo: '1',
-          getIpv6Andipv4Adress: jest.fn().mockReturnValue(['192.168.0.1'])
+          getIpv6Andipv4Adress: jest.fn().mockReturnValue(['192.168.0.1']),
+          scanFile: jest.fn()
         },
         ChatService: {
           start: jest.fn(() => new Promise((resolve) => {
@@ -200,8 +231,11 @@ jest.doMock('react-native', () =>
               privKey: '5c28fab375d47994b30190b01338ea48daa0b307909a3d465a597772469633e1'
             });
           })),
-          sha256: new Promise((resolve) => { resolve('5c28fab375d47994b30190b01338ea48daa0b307909a3d465a597772469633e1'); }),
-          getPrivateKey: jest.fn(() => new Promise((resolve) => { resolve('test'); }))
+          sha256: jest.fn(() => new Promise((resolve) => { resolve('test'); })),
+          getPrivateKey: jest.fn(() => new Promise((resolve) => { resolve('test'); })),
+          decrypt: jest.fn(() => new Promise((resolve) => {
+            resolve('{"test":"test"}');
+          })),
         },
         RNPermissions: {
           ...mock
@@ -221,6 +255,7 @@ jest.doMock('react-native', () =>
         create: () => ({}),
         flatten: () => ({})
       },
+      Clipboard: { setString: jest.fn() },
       Platform: {
         OS: 'ios',
         select: jest.fn((selector) => selector.ios),

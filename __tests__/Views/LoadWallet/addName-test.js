@@ -1,18 +1,28 @@
 import '../../../__Mocks__';
 import React from 'react';
-import renderer from 'react-test-renderer';
-import Phrases from '../../../src/views/LoadWallet/Phrases';
+import { shallow } from 'enzyme';
+import AddName from '../../../src/views/LoadWallet/AddName';
 
+const screenProps = {
+  t: (data) => data
+};
 
-const words = 'cactus spatial damp canvas coach income wool doll mail radio senior mixed'.split(' ');
-
-test('render component phrases', () => {
-  const rendered = renderer.create(
-    <Phrases
-      values={words}
-      setFieldValue={jest.fn()}
+const mockAddName = jest.fn();
+describe('render component phrases', () => {
+  const wrapper = shallow(
+    <AddName
+      setName={mockAddName}
+      name="test"
+      screenProps={screenProps}
     />
+  );
+  test('render component', () => {
+    expect(wrapper.instance()).toBeTruthy();
+  });
 
-  ).toJSON();
-  expect(rendered).toBeTruthy();
+
+  test('setName function', () => {
+    wrapper.find('Styled(Input)').at(0).props().onChangeText('test');
+    expect(mockAddName.mock.calls.length).toBe(1);
+  });
 });
