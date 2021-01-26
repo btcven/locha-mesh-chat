@@ -10,20 +10,10 @@ export default class PinView extends Component {
     super(props);
     this.state = {
       pin: ['', '', '', '', '', ''],
-      buttons: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'],
+      buttons: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '', '0', 'delete'],
       values: props.values,
       send: false
     };
-  }
-
-  componentDidMount = () => {
-    const result = this.shuffle(this.state.buttons);
-    const penultimate = result[result.length - 1];
-    result[result.length - 1] = '';
-    result.push(penultimate);
-    result.push('delete');
-
-    this.setState({ buttons: result, });
   }
 
 
@@ -67,29 +57,6 @@ export default class PinView extends Component {
         this.setState({ pin: array });
       }
     }
-  }
-
-  shuffle = (array) => {
-    let currentIndex = array.length; let temporaryValue; let
-      randomIndex;
-
-    // While there remain elements to shuffle...
-    while (currentIndex !== 0) {
-      // Pick a remaining element...
-      randomIndex = Math.floor(Math.random() * currentIndex);
-      if (array[currentIndex] !== 'delete') {
-        currentIndex -= 1;
-
-        // And swap it with the current element.
-        temporaryValue = array[currentIndex];
-        array[currentIndex] = array[randomIndex];
-        array[randomIndex] = temporaryValue;
-      } else {
-        currentIndex -= 1;
-      }
-    }
-
-    return array;
   }
 
   render() {
