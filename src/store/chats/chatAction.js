@@ -52,7 +52,7 @@ export const initialChat = (fromUID, data, status) => async (dispatch) => {
 export const getChat = (parse) => async (dispatch, getState) => {
   let infoMensagge;
   if (!process.env.JEST_WORKER_ID) {
-    sendStatus(parse, getState);
+    sendStatus(parse, getState());
   }
   if (parse.msg.file) {
     parse.msg.file = await saveFile(parse.msg);
@@ -202,7 +202,7 @@ export const messageQueue = (index, id, view) => async (dispatch) => {
 export const sendStatus = (data, state) => {
   const sendStatus = {
     timestamp: new Date().getTime(),
-    fromUID: data.fromUID,
+    fromUID: state.config.peerID,
     data: {
       status: 'delivered',
       msgID: data.msgID

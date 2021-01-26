@@ -55,29 +55,25 @@ export default class ChatService {
   }
 
   onMessage = async (message) => {
-    try {
-      const { dispatch, getState } = this.store;
-      const parse = JSON.parse(message);
+    const { dispatch, getState } = this.store;
+    const parse = JSON.parse(message);
 
-      if (parse.toUID !== 'broadcast') {
-        await database.verifyValidMessage(parse.fromUID);
-        // Verify that the message is for me
-        if (parse.toUID !== getState().config.peerID) {
-          return;
-        }
+    if (parse.toUID !== 'broadcast') {
+      await database.verifyValidMessage(parse.fromUID);
+      // Verify that the message is for me
+      if (parse.toUID !== getState().config.peerID) {
+        return;
       }
+    }
 
-      switch (parse.type) {
-        case messageType.MESSAGE: dispatch(getChat(parse));
-          break;
-        // Execute function that is in chat actions
-        case messageType.STATUS: this.setStatus(parse);
-          break;
-        default:
-          break;
-      }
-    } catch (error) {
-      console.log('Error with the message is: ', error);
+    switch (parse.type) {
+      case messageType.MESSAGE: dispatch(getChat(parse));
+        break;
+      // Execute function that is in chat actions
+      case messageType.STATUS: this.setStatus(parse);
+        break;
+      default:
+        break;
     }
   }
 

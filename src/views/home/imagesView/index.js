@@ -45,8 +45,6 @@ export default class ImageView extends React.Component {
   }
 
 
-
-
   render() {
     const { screenProps } = this.props;
     return (
