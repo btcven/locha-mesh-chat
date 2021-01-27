@@ -139,7 +139,6 @@ export default class ChatBody extends React.PureComponent {
             screenProps={screenProps}
           />
           )}
-
         <FlatList
           inverted
           contentContainerStyle={styles.container}
