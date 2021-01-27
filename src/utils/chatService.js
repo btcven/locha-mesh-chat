@@ -25,7 +25,6 @@ export default class ChatService {
     this.isConnected();
     this.connectionChanged();
     this.IsActiveUpnp = false;
-    this.store = null;
     this.mobile = false;
     this.wifi = false;
     ChatService.instance = this;
@@ -124,7 +123,7 @@ export default class ChatService {
    */
   onNewListenAddr = () => {
     this.event.addListener('newListenAddr', ((multiaddr) => {
-      this.store.dispatch(setMultiAddress(multiaddr));
+      getStore().dispatch(setMultiAddress(multiaddr));
     }));
   }
 
@@ -135,7 +134,7 @@ export default class ChatService {
     this.event.addListener('externalAddress', (externalAddress) => {
       const result = getStore().getState().config.nodeAddress.find((address) => address === externalAddress);
       if (!result) {
-        this.store.dispatch(setMultiAddress(externalAddress));
+        getStore().dispatch(setMultiAddress(externalAddress));
       }
     });
   }
@@ -175,7 +174,7 @@ export default class ChatService {
    */
   onConnectionClosed = () => {
     this.event.addListener('connectionClosed', (({ peer, numEstablished, cause }) => {
-      this.store.dispatch(removeDisconnedPeers(peer));
+      getStore().dispatch(removeDisconnedPeers(peer));
     }));
   }
 
@@ -188,7 +187,7 @@ export default class ChatService {
   addNewAddressListen = async (address, callback) => {
     if (!process.env.JEST_WORKER_ID) {
       const xpriv = await bitcoin.getPrivKey();
-      this.store.dispatch(cleanNodeAddress());
+      getStore().dispatch(cleanNodeAddress());
       this.service.addNewChatService(xpriv, address).then(() => {
         callback(null);
       }).catch((err) => {
