@@ -7,6 +7,7 @@ import {
 import { messageType } from './constans';
 import { setMultiAddress } from '../store/aplication';
 import { cleanNodeAddress } from '../store/configuration';
+import { getStore } from './utils';
 
 export default class ChatService {
   constructor() {
@@ -24,7 +25,7 @@ export default class ChatService {
     this.isConnected();
     this.connectionChanged();
     this.IsActiveUpnp = false;
-    this.store = require('../store').default;
+    this.store = null;
     this.mobile = false;
     this.wifi = false;
     ChatService.instance = this;
@@ -55,8 +56,7 @@ export default class ChatService {
   }
 
   onMessage = async (message) => {
-    console.log('12345', this.store);
-    const { dispatch, getState } = this.store;
+    const { dispatch, getState } = getStore();
     const parse = JSON.parse(message);
 
     if (parse.toUID !== 'broadcast') {
@@ -115,7 +115,7 @@ export default class ChatService {
    * @param {Object} statusData;
    */
   setStatus = async (statusData) => {
-    const { dispatch } = this.store;
+    const { dispatch } = getStore();
     dispatch(setStatusMessage(statusData));
   };
 
@@ -133,7 +133,7 @@ export default class ChatService {
    */
   onNewExternalAddress = () => {
     this.event.addListener('externalAddress', (externalAddress) => {
-      const result = this.store.getState().config.nodeAddress.find((address) => address === externalAddress);
+      const result = getStore().getState().config.nodeAddress.find((address) => address === externalAddress);
       if (!result) {
         this.store.dispatch(setMultiAddress(externalAddress));
       }
@@ -166,7 +166,7 @@ export default class ChatService {
    */
   onConnectionEstablished = () => {
     this.event.addListener('connectionEstablished', (({ peer, numEstablished }) => {
-      this.store.dispatch(setPeers(peer));
+      getStore().dispatch(setPeers(peer));
     }));
   }
 

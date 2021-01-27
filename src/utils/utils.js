@@ -19,6 +19,9 @@ import { broadcastInfo } from './constans';
 
 export const getChatserviceInstance = () => new ChatService();
 
+export const getStore = () => ({ dispatch: store.dispatch, getState: store.getState });
+
+
 export const notification = new NotifService();
 /**
  * function to request store permissions
