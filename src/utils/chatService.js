@@ -185,17 +185,13 @@ export default class ChatService {
    * @param {*} callback  callback
    */
   addNewAddressListen = async (address, callback) => {
-    if (!process.env.JEST_WORKER_ID) {
-      const xpriv = await bitcoin.getPrivKey();
-      getStore().dispatch(cleanNodeAddress());
-      this.service.addNewChatService(xpriv, address).then(() => {
-        callback(null);
-      }).catch((err) => {
-        callback(err);
-      });
-    } else {
+    const xpriv = await bitcoin.getPrivKey();
+    getStore().dispatch(cleanNodeAddress());
+    this.service.addNewChatService(xpriv, address).then(() => {
       callback(null);
-    }
+    }).catch((err) => {
+      callback(err);
+    });
   }
 
   deactivateUpnp = async () => {

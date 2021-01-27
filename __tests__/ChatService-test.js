@@ -73,6 +73,12 @@ describe('test chat service component', () => {
     await service.onMessage(JSON.stringify(mockMessage));
   });
 
+
+  test('addNewAddressListen', async () => {
+    const service = getChatserviceInstance();
+    await service.addNewAddressListen('test', 'test');
+  });
+
   afterAll(() => {
     Realm.deleteFile({
       path: 'mockDatabase/default.realm',
