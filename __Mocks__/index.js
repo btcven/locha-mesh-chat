@@ -222,7 +222,8 @@ jest.doMock('react-native', () =>
           })),
           stop: jest.fn(() => new Promise((resolve) => { resolve(); })),
           dial: jest.fn(),
-          sendMessage: jest.fn()
+          sendMessage: jest.fn(),
+          addNewChatService: jest.fn((xpriv, address) => new Promise((resolve) => { resolve(); })),
         },
         bitcoinModule: {
           createWallet: jest.fn(() => new Promise((resolve) => {

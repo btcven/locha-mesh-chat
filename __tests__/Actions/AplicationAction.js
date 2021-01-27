@@ -176,7 +176,6 @@ describe('Aplication actions', () => {
       store.dispatch(cleanAllChat('broadcast'));
 
       expect(store.getState().chats.insideChat.length).toBe(0);
-
     });
 
     test('delete selected messages', async () => {
@@ -204,10 +203,10 @@ describe('Aplication actions', () => {
       expect(store.getState().chats.keyPlayer).toBe('test');
     });
 
-    test('function to stop playback', () => {
-      store.dispatch(closedPlayer());
+    test('function to stop playback', async () => {
+      await store.dispatch(closedPlayer());
 
-      expect(store.getState().chats.keyPlayer).toBe(null);
+      await expect(store.getState().chats.keyPlayer).toBe(null);
     });
 
     test('function stopPlaying', () => {

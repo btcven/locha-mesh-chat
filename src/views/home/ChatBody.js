@@ -123,19 +123,22 @@ export default class ChatBody extends React.PureComponent {
   }
 
   render() {
-    const { screenProps, imagesView } = this.props;
+    const { screenProps, imagesView, onlyView } = this.props;
 
     const viewImages = imagesView.length !== 0;
     return (
       <View style={{ flex: 1 }}>
-        <ImagesView
-          sendFileWithImage={this.props.sendFileWithImage}
-          open={viewImages}
-          images={imagesView}
-          close={this.props.closeView}
-          screenProps={screenProps}
-        />
-
+        {viewImages
+          && (
+          <ImagesView
+            sendFileWithImage={this.props.sendFileWithImage}
+            onlyView={this.props.onlyView}
+            open={viewImages}
+            images={imagesView}
+            close={this.props.closeView}
+            screenProps={screenProps}
+          />
+          )}
         <FlatList
           inverted
           contentContainerStyle={styles.container}

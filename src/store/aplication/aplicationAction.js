@@ -51,7 +51,6 @@ export const restoreAccountWithPin = (pin, callback) => async (dispatch) => {
     await chatService.startService();
     const broadcast = await AsyncStorage.getItem('broadcast');
     callback(true);
-    console.warn(data.user);
     dispatch(writeAction(data.user));
     if (broadcast) {
       dispatch({

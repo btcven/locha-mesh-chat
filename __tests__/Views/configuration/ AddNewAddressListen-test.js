@@ -1,7 +1,6 @@
 import '../../../__Mocks__';
 import React from 'react';
 import { shallow } from 'enzyme';
-import { Simulate } from 'react-dom/test-utils';
 import AddNewAddressListen from '../../../src/views/config/AddNewAddressListen';
 import store from '../../../src/store';
 
@@ -68,7 +67,7 @@ describe('test new Address Listen component', () => {
   test('simulate save button', async () => {
     await wrapper.find('Styled(Button)').at(1).props().onPress();
 
-    expect(mockCloseFunction.mock.calls.length).toBe(3);
+    expect(mockCloseFunction.mock.calls.length).toBe(2);
 
     await wrapper.instance().save();
   });

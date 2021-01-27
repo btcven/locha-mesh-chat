@@ -66,6 +66,17 @@ describe('test chat service component', () => {
   test('onMessage test', async () => {
     const service = getChatserviceInstance();
     await service.onMessage(JSON.stringify(mockMessage));
+    mockMessage.toUID = undefined;
+    await service.onMessage(JSON.stringify(mockMessage));
+    mockMessage.toUID = 'broadcast';
+    mockMessage.type = messageType.STATUS;
+    await service.onMessage(JSON.stringify(mockMessage));
+  });
+
+
+  test('addNewAddressListen', async () => {
+    const service = getChatserviceInstance();
+    await service.addNewAddressListen('test', 'test');
   });
 
   afterAll(() => {

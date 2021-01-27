@@ -7,6 +7,7 @@ import {
 import { messageType } from './constans';
 import { setMultiAddress } from '../store/aplication';
 import { cleanNodeAddress } from '../store/configuration';
+import { getStore } from './utils';
 
 export default class ChatService {
   constructor() {
@@ -24,7 +25,6 @@ export default class ChatService {
     this.isConnected();
     this.connectionChanged();
     this.IsActiveUpnp = false;
-    this.store = require('../store').default;
     this.mobile = false;
     this.wifi = false;
     ChatService.instance = this;
@@ -55,29 +55,25 @@ export default class ChatService {
   }
 
   onMessage = async (message) => {
-    try {
-      const { dispatch, getState } = this.store;
-      const parse = JSON.parse(message);
+    const { dispatch, getState } = getStore();
+    const parse = JSON.parse(message);
 
-      if (parse.toUID !== 'broadcast') {
-        await database.verifyValidMessage(parse.fromUID);
-        // Verify that the message is for me
-        if (parse.toUID !== getState().config.peerID) {
-          return;
-        }
+    if (parse.toUID !== 'broadcast') {
+      await database.verifyValidMessage(parse.fromUID);
+      // Verify that the message is for me
+      if (parse.toUID !== getState().config.peerID) {
+        return;
       }
+    }
 
-      switch (parse.type) {
-        case messageType.MESSAGE: dispatch(getChat(parse));
-          break;
-        // Execute function that is in chat actions
-        case messageType.STATUS: this.setStatus(parse);
-          break;
-        default:
-          break;
-      }
-    } catch (error) {
-      console.log('Error with the message is: ', error);
+    switch (parse.type) {
+      case messageType.MESSAGE: dispatch(getChat(parse));
+        break;
+      // Execute function that is in chat actions
+      case messageType.STATUS: this.setStatus(parse);
+        break;
+      default:
+        break;
     }
   }
 
@@ -118,7 +114,7 @@ export default class ChatService {
    * @param {Object} statusData;
    */
   setStatus = async (statusData) => {
-    const { dispatch } = this.store;
+    const { dispatch } = getStore();
     dispatch(setStatusMessage(statusData));
   };
 
@@ -127,7 +123,7 @@ export default class ChatService {
    */
   onNewListenAddr = () => {
     this.event.addListener('newListenAddr', ((multiaddr) => {
-      this.store.dispatch(setMultiAddress(multiaddr));
+      getStore().dispatch(setMultiAddress(multiaddr));
     }));
   }
 
@@ -136,9 +132,9 @@ export default class ChatService {
    */
   onNewExternalAddress = () => {
     this.event.addListener('externalAddress', (externalAddress) => {
-      const result = this.store.getState().config.nodeAddress.find((address) => address === externalAddress);
+      const result = getStore().getState().config.nodeAddress.find((address) => address === externalAddress);
       if (!result) {
-        this.store.dispatch(setMultiAddress(externalAddress));
+        getStore().dispatch(setMultiAddress(externalAddress));
       }
     });
   }
@@ -169,7 +165,7 @@ export default class ChatService {
    */
   onConnectionEstablished = () => {
     this.event.addListener('connectionEstablished', (({ peer, numEstablished }) => {
-      this.store.dispatch(setPeers(peer));
+      getStore().dispatch(setPeers(peer));
     }));
   }
 
@@ -178,7 +174,7 @@ export default class ChatService {
    */
   onConnectionClosed = () => {
     this.event.addListener('connectionClosed', (({ peer, numEstablished, cause }) => {
-      this.store.dispatch(removeDisconnedPeers(peer));
+      getStore().dispatch(removeDisconnedPeers(peer));
     }));
   }
 
@@ -189,17 +185,13 @@ export default class ChatService {
    * @param {*} callback  callback
    */
   addNewAddressListen = async (address, callback) => {
-    if (!process.env.JEST_WORKER_ID) {
-      const xpriv = await bitcoin.getPrivKey();
-      this.store.dispatch(cleanNodeAddress());
-      this.service.addNewChatService(xpriv, address).then(() => {
-        callback(null);
-      }).catch((err) => {
-        callback(err);
-      });
-    } else {
+    const xpriv = await bitcoin.getPrivKey();
+    getStore().dispatch(cleanNodeAddress());
+    this.service.addNewChatService(xpriv, address).then(() => {
       callback(null);
-    }
+    }).catch((err) => {
+      callback(err);
+    });
   }
 
   deactivateUpnp = async () => {

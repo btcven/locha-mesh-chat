@@ -38,11 +38,12 @@ export default class ImageView extends React.Component {
   };
 
   back = async () => {
-    if (this.props.sendFileWithImage) {
+    if (!this.props.onlyView) {
       await RNFS.unlink(this.props.images[0].url);
     }
     this.props.close();
   }
+
 
   render() {
     const { screenProps } = this.props;
@@ -86,7 +87,7 @@ export default class ImageView extends React.Component {
                 )}
               />
 
-              {this.props.sendFileWithImage && (
+              {!this.props.onlyView && (
                 <View
                   style={{
                     backgroundColor: 'black',

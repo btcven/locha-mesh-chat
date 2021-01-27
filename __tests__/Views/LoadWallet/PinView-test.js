@@ -15,14 +15,6 @@ describe('test pinView component', () => {
     expect(mockFuntion.mock.calls.length).toBe(1);
   });
 
-
-  test('executed componentDidMount', () => {
-    wrapper.instance().componentDidMount();
-    const { buttons } = wrapper.instance().state;
-    expect(buttons[buttons.length - 1]).toBe('delete');
-  });
-
-
   test('set Pin', () => {
     wrapper.find('Styled(Button)').at(0).props().onPress('0');
     wrapper.find('Styled(Button)').at(1).props().onPress('1');

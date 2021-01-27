@@ -124,7 +124,6 @@ class Chat extends Component {
    * @public
    * @memberof Chat
    */
-
   onClick = (item) => {
     if (this.state.selected.length > 0) {
       const result = this.state.selected.filter((selected) => item.id !== selected.id);
@@ -138,6 +137,7 @@ class Chat extends Component {
       }
     } else if (item.file && item.file.fileType !== 'audio') {
       this.setState({
+        onlyView: true,
         imagesView: [
           {
             url: item.file.file,
@@ -197,7 +197,6 @@ class Chat extends Component {
    * @function
    * @memberof Chat
    */
-
   openFileModal = () => {
     this.setState({ fileModal: true });
     if (!this.props.forcedPause) {
@@ -210,7 +209,6 @@ class Chat extends Component {
    * @function
    * @memberof Chat
    */
-
   closeFileModal = () => {
     this.setState({ fileModal: false });
     if (this.props.forcedPause) {
@@ -266,7 +264,7 @@ class Chat extends Component {
   };
 
   closeView = () => {
-    this.setState({ imagesView: [] });
+    this.setState({ imagesView: [], onlyView: false });
   };
 
   setImageView = (imageArray) => {
@@ -284,14 +282,6 @@ class Chat extends Component {
 
     return (
       <Container>
-        {viewImages && (
-          <ImagesView
-            open={viewImages}
-            images={this.state.imagesView}
-            close={this.closeView}
-            screenProps={screenProps}
-          />
-        )}
         <FileModal
           open={this.state.fileModal}
           close={this.closeFileModal}
@@ -299,6 +289,7 @@ class Chat extends Component {
           screenProps={screenProps}
           setImageView={this.setImageView}
         />
+
         <Header
           {...this.props}
           menu={this.state.menu}
@@ -313,6 +304,7 @@ class Chat extends Component {
             user={this.props.userData}
             contacts={this.props.contact}
             onClick={this.onClick}
+            onlyView={this.state.onlyView}
             onSelected={this.onSelected}
             selected={this.state.selected}
             close={this.closeFileModal}
