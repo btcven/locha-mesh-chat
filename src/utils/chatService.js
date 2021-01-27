@@ -55,6 +55,7 @@ export default class ChatService {
   }
 
   onMessage = async (message) => {
+    console.log('12345', this.store);
     const { dispatch, getState } = this.store;
     const parse = JSON.parse(message);
 
