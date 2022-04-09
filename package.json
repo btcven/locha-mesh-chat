@@ -28,7 +28,7 @@
     "identicon.js": "^2.3.3",
     "install": "^0.13.0",
     "jetifier": "^1.6.5",
-    "moment": "^2.24.0",
+    "moment": "^2.29.2",
     "native-base": "^2.13.15",
     "path-browserify": "0.0.0",
     "process": "^0.11.0",
